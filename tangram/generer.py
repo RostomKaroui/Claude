@@ -62,6 +62,19 @@ def vers_bas(p):  # sommet droit (4,4)->(2,0), quart de tour
 F["pas"] = {"G1": STD["G1"], "G2": STD["G2"], **{k: vers_bas(STD[k]) for k in B}}
 
 
+# 6. Spirale : les 7 pieces autour d'un seul point O (6 angles de 45 + 1 droit).
+# P2 -> M -> G1 : a chaque pas, rotation de 45 deg et agrandissement x racine(2)
+F["spirale"] = {
+    "P2": [(0, 0), (1, 1), (0, 2)],
+    "M":  [(0, 0), (0, 2), (-2, 2)],
+    "G1": [(0, 0), (-2, 2), (-4, 0)],
+    "P1": [(0, 0), (-2, 0), (-1, -1)],
+    "Pa": [(0, 0), (-1, -1), (-1, -3), (0, -2)],
+    "G2": [(0, 0), (0, -4), (2, -2)],
+    "C":  [(0, 0), (1, -1), (2, 0), (1, 1)],
+}
+
+
 # ---------- verifications ----------
 def area(p):
     return abs(sum(p[i][0] * p[i - 1][1] - p[i - 1][0] * p[i][1]

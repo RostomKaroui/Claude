@@ -121,6 +121,12 @@ SVG["pas"] = figure(
     + line((0, -4.45), (2, -4.45), "fl") + label(1, -5.05, "glissement", "note"),
     title="Le Pas : symétrie glissée")
 
+SVG["spirale"] = figure(
+    "spirale", F["spirale"], moved=["P2", "M", "G1"], extra_pts=[(5.5, 2.7)],
+    annot=arc(0, 0, 1.55, 58, 165) + label(1.3, 2.65, "45° et ×√2 à chaque pas", "note", "start")
+    + point(0, 0, "O"),
+    title="La Spirale : homothétie et rotation")
+
 html = open(os.path.join(ICI, "gabarit.html"), encoding="utf-8").read()
 for k, v in SVG.items():
     html = html.replace("{{" + k + "}}", v)
