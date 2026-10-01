@@ -10,6 +10,8 @@
   --encre: #1d2220;
   --encre-2: #5b625e;
   --carton: #bfc2bc;
+  --c-vert: #5aa463; --c-orange: #ec6f3f; --c-marron: #a5543c;
+  --c-violet: #6d5fb4; --c-jaune: #f2d24a; --c-bleu: #4a7ed0;
   --carton-bord: #2a302d;
   --bouge: #a9bde3;
   --trait: #2346a8;
@@ -60,7 +62,7 @@ section.forme {
   border: 1.5px solid var(--encre); background: var(--feuille);
 }
 .schema { border-right: 1.5px solid var(--encre); padding: 14px; display: grid; place-items: center; min-width: 0; }
-.schema svg { width: 100%; height: auto; max-height: 400px; display: block; }
+.schema svg { width: 100%; height: auto; max-height: 470px; display: block; }
 .texte { padding: 22px 24px; display: grid; align-content: start; gap: 12px; min-width: 0; }
 .entete { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .num { font-family: var(--f-titre); font-stretch: 62%; font-weight: 800; font-size: 3rem; line-height: .8; color: var(--trait); }
@@ -76,13 +78,15 @@ h2 { font-family: var(--f-titre); font-stretch: 112%; font-weight: 700; font-siz
 section.depart { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; align-items: center; border-top: 1.5px solid var(--encre); padding-top: 18px; }
 .depart svg { width: 100%; height: auto; max-height: 280px; }
 .depart h2 { font-size: 1.2rem; }
-.legende { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 20px; margin: 12px 0 0; padding: 0; list-style: none; font-family: var(--f-tech); font-size: .8rem; }
+.legende { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px 20px; margin: 12px 0 0; padding: 0; list-style: none; font-family: var(--f-tech); font-size: .8rem; }
 .legende b { display: inline-block; min-width: 4.2em; color: var(--trait); font-weight: 500; }
 .cle { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-family: var(--f-tech); font-size: .76rem; color: var(--encre-2); }
 .cle span { display: inline-flex; align-items: center; gap: 7px; }
 .cle i { width: 22px; height: 14px; display: inline-block; border: 1.2px solid var(--carton-bord); }
-.cle .c1 { background: var(--carton); }
-.cle .c2 { background: var(--bouge); }
+.cle .c1 { background: var(--c-jaune); }
+.cle .c2 { background: repeating-linear-gradient(45deg, var(--encre) 0 1.5px, var(--c-jaune) 1.5px 5px); border-width: 2px; }
+.legende li { display: flex; align-items: center; gap: 8px; }
+.legende i { width: 14px; height: 14px; border: 1.2px solid var(--carton-bord); flex: none; }
 .cle .c3 { border-style: dashed; background: transparent; }
 .cle .c4 { border: 0; border-top: 1.6px dashed var(--trait); height: 0; }
 
@@ -90,10 +94,13 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
 
 /* dessin */
 .grille { fill: var(--grille); }
-.pc { fill: var(--carton); stroke: var(--carton-bord); stroke-width: 2; stroke-linejoin: round; }
-.pc.moved { fill: var(--bouge); }
+.pc { stroke: var(--carton-bord); stroke-width: 2; stroke-linejoin: round; }
+.vert { fill: var(--c-vert); } .orange { fill: var(--c-orange); } .marron { fill: var(--c-marron); }
+.violet { fill: var(--c-violet); } .jaune { fill: var(--c-jaune); } .bleu { fill: var(--c-bleu); }
+.bouge { stroke: var(--carton-bord); stroke-width: 3.2; stroke-linejoin: round; }
+.hachure { stroke: var(--encre); stroke-width: 1.6; opacity: .55; }
 .fantome { fill: none; stroke: var(--encre-2); stroke-width: 1.6; stroke-dasharray: 6 5; }
-.lbl { font-family: var(--f-tech); font-size: 13px; fill: var(--encre); dominant-baseline: middle; }
+.lbl { font-family: var(--f-tech); font-size: 13px; font-weight: 500; fill: var(--encre); dominant-baseline: middle; paint-order: stroke; stroke: var(--feuille); stroke-width: 3.5px; stroke-linejoin: round; }
 .note { font-family: var(--f-tech); font-size: 14px; font-weight: 500; fill: var(--trait); }
 .axe { stroke: var(--trait); stroke-width: 1.6; stroke-dasharray: 16 5 3 5; fill: none; }
 .fl, .fl2 { stroke: var(--trait); stroke-width: 2.2; fill: none; }
@@ -129,12 +136,15 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
     <div>
       <div class="surtitre">Référence</div>
       <h2 id="t0">Le carré de départ</h2>
+      <p class="tech" style="margin:8px 0 0">Même disposition que ton tangram (photo). Les couleurs servent seulement à repérer les pièces.</p>
       <ul class="legende">
-        <li><b>G1 G2</b>grands triangles</li>
-        <li><b>M</b>triangle moyen</li>
-        <li><b>P1 P2</b>petits triangles</li>
-        <li><b>C</b>carré</li>
-        <li><b>Pa</b>parallélogramme</li>
+        <li><i style="background:var(--c-vert)"></i><b>G1</b>grand triangle vert</li>
+        <li><i style="background:var(--c-orange)"></i><b>G2</b>grand triangle orange</li>
+        <li><i style="background:var(--c-orange)"></i><b>M</b>triangle moyen orange</li>
+        <li><i style="background:var(--c-marron)"></i><b>P1</b>petit triangle marron</li>
+        <li><i style="background:var(--c-violet)"></i><b>P2</b>petit triangle violet</li>
+        <li><i style="background:var(--c-jaune)"></i><b>C</b>carré jaune</li>
+        <li><i style="background:var(--c-bleu)"></i><b>Pa</b>parallélogramme bleu</li>
       </ul>
       <div class="cle">
         <span><i class="c1"></i>pièce fixe</span>
@@ -150,8 +160,8 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
     <div class="texte">
       <div class="entete"><span class="num">1</span><h2 id="t1">La Faille</h2></div>
       <span class="mouvement">Translation</span>
-      <p>Je coupe le carré selon sa diagonale et je fais glisser la moitié haute le long de la coupure, sans la tourner. Chaque pièce garde son orientation : on reconnaît encore le carré, mais il s'est fendu. J'ai choisi la translation parce qu'elle déplace sans déformer : toute la tension de la forme vient du seul décalage entre les deux masses.</p>
-      <div class="tech">Les 5 petites pièces glissent ensemble de 2 carreaux vers la droite et 2 vers le bas (vecteur v), le long de la diagonale. Les grands triangles G1 et G2 ne bougent pas.</div>
+      <p>Je coupe le carré selon sa diagonale et je fais glisser la moitié des cinq petites pièces le long de la coupure, sans la tourner. Chaque pièce garde son orientation : on reconnaît encore le carré, mais il s'est fendu. J'ai choisi la translation parce qu'elle déplace sans déformer : toute la tension de la forme vient du seul décalage entre les deux masses.</p>
+      <div class="tech">Les 5 petites pièces glissent ensemble de 2 carreaux vers la droite et 2 vers le haut (vecteur v), le long de la diagonale. Le grand triangle vert (G1) et l'orange (G2) ne bougent pas.</div>
     </div>
   </section>
 
@@ -160,8 +170,8 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
     <div class="texte">
       <div class="entete"><span class="num">2</span><h2 id="t2">Le Porche</h2></div>
       <span class="mouvement">Rotation de 90°</span>
-      <p>Un seul grand triangle pivote de 90° autour du coin O, comme une porte sur ses gonds. Ce geste produit deux choses : un vide sous la forme, qui devient un passage couvert, et un nouveau carré posé sur la pointe avec son jumeau. J'ai choisi la rotation parce que déplacer une pièce, c'est aussi créer un vide, et en architecture le vide compte autant que le plein.</p>
-      <div class="tech">G1 tourne de 90° dans le sens inverse des aiguilles d'une montre autour du coin bas-gauche O. Les 6 autres pièces restent à leur place d'origine.</div>
+      <p>Un seul grand triangle pivote de 90° autour du coin O, comme une porte sur ses gonds. Ce geste produit deux choses : un vide qui entaille la forme et devient une entrée, et un nouveau carré posé sur la pointe avec son jumeau. J'ai choisi la rotation parce que déplacer une pièce, c'est aussi créer un vide, et en architecture le vide compte autant que le plein.</p>
+      <div class="tech">Le grand triangle vert (G1) tourne de 90° dans le sens des aiguilles d'une montre autour du coin haut-gauche O. Les 6 autres pièces restent à leur place d'origine.</div>
     </div>
   </section>
 
@@ -171,7 +181,7 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
       <div class="entete"><span class="num">3</span><h2 id="t3">Le Chevron</h2></div>
       <span class="mouvement">Symétrie axiale</span>
       <p>Les cinq petites pièces forment un carré posé sur la pointe. Les deux grands triangles s'y accrochent de part et d'autre, chacun reflet de l'autre par rapport à l'axe vertical. J'ai choisi la symétrie axiale pour obtenir une figure stable et frontale, qui se lit d'un seul regard comme une façade. La symétrie est dans la silhouette ; l'intérieur du carré, lui, reste libre.</p>
-      <div class="tech">Axe vertical passant par la pointe haute et la pointe basse du carré. G2 est le reflet exact de G1.</div>
+      <div class="tech">Axe vertical passant par la pointe haute et la pointe basse du carré. Le triangle orange (G2) est le reflet exact du vert (G1).</div>
     </div>
   </section>
 
@@ -181,7 +191,7 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
       <div class="entete"><span class="num">4</span><h2 id="t4">La Torsion</h2></div>
       <span class="mouvement">Symétrie centrale · demi-tour</span>
       <p>Mêmes pièces qu'au Chevron, un seul changement : le second grand triangle n'est plus un reflet, c'est l'image du premier par un demi-tour autour du centre O. La forme ne se lit plus de face, elle semble tourner sur elle-même. J'ai choisi ce mouvement pour comparer : la symétrie axiale donne un équilibre statique, la symétrie centrale un équilibre en mouvement.</p>
-      <div class="tech">Centre O = centre du carré des 5 petites pièces. G2 = G1 tourné de 180° autour de O. Chaque grand triangle ne touche le carré que sur la moitié d'un côté.</div>
+      <div class="tech">Centre O = centre du carré des 5 petites pièces. Le triangle orange (G2) = le vert (G1) tourné de 180° autour de O. Chaque grand triangle ne touche le carré que sur la moitié d'un côté.</div>
     </div>
   </section>
 
@@ -191,7 +201,7 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
       <div class="entete"><span class="num">5</span><h2 id="t5">Le Pas</h2></div>
       <span class="mouvement">Symétrie glissée</span>
       <p>Les deux moitiés du carré ont la même silhouette. La seconde est le reflet de la première par rapport à l'axe horizontal, puis glissée de deux carreaux le long de cet axe. C'est le mouvement des empreintes de pas : alterner et avancer à la fois. Il combine le miroir de la forme 3 et le glissement de la forme 1, et crée un rythme, comme une frise ou une façade en quinconce.</p>
-      <div class="tech">Haut : G1 + G2. Bas : les 5 petites pièces, assemblées en triangle. Le pointillé montre le reflet avant le glissement de 2 carreaux.</div>
+      <div class="tech">Bas : les deux grands triangles, vert et orange. Haut : les 5 petites pièces, assemblées en triangle. Le pointillé montre le reflet avant le glissement de 2 carreaux.</div>
     </div>
   </section>
 

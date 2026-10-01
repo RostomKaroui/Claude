@@ -9,8 +9,15 @@ STD, F = D["std"], D["formes"]
 S = 40  # px par carreau
 
 
+# Le dessin est le miroir haut/bas des coordonnees de generer.py :
+# il correspond ainsi exactement au tangram en photo (grand triangle
+# vert en haut, orange a gauche, parallelogramme bleu en bas).
 def P(x, y):
-    return x * S, -y * S
+    return x * S, y * S
+
+
+COULEUR = {"G1": "vert", "G2": "orange", "M": "orange", "P1": "marron",
+           "P2": "violet", "C": "jaune", "Pa": "bleu"}
 
 
 def pts(poly):
@@ -44,7 +51,7 @@ def label(x, y, txt, cls="note", anchor="middle"):
 def point(x, y, name):
     X, Y = P(x, y)
     return (f'<circle class="pt" cx="{X:.1f}" cy="{Y:.1f}" r="4"/>'
-            + label(x - 0.25, y - 0.45, name, "note", "end"))
+            + label(x - 0.25, y + 0.55, name, "note", "end"))
 
 
 def figure(fid, fig, moved=(), ghosts=(), annot="", extra_pts=(), title=""):
@@ -53,10 +60,12 @@ def figure(fid, fig, moved=(), ghosts=(), annot="", extra_pts=(), title=""):
     x1 = math.ceil(max(x for x, _ in allp)) + 1
     y0 = math.floor(min(y for _, y in allp)) - 1
     y1 = math.ceil(max(y for _, y in allp)) + 1
-    vb = f"{x0*S} {-y1*S} {(x1-x0)*S} {(y1-y0)*S}"
+    vb = f"{x0*S} {y0*S} {(x1-x0)*S} {(y1-y0)*S}"
     out = [f'<svg viewBox="{vb}" role="img" aria-label="{title}" xmlns="http://www.w3.org/2000/svg">',
            f'<defs><marker id="m-{fid}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-           f'<path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>']
+           f'<path d="M0,0 L10,5 L0,10 z" class="tete"/></marker>'
+           f'<pattern id="h-{fid}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
+           f'<line x1="0" y1="0" x2="0" y2="7" class="hachure"/></pattern></defs>']
     # quadrillage
     for gx in range(x0, x1 + 1):
         for gy in range(y0, y1 + 1):
@@ -65,11 +74,12 @@ def figure(fid, fig, moved=(), ghosts=(), annot="", extra_pts=(), title=""):
     for g in ghosts:
         out.append(f'<polygon class="fantome" points="{pts(g)}"/>')
     for k, p in fig.items():
-        cls = "pc moved" if k in moved else "pc"
-        out.append(f'<polygon class="{cls}" points="{pts(p)}"/>')
+        out.append(f'<polygon class="pc {COULEUR[k]}" points="{pts(p)}"/>')
+        if k in moved:
+            out.append(f'<polygon class="bouge" fill="url(#h-{fid})" points="{pts(p)}"/>')
     for k, p in fig.items():
         cx, cy = centroid(p)
-        out.append(label(cx, cy - 0.12, k, "lbl"))
+        out.append(label(cx, cy, k, "lbl"))
     out.append(annot.replace("{id}", fid))
     out.append("</svg>")
     return "\n".join(out)
