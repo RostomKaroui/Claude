@@ -1,0 +1,804 @@
+<title>Tangram, cinq mouvements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Mise en page : une planche d'atelier. Cartouche en tête, puis une bande par forme (schéma | texte), quadrillage en points comme un calque. */
+:root {
+  --papier: #f2f3f0;
+  --feuille: #fbfbf9;
+  --encre: #1d2220;
+  --encre-2: #5b625e;
+  --carton: #bfc2bc;
+  --carton-bord: #2a302d;
+  --bouge: #a9bde3;
+  --trait: #2346a8;
+  --grille: #b3b8b2;
+  --ligne: #d5d8d2;
+  --f-titre: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-texte: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-tech: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4;
+    --carton: #474c48; --carton-bord: #cfd4cf; --bouge: #34507f; --trait: #93acf2;
+    --grille: #3c423e; --ligne: #2d332f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4;
+  --carton: #474c48; --carton-bord: #cfd4cf; --bouge: #34507f; --trait: #93acf2;
+  --grille: #3c423e; --ligne: #2d332f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--papier); color: var(--encre);
+  font-family: var(--f-texte); font-size: 1.05rem; line-height: 1.6;
+  padding-inline: 16px; padding-block: 28px 48px;
+}
+.planche { max-width: 1080px; margin-inline: auto; display: grid; gap: 22px; }
+
+/* cartouche */
+header.cartouche {
+  display: grid; grid-template-columns: 1fr auto; gap: 18px 32px; align-items: end;
+  border: 1.5px solid var(--encre); background: var(--feuille); padding: 22px 24px;
+}
+.surtitre, .tech { font-family: var(--f-tech); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-2); }
+h1 {
+  font-family: var(--f-titre); font-stretch: 125%; font-weight: 800; letter-spacing: -.01em;
+  font-size: clamp(1.9rem, 5vw, 3.1rem); line-height: 1; margin: 8px 0 0; text-wrap: balance;
+}
+.cartouche p { margin: 12px 0 0; max-width: 62ch; color: var(--encre-2); }
+.cartouche dl { display: grid; grid-template-columns: auto auto; gap: 4px 14px; margin: 0; font-family: var(--f-tech); font-size: .78rem; }
+.cartouche dt { color: var(--encre-2); text-transform: uppercase; letter-spacing: .08em; }
+.cartouche dd { margin: 0; }
+
+/* bandes */
+section.forme {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  border: 1.5px solid var(--encre); background: var(--feuille);
+}
+.schema { border-right: 1.5px solid var(--encre); padding: 14px; display: grid; place-items: center; min-width: 0; }
+.schema svg { width: 100%; height: auto; max-height: 400px; display: block; }
+.texte { padding: 22px 24px; display: grid; align-content: start; gap: 12px; min-width: 0; }
+.entete { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.num { font-family: var(--f-titre); font-stretch: 62%; font-weight: 800; font-size: 3rem; line-height: .8; color: var(--trait); }
+h2 { font-family: var(--f-titre); font-stretch: 112%; font-weight: 700; font-size: 1.55rem; line-height: 1.1; margin: 0; text-wrap: balance; }
+.mouvement {
+  justify-self: start; font-family: var(--f-tech); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
+  border: 1.5px solid var(--trait); color: var(--trait); padding: 3px 9px;
+}
+.texte p { margin: 0; max-width: 60ch; }
+.texte .tech { text-transform: none; letter-spacing: .02em; font-size: .78rem; border-top: 1px solid var(--ligne); padding-top: 10px; }
+
+/* départ + légende */
+section.depart { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; align-items: center; border-top: 1.5px solid var(--encre); padding-top: 18px; }
+.depart svg { width: 100%; height: auto; max-height: 280px; }
+.depart h2 { font-size: 1.2rem; }
+.legende { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 20px; margin: 12px 0 0; padding: 0; list-style: none; font-family: var(--f-tech); font-size: .8rem; }
+.legende b { display: inline-block; min-width: 4.2em; color: var(--trait); font-weight: 500; }
+.cle { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-family: var(--f-tech); font-size: .76rem; color: var(--encre-2); }
+.cle span { display: inline-flex; align-items: center; gap: 7px; }
+.cle i { width: 22px; height: 14px; display: inline-block; border: 1.2px solid var(--carton-bord); }
+.cle .c1 { background: var(--carton); }
+.cle .c2 { background: var(--bouge); }
+.cle .c3 { border-style: dashed; background: transparent; }
+.cle .c4 { border: 0; border-top: 1.6px dashed var(--trait); height: 0; }
+
+footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); border-top: 1px solid var(--ligne); padding-top: 12px; }
+
+/* dessin */
+.grille { fill: var(--grille); }
+.pc { fill: var(--carton); stroke: var(--carton-bord); stroke-width: 2; stroke-linejoin: round; }
+.pc.moved { fill: var(--bouge); }
+.fantome { fill: none; stroke: var(--encre-2); stroke-width: 1.6; stroke-dasharray: 6 5; }
+.lbl { font-family: var(--f-tech); font-size: 13px; fill: var(--encre); dominant-baseline: middle; }
+.note { font-family: var(--f-tech); font-size: 14px; font-weight: 500; fill: var(--trait); }
+.axe { stroke: var(--trait); stroke-width: 1.6; stroke-dasharray: 16 5 3 5; fill: none; }
+.fl, .fl2 { stroke: var(--trait); stroke-width: 2.2; fill: none; }
+.tete { fill: var(--trait); }
+.pt { fill: var(--trait); }
+
+@media (max-width: 760px) {
+  header.cartouche { grid-template-columns: 1fr; }
+  section.forme { grid-template-columns: 1fr; }
+  .schema { border-right: 0; border-bottom: 1.5px solid var(--encre); }
+  section.depart { grid-template-columns: 1fr; }
+  .depart svg { max-width: 280px; }
+}
+</style>
+
+<main class="planche">
+  <header class="cartouche">
+    <div>
+      <div class="surtitre">Atelier · Séance 1 · Tangram en carton gris</div>
+      <h1>Cinq formes, cinq mouvements</h1>
+      <p>Chaque forme utilise les 7 pièces, sans superposition, toutes en contact par un côté. Pour chacune, un seul mouvement du plan organise la composition.</p>
+    </div>
+    <dl>
+      <dt>École</dt><dd>ESAD Tunis</dd>
+      <dt>Étudiant</dt><dd>__________</dd>
+      <dt>Unité</dt><dd>1 carreau = ¼ du côté</dd>
+      <dt>Planches</dt><dd>5 + carré de départ</dd>
+    </dl>
+  </header>
+
+  <section class="depart" aria-labelledby="t0">
+    <svg viewBox="-40 -200 240 240" role="img" aria-label="Carré de départ, 7 pièces" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="m-depart" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>
+<circle class="grille" cx="-40" cy="40" r="1.4"/>
+<circle class="grille" cx="-40" cy="0" r="1.4"/>
+<circle class="grille" cx="-40" cy="-40" r="1.4"/>
+<circle class="grille" cx="-40" cy="-80" r="1.4"/>
+<circle class="grille" cx="-40" cy="-120" r="1.4"/>
+<circle class="grille" cx="-40" cy="-160" r="1.4"/>
+<circle class="grille" cx="-40" cy="-200" r="1.4"/>
+<circle class="grille" cx="0" cy="40" r="1.4"/>
+<circle class="grille" cx="0" cy="0" r="1.4"/>
+<circle class="grille" cx="0" cy="-40" r="1.4"/>
+<circle class="grille" cx="0" cy="-80" r="1.4"/>
+<circle class="grille" cx="0" cy="-120" r="1.4"/>
+<circle class="grille" cx="0" cy="-160" r="1.4"/>
+<circle class="grille" cx="0" cy="-200" r="1.4"/>
+<circle class="grille" cx="40" cy="40" r="1.4"/>
+<circle class="grille" cx="40" cy="0" r="1.4"/>
+<circle class="grille" cx="40" cy="-40" r="1.4"/>
+<circle class="grille" cx="40" cy="-80" r="1.4"/>
+<circle class="grille" cx="40" cy="-120" r="1.4"/>
+<circle class="grille" cx="40" cy="-160" r="1.4"/>
+<circle class="grille" cx="40" cy="-200" r="1.4"/>
+<circle class="grille" cx="80" cy="40" r="1.4"/>
+<circle class="grille" cx="80" cy="0" r="1.4"/>
+<circle class="grille" cx="80" cy="-40" r="1.4"/>
+<circle class="grille" cx="80" cy="-80" r="1.4"/>
+<circle class="grille" cx="80" cy="-120" r="1.4"/>
+<circle class="grille" cx="80" cy="-160" r="1.4"/>
+<circle class="grille" cx="80" cy="-200" r="1.4"/>
+<circle class="grille" cx="120" cy="40" r="1.4"/>
+<circle class="grille" cx="120" cy="0" r="1.4"/>
+<circle class="grille" cx="120" cy="-40" r="1.4"/>
+<circle class="grille" cx="120" cy="-80" r="1.4"/>
+<circle class="grille" cx="120" cy="-120" r="1.4"/>
+<circle class="grille" cx="120" cy="-160" r="1.4"/>
+<circle class="grille" cx="120" cy="-200" r="1.4"/>
+<circle class="grille" cx="160" cy="40" r="1.4"/>
+<circle class="grille" cx="160" cy="0" r="1.4"/>
+<circle class="grille" cx="160" cy="-40" r="1.4"/>
+<circle class="grille" cx="160" cy="-80" r="1.4"/>
+<circle class="grille" cx="160" cy="-120" r="1.4"/>
+<circle class="grille" cx="160" cy="-160" r="1.4"/>
+<circle class="grille" cx="160" cy="-200" r="1.4"/>
+<circle class="grille" cx="200" cy="40" r="1.4"/>
+<circle class="grille" cx="200" cy="0" r="1.4"/>
+<circle class="grille" cx="200" cy="-40" r="1.4"/>
+<circle class="grille" cx="200" cy="-80" r="1.4"/>
+<circle class="grille" cx="200" cy="-120" r="1.4"/>
+<circle class="grille" cx="200" cy="-160" r="1.4"/>
+<circle class="grille" cx="200" cy="-200" r="1.4"/>
+<polygon class="pc" points="0.0,0.0 160.0,0.0 80.0,-80.0"/>
+<polygon class="pc" points="0.0,0.0 80.0,-80.0 0.0,-160.0"/>
+<polygon class="pc" points="160.0,-160.0 80.0,-160.0 160.0,-80.0"/>
+<polygon class="pc" points="160.0,0.0 160.0,-80.0 120.0,-40.0"/>
+<polygon class="pc" points="80.0,-80.0 120.0,-40.0 160.0,-80.0 120.0,-120.0"/>
+<polygon class="pc" points="80.0,-80.0 120.0,-120.0 40.0,-120.0"/>
+<polygon class="pc" points="0.0,-160.0 40.0,-120.0 120.0,-120.0 80.0,-160.0"/>
+<text class="lbl" x="80.0" y="-21.9" text-anchor="middle">G1</text>
+<text class="lbl" x="26.7" y="-75.2" text-anchor="middle">G2</text>
+<text class="lbl" x="133.3" y="-128.5" text-anchor="middle">M</text>
+<text class="lbl" x="146.7" y="-35.2" text-anchor="middle">P1</text>
+<text class="lbl" x="120.0" y="-75.2" text-anchor="middle">C</text>
+<text class="lbl" x="80.0" y="-101.9" text-anchor="middle">P2</text>
+<text class="lbl" x="60.0" y="-135.2" text-anchor="middle">Pa</text>
+
+</svg>
+    <div>
+      <div class="surtitre">Référence</div>
+      <h2 id="t0">Le carré de départ</h2>
+      <ul class="legende">
+        <li><b>G1 G2</b>grands triangles</li>
+        <li><b>M</b>triangle moyen</li>
+        <li><b>P1 P2</b>petits triangles</li>
+        <li><b>C</b>carré</li>
+        <li><b>Pa</b>parallélogramme</li>
+      </ul>
+      <div class="cle">
+        <span><i class="c1"></i>pièce fixe</span>
+        <span><i class="c2"></i>pièce qui a bougé</span>
+        <span><i class="c3"></i>position d'origine</span>
+        <span><i class="c4"></i>axe / mouvement</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="forme" aria-labelledby="t1">
+    <div class="schema"><svg viewBox="-40 -200 320 320" role="img" aria-label="La Faille : translation" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="m-faille" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>
+<circle class="grille" cx="-40" cy="120" r="1.4"/>
+<circle class="grille" cx="-40" cy="80" r="1.4"/>
+<circle class="grille" cx="-40" cy="40" r="1.4"/>
+<circle class="grille" cx="-40" cy="0" r="1.4"/>
+<circle class="grille" cx="-40" cy="-40" r="1.4"/>
+<circle class="grille" cx="-40" cy="-80" r="1.4"/>
+<circle class="grille" cx="-40" cy="-120" r="1.4"/>
+<circle class="grille" cx="-40" cy="-160" r="1.4"/>
+<circle class="grille" cx="-40" cy="-200" r="1.4"/>
+<circle class="grille" cx="0" cy="120" r="1.4"/>
+<circle class="grille" cx="0" cy="80" r="1.4"/>
+<circle class="grille" cx="0" cy="40" r="1.4"/>
+<circle class="grille" cx="0" cy="0" r="1.4"/>
+<circle class="grille" cx="0" cy="-40" r="1.4"/>
+<circle class="grille" cx="0" cy="-80" r="1.4"/>
+<circle class="grille" cx="0" cy="-120" r="1.4"/>
+<circle class="grille" cx="0" cy="-160" r="1.4"/>
+<circle class="grille" cx="0" cy="-200" r="1.4"/>
+<circle class="grille" cx="40" cy="120" r="1.4"/>
+<circle class="grille" cx="40" cy="80" r="1.4"/>
+<circle class="grille" cx="40" cy="40" r="1.4"/>
+<circle class="grille" cx="40" cy="0" r="1.4"/>
+<circle class="grille" cx="40" cy="-40" r="1.4"/>
+<circle class="grille" cx="40" cy="-80" r="1.4"/>
+<circle class="grille" cx="40" cy="-120" r="1.4"/>
+<circle class="grille" cx="40" cy="-160" r="1.4"/>
+<circle class="grille" cx="40" cy="-200" r="1.4"/>
+<circle class="grille" cx="80" cy="120" r="1.4"/>
+<circle class="grille" cx="80" cy="80" r="1.4"/>
+<circle class="grille" cx="80" cy="40" r="1.4"/>
+<circle class="grille" cx="80" cy="0" r="1.4"/>
+<circle class="grille" cx="80" cy="-40" r="1.4"/>
+<circle class="grille" cx="80" cy="-80" r="1.4"/>
+<circle class="grille" cx="80" cy="-120" r="1.4"/>
+<circle class="grille" cx="80" cy="-160" r="1.4"/>
+<circle class="grille" cx="80" cy="-200" r="1.4"/>
+<circle class="grille" cx="120" cy="120" r="1.4"/>
+<circle class="grille" cx="120" cy="80" r="1.4"/>
+<circle class="grille" cx="120" cy="40" r="1.4"/>
+<circle class="grille" cx="120" cy="0" r="1.4"/>
+<circle class="grille" cx="120" cy="-40" r="1.4"/>
+<circle class="grille" cx="120" cy="-80" r="1.4"/>
+<circle class="grille" cx="120" cy="-120" r="1.4"/>
+<circle class="grille" cx="120" cy="-160" r="1.4"/>
+<circle class="grille" cx="120" cy="-200" r="1.4"/>
+<circle class="grille" cx="160" cy="120" r="1.4"/>
+<circle class="grille" cx="160" cy="80" r="1.4"/>
+<circle class="grille" cx="160" cy="40" r="1.4"/>
+<circle class="grille" cx="160" cy="0" r="1.4"/>
+<circle class="grille" cx="160" cy="-40" r="1.4"/>
+<circle class="grille" cx="160" cy="-80" r="1.4"/>
+<circle class="grille" cx="160" cy="-120" r="1.4"/>
+<circle class="grille" cx="160" cy="-160" r="1.4"/>
+<circle class="grille" cx="160" cy="-200" r="1.4"/>
+<circle class="grille" cx="200" cy="120" r="1.4"/>
+<circle class="grille" cx="200" cy="80" r="1.4"/>
+<circle class="grille" cx="200" cy="40" r="1.4"/>
+<circle class="grille" cx="200" cy="0" r="1.4"/>
+<circle class="grille" cx="200" cy="-40" r="1.4"/>
+<circle class="grille" cx="200" cy="-80" r="1.4"/>
+<circle class="grille" cx="200" cy="-120" r="1.4"/>
+<circle class="grille" cx="200" cy="-160" r="1.4"/>
+<circle class="grille" cx="200" cy="-200" r="1.4"/>
+<circle class="grille" cx="240" cy="120" r="1.4"/>
+<circle class="grille" cx="240" cy="80" r="1.4"/>
+<circle class="grille" cx="240" cy="40" r="1.4"/>
+<circle class="grille" cx="240" cy="0" r="1.4"/>
+<circle class="grille" cx="240" cy="-40" r="1.4"/>
+<circle class="grille" cx="240" cy="-80" r="1.4"/>
+<circle class="grille" cx="240" cy="-120" r="1.4"/>
+<circle class="grille" cx="240" cy="-160" r="1.4"/>
+<circle class="grille" cx="240" cy="-200" r="1.4"/>
+<circle class="grille" cx="280" cy="120" r="1.4"/>
+<circle class="grille" cx="280" cy="80" r="1.4"/>
+<circle class="grille" cx="280" cy="40" r="1.4"/>
+<circle class="grille" cx="280" cy="0" r="1.4"/>
+<circle class="grille" cx="280" cy="-40" r="1.4"/>
+<circle class="grille" cx="280" cy="-80" r="1.4"/>
+<circle class="grille" cx="280" cy="-120" r="1.4"/>
+<circle class="grille" cx="280" cy="-160" r="1.4"/>
+<circle class="grille" cx="280" cy="-200" r="1.4"/>
+<polygon class="fantome" points="160.0,0.0 160.0,-160.0 0.0,-160.0"/>
+<polygon class="pc" points="0.0,0.0 160.0,0.0 80.0,-80.0"/>
+<polygon class="pc" points="0.0,0.0 80.0,-80.0 0.0,-160.0"/>
+<polygon class="pc moved" points="240.0,-80.0 160.0,-80.0 240.0,0.0"/>
+<polygon class="pc moved" points="240.0,80.0 240.0,0.0 200.0,40.0"/>
+<polygon class="pc moved" points="160.0,0.0 200.0,40.0 240.0,0.0 200.0,-40.0"/>
+<polygon class="pc moved" points="160.0,0.0 200.0,-40.0 120.0,-40.0"/>
+<polygon class="pc moved" points="80.0,-80.0 120.0,-40.0 200.0,-40.0 160.0,-80.0"/>
+<text class="lbl" x="80.0" y="-21.9" text-anchor="middle">G1</text>
+<text class="lbl" x="26.7" y="-75.2" text-anchor="middle">G2</text>
+<text class="lbl" x="213.3" y="-48.5" text-anchor="middle">M</text>
+<text class="lbl" x="226.7" y="44.8" text-anchor="middle">P1</text>
+<text class="lbl" x="200.0" y="4.8" text-anchor="middle">C</text>
+<text class="lbl" x="160.0" y="-21.9" text-anchor="middle">P2</text>
+<text class="lbl" x="140.0" y="-55.2" text-anchor="middle">Pa</text>
+<line class="axe" x1="-24.0" y1="-184.0" x2="264.0" y2="104.0"/><line class="fl" x1="116.0" y1="-124.0" x2="190.0" y2="-50.0" marker-end="url(#m-faille)"/><text class="note" x="182.0" y="-110.0" text-anchor="middle">v</text>
+</svg></div>
+    <div class="texte">
+      <div class="entete"><span class="num">1</span><h2 id="t1">La Faille</h2></div>
+      <span class="mouvement">Translation</span>
+      <p>Je coupe le carré selon sa diagonale et je fais glisser la moitié haute le long de la coupure, sans la tourner. Chaque pièce garde son orientation : on reconnaît encore le carré, mais il s'est fendu. J'ai choisi la translation parce qu'elle déplace sans déformer : toute la tension de la forme vient du seul décalage entre les deux masses.</p>
+      <div class="tech">Les 5 petites pièces glissent ensemble de 2 carreaux vers la droite et 2 vers le bas (vecteur v), le long de la diagonale. Les grands triangles G1 et G2 ne bougent pas.</div>
+    </div>
+  </section>
+
+  <section class="forme" aria-labelledby="t2">
+    <div class="schema"><svg viewBox="-120 -200 320 240" role="img" aria-label="Le Porche : rotation de 90°" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="m-porche" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>
+<circle class="grille" cx="-120" cy="40" r="1.4"/>
+<circle class="grille" cx="-120" cy="0" r="1.4"/>
+<circle class="grille" cx="-120" cy="-40" r="1.4"/>
+<circle class="grille" cx="-120" cy="-80" r="1.4"/>
+<circle class="grille" cx="-120" cy="-120" r="1.4"/>
+<circle class="grille" cx="-120" cy="-160" r="1.4"/>
+<circle class="grille" cx="-120" cy="-200" r="1.4"/>
+<circle class="grille" cx="-80" cy="40" r="1.4"/>
+<circle class="grille" cx="-80" cy="0" r="1.4"/>
+<circle class="grille" cx="-80" cy="-40" r="1.4"/>
+<circle class="grille" cx="-80" cy="-80" r="1.4"/>
+<circle class="grille" cx="-80" cy="-120" r="1.4"/>
+<circle class="grille" cx="-80" cy="-160" r="1.4"/>
+<circle class="grille" cx="-80" cy="-200" r="1.4"/>
+<circle class="grille" cx="-40" cy="40" r="1.4"/>
+<circle class="grille" cx="-40" cy="0" r="1.4"/>
+<circle class="grille" cx="-40" cy="-40" r="1.4"/>
+<circle class="grille" cx="-40" cy="-80" r="1.4"/>
+<circle class="grille" cx="-40" cy="-120" r="1.4"/>
+<circle class="grille" cx="-40" cy="-160" r="1.4"/>
+<circle class="grille" cx="-40" cy="-200" r="1.4"/>
+<circle class="grille" cx="0" cy="40" r="1.4"/>
+<circle class="grille" cx="0" cy="0" r="1.4"/>
+<circle class="grille" cx="0" cy="-40" r="1.4"/>
+<circle class="grille" cx="0" cy="-80" r="1.4"/>
+<circle class="grille" cx="0" cy="-120" r="1.4"/>
+<circle class="grille" cx="0" cy="-160" r="1.4"/>
+<circle class="grille" cx="0" cy="-200" r="1.4"/>
+<circle class="grille" cx="40" cy="40" r="1.4"/>
+<circle class="grille" cx="40" cy="0" r="1.4"/>
+<circle class="grille" cx="40" cy="-40" r="1.4"/>
+<circle class="grille" cx="40" cy="-80" r="1.4"/>
+<circle class="grille" cx="40" cy="-120" r="1.4"/>
+<circle class="grille" cx="40" cy="-160" r="1.4"/>
+<circle class="grille" cx="40" cy="-200" r="1.4"/>
+<circle class="grille" cx="80" cy="40" r="1.4"/>
+<circle class="grille" cx="80" cy="0" r="1.4"/>
+<circle class="grille" cx="80" cy="-40" r="1.4"/>
+<circle class="grille" cx="80" cy="-80" r="1.4"/>
+<circle class="grille" cx="80" cy="-120" r="1.4"/>
+<circle class="grille" cx="80" cy="-160" r="1.4"/>
+<circle class="grille" cx="80" cy="-200" r="1.4"/>
+<circle class="grille" cx="120" cy="40" r="1.4"/>
+<circle class="grille" cx="120" cy="0" r="1.4"/>
+<circle class="grille" cx="120" cy="-40" r="1.4"/>
+<circle class="grille" cx="120" cy="-80" r="1.4"/>
+<circle class="grille" cx="120" cy="-120" r="1.4"/>
+<circle class="grille" cx="120" cy="-160" r="1.4"/>
+<circle class="grille" cx="120" cy="-200" r="1.4"/>
+<circle class="grille" cx="160" cy="40" r="1.4"/>
+<circle class="grille" cx="160" cy="0" r="1.4"/>
+<circle class="grille" cx="160" cy="-40" r="1.4"/>
+<circle class="grille" cx="160" cy="-80" r="1.4"/>
+<circle class="grille" cx="160" cy="-120" r="1.4"/>
+<circle class="grille" cx="160" cy="-160" r="1.4"/>
+<circle class="grille" cx="160" cy="-200" r="1.4"/>
+<circle class="grille" cx="200" cy="40" r="1.4"/>
+<circle class="grille" cx="200" cy="0" r="1.4"/>
+<circle class="grille" cx="200" cy="-40" r="1.4"/>
+<circle class="grille" cx="200" cy="-80" r="1.4"/>
+<circle class="grille" cx="200" cy="-120" r="1.4"/>
+<circle class="grille" cx="200" cy="-160" r="1.4"/>
+<circle class="grille" cx="200" cy="-200" r="1.4"/>
+<polygon class="fantome" points="0.0,0.0 160.0,0.0 80.0,-80.0"/>
+<polygon class="pc moved" points="0.0,-0.0 0.0,-160.0 -80.0,-80.0"/>
+<polygon class="pc" points="0.0,0.0 80.0,-80.0 0.0,-160.0"/>
+<polygon class="pc" points="160.0,-160.0 80.0,-160.0 160.0,-80.0"/>
+<polygon class="pc" points="160.0,0.0 160.0,-80.0 120.0,-40.0"/>
+<polygon class="pc" points="80.0,-80.0 120.0,-40.0 160.0,-80.0 120.0,-120.0"/>
+<polygon class="pc" points="80.0,-80.0 120.0,-120.0 40.0,-120.0"/>
+<polygon class="pc" points="0.0,-160.0 40.0,-120.0 120.0,-120.0 80.0,-160.0"/>
+<text class="lbl" x="-26.7" y="-75.2" text-anchor="middle">G1</text>
+<text class="lbl" x="26.7" y="-75.2" text-anchor="middle">G2</text>
+<text class="lbl" x="133.3" y="-128.5" text-anchor="middle">M</text>
+<text class="lbl" x="146.7" y="-35.2" text-anchor="middle">P1</text>
+<text class="lbl" x="120.0" y="-75.2" text-anchor="middle">C</text>
+<text class="lbl" x="80.0" y="-101.9" text-anchor="middle">P2</text>
+<text class="lbl" x="60.0" y="-135.2" text-anchor="middle">Pa</text>
+<path class="fl" d="M62.6,-13.3 A64.0,64.0 0 0 0 -15.5,-62.1" marker-end="url(#m-porche)"/><text class="note" x="78.0" y="-38.0" text-anchor="middle">90°</text><circle class="pt" cx="0.0" cy="0.0" r="4"/><text class="note" x="-10.0" y="18.0" text-anchor="end">O</text>
+</svg></div>
+    <div class="texte">
+      <div class="entete"><span class="num">2</span><h2 id="t2">Le Porche</h2></div>
+      <span class="mouvement">Rotation de 90°</span>
+      <p>Un seul grand triangle pivote de 90° autour du coin O, comme une porte sur ses gonds. Ce geste produit deux choses : un vide sous la forme, qui devient un passage couvert, et un nouveau carré posé sur la pointe avec son jumeau. J'ai choisi la rotation parce que déplacer une pièce, c'est aussi créer un vide, et en architecture le vide compte autant que le plein.</p>
+      <div class="tech">G1 tourne de 90° dans le sens inverse des aiguilles d'une montre autour du coin bas-gauche O. Les 6 autres pièces restent à leur place d'origine.</div>
+    </div>
+  </section>
+
+  <section class="forme" aria-labelledby="t3">
+    <div class="schema"><svg viewBox="-120 -280 240 480" role="img" aria-label="Le Chevron : symétrie axiale" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="m-chevron" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>
+<circle class="grille" cx="-120" cy="200" r="1.4"/>
+<circle class="grille" cx="-120" cy="160" r="1.4"/>
+<circle class="grille" cx="-120" cy="120" r="1.4"/>
+<circle class="grille" cx="-120" cy="80" r="1.4"/>
+<circle class="grille" cx="-120" cy="40" r="1.4"/>
+<circle class="grille" cx="-120" cy="0" r="1.4"/>
+<circle class="grille" cx="-120" cy="-40" r="1.4"/>
+<circle class="grille" cx="-120" cy="-80" r="1.4"/>
+<circle class="grille" cx="-120" cy="-120" r="1.4"/>
+<circle class="grille" cx="-120" cy="-160" r="1.4"/>
+<circle class="grille" cx="-120" cy="-200" r="1.4"/>
+<circle class="grille" cx="-120" cy="-240" r="1.4"/>
+<circle class="grille" cx="-120" cy="-280" r="1.4"/>
+<circle class="grille" cx="-80" cy="200" r="1.4"/>
+<circle class="grille" cx="-80" cy="160" r="1.4"/>
+<circle class="grille" cx="-80" cy="120" r="1.4"/>
+<circle class="grille" cx="-80" cy="80" r="1.4"/>
+<circle class="grille" cx="-80" cy="40" r="1.4"/>
+<circle class="grille" cx="-80" cy="0" r="1.4"/>
+<circle class="grille" cx="-80" cy="-40" r="1.4"/>
+<circle class="grille" cx="-80" cy="-80" r="1.4"/>
+<circle class="grille" cx="-80" cy="-120" r="1.4"/>
+<circle class="grille" cx="-80" cy="-160" r="1.4"/>
+<circle class="grille" cx="-80" cy="-200" r="1.4"/>
+<circle class="grille" cx="-80" cy="-240" r="1.4"/>
+<circle class="grille" cx="-80" cy="-280" r="1.4"/>
+<circle class="grille" cx="-40" cy="200" r="1.4"/>
+<circle class="grille" cx="-40" cy="160" r="1.4"/>
+<circle class="grille" cx="-40" cy="120" r="1.4"/>
+<circle class="grille" cx="-40" cy="80" r="1.4"/>
+<circle class="grille" cx="-40" cy="40" r="1.4"/>
+<circle class="grille" cx="-40" cy="0" r="1.4"/>
+<circle class="grille" cx="-40" cy="-40" r="1.4"/>
+<circle class="grille" cx="-40" cy="-80" r="1.4"/>
+<circle class="grille" cx="-40" cy="-120" r="1.4"/>
+<circle class="grille" cx="-40" cy="-160" r="1.4"/>
+<circle class="grille" cx="-40" cy="-200" r="1.4"/>
+<circle class="grille" cx="-40" cy="-240" r="1.4"/>
+<circle class="grille" cx="-40" cy="-280" r="1.4"/>
+<circle class="grille" cx="0" cy="200" r="1.4"/>
+<circle class="grille" cx="0" cy="160" r="1.4"/>
+<circle class="grille" cx="0" cy="120" r="1.4"/>
+<circle class="grille" cx="0" cy="80" r="1.4"/>
+<circle class="grille" cx="0" cy="40" r="1.4"/>
+<circle class="grille" cx="0" cy="0" r="1.4"/>
+<circle class="grille" cx="0" cy="-40" r="1.4"/>
+<circle class="grille" cx="0" cy="-80" r="1.4"/>
+<circle class="grille" cx="0" cy="-120" r="1.4"/>
+<circle class="grille" cx="0" cy="-160" r="1.4"/>
+<circle class="grille" cx="0" cy="-200" r="1.4"/>
+<circle class="grille" cx="0" cy="-240" r="1.4"/>
+<circle class="grille" cx="0" cy="-280" r="1.4"/>
+<circle class="grille" cx="40" cy="200" r="1.4"/>
+<circle class="grille" cx="40" cy="160" r="1.4"/>
+<circle class="grille" cx="40" cy="120" r="1.4"/>
+<circle class="grille" cx="40" cy="80" r="1.4"/>
+<circle class="grille" cx="40" cy="40" r="1.4"/>
+<circle class="grille" cx="40" cy="0" r="1.4"/>
+<circle class="grille" cx="40" cy="-40" r="1.4"/>
+<circle class="grille" cx="40" cy="-80" r="1.4"/>
+<circle class="grille" cx="40" cy="-120" r="1.4"/>
+<circle class="grille" cx="40" cy="-160" r="1.4"/>
+<circle class="grille" cx="40" cy="-200" r="1.4"/>
+<circle class="grille" cx="40" cy="-240" r="1.4"/>
+<circle class="grille" cx="40" cy="-280" r="1.4"/>
+<circle class="grille" cx="80" cy="200" r="1.4"/>
+<circle class="grille" cx="80" cy="160" r="1.4"/>
+<circle class="grille" cx="80" cy="120" r="1.4"/>
+<circle class="grille" cx="80" cy="80" r="1.4"/>
+<circle class="grille" cx="80" cy="40" r="1.4"/>
+<circle class="grille" cx="80" cy="0" r="1.4"/>
+<circle class="grille" cx="80" cy="-40" r="1.4"/>
+<circle class="grille" cx="80" cy="-80" r="1.4"/>
+<circle class="grille" cx="80" cy="-120" r="1.4"/>
+<circle class="grille" cx="80" cy="-160" r="1.4"/>
+<circle class="grille" cx="80" cy="-200" r="1.4"/>
+<circle class="grille" cx="80" cy="-240" r="1.4"/>
+<circle class="grille" cx="80" cy="-280" r="1.4"/>
+<circle class="grille" cx="120" cy="200" r="1.4"/>
+<circle class="grille" cx="120" cy="160" r="1.4"/>
+<circle class="grille" cx="120" cy="120" r="1.4"/>
+<circle class="grille" cx="120" cy="80" r="1.4"/>
+<circle class="grille" cx="120" cy="40" r="1.4"/>
+<circle class="grille" cx="120" cy="0" r="1.4"/>
+<circle class="grille" cx="120" cy="-40" r="1.4"/>
+<circle class="grille" cx="120" cy="-80" r="1.4"/>
+<circle class="grille" cx="120" cy="-120" r="1.4"/>
+<circle class="grille" cx="120" cy="-160" r="1.4"/>
+<circle class="grille" cx="120" cy="-200" r="1.4"/>
+<circle class="grille" cx="120" cy="-240" r="1.4"/>
+<circle class="grille" cx="120" cy="-280" r="1.4"/>
+<polygon class="pc" points="0.0,80.0 80.0,0.0 0.0,0.0"/>
+<polygon class="pc" points="-40.0,40.0 0.0,0.0 -40.0,-40.0 -80.0,0.0"/>
+<polygon class="pc" points="0.0,80.0 0.0,0.0 -40.0,40.0"/>
+<polygon class="pc" points="0.0,0.0 80.0,0.0 40.0,-40.0 -40.0,-40.0"/>
+<polygon class="pc" points="40.0,-40.0 0.0,-80.0 -40.0,-40.0"/>
+<polygon class="pc" points="-80.0,0.0 0.0,-80.0 -80.0,-160.0"/>
+<polygon class="pc moved" points="80.0,0.0 0.0,-80.0 80.0,-160.0"/>
+<text class="lbl" x="26.7" y="31.5" text-anchor="middle">M</text>
+<text class="lbl" x="-40.0" y="4.8" text-anchor="middle">C</text>
+<text class="lbl" x="-13.3" y="44.8" text-anchor="middle">P1</text>
+<text class="lbl" x="20.0" y="-15.2" text-anchor="middle">Pa</text>
+<text class="lbl" x="0.0" y="-48.5" text-anchor="middle">P2</text>
+<text class="lbl" x="-53.3" y="-75.2" text-anchor="middle">G1</text>
+<text class="lbl" x="53.3" y="-75.2" text-anchor="middle">G2</text>
+<line class="axe" x1="0.0" y1="128.0" x2="0.0" y2="-208.0"/><text class="note" x="8.0" y="-212.0" text-anchor="start">axe</text><line class="fl2" x1="-58.0" y1="-146.0" x2="58.0" y2="-146.0" marker-start="url(#m-chevron)" marker-end="url(#m-chevron)"/>
+</svg></div>
+    <div class="texte">
+      <div class="entete"><span class="num">3</span><h2 id="t3">Le Chevron</h2></div>
+      <span class="mouvement">Symétrie axiale</span>
+      <p>Les cinq petites pièces forment un carré posé sur la pointe. Les deux grands triangles s'y accrochent de part et d'autre, chacun reflet de l'autre par rapport à l'axe vertical. J'ai choisi la symétrie axiale pour obtenir une figure stable et frontale, qui se lit d'un seul regard comme une façade. La symétrie est dans la silhouette ; l'intérieur du carré, lui, reste libre.</p>
+      <div class="tech">Axe vertical passant par la pointe haute et la pointe basse du carré. G2 est le reflet exact de G1.</div>
+    </div>
+  </section>
+
+  <section class="forme" aria-labelledby="t4">
+    <div class="schema"><svg viewBox="-200 -160 400 320" role="img" aria-label="La Torsion : symétrie centrale" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="m-torsion" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>
+<circle class="grille" cx="-200" cy="160" r="1.4"/>
+<circle class="grille" cx="-200" cy="120" r="1.4"/>
+<circle class="grille" cx="-200" cy="80" r="1.4"/>
+<circle class="grille" cx="-200" cy="40" r="1.4"/>
+<circle class="grille" cx="-200" cy="0" r="1.4"/>
+<circle class="grille" cx="-200" cy="-40" r="1.4"/>
+<circle class="grille" cx="-200" cy="-80" r="1.4"/>
+<circle class="grille" cx="-200" cy="-120" r="1.4"/>
+<circle class="grille" cx="-200" cy="-160" r="1.4"/>
+<circle class="grille" cx="-160" cy="160" r="1.4"/>
+<circle class="grille" cx="-160" cy="120" r="1.4"/>
+<circle class="grille" cx="-160" cy="80" r="1.4"/>
+<circle class="grille" cx="-160" cy="40" r="1.4"/>
+<circle class="grille" cx="-160" cy="0" r="1.4"/>
+<circle class="grille" cx="-160" cy="-40" r="1.4"/>
+<circle class="grille" cx="-160" cy="-80" r="1.4"/>
+<circle class="grille" cx="-160" cy="-120" r="1.4"/>
+<circle class="grille" cx="-160" cy="-160" r="1.4"/>
+<circle class="grille" cx="-120" cy="160" r="1.4"/>
+<circle class="grille" cx="-120" cy="120" r="1.4"/>
+<circle class="grille" cx="-120" cy="80" r="1.4"/>
+<circle class="grille" cx="-120" cy="40" r="1.4"/>
+<circle class="grille" cx="-120" cy="0" r="1.4"/>
+<circle class="grille" cx="-120" cy="-40" r="1.4"/>
+<circle class="grille" cx="-120" cy="-80" r="1.4"/>
+<circle class="grille" cx="-120" cy="-120" r="1.4"/>
+<circle class="grille" cx="-120" cy="-160" r="1.4"/>
+<circle class="grille" cx="-80" cy="160" r="1.4"/>
+<circle class="grille" cx="-80" cy="120" r="1.4"/>
+<circle class="grille" cx="-80" cy="80" r="1.4"/>
+<circle class="grille" cx="-80" cy="40" r="1.4"/>
+<circle class="grille" cx="-80" cy="0" r="1.4"/>
+<circle class="grille" cx="-80" cy="-40" r="1.4"/>
+<circle class="grille" cx="-80" cy="-80" r="1.4"/>
+<circle class="grille" cx="-80" cy="-120" r="1.4"/>
+<circle class="grille" cx="-80" cy="-160" r="1.4"/>
+<circle class="grille" cx="-40" cy="160" r="1.4"/>
+<circle class="grille" cx="-40" cy="120" r="1.4"/>
+<circle class="grille" cx="-40" cy="80" r="1.4"/>
+<circle class="grille" cx="-40" cy="40" r="1.4"/>
+<circle class="grille" cx="-40" cy="0" r="1.4"/>
+<circle class="grille" cx="-40" cy="-40" r="1.4"/>
+<circle class="grille" cx="-40" cy="-80" r="1.4"/>
+<circle class="grille" cx="-40" cy="-120" r="1.4"/>
+<circle class="grille" cx="-40" cy="-160" r="1.4"/>
+<circle class="grille" cx="0" cy="160" r="1.4"/>
+<circle class="grille" cx="0" cy="120" r="1.4"/>
+<circle class="grille" cx="0" cy="80" r="1.4"/>
+<circle class="grille" cx="0" cy="40" r="1.4"/>
+<circle class="grille" cx="0" cy="0" r="1.4"/>
+<circle class="grille" cx="0" cy="-40" r="1.4"/>
+<circle class="grille" cx="0" cy="-80" r="1.4"/>
+<circle class="grille" cx="0" cy="-120" r="1.4"/>
+<circle class="grille" cx="0" cy="-160" r="1.4"/>
+<circle class="grille" cx="40" cy="160" r="1.4"/>
+<circle class="grille" cx="40" cy="120" r="1.4"/>
+<circle class="grille" cx="40" cy="80" r="1.4"/>
+<circle class="grille" cx="40" cy="40" r="1.4"/>
+<circle class="grille" cx="40" cy="0" r="1.4"/>
+<circle class="grille" cx="40" cy="-40" r="1.4"/>
+<circle class="grille" cx="40" cy="-80" r="1.4"/>
+<circle class="grille" cx="40" cy="-120" r="1.4"/>
+<circle class="grille" cx="40" cy="-160" r="1.4"/>
+<circle class="grille" cx="80" cy="160" r="1.4"/>
+<circle class="grille" cx="80" cy="120" r="1.4"/>
+<circle class="grille" cx="80" cy="80" r="1.4"/>
+<circle class="grille" cx="80" cy="40" r="1.4"/>
+<circle class="grille" cx="80" cy="0" r="1.4"/>
+<circle class="grille" cx="80" cy="-40" r="1.4"/>
+<circle class="grille" cx="80" cy="-80" r="1.4"/>
+<circle class="grille" cx="80" cy="-120" r="1.4"/>
+<circle class="grille" cx="80" cy="-160" r="1.4"/>
+<circle class="grille" cx="120" cy="160" r="1.4"/>
+<circle class="grille" cx="120" cy="120" r="1.4"/>
+<circle class="grille" cx="120" cy="80" r="1.4"/>
+<circle class="grille" cx="120" cy="40" r="1.4"/>
+<circle class="grille" cx="120" cy="0" r="1.4"/>
+<circle class="grille" cx="120" cy="-40" r="1.4"/>
+<circle class="grille" cx="120" cy="-80" r="1.4"/>
+<circle class="grille" cx="120" cy="-120" r="1.4"/>
+<circle class="grille" cx="120" cy="-160" r="1.4"/>
+<circle class="grille" cx="160" cy="160" r="1.4"/>
+<circle class="grille" cx="160" cy="120" r="1.4"/>
+<circle class="grille" cx="160" cy="80" r="1.4"/>
+<circle class="grille" cx="160" cy="40" r="1.4"/>
+<circle class="grille" cx="160" cy="0" r="1.4"/>
+<circle class="grille" cx="160" cy="-40" r="1.4"/>
+<circle class="grille" cx="160" cy="-80" r="1.4"/>
+<circle class="grille" cx="160" cy="-120" r="1.4"/>
+<circle class="grille" cx="160" cy="-160" r="1.4"/>
+<circle class="grille" cx="200" cy="160" r="1.4"/>
+<circle class="grille" cx="200" cy="120" r="1.4"/>
+<circle class="grille" cx="200" cy="80" r="1.4"/>
+<circle class="grille" cx="200" cy="40" r="1.4"/>
+<circle class="grille" cx="200" cy="0" r="1.4"/>
+<circle class="grille" cx="200" cy="-40" r="1.4"/>
+<circle class="grille" cx="200" cy="-80" r="1.4"/>
+<circle class="grille" cx="200" cy="-120" r="1.4"/>
+<circle class="grille" cx="200" cy="-160" r="1.4"/>
+<polygon class="pc" points="0.0,80.0 80.0,0.0 0.0,0.0"/>
+<polygon class="pc" points="-40.0,40.0 0.0,0.0 -40.0,-40.0 -80.0,0.0"/>
+<polygon class="pc" points="0.0,80.0 0.0,0.0 -40.0,40.0"/>
+<polygon class="pc" points="0.0,0.0 80.0,0.0 40.0,-40.0 -40.0,-40.0"/>
+<polygon class="pc" points="40.0,-40.0 0.0,-80.0 -40.0,-40.0"/>
+<polygon class="pc" points="-40.0,-40.0 40.0,-120.0 -120.0,-120.0"/>
+<polygon class="pc moved" points="40.0,40.0 -40.0,120.0 120.0,120.0"/>
+<text class="lbl" x="26.7" y="31.5" text-anchor="middle">M</text>
+<text class="lbl" x="-40.0" y="4.8" text-anchor="middle">C</text>
+<text class="lbl" x="-13.3" y="44.8" text-anchor="middle">P1</text>
+<text class="lbl" x="20.0" y="-15.2" text-anchor="middle">Pa</text>
+<text class="lbl" x="0.0" y="-48.5" text-anchor="middle">P2</text>
+<text class="lbl" x="-40.0" y="-88.5" text-anchor="middle">G1</text>
+<text class="lbl" x="40.0" y="98.1" text-anchor="middle">G2</text>
+<path class="fl" d="M-78.0,-111.4 A136.0,136.0 0 0 0 50.9,126.1" marker-end="url(#m-torsion)"/><text class="note" x="-156.0" y="64.0" text-anchor="middle">180°</text><circle class="pt" cx="0.0" cy="0.0" r="4"/><text class="note" x="-10.0" y="18.0" text-anchor="end">O</text>
+</svg></div>
+    <div class="texte">
+      <div class="entete"><span class="num">4</span><h2 id="t4">La Torsion</h2></div>
+      <span class="mouvement">Symétrie centrale · demi-tour</span>
+      <p>Mêmes pièces qu'au Chevron, un seul changement : le second grand triangle n'est plus un reflet, c'est l'image du premier par un demi-tour autour du centre O. La forme ne se lit plus de face, elle semble tourner sur elle-même. J'ai choisi ce mouvement pour comparer : la symétrie axiale donne un équilibre statique, la symétrie centrale un équilibre en mouvement.</p>
+      <div class="tech">Centre O = centre du carré des 5 petites pièces. G2 = G1 tourné de 180° autour de O. Chaque grand triangle ne touche le carré que sur la moitié d'un côté.</div>
+    </div>
+  </section>
+
+  <section class="forme" aria-labelledby="t5">
+    <div class="schema"><svg viewBox="-40 -200 320 480" role="img" aria-label="Le Pas : symétrie glissée" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="m-pas" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker></defs>
+<circle class="grille" cx="-40" cy="280" r="1.4"/>
+<circle class="grille" cx="-40" cy="240" r="1.4"/>
+<circle class="grille" cx="-40" cy="200" r="1.4"/>
+<circle class="grille" cx="-40" cy="160" r="1.4"/>
+<circle class="grille" cx="-40" cy="120" r="1.4"/>
+<circle class="grille" cx="-40" cy="80" r="1.4"/>
+<circle class="grille" cx="-40" cy="40" r="1.4"/>
+<circle class="grille" cx="-40" cy="0" r="1.4"/>
+<circle class="grille" cx="-40" cy="-40" r="1.4"/>
+<circle class="grille" cx="-40" cy="-80" r="1.4"/>
+<circle class="grille" cx="-40" cy="-120" r="1.4"/>
+<circle class="grille" cx="-40" cy="-160" r="1.4"/>
+<circle class="grille" cx="-40" cy="-200" r="1.4"/>
+<circle class="grille" cx="0" cy="280" r="1.4"/>
+<circle class="grille" cx="0" cy="240" r="1.4"/>
+<circle class="grille" cx="0" cy="200" r="1.4"/>
+<circle class="grille" cx="0" cy="160" r="1.4"/>
+<circle class="grille" cx="0" cy="120" r="1.4"/>
+<circle class="grille" cx="0" cy="80" r="1.4"/>
+<circle class="grille" cx="0" cy="40" r="1.4"/>
+<circle class="grille" cx="0" cy="0" r="1.4"/>
+<circle class="grille" cx="0" cy="-40" r="1.4"/>
+<circle class="grille" cx="0" cy="-80" r="1.4"/>
+<circle class="grille" cx="0" cy="-120" r="1.4"/>
+<circle class="grille" cx="0" cy="-160" r="1.4"/>
+<circle class="grille" cx="0" cy="-200" r="1.4"/>
+<circle class="grille" cx="40" cy="280" r="1.4"/>
+<circle class="grille" cx="40" cy="240" r="1.4"/>
+<circle class="grille" cx="40" cy="200" r="1.4"/>
+<circle class="grille" cx="40" cy="160" r="1.4"/>
+<circle class="grille" cx="40" cy="120" r="1.4"/>
+<circle class="grille" cx="40" cy="80" r="1.4"/>
+<circle class="grille" cx="40" cy="40" r="1.4"/>
+<circle class="grille" cx="40" cy="0" r="1.4"/>
+<circle class="grille" cx="40" cy="-40" r="1.4"/>
+<circle class="grille" cx="40" cy="-80" r="1.4"/>
+<circle class="grille" cx="40" cy="-120" r="1.4"/>
+<circle class="grille" cx="40" cy="-160" r="1.4"/>
+<circle class="grille" cx="40" cy="-200" r="1.4"/>
+<circle class="grille" cx="80" cy="280" r="1.4"/>
+<circle class="grille" cx="80" cy="240" r="1.4"/>
+<circle class="grille" cx="80" cy="200" r="1.4"/>
+<circle class="grille" cx="80" cy="160" r="1.4"/>
+<circle class="grille" cx="80" cy="120" r="1.4"/>
+<circle class="grille" cx="80" cy="80" r="1.4"/>
+<circle class="grille" cx="80" cy="40" r="1.4"/>
+<circle class="grille" cx="80" cy="0" r="1.4"/>
+<circle class="grille" cx="80" cy="-40" r="1.4"/>
+<circle class="grille" cx="80" cy="-80" r="1.4"/>
+<circle class="grille" cx="80" cy="-120" r="1.4"/>
+<circle class="grille" cx="80" cy="-160" r="1.4"/>
+<circle class="grille" cx="80" cy="-200" r="1.4"/>
+<circle class="grille" cx="120" cy="280" r="1.4"/>
+<circle class="grille" cx="120" cy="240" r="1.4"/>
+<circle class="grille" cx="120" cy="200" r="1.4"/>
+<circle class="grille" cx="120" cy="160" r="1.4"/>
+<circle class="grille" cx="120" cy="120" r="1.4"/>
+<circle class="grille" cx="120" cy="80" r="1.4"/>
+<circle class="grille" cx="120" cy="40" r="1.4"/>
+<circle class="grille" cx="120" cy="0" r="1.4"/>
+<circle class="grille" cx="120" cy="-40" r="1.4"/>
+<circle class="grille" cx="120" cy="-80" r="1.4"/>
+<circle class="grille" cx="120" cy="-120" r="1.4"/>
+<circle class="grille" cx="120" cy="-160" r="1.4"/>
+<circle class="grille" cx="120" cy="-200" r="1.4"/>
+<circle class="grille" cx="160" cy="280" r="1.4"/>
+<circle class="grille" cx="160" cy="240" r="1.4"/>
+<circle class="grille" cx="160" cy="200" r="1.4"/>
+<circle class="grille" cx="160" cy="160" r="1.4"/>
+<circle class="grille" cx="160" cy="120" r="1.4"/>
+<circle class="grille" cx="160" cy="80" r="1.4"/>
+<circle class="grille" cx="160" cy="40" r="1.4"/>
+<circle class="grille" cx="160" cy="0" r="1.4"/>
+<circle class="grille" cx="160" cy="-40" r="1.4"/>
+<circle class="grille" cx="160" cy="-80" r="1.4"/>
+<circle class="grille" cx="160" cy="-120" r="1.4"/>
+<circle class="grille" cx="160" cy="-160" r="1.4"/>
+<circle class="grille" cx="160" cy="-200" r="1.4"/>
+<circle class="grille" cx="200" cy="280" r="1.4"/>
+<circle class="grille" cx="200" cy="240" r="1.4"/>
+<circle class="grille" cx="200" cy="200" r="1.4"/>
+<circle class="grille" cx="200" cy="160" r="1.4"/>
+<circle class="grille" cx="200" cy="120" r="1.4"/>
+<circle class="grille" cx="200" cy="80" r="1.4"/>
+<circle class="grille" cx="200" cy="40" r="1.4"/>
+<circle class="grille" cx="200" cy="0" r="1.4"/>
+<circle class="grille" cx="200" cy="-40" r="1.4"/>
+<circle class="grille" cx="200" cy="-80" r="1.4"/>
+<circle class="grille" cx="200" cy="-120" r="1.4"/>
+<circle class="grille" cx="200" cy="-160" r="1.4"/>
+<circle class="grille" cx="200" cy="-200" r="1.4"/>
+<circle class="grille" cx="240" cy="280" r="1.4"/>
+<circle class="grille" cx="240" cy="240" r="1.4"/>
+<circle class="grille" cx="240" cy="200" r="1.4"/>
+<circle class="grille" cx="240" cy="160" r="1.4"/>
+<circle class="grille" cx="240" cy="120" r="1.4"/>
+<circle class="grille" cx="240" cy="80" r="1.4"/>
+<circle class="grille" cx="240" cy="40" r="1.4"/>
+<circle class="grille" cx="240" cy="0" r="1.4"/>
+<circle class="grille" cx="240" cy="-40" r="1.4"/>
+<circle class="grille" cx="240" cy="-80" r="1.4"/>
+<circle class="grille" cx="240" cy="-120" r="1.4"/>
+<circle class="grille" cx="240" cy="-160" r="1.4"/>
+<circle class="grille" cx="240" cy="-200" r="1.4"/>
+<circle class="grille" cx="280" cy="280" r="1.4"/>
+<circle class="grille" cx="280" cy="240" r="1.4"/>
+<circle class="grille" cx="280" cy="200" r="1.4"/>
+<circle class="grille" cx="280" cy="160" r="1.4"/>
+<circle class="grille" cx="280" cy="120" r="1.4"/>
+<circle class="grille" cx="280" cy="80" r="1.4"/>
+<circle class="grille" cx="280" cy="40" r="1.4"/>
+<circle class="grille" cx="280" cy="0" r="1.4"/>
+<circle class="grille" cx="280" cy="-40" r="1.4"/>
+<circle class="grille" cx="280" cy="-80" r="1.4"/>
+<circle class="grille" cx="280" cy="-120" r="1.4"/>
+<circle class="grille" cx="280" cy="-160" r="1.4"/>
+<circle class="grille" cx="280" cy="-200" r="1.4"/>
+<polygon class="fantome" points="0.0,0.0 160.0,0.0 0.0,160.0"/>
+<polygon class="pc" points="0.0,0.0 160.0,0.0 80.0,-80.0"/>
+<polygon class="pc" points="0.0,0.0 80.0,-80.0 0.0,-160.0"/>
+<polygon class="pc moved" points="80.0,0.0 80.0,80.0 160.0,0.0"/>
+<polygon class="pc moved" points="240.0,0.0 160.0,0.0 200.0,40.0"/>
+<polygon class="pc moved" points="160.0,80.0 200.0,40.0 160.0,0.0 120.0,40.0"/>
+<polygon class="pc moved" points="160.0,80.0 120.0,40.0 120.0,120.0"/>
+<polygon class="pc moved" points="80.0,160.0 120.0,120.0 120.0,40.0 80.0,80.0"/>
+<text class="lbl" x="80.0" y="-21.9" text-anchor="middle">G1</text>
+<text class="lbl" x="26.7" y="-75.2" text-anchor="middle">G2</text>
+<text class="lbl" x="106.7" y="31.5" text-anchor="middle">M</text>
+<text class="lbl" x="200.0" y="18.1" text-anchor="middle">P1</text>
+<text class="lbl" x="160.0" y="44.8" text-anchor="middle">C</text>
+<text class="lbl" x="133.3" y="84.8" text-anchor="middle">P2</text>
+<text class="lbl" x="100.0" y="104.8" text-anchor="middle">Pa</text>
+<line class="axe" x1="-48.0" y1="0.0" x2="288.0" y2="0.0"/><text class="note" x="288.0" y="-10.0" text-anchor="end">axe</text><line class="fl" x1="0.0" y1="178.0" x2="80.0" y2="178.0" marker-end="url(#m-pas)"/><text class="note" x="40.0" y="202.0" text-anchor="middle">glissement</text>
+</svg></div>
+    <div class="texte">
+      <div class="entete"><span class="num">5</span><h2 id="t5">Le Pas</h2></div>
+      <span class="mouvement">Symétrie glissée</span>
+      <p>Les deux moitiés du carré ont la même silhouette. La seconde est le reflet de la première par rapport à l'axe horizontal, puis glissée de deux carreaux le long de cet axe. C'est le mouvement des empreintes de pas : alterner et avancer à la fois. Il combine le miroir de la forme 3 et le glissement de la forme 1, et crée un rythme, comme une frise ou une façade en quinconce.</p>
+      <div class="tech">Haut : G1 + G2. Bas : les 5 petites pièces, assemblées en triangle. Le pointillé montre le reflet avant le glissement de 2 carreaux.</div>
+    </div>
+  </section>
+
+  <footer>Géométrie vérifiée : pour chaque forme, aire totale = aire du carré (16 carreaux), aucune pièce ne se chevauche, toutes se touchent par un côté. Reporter les schémas sur papier avec le quadrillage : si le carré de carton mesure 20 cm, 1 carreau = 5 cm.</footer>
+</main>
