@@ -78,9 +78,9 @@ h2 { font-family: var(--f-titre); font-stretch: 112%; font-weight: 700; font-siz
 section.depart { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; align-items: center; border-top: 1.5px solid var(--encre); padding-top: 18px; }
 .depart svg { width: 100%; height: auto; max-height: 280px; }
 .depart h2 { font-size: 1.2rem; }
-.legende { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px 20px; margin: 12px 0 0; padding: 0; list-style: none; font-family: var(--f-tech); font-size: .8rem; }
+.legende { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 20px; margin: 0; padding: 0; list-style: none; font-family: var(--f-tech); font-size: .8rem; }
 .legende b { display: inline-block; min-width: 4.2em; color: var(--trait); font-weight: 500; }
-.cle { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-family: var(--f-tech); font-size: .76rem; color: var(--encre-2); }
+.cle { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 2px; font-family: var(--f-tech); font-size: .76rem; color: var(--encre-2); }
 .cle span { display: inline-flex; align-items: center; gap: 7px; }
 .cle i { width: 22px; height: 14px; display: inline-block; border: 1.2px solid var(--carton-bord); }
 .cle .c1 { background: var(--c-jaune); }
@@ -131,8 +131,8 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
     </dl>
   </header>
 
-  <section class="depart" aria-labelledby="t0">
-    <svg viewBox="-40 -40 240 240" role="img" aria-label="Carré de départ, 7 pièces" xmlns="http://www.w3.org/2000/svg">
+  <section class="forme" aria-labelledby="t0">
+    <div class="schema"><svg viewBox="-40 -40 240 240" role="img" aria-label="Carré de départ, 7 pièces" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="m-depart" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="tete"/></marker><pattern id="h-depart" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" class="hachure"/></pattern></defs>
 <circle class="grille" cx="-40" cy="-40" r="1.4"/>
 <circle class="grille" cx="-40" cy="0" r="1.4"/>
@@ -198,11 +198,12 @@ footer { font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); b
 <text class="lbl" x="80.0" y="106.7" text-anchor="middle">P2</text>
 <text class="lbl" x="60.0" y="140.0" text-anchor="middle">Pa</text>
 
-</svg>
-    <div>
-      <div class="surtitre">Référence</div>
-      <h2 id="t0">Le carré de départ</h2>
-      <p class="tech" style="margin:8px 0 0">Même disposition que ton tangram (photo). Les couleurs servent seulement à repérer les pièces.</p>
+</svg></div>
+    <div class="texte">
+      <div class="entete"><span class="num">0</span><h2 id="t0">Le Tangram</h2></div>
+      <span class="mouvement">Définition · le carré de départ</span>
+      <p>Le tangram est un jeu chinois très ancien, appelé « les sept planches de la sagesse ». Un carré est découpé en sept pièces : cinq triangles (deux grands, un moyen, deux petits), un carré et un parallélogramme. La règle est simple : utiliser les sept pièces, sans les superposer, pour composer une forme. Pour moi, c'est un exercice de composition : avec les mêmes pièces on obtient une infinité de formes, seuls changent la position et le mouvement de chacune.</p>
+      <div class="tech">Proportions : avec le petit triangle comme unité, carré = 2, parallélogramme = 2, triangle moyen = 2, grand triangle = 4 ; le carré entier vaut 16 petits triangles. Tous les angles valent 45°, 90° ou 135°. Les trois tailles de triangle sont des agrandissements l'une de l'autre (×√2). Le parallélogramme est la seule pièce qu'il faut parfois retourner pour obtenir son reflet.</div>
       <ul class="legende">
         <li><i style="background:var(--c-vert)"></i><b>G1</b>grand triangle vert</li>
         <li><i style="background:var(--c-orange)"></i><b>G2</b>grand triangle orange</li>
