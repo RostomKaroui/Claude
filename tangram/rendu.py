@@ -127,6 +127,16 @@ SVG["spirale"] = figure(
     + point(0, 0, "O"),
     title="La Spirale : homothétie et rotation")
 
+# Verso : le carre eclate (chaque piece s'eloigne du centre)
+ECLATE = {}
+for k, p in STD.items():
+    cx, cy = centroid(p)
+    dx, dy = 0.45 * (cx - 2), 0.45 * (cy - 2)
+    ECLATE[k] = [(x + dx, y + dy) for x, y in p]
+SVG["eclate"] = figure(
+    "eclate", ECLATE, ghosts=[[(0, 0), (4, 0), (4, 4), (0, 4)]],
+    annot=point(2, 2, "O"), title="Verso : le carré éclaté")
+
 html = open(os.path.join(ICI, "gabarit.html"), encoding="utf-8").read()
 for k, v in SVG.items():
     html = html.replace("{{" + k + "}}", v)
