@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Perspective · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f4f7fa;
+    --bleu: #1F5F8B; --orange: #D9822B; --rouge: #B3261E;
+  }
+  @page { size: A4; margin: 12mm 14mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.8pt; line-height: 1.42; color: var(--encre); }
+  b { font-weight: 800; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .2em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.3; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 14.5pt; color: var(--bleu); margin: 2px 0 6px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 10pt; color: #fff; background: var(--bleu); width: 25px; height: 25px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  section { margin-bottom: 12px; break-inside: avoid; }
+
+  .cote { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; }
+  .encadre { background: var(--fond); border-left: 4px solid var(--bleu); padding: 6px 10px; }
+  .cle { background: #fdf1e3; border-left: 4px solid var(--orange); padding: 6px 10px; margin-top: 7px; }
+  .cle b { color: #9a5410; }
+
+  ol.etapes { list-style: none; counter-reset: e; }
+  ol.etapes li { counter-increment: e; position: relative; padding-left: 24px; margin-bottom: 5px; }
+  ol.etapes li::before { content: counter(e); position: absolute; left: 0; top: 0; width: 17px; height: 17px; border-radius: 50%; background: var(--bleu); color: #fff; font-weight: 800; font-size: 8pt; display: grid; place-items: center; }
+  ul { list-style: none; }
+  ul li { position: relative; padding-left: 12px; margin-bottom: 3px; }
+  ul li::before { content: ""; position: absolute; left: 1px; top: .55em; width: 5px; height: 5px; border-radius: 1px; background: var(--bleu); }
+
+  .legende { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 14px; font-size: 9.2pt; margin-top: 4px; }
+  .legende div { display: flex; gap: 6px; align-items: baseline; }
+  .pt { flex: none; width: 17px; height: 17px; border-radius: 50%; background: var(--encre); color: #fff; font-weight: 800; font-size: 7.6pt; display: grid; place-items: center; transform: translateY(3px); }
+  .abr { font-weight: 800; color: var(--bleu); }
+
+  table.defs { width: 100%; border-collapse: collapse; font-size: 9.2pt; }
+  table.defs th { background: var(--bleu); color: #fff; text-align: left; padding: 4px 8px; font-size: 8pt; letter-spacing: .08em; }
+  table.defs td { padding: 3.5px 8px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.defs td:first-child { font-weight: 800; white-space: nowrap; }
+  table.defs td:nth-child(2) { font-weight: 800; color: var(--bleu); white-space: nowrap; }
+  table.defs tr:nth-child(even) td { background: #f8fafc; }
+
+  .regles li { margin-bottom: 4px; }
+  .figure { text-align: center; }
+  .figure svg { display: block; margin: 0 auto; }
+  .legende-fig { font-size: 8.4pt; color: var(--gris); margin-top: 3px; text-align: center; }
+  .saut { break-before: page; }
+  .essentiel { border: 2px solid var(--bleu); border-radius: 8px; padding: 8px 12px 6px; background: #f4f8fb; }
+  .essentiel h4 { font-size: 8.4pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--bleu); margin-bottom: 6px; }
+  .essentiel li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">PERSPECTIVE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">Le principe, le dispositif perspectif et les règles de fuite</div>
+</div>
+
+<!-- 1. PRINCIPE -->
+<section>
+  <h2><span class="num">1</span>Le principe : voir à travers</h2>
+  <div class="cote" style="grid-template-columns: 0.85fr 1.15fr;">
+    <div>
+      <p style="margin-bottom:7px">La perspective, c'est dessiner ce que l'on voit <b>à travers une fenêtre</b> placée entre l'œil et l'objet.</p>
+      <ol class="etapes">
+        <li>On place un <b>plan vertical transparent</b>, le <b>tableau</b>, entre l'œil et l'objet.</li>
+        <li>Chaque <b>rayon visuel</b> relie un point de l'objet à l'œil.</li>
+        <li>Là où les rayons <b>traversent le tableau</b>, ils dessinent l'<b>image perspective</b> de l'objet.</li>
+      </ol>
+      <p class="encadre" style="margin-top:6px">Le tableau, c'est <b>ta feuille de dessin</b>.</p>
+    </div>
+    <div class="figure"><svg id="fig-principe" width="400" height="250" viewBox="0 0 400 250"></svg></div>
+  </div>
+</section>
+
+<!-- 2. DISPOSITIF -->
+<section>
+  <h2><span class="num">2</span>Le dispositif perspectif</h2>
+  <div class="figure"><svg id="fig-dispositif" width="660" height="325" viewBox="0 0 660 325"></svg></div>
+  <div class="legende">
+    <div><span class="pt">1</span>Sol (plan de terre)</div>
+    <div><span class="pt">6</span>Ligne d'horizon : <span class="abr">LH</span></div>
+    <div><span class="pt">2</span>Tableau</div>
+    <div><span class="pt">7</span>Point principal : <span class="abr">PP</span></div>
+    <div><span class="pt">3</span>Ligne de terre : <span class="abr">LT</span></div>
+    <div><span class="pt">8</span>Rayon visuel principal</div>
+    <div><span class="pt">4</span>Œil de l'observateur : <span class="abr">O</span></div>
+    <div><span class="pt">9</span>Distance principale : <span class="abr">d</span></div>
+    <div><span class="pt">5</span>Plan d'horizon</div>
+    <div><span class="pt">10</span>Hauteur de l'œil : <span class="abr">H</span></div>
+  </div>
+  <p class="cle"><b>À retenir :</b> la LH est toujours à la <b>hauteur des yeux</b>. Debout, H = 1,60 m, donc la <b>LH est à 1,60 m au-dessus de la LT</b>.</p>
+</section>
+
+<!-- 3. DÉFINITIONS -->
+<section class="saut">
+  <h2><span class="num">3</span>Les définitions à connaître</h2>
+  <table class="defs">
+    <tr><th>TERME</th><th>ABRÉV.</th><th>DÉFINITION</th></tr>
+    <tr><td>Tableau</td><td></td><td>Plan vertical transparent entre l'œil et l'objet : c'est la feuille de dessin.</td></tr>
+    <tr><td>Sol (plan de terre)</td><td></td><td>Plan horizontal sur lequel se tiennent l'observateur et les objets.</td></tr>
+    <tr><td>Point de vue</td><td>O</td><td>Position de l'œil de l'observateur : tous les rayons visuels y convergent.</td></tr>
+    <tr><td>Ligne de terre</td><td>LT</td><td>Intersection du tableau et du sol.</td></tr>
+    <tr><td>Ligne d'horizon</td><td>LH</td><td>Ligne du tableau située à la hauteur des yeux de l'observateur.</td></tr>
+    <tr><td>Point principal</td><td>PP</td><td>Point de la LH en face de l'œil : les perpendiculaires au tableau y fuient.</td></tr>
+    <tr><td>Distance principale</td><td>d</td><td>Distance de l'œil au tableau, mesurée sur le rayon visuel principal.</td></tr>
+    <tr><td>Points de distance</td><td>D, D'</td><td>Sur la LH, à la distance d du PP : les horizontales à 45° y fuient.</td></tr>
+    <tr><td>Point de fuite</td><td>F</td><td>Point où convergent les images de droites parallèles entre elles.</td></tr>
+  </table>
+</section>
+
+<!-- 4. RÈGLES -->
+<section>
+  <h2><span class="num">4</span>Les règles de fuite</h2>
+  <ul class="regles">
+    <li>Des droites <b>parallèles entre elles</b> fuient vers un <b>même point de fuite</b>.</li>
+    <li>Les droites <b>perpendiculaires au tableau</b> fuient vers le <b>PP</b>.</li>
+    <li>Les <b>horizontales à 45°</b> fuient vers les <b>points de distance D et D'</b>.</li>
+    <li>Toutes les droites <b>horizontales</b> fuient sur la <b>LH</b>.</li>
+    <li>Les droites <b>parallèles au tableau</b> ne fuient pas : les verticales restent verticales.</li>
+    <li>Un objet <b>contre le tableau</b> est en <b>vraie grandeur</b> ; plus il s'éloigne, plus il paraît petit.</li>
+  </ul>
+</section>
+
+<!-- 5. LES CUBES -->
+<section>
+  <h2><span class="num">5</span>Exercice : les cubes autour du point principal</h2>
+  <div class="cote" style="grid-template-columns: 1.1fr 1fr;">
+    <div class="figure"><svg id="fig-cubes" width="340" height="322" viewBox="0 0 340 322"></svg>
+      <p class="legende-fig">Perspective à un point de fuite : toutes les fuyantes vont au PP.</p></div>
+    <div>
+      <p style="margin-bottom:5px">Ce qu'on voit d'un cube dépend de sa place par rapport à la <b>LH</b> et au <b>PP</b> :</p>
+      <ul>
+        <li><b>Au-dessus</b> de la LH : on voit le <b>dessous</b>.</li>
+        <li><b>En dessous</b> de la LH : on voit le <b>dessus</b>.</li>
+        <li><b>Sur</b> la LH : ni dessus, ni dessous.</li>
+        <li><b>À gauche</b> du PP : on voit la face <b>droite</b> ; <b>à droite</b> : la face <b>gauche</b>.</li>
+        <li><b>En face</b> du PP : on ne voit que la <b>face avant</b>.</li>
+      </ul>
+      <p class="encadre" style="margin-top:6px">La face avant, posée dans le tableau, reste un <b>carré en vraie grandeur</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. CERVEAU -->
+<section class="saut">
+  <h2><span class="num">6</span>Le cerveau interprète</h2>
+  <div class="cote" style="grid-template-columns: 1.35fr 1fr;">
+    <div class="figure"><svg id="fig-cerveau" width="410" height="270" viewBox="0 0 410 270"></svg></div>
+    <div>
+      <p>En perspective, les formes se déforment :</p>
+      <ul style="margin:4px 0 6px">
+        <li>un <b>carré</b> vu à plat devient un <b>trapèze</b> ;</li>
+        <li>un <b>cercle</b> vu à plat devient une <b>ellipse</b>.</li>
+      </ul>
+      <p class="encadre">Le cerveau « redresse » l'image : il comprend que c'est un carré ou un cercle <b>vu en profondeur</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. MÉTHODE -->
+<section>
+  <h2><span class="num">7</span>Méthode : tracer un cube à un point de fuite</h2>
+  <div class="cote" style="grid-template-columns: 1fr 1.15fr;">
+    <ol class="etapes">
+      <li>Tracer la <b>LH</b>, placer le <b>PP</b> et le point de distance <b>D</b> (à la distance d du PP).</li>
+      <li>Dessiner la <b>face avant</b> : un carré en vraie grandeur.</li>
+      <li>Relier ses sommets au <b>PP</b> : ce sont les <b>fuyantes</b>.</li>
+      <li><b>Profondeur</b> : depuis un sommet avant, tracer une droite vers <b>D</b> ; elle coupe la fuyante voisine à la bonne profondeur.</li>
+      <li>Fermer la <b>face arrière</b> avec des verticales et des horizontales.</li>
+    </ol>
+    <div class="figure"><svg id="fig-methode" width="400" height="232" viewBox="0 0 400 232"></svg></div>
+  </div>
+</section>
+
+<!-- L'ESSENTIEL -->
+<section class="essentiel">
+  <h4>L'essentiel à savoir par cœur</h4>
+  <ul>
+    <li>Le <b>tableau</b> = la feuille ; la <b>LH</b> = la hauteur des yeux (<b>1,60 m</b> debout).</li>
+    <li>Le <b>PP</b> est sur la LH, juste <b>en face de l'œil</b>.</li>
+    <li>Perpendiculaires au tableau → <b>PP</b> ; horizontales à 45° → <b>D et D'</b>.</li>
+    <li>Parallèles entre elles → <b>même point de fuite</b> ; les horizontales fuient <b>sur la LH</b>.</li>
+    <li>Les <b>verticales restent verticales</b> ; contre le tableau = <b>vraie grandeur</b>.</li>
+    <li>Au-dessus de la LH on voit <b>dessous</b> ; en dessous de la LH on voit <b>dessus</b>.</li>
+  </ul>
+</section>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const BLEU = "#1F5F8B", ORANGE = "#D9822B", ROUGE = "#B3261E", ENCRE = "#1f2328", GRIS = "#8a929b";
+function el(parent, name, attrs = {}, texte) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (texte !== undefined) e.textContent = texte;
+  parent.appendChild(e);
+  return e;
+}
+const pts = (L) => L.map((p) => p.join(",")).join(" ");
+function ligne(g, a, b, attrs) { return el(g, "line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], ...attrs }); }
+function poly(g, L, attrs) { return el(g, "polygon", { points: pts(L), ...attrs }); }
+function texte(g, p, t, attrs = {}) { return el(g, "text", { x: p[0], y: p[1], "font-family": "Inter", "font-size": 10, fill: ENCRE, ...attrs }, t); }
+function pastille(g, p, n) {
+  el(g, "circle", { cx: p[0], cy: p[1], r: 8.5, fill: ENCRE, stroke: "#fff", "stroke-width": 1.5 });
+  texte(g, [p[0], p[1] + 3.4], n, { "text-anchor": "middle", "font-size": n > 9 ? 7.5 : 9, "font-weight": 800, fill: "#fff" });
+}
+// vue axonométrique : x à droite, y en profondeur, z vers le haut
+function vue(alpha, beta, S, cx, cy) {
+  const ca = Math.cos(alpha), sa = Math.sin(alpha), cb = Math.cos(beta), sb = Math.sin(beta);
+  return ([x, y, z]) => [cx + (x * ca - y * sa) * S, cy - (z * cb + (x * sa + y * ca) * sb) * S];
+}
+// cadre une vue sur la zone utile du SVG
+function cadrer(alpha, beta, S, points, W, H, marges) {
+  const P0 = vue(alpha, beta, S, 0, 0);
+  const xy = points.map(P0);
+  const minx = Math.min(...xy.map((p) => p[0])), maxx = Math.max(...xy.map((p) => p[0]));
+  const miny = Math.min(...xy.map((p) => p[1])), maxy = Math.max(...xy.map((p) => p[1]));
+  const [mh, md, mb, mg] = marges;
+  const cx = mg + (W - mg - md - (maxx - minx)) / 2 - minx;
+  const cy = mh + (H - mh - mb - (maxy - miny)) / 2 - miny;
+  return vue(alpha, beta, S, cx, cy);
+}
+function etiquette(g, cible, pos, t, attrs = {}) {
+  ligne(g, cible, [pos[0], pos[1] + (attrs.dy || 0)], { stroke: "#9aa1a9", "stroke-width": 0.8 });
+  const a = { ...attrs }; delete a.dy;
+  return texte(g, pos, t, a);
+}
+function personnage(g, tete, pieds, couleur) {
+  el(g, "circle", { cx: tete[0], cy: tete[1], r: 5.5, fill: couleur });
+  const h = pieds[1] - tete[1];
+  el(g, "path", { d: `M${tete[0] - 5} ${tete[1] + 8} h10 l1 ${h * 0.45} h-3 l-0.6 ${h * 0.5 - 8} h-4.8 l-0.6 ${-(h * 0.5 - 8)} h-3 z`, fill: couleur });
+}
+
+/* ---------- 1. principe : une fenêtre entre l'œil et l'objet ---------- */
+(() => {
+  const g = document.getElementById("fig-principe");
+  const sol = [[-1.7, -3.4, 0], [1.7, -3.4, 0], [1.7, 2.6, 0], [-1.7, 2.6, 0]];
+  const T = [[-1.2, 0, 0], [1.2, 0, 0], [1.2, 0, 2.2], [-1.2, 0, 2.2]];
+  const P = cadrer(1.0, 0.24, 62, [...sol, ...T], 400, 250, [26, 10, 22, 10]);
+  poly(g, sol.map(P), { fill: "#f1f3f5", stroke: "#d6dbe0" });
+  const O = [0.15, -2.9, 1.3];
+  const cube = [];
+  for (const x of [-0.5, 0.5]) for (const y of [1.0, 2.0]) for (const z of [0, 1.0]) cube.push([x, y, z]);
+  const aretes = [[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]];
+  aretes.forEach(([a, b]) => ligne(g, P(cube[a]), P(cube[b]), { stroke: ENCRE, "stroke-width": 1.5 }));
+  cube.forEach((c) => ligne(g, P(c), P(O), { stroke: GRIS, "stroke-width": 0.7 }));
+  poly(g, T.map(P), { fill: "rgba(31,95,139,0.10)", stroke: BLEU, "stroke-width": 1.5 });
+  ligne(g, P(T[0]), P(T[1]), { stroke: ENCRE, "stroke-width": 2.6 });
+  const I = cube.map((c) => { const t = (0 - O[1]) / (c[1] - O[1]); return [O[0] + t * (c[0] - O[0]), 0, O[2] + t * (c[2] - O[2])]; });
+  aretes.forEach(([a, b]) => ligne(g, P(I[a]), P(I[b]), { stroke: BLEU, "stroke-width": 1.8 }));
+  personnage(g, P(O), P([O[0], O[1], 0]), "#4b5560");
+  const f = { "font-size": 10, "font-weight": 800 };
+  const mil = (L) => [L.reduce((a, p) => a + p[0], 0) / L.length, L.reduce((a, p) => a + p[1], 0) / L.length];
+  const haut = P([0, 0, 2.2]);
+  texte(g, [haut[0], haut[1] - 8], "Tableau", { ...f, fill: BLEU, "text-anchor": "middle" });
+  const pc = P([0, 1.5, 1.0]);
+  texte(g, [pc[0] - 14, pc[1] - 18], "Objet", { ...f, "text-anchor": "middle" });
+  const im = mil(I.map(P));
+  etiquette(g, im, [P(T[2])[0] + 12, P(T[2])[1] + 40], "Image perspective", { ...f, fill: BLEU, dy: -4 });
+  texte(g, [P(O)[0], P(O)[1] - 11], "Œil (O)", { ...f, "text-anchor": "middle" });
+  const r = P([0.1, -1.6, 0.95]);
+  etiquette(g, r, [P(O)[0] - 62, P(O)[1] - 30], "Rayons visuels", { ...f, fill: "#6b737c", "text-anchor": "middle", dy: 3 });
+  const lt = P(T[0]);
+  texte(g, [lt[0] - 4, lt[1] + 16], "Ligne de terre", { ...f, "text-anchor": "end" });
+  const so = P([-1.3, -2.2, 0]);
+  texte(g, [so[0], so[1] + 4], "Sol", { ...f, fill: "#8a929b", "text-anchor": "middle" });
+})();
+
+/* ---------- 2. dispositif perspectif ---------- */
+(() => {
+  const g = document.getElementById("fig-dispositif");
+  const H = 1.6, d = 3.2, X = 3.5;
+  const sol = [[-X - 0.4, -4.4, 0], [X + 0.4, -4.4, 0], [X + 0.4, 2.6, 0], [-X - 0.4, 2.6, 0]];
+  const P = cadrer(0.52, 0.36, 47.5, [...sol, [-X, 0, 3.1], [X, 0, 3.1]], 660, 325, [8, 30, 8, 50]);
+  poly(g, sol.map(P), { fill: "#f1f3f5", stroke: "#cfd5db" });
+  // plan d'horizon
+  const ph = sol.map(([x, y]) => [x, y, H]);
+  poly(g, ph.map(P), { fill: "rgba(217,130,43,0.07)", stroke: ORANGE, "stroke-width": 1, "stroke-dasharray": "5 4" });
+  // tableau
+  const T = [[-X, 0, 0], [X, 0, 0], [X, 0, 3.1], [-X, 0, 3.1]];
+  poly(g, T.map(P), { fill: "rgba(31,95,139,0.10)", stroke: BLEU, "stroke-width": 1.5 });
+  // LT et LH
+  ligne(g, P([-X, 0, 0]), P([X, 0, 0]), { stroke: ENCRE, "stroke-width": 3 });
+  ligne(g, P([-X, 0, H]), P([X, 0, H]), { stroke: ORANGE, "stroke-width": 2.6 });
+  // observateur, rayon principal, cotes
+  const O = [0, -d, H], PP = [0, 0, H];
+  ligne(g, P(O), P(PP), { stroke: BLEU, "stroke-width": 1.8 });
+  // cote d au sol
+  ligne(g, P([0, -d, 0]), P([0, 0, 0]), { stroke: ENCRE, "stroke-width": 1.1, "stroke-dasharray": "4 3" });
+  [[0, -d, 0], [0, 0, 0]].forEach((p) => el(g, "circle", { cx: P(p)[0], cy: P(p)[1], r: 2.2, fill: ENCRE }));
+  // cote H
+  const xh = 0.45;
+  ligne(g, P([xh, -d, 0]), P([xh, -d, H]), { stroke: ENCRE, "stroke-width": 1.1 });
+  [[xh, -d, 0], [xh, -d, H]].forEach((p) => ligne(g, [P(p)[0] - 4, P(p)[1]], [P(p)[0] + 4, P(p)[1]], { stroke: ENCRE, "stroke-width": 1.1 }));
+  personnage(g, P(O), P([0, -d, 0]), "#4b5560");
+  // points
+  el(g, "circle", { cx: P(PP)[0], cy: P(PP)[1], r: 4, fill: ROUGE });
+  [[-d, "D'"], [d, "D"]].forEach(([x, n]) => {
+    el(g, "circle", { cx: P([x, 0, H])[0], cy: P([x, 0, H])[1], r: 3, fill: ROUGE });
+    texte(g, [P([x, 0, H])[0] - 4, P([x, 0, H])[1] - 7], n, { "font-weight": 800, fill: ROUGE, "font-size": 10 });
+  });
+  // textes courts sur la figure
+  const fb = { "font-weight": 800, "font-size": 10 };
+  texte(g, [P(PP)[0] + 7, P(PP)[1] - 6], "PP", { ...fb, fill: ROUGE });
+  texte(g, [P([-X, 0, H])[0] - 24, P([-X, 0, H])[1] + 4], "LH", { ...fb, fill: ORANGE });
+  texte(g, [P([-X, 0, 0])[0] - 24, P([-X, 0, 0])[1] + 4], "LT", fb);
+  texte(g, [P(O)[0] - 10, P(O)[1] - 8], "O", { ...fb, "text-anchor": "end" });
+  texte(g, [P([0, -d / 2, 0])[0] + 6, P([0, -d / 2, 0])[1] + 13], "d", { ...fb, "font-size": 12, "font-style": "italic" });
+  texte(g, [P([xh, -d, H / 2])[0] + 6, P([xh, -d, H / 2])[1] + 4], "H = 1,60 m", fb);
+  // pastilles numérotées
+  pastille(g, P([-2.9, -3.7, 0]), 1);
+  pastille(g, P([-2.9, 0, 2.7]), 2);
+  pastille(g, [P([-X, 0, 0])[0] - 36, P([-X, 0, 0])[1]], 3);
+  pastille(g, [P(O)[0] + 18, P(O)[1] - 12], 4);
+  pastille(g, P([X + 0.1, -3.9, H]), 5);
+  pastille(g, [P([-X, 0, H])[0] - 36, P([-X, 0, H])[1]], 6);
+  pastille(g, [P(PP)[0] + 30, P(PP)[1] - 10], 7);
+  pastille(g, [P([0, -d * 0.45, H])[0] - 2, P([0, -d * 0.45, H])[1] - 13], 8);
+  pastille(g, [P([0, -d / 2, 0])[0] - 16, P([0, -d / 2, 0])[1] + 10], 9);
+  pastille(g, [P([xh, -d, H / 2])[0] + 80, P([xh, -d, H / 2])[1]], 10);
+})();
+
+/* ---------- 5. le cerveau interprète : cercle -> ellipse, carré -> trapèze ---------- */
+(() => {
+  const g = document.getElementById("fig-cerveau");
+  const titre = (p, t) => texte(g, p, t, { "font-weight": 800, "font-size": 8.5, fill: "#6b737c", "letter-spacing": 1.2 });
+  const nom = (p, t) => texte(g, p, t, { "text-anchor": "middle", "font-size": 9.5, "font-weight": 800, fill: BLEU });
+  function rangee(y0, cercle) {
+    el(g, "rect", { x: 2, y: y0, width: 130, height: 122, rx: 6, fill: "#f8fafc", stroke: "#dfe3e8" });
+    el(g, "rect", { x: 170, y: y0, width: 236, height: 122, rx: 6, fill: "#f8fafc", stroke: "#dfe3e8" });
+    titre([10, y0 + 15], "EN PLAN");
+    titre([178, y0 + 15], "EN PERSPECTIVE");
+    const c = [67, y0 + 64], a = 34;
+    if (cercle) el(g, "circle", { cx: c[0], cy: c[1], r: a, fill: "rgba(31,95,139,0.12)", stroke: BLEU, "stroke-width": 1.8 });
+    else el(g, "rect", { x: c[0] - a, y: c[1] - a, width: 2 * a, height: 2 * a, fill: "rgba(31,95,139,0.12)", stroke: BLEU, "stroke-width": 1.8 });
+    nom([c[0], y0 + 116], cercle ? "cercle" : "carré");
+    el(g, "path", { d: `M140 ${y0 + 64} h22 m-7 -5 l7 5 l-7 5`, fill: "none", stroke: ENCRE, "stroke-width": 1.6 });
+    const pp = [288, y0 + 28], S = 48, dd = 2.2, z = -1.6;
+    const proj = (x, y) => [pp[0] + (x * dd / (dd + y)) * S, pp[1] - (z * dd / (dd + y)) * S];
+    ligne(g, [178, pp[1]], [398, pp[1]], { stroke: ORANGE, "stroke-width": 1.6 });
+    texte(g, [380, pp[1] - 5], "LH", { "font-weight": 800, "font-size": 8.5, fill: ORANGE });
+    el(g, "circle", { cx: pp[0], cy: pp[1], r: 2.6, fill: ROUGE });
+    const sd = 1.3, y1 = 0.15, xg = -sd / 2;
+    const coins = [[xg, y1], [xg + sd, y1], [xg + sd, y1 + sd], [xg, y1 + sd]].map(([x, y]) => proj(x, y));
+    [coins[0], coins[1]].forEach((p) => ligne(g, p, pp, { stroke: GRIS, "stroke-width": 0.8, "stroke-dasharray": "3 3" }));
+    if (cercle) {
+      const L = [];
+      for (let i = 0; i < 72; i++) { const t = (i / 72) * 2 * Math.PI; L.push(proj(sd / 2 * Math.cos(t), y1 + sd / 2 + sd / 2 * Math.sin(t))); }
+      poly(g, coins, { fill: "none", stroke: "#b9c0c8", "stroke-width": 0.9, "stroke-dasharray": "3 3" });
+      poly(g, L, { fill: "rgba(31,95,139,0.12)", stroke: BLEU, "stroke-width": 1.8 });
+    } else {
+      poly(g, coins, { fill: "rgba(31,95,139,0.12)", stroke: BLEU, "stroke-width": 1.8 });
+    }
+    nom([pp[0], y0 + 116], cercle ? "ellipse" : "trapèze");
+  }
+  rangee(2, true);
+  rangee(140, false);
+})();
+
+/* ---------- 6. les cubes autour du PP ---------- */
+(() => {
+  const g = document.getElementById("fig-cubes");
+  const C = [170, 161], S = 46, d = 2.4, s = 1;
+  const pr = ([x, y, z]) => [C[0] + x * d / (d + y) * S, C[1] - z * d / (d + y) * S];
+  ligne(g, [4, C[1]], [336, C[1]], { stroke: ORANGE, "stroke-width": 1.8 });
+  texte(g, [8, C[1] - 5], "LH", { "font-weight": 800, "font-size": 9.5, fill: ORANGE });
+  for (const cx of [-2.25, 0, 2.25]) for (const cz of [2.25, 0, -2.25]) {
+    const x0 = cx - s / 2, x1 = cx + s / 2, z0 = cz - s / 2, z1 = cz + s / 2;
+    const av = [[x0, 0, z0], [x1, 0, z0], [x1, 0, z1], [x0, 0, z1]];
+    const ar = av.map(([x, , z]) => [x, s, z]);
+    // fuyantes vers le PP
+    av.forEach((p) => ligne(g, pr(p), C, { stroke: "#c3c9cf", "stroke-width": 0.6, "stroke-dasharray": "2 3" }));
+    const faces = [];
+    if (z1 < 0) faces.push([[x0, 0, z1], [x1, 0, z1], [x1, s, z1], [x0, s, z1]]);   // dessus
+    if (z0 > 0) faces.push([[x0, 0, z0], [x1, 0, z0], [x1, s, z0], [x0, s, z0]]);   // dessous
+    if (x0 > 0) faces.push([[x0, 0, z0], [x0, 0, z1], [x0, s, z1], [x0, s, z0]]);   // face gauche
+    if (x1 < 0) faces.push([[x1, 0, z0], [x1, 0, z1], [x1, s, z1], [x1, s, z0]]);   // face droite
+    faces.forEach((f) => poly(g, f.map(pr), { fill: "#d4e2ec", stroke: BLEU, "stroke-width": 1.2 }));
+    poly(g, av.map(pr), { fill: "#ffffff", stroke: BLEU, "stroke-width": 1.5 });
+  }
+  el(g, "circle", { cx: C[0], cy: C[1], r: 3.2, fill: ROUGE });
+  texte(g, [C[0] + 6, C[1] - 5], "PP", { "font-weight": 800, "font-size": 9.5, fill: ROUGE });
+})();
+
+/* ---------- 7. méthode du cube avec le point de distance ---------- */
+(() => {
+  const g = document.getElementById("fig-methode");
+  const C = [176, 34], S = 44, d = 4.6, s = 1.6;
+  const pr = ([x, y, z]) => [C[0] + x * d / (d + y) * S, C[1] - z * d / (d + y) * S];
+  ligne(g, [6, C[1]], [396, C[1]], { stroke: ORANGE, "stroke-width": 1.8 });
+  texte(g, [8, C[1] - 6], "LH", { "font-weight": 800, "font-size": 9.5, fill: ORANGE });
+  const D = [C[0] + d * S, C[1]];
+  el(g, "circle", { cx: C[0], cy: C[1], r: 3.2, fill: ROUGE });
+  texte(g, [C[0] - 7, C[1] - 7], "PP", { "font-weight": 800, "font-size": 9.5, fill: ROUGE });
+  el(g, "circle", { cx: D[0], cy: D[1], r: 3.2, fill: ROUGE });
+  texte(g, [D[0] - 4, D[1] - 7], "D", { "font-weight": 800, "font-size": 9.5, fill: ROUGE });
+  // cote d
+  ligne(g, [C[0], C[1] + 9], [D[0], D[1] + 9], { stroke: "#9aa1a9", "stroke-width": 0.9 });
+  texte(g, [(C[0] + D[0]) / 2, C[1] + 20], "d", { "text-anchor": "middle", "font-style": "italic", "font-weight": 800, fill: "#6b737c" });
+  // cube : face avant dans le tableau
+  const x0 = -2.6, z0 = -4.0, x1 = x0 + s, z1 = z0 + s;
+  const A = [x0, 0, z0], B = [x1, 0, z0], Bh = [x1, 0, z1], Ah = [x0, 0, z1];
+  [A, B, Bh, Ah].forEach((p) => ligne(g, pr(p), C, { stroke: "#9aa1a9", "stroke-width": 0.8, "stroke-dasharray": "3 3" }));
+  // diagonale vers D
+  ligne(g, pr(A), D, { stroke: ORANGE, "stroke-width": 1.4 });
+  const Cb = [x1, s, z0];
+  el(g, "circle", { cx: pr(Cb)[0], cy: pr(Cb)[1], r: 3, fill: ORANGE });
+  // faces visibles (dessus + face droite, cube en bas à gauche du PP)
+  poly(g, [[x0, 0, z1], [x1, 0, z1], [x1, s, z1], [x0, s, z1]].map(pr), { fill: "#d4e2ec", stroke: BLEU, "stroke-width": 1.3 });
+  poly(g, [[x1, 0, z0], [x1, 0, z1], [x1, s, z1], [x1, s, z0]].map(pr), { fill: "#e6eef4", stroke: BLEU, "stroke-width": 1.3 });
+  poly(g, [A, B, Bh, Ah].map(pr), { fill: "#ffffff", stroke: BLEU, "stroke-width": 1.7 });
+  // numéros des étapes
+  const n = (p, k) => { el(g, "circle", { cx: p[0], cy: p[1], r: 7.5, fill: BLEU }); texte(g, [p[0], p[1] + 3.2], k, { "text-anchor": "middle", "font-size": 8.5, "font-weight": 800, fill: "#fff" }); };
+  n([C[0] + 22, C[1] - 12], "1");
+  n([pr(A)[0] - 14, (pr(A)[1] + pr(Ah)[1]) / 2], "2");
+  n([pr(Ah)[0] + 20, pr(Ah)[1] - 24], "3");
+  n([pr(Cb)[0] + 26, pr(Cb)[1] + 8], "4");
+  n([pr([x1, s, z1])[0] + 14, pr([x1, s, z1])[1] + 22], "5");
+})();
+</script>
+</body>
+</html>
