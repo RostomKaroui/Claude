@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Maths · isométries du plan</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root { --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --c: #3949AB; --clair: #eef0fa; --or: #C2620F; --vert: #2E7D4F; }
+  @page { size: A4; margin: 12mm 14mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.6pt; line-height: 1.42; color: var(--encre); }
+  b { font-weight: 800; }
+  .m { font-family: "Liberation Serif", "Times New Roman", serif; font-style: italic; font-size: 1.12em; white-space: nowrap; }
+  .m .r { font-style: normal; }
+  .vec { position: relative; display: inline-block; padding: 0 1.5px; min-width: .75em; text-align: center; }
+  .vec::before { content: ""; position: absolute; left: 0; right: 2px; top: -1px; border-top: 1.1px solid currentColor; }
+  .vec::after { content: ""; position: absolute; right: -1px; top: -3.6px; border-left: 4.5px solid currentColor; border-top: 2.8px solid transparent; border-bottom: 2.8px solid transparent; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .16em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 62mm; line-height: 1.3; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 15pt; color: var(--c); margin: 4px 0 7px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 10pt; color: #fff; background: var(--c); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+
+  .grille { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .carte { border: 1px solid var(--filet); border-radius: 7px; padding: 7px 10px 8px; break-inside: avoid; }
+  .carte h3 { font-size: 10.4pt; font-weight: 800; color: var(--c); margin-bottom: 3px; }
+  .carte h3 .tag { font-size: 7.6pt; font-weight: 800; color: #fff; background: var(--c); border-radius: 3px; padding: 1px 5px; margin-right: 5px; vertical-align: 1px; }
+  .f { display: block; text-align: center; background: var(--clair); border-radius: 5px; padding: 4px 6px; margin: 5px 0; color: var(--c); font-weight: 800; }
+  .rq { font-size: 8.9pt; color: #4b5560; margin-top: 3px; }
+  .rq b { color: var(--or); }
+  .large { grid-column: 1 / -1; }
+  svg { display: block; margin: 4px auto 0; }
+
+  ul { list-style: none; }
+  ul li { position: relative; padding-left: 12px; margin-bottom: 3px; }
+  ul li::before { content: ""; position: absolute; left: 1px; top: .55em; width: 5px; height: 5px; border-radius: 1px; background: var(--c); }
+  ol.th { list-style: none; counter-reset: t; }
+  ol.th li { counter-increment: t; position: relative; padding-left: 22px; margin-bottom: 4px; }
+  ol.th li::before { content: counter(t); position: absolute; left: 0; top: 1px; width: 16px; height: 16px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 800; font-size: 8pt; display: grid; place-items: center; }
+
+  .conserve { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .conserve div { background: var(--clair); border-radius: 6px; padding: 5px 8px; font-size: 8.9pt; line-height: 1.3; }
+  .conserve b { display: block; color: var(--c); }
+
+  .usuelles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .usuelles .carte { border-top: 4px solid var(--c); }
+
+  .essentiel { border: 2px solid var(--encre); border-radius: 8px; padding: 7px 12px 5px; background: #f7f8f9; break-inside: avoid; margin-top: 8px; }
+  .essentiel h4 { font-size: 8.4pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 5px; }
+  .essentiel li::before { background: var(--encre); }
+  .saut { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">MATHÉMATIQUES (GÉOMÉTRIE) · 1RE ANNÉE ARCHI · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">Transformations et isométries du plan</div>
+</div>
+
+<!-- I. DÉFINITIONS -->
+<h2><span class="num">I</span>Les transformations du plan</h2>
+<div class="grille">
+  <div class="carte">
+    <h3><span class="tag">DÉF 1</span>Transformation du plan</h3>
+    <p>Une <b>transformation</b> <span class="m">f</span> du plan <span class="m">𝒫</span> est une application de <span class="m">𝒫</span> dans <span class="m">𝒫</span> telle que, pour tout point <span class="m">M′</span>, il existe un <b>unique</b> point <span class="m">M</span> tel que <span class="m">f(M) = M′</span>. On dit que <span class="m">f</span> est <b>bijective</b>.</p>
+    <span class="f m">f : 𝒫 → 𝒫, &nbsp; M ↦ f(M) = M′</span>
+    <p class="rq"><span class="m">M′</span> est l'<b>image</b> de <span class="m">M</span> ; <span class="m">M</span> est l'<b>antécédent</b> de <span class="m">M′</span> par <span class="m">f</span>.</p>
+  </div>
+  <div class="carte">
+    <h3><span class="tag">DÉF 2</span>Identité du plan</h3>
+    <p>La transformation qui associe à tout point <span class="m">M</span> le point <span class="m">M</span> lui-même. On la note <span class="m">Id<sub>𝒫</sub></span>.</p>
+    <span class="f m">Id<sub>𝒫</sub>(M) = M</span>
+    <h3 style="margin-top:7px"><span class="tag">DÉF 3</span>Transformation réciproque</h3>
+    <p>La réciproque <span class="m">f<sup>−1</sup></span> associe à tout point son <b>unique antécédent</b> par <span class="m">f</span>.</p>
+    <span class="f m">f<sup>−1</sup>(M) = N &nbsp;⇔&nbsp; f(N) = M</span>
+  </div>
+  <div class="carte large">
+    <h3><span class="tag">DÉF 4</span>Composée de deux transformations</h3>
+    <div class="grille" style="grid-template-columns: 1fr 1fr; margin:0; align-items:center;">
+      <div>
+        <p>La composée de <span class="m">f</span> et <span class="m">g</span>, notée <span class="m">f ∘ g</span> (« f rond g »), associe à tout point <span class="m">M</span> le point :</p>
+        <span class="f m">f ∘ g (M) = f( g(M) )</span>
+        <p class="rq">On applique <b>d'abord g</b>, <b>puis f</b>.</p>
+      </div>
+      <div><svg id="fig-compo" width="320" height="70" viewBox="0 0 320 70"></svg></div>
+    </div>
+    <p style="margin-top:4px"><b>Remarques :</b></p>
+    <ul>
+      <li>En général <span class="m">f ∘ g ≠ g ∘ f</span>. Si <span class="m">f ∘ g = g ∘ f</span>, on dit que <span class="m">f</span> et <span class="m">g</span> <b>commutent</b>.</li>
+      <li>La composée est associative : <span class="m">(f ∘ h) ∘ g = f ∘ (h ∘ g)</span>.</li>
+      <li><span class="m">f ∘ f<sup>−1</sup> = f<sup>−1</sup> ∘ f = Id<sub>𝒫</sub></span>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- II. ISOMÉTRIES -->
+<h2><span class="num">II</span>Les isométries du plan</h2>
+<div class="grille">
+  <div class="carte">
+    <h3><span class="tag">DÉF</span>Isométrie</h3>
+    <p>Une <b>isométrie</b> est une transformation qui <b>conserve les distances</b> : une figure et son image ont la même forme et les mêmes dimensions.</p>
+    <span class="f m">∀ M, N ∈ 𝒫 : &nbsp; f(M) f(N) = MN</span>
+    <p class="rq">Exemples : la <b>symétrie centrale</b>, la <b>symétrie axiale</b>, la <b>translation</b>, la <b>rotation</b>.</p>
+  </div>
+  <div class="carte">
+    <h3><span class="tag">THÉORÈME</span></h3>
+    <ol class="th">
+      <li>La <b>réciproque</b> d'une isométrie est une isométrie.</li>
+      <li>La <b>composée</b> de deux isométries est une isométrie.</li>
+    </ol>
+    <h3 style="margin-top:6px"><span class="tag">DÉF</span>Point fixe (invariant)</h3>
+    <p><span class="m">M</span> est un point <b>fixe</b> par <span class="m">f</span> si <span class="m">f(M) = M</span>.</p>
+  </div>
+</div>
+
+<div class="carte" style="margin-bottom:8px">
+  <h3>Propriétés : une isométrie conserve…</h3>
+  <div class="conserve">
+    <div><b>1. l'alignement</b>3 points alignés ont pour images 3 points alignés, dans le même ordre ; l'image d'une droite est une droite.</div>
+    <div><b>2. les distances</b>l'image d'un segment est un segment de même longueur ; l'image d'un cercle est un cercle de même rayon.</div>
+    <div><b>3. le parallélisme</b>les images de deux droites parallèles sont deux droites parallèles.</div>
+    <div><b>4. l'orthogonalité</b>les images de deux droites perpendiculaires sont perpendiculaires.</div>
+    <div><b>5. les aires</b>une figure et son image ont la même aire.</div>
+    <div><b>6. les angles</b>l'image d'un angle est un angle de même mesure.</div>
+  </div>
+</div>
+
+<div class="carte saut" style="margin-bottom:8px">
+  <h3><span class="tag">THÉORÈME</span>Isométries et points fixes</h3>
+  <ol class="th">
+    <li>Une isométrie qui admet <b>3 points non alignés fixes</b> est l'<b>identité</b>.</li>
+    <li>Deux isométries qui coïncident sur 3 points non alignés <b>coïncident partout</b>.</li>
+    <li>Une isométrie, différente de l'identité, qui fixe <b>2 points A et B</b> est la <b>symétrie axiale d'axe (AB)</b>.</li>
+    <li>Une isométrie qui possède un <b>unique point fixe I</b> est une <b>rotation de centre I</b>.</li>
+  </ol>
+</div>
+
+<!-- III. ISOMÉTRIES USUELLES -->
+<h2><span class="num">III</span>Les isométries usuelles</h2>
+<div class="usuelles">
+  <div class="carte">
+    <h3>Symétrie centrale <span class="m" style="color:var(--encre)">S<sub>O</sub></span></h3>
+    <p><span class="m">S<sub>O</sub>(A) = A′</span> ⇔ <span class="m">O</span> est le <b>milieu</b> de <span class="m">[AA′]</span>.</p>
+    <svg id="fig-sc" width="300" height="120" viewBox="0 0 300 120"></svg>
+    <p class="rq">C'est la rotation de centre O et d'angle π. Point fixe : O seul.</p>
+  </div>
+  <div class="carte">
+    <h3>Symétrie axiale <span class="m" style="color:var(--encre)">S<sub>Δ</sub></span></h3>
+    <p><span class="m">S<sub>Δ</sub>(A) = A′</span> ⇔ <span class="m">Δ</span> est la <b>médiatrice</b> de <span class="m">[AA′]</span>.</p>
+    <svg id="fig-sa" width="300" height="120" viewBox="0 0 300 120"></svg>
+    <p class="rq">Points fixes : tous les points de la droite Δ.</p>
+  </div>
+  <div class="carte">
+    <h3>Translation <span class="m" style="color:var(--encre)">t<sub><span class="vec">u</span></sub></span></h3>
+    <p>La translation de vecteur <span class="m"><span class="vec">u</span></span> associe à tout point <span class="m">M</span> le point <span class="m">M′</span> tel que :</p>
+    <span class="f m"><span class="vec">MM′</span> = <span class="vec">u</span></span>
+    <svg id="fig-tr" width="300" height="100" viewBox="0 0 300 100"></svg>
+    <ul class="rq">
+      <li><span class="m"><span class="vec">AB</span> = <span class="vec">CD</span></span> ⇔ <b>ABDC</b> est un parallélogramme.</li>
+      <li>Si <span class="m"><span class="vec">u</span> = <span class="vec">0</span></span>, alors <span class="m">t<sub><span class="vec">u</span></sub> = Id<sub>𝒫</sub></span>.</li>
+      <li>Une translation <b>non nulle</b> n'a <b>aucun point fixe</b>.</li>
+      <li>Réciproque : <span class="m">(t<sub><span class="vec">u</span></sub>)<sup>−1</sup> = t<sub>−<span class="vec">u</span></sub></span>.</li>
+    </ul>
+  </div>
+  <div class="carte">
+    <h3>Rotation <span class="m" style="color:var(--encre)">R(Ω, α)</span></h3>
+    <p>La rotation de centre <span class="m">Ω</span> et d'angle <span class="m">α</span> associe à tout point <span class="m">M</span> le point <span class="m">M′</span> tel que :</p>
+    <span class="f m">ΩM′ = ΩM &nbsp;et&nbsp; (<span class="vec">ΩM</span>, <span class="vec">ΩM′</span>) ≡ α [2π]</span>
+    <svg id="fig-rot" width="300" height="100" viewBox="0 0 300 100"></svg>
+    <ul class="rq">
+      <li>Si <span class="m">α ≡ 0 [2π]</span> : <span class="m">R = Id<sub>𝒫</sub></span>.</li>
+      <li>Si <span class="m">α ≡ π [2π]</span> : <span class="m">R(Ω, π) = S<sub>Ω</sub></span>, la symétrie de centre Ω.</li>
+      <li>Réciproque : <span class="m">(R(Ω, α))<sup>−1</sup> = R(Ω, −α)</span>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="essentiel">
+  <h4>L'essentiel à savoir par cœur</h4>
+  <ul>
+    <li><span class="m">f ∘ g (M) = f(g(M))</span> : d'abord g, puis f ; en général <span class="m">f ∘ g ≠ g ∘ f</span>.</li>
+    <li>Isométrie = conserve les <b>distances</b>, donc aussi l'alignement, le parallélisme, l'orthogonalité, les aires et les angles.</li>
+    <li>Réciproque ou composée d'isométries = isométrie.</li>
+    <li><span class="m">S<sub>O</sub></span> : O milieu de [AA′] · <span class="m">S<sub>Δ</sub></span> : Δ médiatrice de [AA′] · <span class="m">t<sub><span class="vec">u</span></sub></span> : <span class="m"><span class="vec">MM′</span> = <span class="vec">u</span></span> · <span class="m">R(Ω, α)</span> : même distance à Ω, angle α.</li>
+    <li>Réciproques : <span class="m">t<sub>−<span class="vec">u</span></sub></span> et <span class="m">R(Ω, −α)</span>.</li>
+  </ul>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const C = "#3949AB", ENCRE = "#1f2328", OR = "#C2620F", GRIS = "#8a929b";
+function el(p, n, a = {}, t) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t !== undefined) e.textContent = t; p.appendChild(e); return e; }
+const lab = (g, x, y, t, a = {}) => el(g, "text", { x, y, "font-family": "Liberation Serif, serif", "font-style": "italic", "font-size": 12, fill: ENCRE, "text-anchor": "middle", ...a }, t);
+const pt = (g, x, y, c = ENCRE) => el(g, "circle", { cx: x, cy: y, r: 2.6, fill: c });
+const seg = (g, a, b, at = {}) => el(g, "line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: ENCRE, "stroke-width": 1.3, ...at });
+const tri = (g, P, c, fill) => el(g, "polygon", { points: P.map((p) => p.join(",")).join(" "), fill, stroke: c, "stroke-width": 1.6 });
+function fleche(g, a, b, c, w = 1.6) {
+  seg(g, a, b, { stroke: c, "stroke-width": w });
+  const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), L = 8;
+  el(g, "polygon", { points: [b, [b[0] - L * Math.cos(ang - 0.4), b[1] - L * Math.sin(ang - 0.4)], [b[0] - L * Math.cos(ang + 0.4), b[1] - L * Math.sin(ang + 0.4)]].map((p) => p.join(",")).join(" "), fill: c });
+}
+
+/* composée : M -> g(M) -> f(g(M)) */
+(() => {
+  const g = document.getElementById("fig-compo");
+  const P = [[22, 42], [160, 42], [298, 42]];
+  P.forEach(([x, y]) => pt(g, x, y, C));
+  lab(g, 22, 64, "M"); lab(g, 160, 64, "g(M)"); lab(g, 298, 64, "f(g(M))");
+  el(g, "path", { d: "M30 36 Q91 4 150 36", fill: "none", stroke: OR, "stroke-width": 1.6 });
+  el(g, "polygon", { points: "152,38 141,36 147,28", fill: OR });
+  el(g, "path", { d: "M168 36 Q229 4 288 36", fill: "none", stroke: C, "stroke-width": 1.6 });
+  el(g, "polygon", { points: "290,38 279,36 285,28", fill: C });
+  lab(g, 91, 14, "g", { fill: OR, "font-weight": 700 }); lab(g, 229, 14, "f", { fill: C, "font-weight": 700 });
+})();
+
+/* symétrie centrale */
+(() => {
+  const g = document.getElementById("fig-sc");
+  const O = [150, 62];
+  const A = [[52, 26], [30, 92], [96, 84]];
+  const B = A.map(([x, y]) => [2 * O[0] - x, 2 * O[1] - y]);
+  A.forEach((p, i) => seg(g, p, B[i], { stroke: GRIS, "stroke-width": 0.9, "stroke-dasharray": "4 3" }));
+  tri(g, A, ENCRE, "rgba(31,35,40,0.06)"); tri(g, B, C, "rgba(57,73,171,0.10)");
+  pt(g, O[0], O[1], OR); lab(g, O[0] + 2, O[1] - 8, "O", { fill: OR, "font-weight": 700 });
+  const out = (T, i) => { const cx = (T[0][0] + T[1][0] + T[2][0]) / 3, cy = (T[0][1] + T[1][1] + T[2][1]) / 3; const dx = T[i][0] - cx, dy = T[i][1] - cy, n = Math.hypot(dx, dy); return [T[i][0] + 12 * dx / n, T[i][1] + 12 * dy / n + 4]; };
+  ["A", "B", "C"].forEach((n, i) => { lab(g, ...out(A, i), n); lab(g, ...out(B, i), n + "′", { fill: C }); });
+})();
+
+/* symétrie axiale */
+(() => {
+  const g = document.getElementById("fig-sa");
+  const xd = 150;
+  seg(g, [xd, 4], [xd, 116], { stroke: OR, "stroke-width": 2 });
+  lab(g, xd + 10, 112, "Δ", { fill: OR, "font-style": "normal", "font-weight": 700 });
+  const A = [[60, 24], [118, 24], [118, 92], [60, 92]];
+  const B = A.map(([x, y]) => [2 * xd - x, y]);
+  seg(g, A[1], B[1], { stroke: GRIS, "stroke-width": 0.9, "stroke-dasharray": "4 3" });
+  seg(g, [xd - 5, 24], [xd - 5, 19], { stroke: OR }); seg(g, [xd - 5, 19], [xd, 19], { stroke: OR });
+  tri(g, A, ENCRE, "rgba(31,35,40,0.06)"); tri(g, B, C, "rgba(57,73,171,0.10)");
+  ["A", "B", "C", "D"].forEach((n, i) => { const dx = i === 0 || i === 3 ? -9 : 9; lab(g, A[i][0] + dx, A[i][1] + (i < 2 ? -4 : 13), n); lab(g, B[i][0] - dx, B[i][1] + (i < 2 ? -4 : 13), n + "′", { fill: C }); });
+})();
+
+/* translation */
+(() => {
+  const g = document.getElementById("fig-tr");
+  fleche(g, [20, 80], [80, 30], OR, 2);
+  lab(g, 40, 46, "u", { fill: OR, "font-weight": 700 }); seg(g, [36, 33], [46, 33], { stroke: OR, "stroke-width": 1 });
+  const T = [[110, 88], [160, 88], [130, 56]];
+  const U = T.map(([x, y]) => [x + 120, y - 50 + 8]);
+  T.forEach((p, i) => fleche(g, p, U[i], GRIS, 0.9));
+  tri(g, T, ENCRE, "rgba(31,35,40,0.06)"); tri(g, U, C, "rgba(57,73,171,0.10)");
+  lab(g, 104, 98, "M"); lab(g, 224, 56, "M′", { fill: C });
+})();
+
+/* rotation */
+(() => {
+  const g = document.getElementById("fig-rot");
+  const O = [110, 86], r = 76, a0 = 0, a1 = -Math.PI / 3;
+  const M = [O[0] + r * Math.cos(a0), O[1] + r * Math.sin(a0)];
+  const M2 = [O[0] + r * Math.cos(a1), O[1] + r * Math.sin(a1)];
+  el(g, "path", { d: `M${M[0]} ${M[1]} A${r} ${r} 0 0 0 ${M2[0]} ${M2[1]}`, fill: "none", stroke: GRIS, "stroke-width": 0.9, "stroke-dasharray": "4 3" });
+  seg(g, O, M); seg(g, O, M2, { stroke: C });
+  el(g, "path", { d: `M${O[0] + 26} ${O[1]} A26 26 0 0 0 ${O[0] + 26 * Math.cos(a1)} ${O[1] + 26 * Math.sin(a1)}`, fill: "none", stroke: OR, "stroke-width": 1.8 });
+  lab(g, O[0] + 36, O[1] - 10, "α", { fill: OR, "font-weight": 700 });
+  pt(g, ...O, OR); pt(g, ...M); pt(g, ...M2, C);
+  lab(g, O[0] - 10, O[1] + 4, "Ω", { fill: OR, "font-style": "normal", "font-weight": 700 });
+  lab(g, M[0] + 12, M[1] + 4, "M"); lab(g, M2[0] + 12, M2[1] - 2, "M′", { fill: C });
+})();
+</script>
+</body>
+</html>
