@@ -85,7 +85,7 @@ footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
     <div>
       <div class="surtitre">Atelier · Séance 2 · Maquette en carton gris</div>
       <h1>La maquette de Shahed</h1>
-      <p>Reconstitution en 3D d'après les photos de la maquette de Shahed : les 7 pièces du tangram, deux pignons et un grand toit. Fais tourner la maquette, suis les pièces une à une, puis déplace le soleil.</p>
+      <p>La maquette de Shahed refaite en 3D à partir de ses 4 photos : un grand plan penché à 45°, un mur du fond, une façade, une tablette et un carré penché. Fais tourner la maquette, suis les pièces une à une, puis déplace le soleil.</p>
     </div>
     <div class="cote">
       <label for="cote">Côté de ton carré (cm)</label>
@@ -130,64 +130,65 @@ footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
     <div class="surtitre">Pour la vidéo au flash</div>
     <h2 id="lec">Ce que montre la maquette</h2>
     <div class="espaces">
-      <div><b>Deux pignons, un grand toit</b>Le pignon orange au fond et le pignon jaune devant tiennent un espace couvert ; le grand toit turquoise le ferme sur la gauche jusqu'au sol.</div>
-      <div><b>Un toit qui se plie</b>Le carré rouge descend en pente puis le petit triangle bleu clair se pose à plat : le toit change de direction et devient terrasse.</div>
-      <div><b>Les fentes</b>Le carré s'arrête avant la table : une fente basse laisse entrer une lumière rasante. Avec un flash bas à droite, elle dessine une ligne sur le sol intérieur.</div>
+      <div><b>Un plan penché tenu par un mur</b>Le grand triangle orange penche à 45° ; seul le mur du fond (parallélogramme et petit triangle) le retient. L'équilibre de toute la maquette tient à cette ligne de colle.</div>
+      <div><b>Une tablette à mi-hauteur</b>Le triangle jaune horizontal coupe l'espace en deux : au-dessus, la pointe ; en dessous, un espace bas et sombre. Un flash zénithal ne l'éclaire pas.</div>
+      <div><b>Le passage sous la tablette</b>Entre le carré penché et le mur du fond, une ouverture traverse la maquette. Avec un flash rasant de dos, la lumière passe dessous et ressort par la façade.</div>
     </div>
   </section>
 
-  <footer>Reconstitution d'après photos, à valider par Shahed. Géométrie vérifiée par calcul : chaque pièce a exactement sa forme du tangram et aucune pièce n'en traverse une autre.</footer>
+  <footer>Reconstitution à partir des 4 photos de Shahed (caméras recalées sur les sommets visibles). Géométrie vérifiée par calcul : chaque pièce a exactement sa forme du tangram et aucune pièce n'en traverse une autre.</footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-const PIECES = {"G1": {"nom": "Grand triangle orange", "couleur": "#f4a93a", "p3": [[0, 0, 0], [4, 0, 0], [2, 0, 2]], "p2": [[0, 4], [4, 4], [2, 2]]}, "G2": {"nom": "Grand triangle turquoise", "couleur": "#8fcfc3", "p3": [[0, 0, 0], [2, 0, 2], [0, -2.8284271247461903, 0]], "p2": [[2, 2], [0, 4], [0, 0]]}, "M": {"nom": "Triangle moyen jaune", "couleur": "#f5dc2a", "p3": [[0, -1.4142135623730951, 0], [2.8284271247461903, -1.4142135623730951, 0], [1.4142135623730951, -1.4142135623730951, 1.4142135623730951]], "p2": [[2, 0], [4, 2], [4, 0]]}, "C": {"nom": "Carré rouge", "couleur": "#e04b30", "p3": [[1.4142135623730951, -1.4142135623730951, 1.4142135623730951], [2.414213562373095, -1.4142135623730951, 0.41421356237309515], [2.414213562373095, 0, 0.41421356237309515], [1.4142135623730951, 0, 1.4142135623730951]], "p2": [[2, 2], [3, 3], [4, 2], [3, 1]]}, "P1": {"nom": "Petit triangle bleu clair", "couleur": "#3cb2e4", "p3": [[1.4142135623730951, 0, 1.4142135623730951], [2.8284271247461903, -1.4142135623730951, 1.4142135623730951], [1.4142135623730951, -1.4142135623730951, 1.4142135623730951]], "p2": [[4, 4], [4, 2], [3, 3]]}, "P2": {"nom": "Petit triangle vert", "couleur": "#16984a", "p3": [[1.4142135623730951, -2.414213562373095, 0], [2.414213562373095, -1.4142135623730951, 0], [0.41421356237309515, -1.4142135623730951, 0]], "p2": [[2, 2], [3, 1], [1, 1]]}, "Pa": {"nom": "Parallélogramme bleu", "couleur": "#1f5aa6", "p3": [[2.585786437626905, 0, 1.4142135623730951], [4, 0, 0], [3.2928932188134525, -1, 0.7071067811865475], [1.8786796564403576, -1, 2.121320343559643]], "p2": [[2, 0], [0, 0], [1, 1], [3, 1]]}};
+const PIECES = {"G1": {"nom": "Grand triangle orange", "couleur": "#f4a93a", "p3": [[0, 0, 0], [0, 2.8284271247461903, 0], [-2, 0, 2]], "p2": [[2, 2], [0, 4], [4, 4]]}, "Pa": {"nom": "Parallélogramme bleu", "couleur": "#1f5aa6", "p3": [[-1, 0, 1], [-3, 0, 1], [-2, 0, 0], [0, 0, 0]], "p2": [[2, 0], [0, 0], [1, 1], [3, 1]]}, "P1": {"nom": "Petit triangle bleu clair", "couleur": "#3cb2e4", "p3": [[-2, 0, 2], [-1, 0, 1], [-3, 0, 1]], "p2": [[3, 3], [4, 4], [4, 2]]}, "G2": {"nom": "Grand triangle turquoise", "couleur": "#8fcfc3", "p3": [[0, 2, 0], [-4, 2, 0], [-2, 2, 2]], "p2": [[0, 0], [0, 4], [2, 2]]}, "M": {"nom": "Triangle moyen jaune", "couleur": "#f5dc2a", "p3": [[-3, 0, 1], [-1, 0, 1], [-3, 2, 1]], "p2": [[4, 0], [2, 0], [4, 2]]}, "C": {"nom": "Carré rouge", "couleur": "#e04b30", "p3": [[-3, 0.5857864376269049, 1], [-3, 2, 1], [-4, 2, 0], [-4, 0.5857864376269049, 0]], "p2": [[2, 2], [3, 3], [4, 2], [3, 1]]}, "P2": {"nom": "Petit triangle vert", "couleur": "#16984a", "p3": null, "p2": [[2, 2], [3, 1], [1, 1]]}};
 const R = Math.SQRT2;
 
 // Ordre de montage et textes. c = côté du carré (cm), calculé à l'affichage.
 const ETAPES = [
   { titre: "Le tangram de Shahed", piece: null,
-    texte: c => `<p>Les 7 pièces sont posées comme dans le tangram. À chaque étape, une pièce quitte le carré et prend sa place dans la maquette.</p>
-      <ul><li>Cette maquette 3D est une <b>reconstitution d'après les 4 photos</b> : Shahed, compare-la avec ta maquette et signale ce qui diffère.</li></ul>`,
+    texte: c => `<p>Les pièces sont posées comme dans le tangram. À chaque étape, une pièce quitte le carré et prend sa place dans la maquette de Shahed.</p>
+      <ul><li>La maquette a été reconstituée à partir des 4 photos : chaque pièce a été replacée en recalant les photos sur ses sommets.</li>
+      <li>Le second petit triangle (vert) n'apparaît sur aucune photo : il reste posé à côté.</li></ul>`,
     cotes: c => `Grand triangle : ${f(c)} et ${f(c*.707)} cm · moyen : ${f(c*.707)} et ${f(c/2)} cm · petit : ${f(c/2)} et ${f(c*.354)} cm · carré : ${f(c*.354)} cm · parallélogramme : ${f(c/2)} et ${f(c*.354)} cm`,
     colle: [] },
-  { titre: "Le pignon du fond", piece: "G1",
-    texte: c => `<p>Le grand triangle orange est <b>debout sur son grand côté</b>, angle droit en haut. C'est le mur du fond et le point le plus haut de la maquette.</p>`,
-    cotes: c => `Base : ${f(c)} cm · hauteur : ${f(c/2)} cm`,
-    colle: [[[0,0,0],[4,0,0]]] },
-  { titre: "Le grand toit incliné", piece: "G2",
-    texte: c => `<p>Le grand triangle turquoise est collé par un petit côté contre le <span class="colle">côté gauche du pignon</span>, à 90°. Son angle droit est sur la table ; il descend vers l'avant comme un grand toit à 45°.</p>`,
-    cotes: c => `Arête collée : ${f(c*.707)} cm · il touche la table jusqu'à ${f(c*.707)} cm devant le pignon`,
-    colle: [[[0,0,0],[2,0,2]]] },
-  { titre: "Le pignon avant", piece: "M",
-    texte: c => `<p>Le triangle moyen jaune est <b>debout sur son grand côté</b>, parallèle au pignon orange, devant lui. Son côté gauche s'appuie <span class="colle">contre le toit turquoise</span>.</p>`,
-    cotes: c => `Distance entre les deux pignons : ${f(c*.354)} cm · hauteur : ${f(c*.354)} cm`,
-    colle: [[[0,-R,0],[1,-R,1]]] },
-  { titre: "Le toit en pente", piece: "C",
-    texte: c => `<p>Le carré rouge relie les deux pignons, penché à 45° : son côté haut part de la pointe du triangle jaune, un côté est collé <span class="colle">sur le côté droit du triangle jaune</span>, l'autre <span class="colle">contre la face du pignon orange</span>.</p>
-      <ul><li>Il s'arrête avant la table : il reste une <b>fente de lumière</b> en bas.</li></ul>`,
-    cotes: c => `Côté : ${f(c*.354)} cm · hauteur de la fente : ${f(c*.103)} cm`,
-    colle: [[[R,-R,R],[R+1,-R,R-1]], [[R,0,R],[R+1,0,R-1]]] },
-  { titre: "La terrasse", piece: "P1",
-    texte: c => `<p>Le petit triangle bleu clair est posé <b>à plat, à l'horizontale</b>, sur le haut du carré. Son angle droit est sur la pointe du triangle jaune ; il avance au-dessus du vide comme une terrasse.</p>`,
-    cotes: c => `Hauteur : ${f(c*.354)} cm au-dessus de la table`,
-    colle: [[[R,-R,R],[R,0,R]]] },
-  { titre: "L'aile droite", piece: "Pa",
-    texte: c => `<p>Le parallélogramme bleu est collé par son grand côté contre <span class="colle">le bas du côté droit du pignon orange</span>, à 90° du pignon. Il penche vers l'avant comme une aile.</p>`,
-    cotes: c => `Arête collée : ${f(c/2)} cm`,
-    colle: [[[4,0,0],[4-R,0,R]]] },
-  { titre: "Le seuil", piece: "P2",
-    texte: c => `<p>Le petit triangle vert est posé <b>à plat</b> devant le pignon jaune, son grand côté collé <span class="colle">contre le pied du triangle jaune</span> : c'est le seuil d'entrée.</p>`,
-    cotes: c => `Grand côté : ${f(c/2)} cm`,
-    colle: [[[R-1,-R,0],[R+1,-R,0]]] },
+  { titre: "Le grand plan penché", piece: "G1",
+    texte: c => `<p>Le grand triangle orange est posé sur un <b>petit côté</b>, sur la table. Son autre petit côté monte en <b>penchant à 45°</b> vers l'intérieur : c'est le grand plan incliné à gauche de la maquette, et sa pointe est le point le plus haut.</p>`,
+    astuce: "Il ne tient pas seul : on le soutient jusqu'à ce que le mur du fond soit collé (étapes 2 et 3).",
+    cotes: c => `Côté sur la table : ${f(c*.707)} cm · hauteur de la pointe : ${f(c/2)} cm`,
+    colle: [[[0,0,0],[0,2*R,0]]] },
+  { titre: "Le bas du mur du fond", piece: "Pa",
+    texte: c => `<p>Le parallélogramme bleu est <b>debout sur un grand côté</b>, au fond, perpendiculaire au grand plan. Son petit côté droit est collé <span class="colle">le long de la moitié basse du côté montant</span> du triangle orange.</p>`,
+    cotes: c => `Hauteur : ${f(c/4)} cm · arête collée : ${f(c*.354)} cm`,
+    colle: [[[0,0,0],[-1,0,1]]] },
+  { titre: "La pointe du mur du fond", piece: "P1",
+    texte: c => `<p>Le petit triangle bleu clair est <b>debout sur son grand côté</b>, posé sur le haut du parallélogramme : c'est la <span class="colle">ligne de colle noire</span> visible sur les photos. Son côté droit longe <span class="colle">la moitié haute du côté montant</span> du triangle orange, et sa pointe touche la pointe du grand plan.</p>`,
+    astuce: "Parallélogramme et petit triangle forment ensemble le mur du fond, qui tient le grand plan à 45°.",
+    cotes: c => `Arête collée sur le parallélogramme : ${f(c/2)} cm`,
+    colle: [[[-1,0,1],[-3,0,1]], [[-1,0,1],[-2,0,2]]] },
+  { titre: "Le grand triangle de façade", piece: "G2",
+    texte: c => `<p>Le grand triangle turquoise est <b>debout sur son grand côté</b>, parallèle au mur du fond et ${f(c/2)} cm devant lui. Son coin gauche est sur le côté du grand plan posé sur la table, et son côté gauche s'appuie <span class="colle">contre le grand plan penché</span>.</p>`,
+    cotes: c => `Base : ${f(c)} cm · hauteur : ${f(c/2)} cm · ${f(c/2)} cm devant le mur du fond`,
+    colle: [[[0,2,0],[-(2-R),2,2-R]]] },
+  { titre: "La tablette", piece: "M",
+    texte: c => `<p>Le triangle moyen jaune est posé <b>à plat, à l'horizontale</b>, à ${f(c/4)} cm de hauteur. Un petit côté est collé <span class="colle">contre le haut du mur du fond</span> (côté avant), l'autre part vers l'avant ; son angle avant repose sur le milieu du côté droit du triangle turquoise.</p>`,
+    cotes: c => `Hauteur : ${f(c/4)} cm · petits côtés : ${f(c/2)} cm`,
+    colle: [[[-3,0,1],[-1,0,1]]] },
+  { titre: "Le carré penché", piece: "C",
+    texte: c => `<p>Le carré rouge est <b>penché à 45° vers l'extérieur</b>, sous le bord gauche de la tablette jaune. Son côté avant est collé <span class="colle">le long de la moitié basse du côté droit</span> du triangle turquoise ; son côté bas est sur la table.</p>`,
+    astuce: "Entre le carré et le mur du fond, sous la tablette, il reste une ouverture : c'est le passage visible sur la photo prise de dos.",
+    cotes: c => `Côté : ${f(c*.354)} cm · son haut est à ${f(c/4)} cm de hauteur`,
+    colle: [[[-3,2,1],[-4,2,0]], [[-3,2-R,1],[-3,2,1]]] },
   { titre: "Résultat", piece: null,
-    texte: c => `<p>Deux pignons parallèles, un grand toit qui descend jusqu'au sol, un toit en pente qui se termine en terrasse, une aile et un seuil.</p>
-      <ul><li>Déplace le soleil pour voir la lumière passer par la fente sous le carré et par le côté ouvert.</li></ul>`,
-    cotes: c => `Encombrement : ${f(c*1.18)} × ${f(c*.707)} cm au sol, hauteur ${f(c*.53)} cm`,
+    texte: c => `<p>Un grand plan penché tenu par un mur du fond, un grand triangle en façade, une tablette horizontale à mi-hauteur et un carré penché qui ouvre un passage dessous.</p>
+      <ul><li>Le petit triangle vert n'est visible sur aucune photo : à vérifier avec Shahed (caché à l'intérieur, ou pas utilisé).</li>
+      <li>Déplace le soleil pour voir la lumière passer sous la tablette et entre le grand plan et la façade.</li></ul>`,
+    cotes: c => `Encombrement : ${f(c)} × ${f(c*.707)} cm au sol, hauteur ${f(c/2)} cm`,
     colle: [] },
 ];
-const ORDRE = ["G1","G2","M","C","P1","Pa","P2"];
+const ORDRE = ["G1","Pa","P1","G2","M","C"];
+const TOUTES = Object.keys(PIECES);
 const CARTON = 0xb8ab97;
 function f(x) { return (Math.round(x * 10) / 10).toLocaleString("fr-FR"); }
 
@@ -212,7 +213,7 @@ function demarrer() {
 
   // maths (x, y profondeur, z haut) -> three, centré sur la maquette.
   // Miroir sur x : vu de face (côté ouvert), le versant turquoise est à droite et la fenêtre à gauche.
-  const T = p => new THREE.Vector3(-(p[0] - 2.3), p[2], p[1] + 1.3);
+  const T = p => new THREE.Vector3(p[0] + 2, p[2], -(p[1] - 1.2));
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x6f6a5e, 0.55));
   const soleil = new THREE.DirectionalLight(0xfff1d6, 0.95);
@@ -248,10 +249,10 @@ function demarrer() {
     return { o, e1, e2, n, m };
   }
   const objets = {};
-  for (const k of ORDRE) {
+  for (const k of TOUTES) {
     const d = PIECES[k];
-    const fin = d.p3.map(T);
-    const plat = d.p2.map(([u, v]) => T([u - 7.2, v - 3.6, 0]));
+    const plat = d.p2.map(([u, v]) => new THREE.Vector3(7.6 - u, 0, v - 2.4));
+    const fin = d.p3 ? d.p3.map(T) : plat;
     const rf = repere(fin), rp = repere(plat);
     const forme = new THREE.Shape(fin.map(p => { const q = p.clone().sub(rf.o); return new THREE.Vector2(q.dot(rf.e1), q.dot(rf.e2)); }));
     const geo = new THREE.ExtrudeGeometry(forme, { depth: EP, bevelEnabled: false });
@@ -287,11 +288,11 @@ function demarrer() {
   // ---- caméra ----
   // trois cadrages : le tangram seul, le chantier (tangram + maquette), la maquette finie
   const CADRES = {
-    depart:   { c: [7.2, 0, -0.4],  k: 1.15 },
-    chantier: { c: [3.4, 0.3, -0.3], k: 1.75 },
-    fini:     { c: [-0.2, 0.6, 0], k: 1.05 },
+    depart:   { c: [5.6, 0, -0.4],  k: 1.15 },
+    chantier: { c: [2.6, 0.3, -0.3], k: 1.75 },
+    fini:     { c: [0, 0.7, 0], k: 1.05 },
   };
-  const VUES = { "v-3d": [4.5, 3.4, -6.2], "v-face": [0.3, 1, -7.8], "v-cote": [7.5, 1, -0.2], "v-dessus": [0.01, 8.5, -0.01] };
+  const VUES = { "v-3d": [-2.6, 3.8, -6.6], "v-face": [-0.6, 1.6, -7.8], "v-cote": [7.5, 2.2, -0.6], "v-dessus": [0.01, 8.5, -0.01] };
   const cadre = () => etape === 0 ? CADRES.depart : etape === ETAPES.length - 1 ? CADRES.fini : CADRES.chantier;
   let anim = null, vue = "v-3d", cadreCourant = null;
   function allerVers(instant) {
@@ -322,7 +323,7 @@ function demarrer() {
   btnCoul.addEventListener("click", () => { enCouleurs = !enCouleurs; btnCoul.setAttribute("aria-pressed", enCouleurs); majCouleurs(); });
   function majCouleurs() {
     const cur = ETAPES[etape].piece;
-    for (const k of ORDRE) {
+    for (const k of TOUTES) {
       const o = objets[k];
       o.mat.color.copy(enCouleurs || k === cur ? o.couleur : new THREE.Color(CARTON));
       o.mat.emissive.setHex(k === cur ? 0x1a1a1a : 0x000000);
@@ -355,7 +356,7 @@ function demarrer() {
   function boucle() {
     const dt = Math.min(horloge.getDelta(), 0.05);
     taille();
-    for (const k of ORDRE) {
+    for (const k of TOUTES) {
       const o = objets[k];
       if (o.t !== o.cible) o.t = reduit ? o.cible : (o.t < o.cible ? Math.min(o.cible, o.t + dt / 1.1) : Math.max(o.cible, o.t - dt / 0.7));
       const e = ease(o.t);

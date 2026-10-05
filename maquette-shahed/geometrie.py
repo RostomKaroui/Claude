@@ -1,4 +1,4 @@
-"""Geometrie 3D de la maquette de Shahed (reconstitution d'apres photos).
+"""Geometrie 3D de la maquette de Shahed, reconstituee a partir de ses 4 photos.
 
 x : le long du pignon, y : profondeur, z : hauteur. Table = plan z = 0.
 Verifie : formes exactes des pieces, aretes collees de meme longueur,
@@ -12,31 +12,32 @@ import os
 R = math.sqrt(2)
 H = R  # demi-diagonale utile
 
-# 3D final (reconstitution d'après les 4 photos), 2D tangram (image en couleurs)
-# x : le long du pignon du fond, y : vers l'avant (négatif), z : hauteur.
+# 3D final : reconstitution par photogrammétrie des 4 photos (caméras recalées
+# sur les sommets visibles, erreur moyenne ~20 px). x : vers la droite vu de
+# face (négatif), y : vers l'avant, z : hauteur. Carré du tangram de côté 4.
+S = 2 - R  # début du carré (son côté avant est sur le côté droit du grand triangle avant)
 PIECES = {
     "G1": dict(nom="Grand triangle orange", couleur="#f4a93a",
-               p3=[(0, 0, 0), (4, 0, 0), (2, 0, 2)],
-               p2=[(0, 4), (4, 4), (2, 2)]),
-    "G2": dict(nom="Grand triangle turquoise", couleur="#8fcfc3",
-               p3=[(0, 0, 0), (2, 0, 2), (0, -2 * R, 0)],
-               p2=[(2, 2), (0, 4), (0, 0)]),
-    "M":  dict(nom="Triangle moyen jaune", couleur="#f5dc2a",
-               p3=[(0, -R, 0), (2 * R, -R, 0), (R, -R, R)],
-               p2=[(2, 0), (4, 2), (4, 0)]),
-    "C":  dict(nom="Carré rouge", couleur="#e04b30",
-               p3=[(R, -R, R), (R + 1, -R, R - 1), (R + 1, 0, R - 1), (R, 0, R)],
-               p2=[(2, 2), (3, 3), (4, 2), (3, 1)]),
-    "P1": dict(nom="Petit triangle bleu clair", couleur="#3cb2e4",
-               p3=[(R, 0, R), (2 * R, -R, R), (R, -R, R)],
-               p2=[(4, 4), (4, 2), (3, 3)]),
-    "P2": dict(nom="Petit triangle vert", couleur="#16984a",
-               p3=[(R, -R - 1, 0), (R + 1, -R, 0), (R - 1, -R, 0)],
-               p2=[(2, 2), (3, 1), (1, 1)]),
+               p3=[(0, 0, 0), (0, 2 * R, 0), (-2, 0, 2)],
+               p2=[(2, 2), (0, 4), (4, 4)]),
     "Pa": dict(nom="Parallélogramme bleu", couleur="#1f5aa6",
-               p3=[(4 - R, 0, R), (4, 0, 0), (4 - 1 / R, -1, 1 / R), (4 - R - 1 / R, -1, R + 1 / R)],
+               p3=[(-1, 0, 1), (-3, 0, 1), (-2, 0, 0), (0, 0, 0)],
                p2=[(2, 0), (0, 0), (1, 1), (3, 1)]),
+    "P1": dict(nom="Petit triangle bleu clair", couleur="#3cb2e4",
+               p3=[(-2, 0, 2), (-1, 0, 1), (-3, 0, 1)],
+               p2=[(3, 3), (4, 4), (4, 2)]),
+    "G2": dict(nom="Grand triangle turquoise", couleur="#8fcfc3",
+               p3=[(0, 2, 0), (-4, 2, 0), (-2, 2, 2)],
+               p2=[(0, 0), (0, 4), (2, 2)]),
+    "M":  dict(nom="Triangle moyen jaune", couleur="#f5dc2a",
+               p3=[(-3, 0, 1), (-1, 0, 1), (-3, 2, 1)],
+               p2=[(4, 0), (2, 0), (4, 2)]),
+    "C":  dict(nom="Carré rouge", couleur="#e04b30",
+               p3=[(-3, S, 1), (-3, 2, 1), (-4, 2, 0), (-4, S, 0)],
+               p2=[(2, 2), (3, 3), (4, 2), (3, 1)]),
 }
+NON_VU = {"P2": dict(nom="Petit triangle vert", couleur="#16984a", p3=None,
+                     p2=[(2, 2), (3, 1), (1, 1)])}
 
 def sub(a, b): return tuple(x - y for x, y in zip(a, b))
 def dot(a, b): return sum(x * y for x, y in zip(a, b))
@@ -136,6 +137,7 @@ for (ka, A), (kb, B) in itertools.combinations(PIECES.items(), 2):
 print("contacts :", contacts)
 
 ici = os.path.dirname(os.path.abspath(__file__))
-json.dump({k: dict(nom=d["nom"], couleur=d["couleur"], p3=d["p3"], p2=d["p2"])
-           for k, d in PIECES.items()}, open(os.path.join(ici, "pieces.json"), "w"))
-print("OK : 7 pieces exactes, aucune ne traverse une autre")
+out = {k: dict(nom=d["nom"], couleur=d["couleur"], p3=d["p3"], p2=d["p2"]) for k, d in PIECES.items()}
+out.update(NON_VU)
+json.dump(out, open(os.path.join(ici, "pieces.json"), "w"))
+print("OK : %d pieces placees exactes, aucune ne traverse une autre" % len(PIECES))
