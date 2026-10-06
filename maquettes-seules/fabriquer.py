@@ -7,7 +7,8 @@ three_dir = sys.argv[1]
 THREE = open(os.path.join(three_dir, "build/three.min.js"), encoding="utf-8").read()
 ORBIT = open(os.path.join(three_dir, "examples/js/controls/OrbitControls.js"), encoding="utf-8").read()
 PAGES = {"le-pli": ("maquette", "Le Pli"), "shahed": ("maquette-shahed", "Maquette de Shahed"),
-         "yassmine": ("maquette-yassmine", "Maquette de Yassmine"), "commune": ("maquette-commune", "Maquette commune")}
+         "yassmine": ("maquette-yassmine", "Maquette de Yassmine"), "commune": ("maquette-commune", "Maquette commune"),
+         "jury": ("maquette-jury", "Maquette du jury")}
 CSS = """
 body { padding: 0; margin: 0; overflow: hidden; }
 #app { height: 100vh; height: 100dvh; display: grid; grid-template-rows: 1fr auto; background: var(--scene); }
@@ -24,8 +25,9 @@ for nom, (dossier, titre) in PAGES.items():
     ht = re.search(r'id="hauteur"[^>]*value="(\d+)"', html).group(1)
     main = html[html.index('<main class="planche">'):html.index("</main>") + 7]
     # tous les identifiants utilisés par le script restent présents, mais cachés et vides
-    ids = [i for i in re.findall(r'id="([^"]+)"', main) if i not in ("scene", "prec", "suiv", "liste", "azimut", "hauteur", "tourner")]
+    ids = [i for i in re.findall(r'id="([^"]+)"', main) if i not in ("scene", "prec", "suiv", "liste", "azimut", "hauteur", "tourner", "promenade")]
     caches = "".join(f'<input id="{i}" value="15">' if i == "cote" else f'<span id="{i}"></span>' for i in ids)
+    promenade = '\n    <button id="promenade" type="button" aria-pressed="false" aria-label="Promenade du personnage">🚶</button>' if 'id="promenade"' in main else ""
     corps = f"""<div id="app">
   <canvas id="scene" aria-label="{titre}"></canvas>
   <div class="ctrl">
@@ -35,7 +37,7 @@ for nom, (dossier, titre) in PAGES.items():
     <span class="sep"></span>
     <input id="azimut" type="range" min="0" max="360" value="{az}" aria-label="Direction du soleil">
     <input id="hauteur" type="range" min="5" max="88" value="{ht}" aria-label="Hauteur du soleil">
-    <button id="tourner" type="button" aria-pressed="false" aria-label="Faire tourner le soleil">☀</button>
+    <button id="tourner" type="button" aria-pressed="false" aria-label="Faire tourner le soleil">☀</button>{promenade}
   </div>
 </div>
 <div hidden>{caches}</div>"""
