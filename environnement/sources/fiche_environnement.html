@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Environnement · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8;
+    --vert: #2E7D4F; --vert-clair: #eaf4ee;
+    --brique: #9A4E2C; --brique-clair: #f8eee8;
+    --bleu: #2F6690;
+  }
+  @page { size: A4; margin: 12mm 14mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.5pt; line-height: 1.4; color: var(--encre); }
+  b { font-weight: 800; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.08em; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .2em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.3; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 15pt; margin: 2px 0 6px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 10pt; color: #fff; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  h3 { font-size: 10.6pt; font-weight: 800; margin: 8px 0 4px; break-after: avoid; }
+  .nat h2, .nat h3 { color: var(--vert); } .nat .num { background: var(--vert); }
+  .bati h2, .bati h3 { color: var(--brique); } .bati .num { background: var(--brique); }
+  section { margin-bottom: 8px; }
+  .bloc { break-inside: avoid; }
+
+  .def { padding: 6px 10px; border-left: 4px solid var(--encre); background: #f5f6f8; margin-bottom: 6px; break-inside: avoid; }
+  .nat .def { border-color: var(--vert); background: var(--vert-clair); }
+  .bati .def { border-color: var(--brique); background: var(--brique-clair); }
+  .def .mot { font-weight: 800; text-transform: uppercase; font-size: 7.6pt; letter-spacing: .1em; display: block; margin-bottom: 1px; }
+
+  ul { list-style: none; }
+  ul li { position: relative; padding-left: 12px; margin-bottom: 3px; }
+  ul li::before { content: ""; position: absolute; left: 1px; top: .55em; width: 5px; height: 5px; border-radius: 1px; background: var(--gris); }
+  .nat ul li::before { background: var(--vert); } .bati ul li::before { background: var(--brique); }
+
+  .cote { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; }
+  .figure svg { display: block; margin: 0 auto; }
+
+  .cartes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 4px 0 6px; }
+  .cartes div { border: 1px solid var(--filet); border-top: 4px solid var(--vert); border-radius: 5px; padding: 5px 7px; font-size: 8.7pt; line-height: 1.3; break-inside: avoid; }
+  .cartes b { display: block; color: var(--vert); font-size: 9.4pt; margin-bottom: 1px; }
+
+  .biomes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 5px 0; text-align: center; font-size: 8.8pt; }
+  .biomes svg { display: block; width: 100%; height: auto; border-radius: 5px; }
+  .biomes b { display: block; margin-top: 2px; }
+
+  table.cat { width: 100%; border-collapse: collapse; font-size: 9.2pt; break-inside: avoid; }
+  table.cat th { background: var(--brique); color: #fff; text-align: left; padding: 4px 8px; font-size: 8pt; letter-spacing: .08em; }
+  table.cat td { padding: 4px 8px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.cat td:first-child { font-weight: 800; color: var(--brique); width: 30%; }
+  table.cat tr:nth-child(even) td { background: #fcf7f4; }
+
+  .essentiel { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 12px 3px; background: #f7f8f9; break-inside: avoid; }
+  .essentiel h4 { font-size: 8.4pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 6px; }
+  .essentiel li { margin-bottom: 2px; }
+  .essentiel li::before { background: var(--encre); }
+  .saut { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">ENVIRONNEMENT · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">Introduction : l'environnement naturel et l'environnement bâti</div>
+</div>
+
+<!-- INTRODUCTION -->
+<section>
+  <div class="cote" style="grid-template-columns: 1fr 1.05fr;">
+    <div>
+      <div class="def"><span class="mot">Environnement</span><span class="q">« Ensemble des éléments qui entourent un individu ou une espèce et dont certains contribuent directement à subvenir à ses besoins. »</span></div>
+      <p>On distingue deux grands types d'environnement :</p>
+      <ul style="margin-top:3px">
+        <li><b style="color:var(--vert)">l'environnement naturel</b> : ce qui existe <b>sans</b> l'intervention humaine ;</li>
+        <li><b style="color:var(--brique)">l'environnement bâti</b> : ce qui est <b>construit et aménagé</b> par l'homme.</li>
+      </ul>
+    </div>
+    <div class="figure"><svg id="fig-arbre" width="350" height="190" viewBox="0 0 350 190"></svg></div>
+  </div>
+</section>
+
+<!-- I. NATUREL -->
+<section class="nat">
+  <h2><span class="num">I</span>L'environnement naturel</h2>
+  <div class="def"><span class="mot">Définition</span>L'environnement naturel désigne l'<b>ensemble des éléments et systèmes qui existent sans l'intervention humaine</b>. Il repose sur trois notions clés : les <b>éléments abiotiques</b>, l'<b>écosystème</b> et la <b>biodiversité</b>.</div>
+
+  <div class="bloc">
+    <h3>1. Les éléments abiotiques</h3>
+    <p>Ce sont les <b>composants non vivants</b> d'un écosystème : tous les <b>facteurs physiques et chimiques</b> qui ne viennent pas d'organismes vivants. Ils influencent la vie et les conditions écologiques d'un habitat.</p>
+    <div class="cartes">
+      <div><b>Climat</b>température, précipitations, météo</div>
+      <div><b>Sol</b>support de la croissance des plantes</div>
+      <div><b>Eau</b>indispensable à la vie, façonne les paysages</div>
+      <div><b>Air</b>sa composition permet la respiration</div>
+      <div><b>Lumière</b>règle les cycles de vie des plantes et animaux</div>
+    </div>
+    <p>Ils <b>interagissent</b> avec les <b>éléments biotiques</b> (les organismes vivants) : leur équilibre est essentiel pour la santé des habitats, la biodiversité et la durabilité des ressources.</p>
+  </div>
+
+  <div class="bloc">
+    <h3>2. L'écosystème</h3>
+    <div class="cote" style="grid-template-columns: 1fr 1fr;">
+      <div>
+        <div class="def"><span class="mot">Définition</span><span class="q">« Système formé par un environnement et par l'ensemble des espèces qui y vivent, s'y nourrissent et s'y reproduisent. »</span></div>
+        <ul>
+          <li>Il faut le considérer <b>dans sa totalité</b> : animaux, plantes, éléments <b>physiques</b> (eau, sol, climat) et <b>chimiques</b> (composition en sels) qui <b>interagissent</b>.</li>
+        </ul>
+      </div>
+      <div class="figure"><svg id="fig-eco" width="330" height="170" viewBox="0 0 330 170"></svg></div>
+    </div>
+  </div>
+
+  <div class="bloc">
+    <p style="margin-top:6px">Les grands écosystèmes qui occupent de grandes surfaces s'appellent des <b>biomes</b> :</p>
+    <div class="biomes">
+      <div><svg id="b-foret" viewBox="0 12 160 68"></svg><b>Forêt tropicale</b></div>
+      <div><svg id="b-savane" viewBox="0 12 160 68"></svg><b>Savane</b></div>
+      <div><svg id="b-desert" viewBox="0 12 160 68"></svg><b>Désert</b></div>
+      <div><svg id="b-ocean" viewBox="0 12 160 68"></svg><b>Océan</b></div>
+    </div>
+    <ul>
+      <li>Ils sont répartis selon un facteur essentiel : les <b>conditions climatiques</b>.</li>
+      <li>Ils évoluent avec les <b>changements climatiques</b> et les <b>mouvements tectoniques</b> : c'est un moteur essentiel de l'<b>évolution</b>.</li>
+    </ul>
+  </div>
+
+  <div class="bloc">
+    <h3>3. La biodiversité</h3>
+    <div class="cote" style="grid-template-columns: 1fr 1fr; align-items: start;">
+      <div>
+        <p style="margin-bottom:4px">C'est la <b>diversité du vivant</b>. Elle est composée de :</p>
+        <ul>
+          <li>la <b>flore</b> = les différentes espèces de <b>plantes</b> ;</li>
+          <li>la <b>faune</b> = les espèces <b>animales</b>.</li>
+        </ul>
+        <p style="margin-top:5px">Le <b>concept</b> est récent, mais la biodiversité elle-même est très ancienne : elle remonte au <b>début de la vie</b> sur Terre. Le concept prend de l'importance juste avant le <b>sommet de Rio (1992)</b>.</p>
+      </div>
+      <div>
+        <p style="margin-bottom:4px"><b>Un contexte de crise</b> : sous l'effet des <b>activités humaines</b> et du <b>développement économique</b>, l'environnement se dégrade vite :</p>
+        <ul>
+          <li>les <b>forêts tropicales</b> disparaissent, avec leurs espèces ;</li>
+          <li>les <b>milieux aquatiques continentaux</b> sont dégradés par les aménagements et les pollutions ;</li>
+          <li>la situation des <b>milieux marins</b> est préoccupante.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="def" style="margin-top:6px"><span class="mot">Enjeu</span>Protéger et valoriser la biodiversité est un <b>enjeu majeur pour tous les pays</b>. Le <b>développement soutenable</b> (durable) s'appuie sur une meilleure compréhension des processus écologiques et de l'<b>équilibre des écosystèmes</b>.</div>
+  </div>
+</section>
+
+<!-- II. BÂTI -->
+<section class="bati">
+  <h2><span class="num">II</span>L'environnement bâti</h2>
+  <div class="def"><span class="mot">Définition</span>L'environnement bâti est l'ensemble des <b>constructions et aménagements réalisés par l'homme</b> : bâtiments, rues, espaces publics… Ce n'est pas seulement un ensemble de structures physiques, mais un <b>cadre dynamique qui façonne la vie</b> des individus et des communautés. Il faut donc le <b>concevoir et le gérer</b> de manière réfléchie pour un <b>avenir durable et inclusif</b>.</div>
+
+  <div class="bloc">
+    <h3>1. Les bâtiments : trois catégories</h3>
+    <table class="cat">
+      <tr><th>CATÉGORIE</th><th>EXEMPLES</th><th>RÔLE</th></tr>
+      <tr><td>Résidences</td><td>maisons individuelles, appartements, immeubles</td><td>abri et espace de vie pour les familles</td></tr>
+      <tr><td>Établissements commerciaux, touristiques et culturels</td><td>magasins, bureaux, restaurants, galeries d'art</td><td>lieux d'échange économique et social, où les personnes interagissent</td></tr>
+      <tr><td>Institutions publiques</td><td>écoles, hôpitaux, bibliothèques</td><td>rôle essentiel dans le développement des communautés</td></tr>
+    </table>
+    <p style="margin-top:4px">L'environnement bâti joue un rôle essentiel dans le <b>développement des villes et des régions</b>.</p>
+  </div>
+
+  <div class="bloc">
+    <h3>2. L'aménagement urbain</h3>
+    <p style="margin-bottom:3px">Discipline clé qui <b>régule l'organisation de l'environnement bâti</b> :</p>
+    <ul>
+      <li>la <b>planification territoriale</b> équilibre les besoins <b>résidentiels</b>, <b>commerciaux</b> et <b>récréatifs</b> ;</li>
+      <li>les <b>réglementations et normes</b> de construction garantissent la <b>sécurité</b> des structures, mais aussi l'<b>harmonie avec l'environnement naturel</b> et la limitation de l'impact sur les <b>écosystèmes locaux</b>.</li>
+    </ul>
+  </div>
+
+  <div class="bloc">
+    <h3>3. Les espaces publics</h3>
+    <ul>
+      <li>Zones <b>vitales</b> : ils favorisent la <b>vie communautaire</b> et les <b>interactions sociales</b>.</li>
+      <li><b>Parcs, jardins, places publiques</b> : lieux de détente, de loisirs et de rassemblement, où l'on se rencontre, participe à des activités culturelles et profite de la nature.</li>
+      <li>Leur <b>qualité</b> a un impact sur le <b>bien-être physique et mental</b> des individus.</li>
+    </ul>
+  </div>
+
+</section>
+
+<div class="essentiel">
+  <h4>L'essentiel à savoir par cœur</h4>
+  <ul>
+    <li><b>Environnement</b> = ce qui entoure un individu ou une espèce et répond en partie à ses besoins.</li>
+    <li><b>Naturel</b> = sans intervention humaine ; <b>bâti</b> = construit et aménagé par l'homme.</li>
+    <li><b>Abiotique</b> = non vivant (climat, sol, eau, air, lumière) ; <b>biotique</b> = vivant.</li>
+    <li><b>Écosystème</b> = un milieu + les espèces qui y vivent ; <b>biome</b> = grand écosystème (désert, forêt…).</li>
+    <li><b>Biodiversité</b> = flore + faune ; concept mis en avant au <b>sommet de Rio (1992)</b>.</li>
+    <li>Bâtiments : <b>résidences</b>, <b>commerces / tourisme / culture</b>, <b>institutions publiques</b>.</li>
+  </ul>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const VERT = "#2E7D4F", BRIQUE = "#9A4E2C", ENCRE = "#1f2328", BLEU = "#2F6690";
+function el(parent, name, attrs = {}, texte) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (texte !== undefined) e.textContent = texte;
+  parent.appendChild(e);
+  return e;
+}
+function boite(g, x, y, w, h, fond, bord, titre, sous, couleurTitre) {
+  el(g, "rect", { x, y, width: w, height: h, rx: 9, fill: fond, stroke: bord, "stroke-width": 1.6 });
+  el(g, "text", { x: x + w / 2, y: y + (sous ? h / 2 - 2 : h / 2 + 4), "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 11, fill: couleurTitre || ENCRE }, titre);
+  if (sous) el(g, "text", { x: x + w / 2, y: y + h / 2 + 13, "text-anchor": "middle", "font-family": "Inter", "font-size": 9.5, fill: "#4b5560" }, sous);
+}
+function fleche(g, a, b, c) {
+  el(g, "line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: c, "stroke-width": 1.8 });
+  const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), L = 7;
+  el(g, "polygon", { points: [b, [b[0] - L * Math.cos(ang - 0.45), b[1] - L * Math.sin(ang - 0.45)], [b[0] - L * Math.cos(ang + 0.45), b[1] - L * Math.sin(ang + 0.45)]].map((p) => p.join(",")).join(" "), fill: c });
+}
+
+/* arbre : environnement -> naturel / bâti */
+(() => {
+  const g = document.getElementById("fig-arbre");
+  boite(g, 105, 4, 140, 34, "#1f2328", "#1f2328", "ENVIRONNEMENT", null, "#fff");
+  fleche(g, [150, 38], [88, 64], ENCRE); fleche(g, [200, 38], [262, 64], ENCRE);
+  boite(g, 4, 66, 166, 44, "#eaf4ee", VERT, "Environnement naturel", "sans intervention humaine", VERT);
+  boite(g, 180, 66, 166, 44, "#f8eee8", BRIQUE, "Environnement bâti", "créé par l'homme", BRIQUE);
+  const petits = (x0, liste, fond, bord) => liste.forEach((t, i) => {
+    el(g, "rect", { x: x0, y: 122 + i * 22, width: 166, height: 19, rx: 9.5, fill: fond, stroke: bord, "stroke-width": 1 });
+    el(g, "text", { x: x0 + 83, y: 135.5 + i * 22, "text-anchor": "middle", "font-family": "Inter", "font-size": 9.5, "font-weight": 600, fill: ENCRE }, t);
+  });
+  petits(4, ["éléments abiotiques", "écosystème", "biodiversité (faune + flore)"], "#fff", VERT);
+  petits(180, ["bâtiments", "aménagement urbain", "espaces publics"], "#fff", BRIQUE);
+})();
+
+/* écosystème = biotique + abiotique en interaction */
+(() => {
+  const g = document.getElementById("fig-eco");
+  el(g, "rect", { x: 2, y: 2, width: 326, height: 166, rx: 12, fill: "#f6faf7", stroke: VERT, "stroke-width": 1.4, "stroke-dasharray": "5 4" });
+  el(g, "text", { x: 165, y: 20, "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 10, fill: VERT, "letter-spacing": 1.5 }, "ÉCOSYSTÈME");
+  boite(g, 14, 34, 128, 64, "#eaf4ee", VERT, "BIOTIQUE", "le vivant", VERT);
+  boite(g, 188, 34, 128, 64, "#e8f0f6", BLEU, "ABIOTIQUE", "le non-vivant", BLEU);
+  fleche(g, [146, 58], [184, 58], ENCRE); fleche(g, [184, 76], [146, 76], ENCRE);
+  el(g, "text", { x: 165, y: 50, "text-anchor": "middle", "font-family": "Inter", "font-size": 8.5, fill: "#4b5560" }, "interactions");
+  const ligne = (x, y, t) => el(g, "text", { x, y, "text-anchor": "middle", "font-family": "Inter", "font-size": 9.5, fill: ENCRE }, t);
+  ligne(78, 118, "faune (animaux)"); ligne(78, 134, "flore (plantes)"); ligne(78, 150, "micro-organismes");
+  ligne(252, 118, "eau, sol, air"); ligne(252, 134, "climat, lumière"); ligne(252, 150, "composition en sels");
+})();
+
+/* biomes : petites vignettes */
+(() => {
+  const ciel = (g, c) => el(g, "rect", { width: 160, height: 80, fill: c });
+  let g = document.getElementById("b-foret");
+  ciel(g, "#dcebf2");
+  el(g, "path", { d: "M0 80 V48 Q20 30 40 46 Q60 26 80 44 Q100 24 120 42 Q140 28 160 44 V80 Z", fill: "#3f8a4f" });
+  el(g, "path", { d: "M0 80 V60 Q25 46 50 58 Q75 44 100 58 Q130 46 160 58 V80 Z", fill: "#2b6a3b" });
+  [20, 62, 104, 140].forEach((x) => el(g, "rect", { x, y: 58, width: 3, height: 22, fill: "#5b4128" }));
+  g = document.getElementById("b-savane");
+  ciel(g, "#f3e6c4");
+  el(g, "rect", { y: 56, width: 160, height: 24, fill: "#d8b866" });
+  el(g, "rect", { x: 98, y: 36, width: 4, height: 22, fill: "#5b4128" });
+  el(g, "ellipse", { cx: 100, cy: 34, rx: 28, ry: 7, fill: "#5f8a3a" });
+  el(g, "rect", { x: 34, y: 44, width: 3, height: 13, fill: "#5b4128" });
+  el(g, "ellipse", { cx: 35, cy: 42, rx: 15, ry: 5, fill: "#5f8a3a" });
+  el(g, "circle", { cx: 138, cy: 18, r: 9, fill: "#f2b84b" });
+  g = document.getElementById("b-desert");
+  ciel(g, "#f6e3cf");
+  el(g, "circle", { cx: 30, cy: 20, r: 10, fill: "#f2a541" });
+  el(g, "path", { d: "M0 80 V56 Q40 34 80 52 Q120 70 160 46 V80 Z", fill: "#e2b278" });
+  el(g, "path", { d: "M0 80 V68 Q50 54 100 66 Q130 72 160 62 V80 Z", fill: "#cf9a5c" });
+  g = document.getElementById("b-ocean");
+  ciel(g, "#e1eef6");
+  el(g, "rect", { y: 36, width: 160, height: 44, fill: "#3d7fb0" });
+  for (let i = 0; i < 3; i++) el(g, "path", { d: `M0 ${46 + i * 12} q10 -5 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0`, fill: "none", stroke: "#cfe3f1", "stroke-width": 1.6 });
+})();
+</script>
+</body>
+</html>

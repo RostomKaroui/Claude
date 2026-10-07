@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Sociologie · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I  sciences sociales */
+    --c2: #B4501E;  /* II cadres sociaux */
+    --c3: #8C1C13;  /* III sociologie de l'espace */
+    --c4: #3C7A3E;  /* IV biophilie */
+  }
+  @page { size: A4; margin: 12mm 13mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.4pt; line-height: 1.38; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.06em; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 9px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .2em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 70mm; line-height: 1.3; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
+  .plan div { border-radius: 5px; padding: 5px 8px; color: #fff; font-size: 8pt; line-height: 1.3; }
+  .plan b { display: block; font-size: 8.4pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 15pt; margin: 4px 0 5px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 10pt; color: #fff; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 6px; }
+  .s2, .s4 { break-before: page; }
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid currentColor; background: var(--fond); padding: 4px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .grille { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 8px 6px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 10.2pt; font-weight: 800; margin-bottom: 3px; }
+  .carte h3 span { font-weight: 800; margin-right: 4px; }
+  .s1 .carte h3 span { color: var(--c1); } .s2 .carte h3 span { color: var(--c2); } .s3 .carte h3 span { color: var(--c3); } .s4 .carte h3 span { color: var(--c4); }
+  .objet { font-size: 9pt; margin-bottom: 3px; }
+  .objet b { text-transform: uppercase; font-size: 7.4pt; letter-spacing: .08em; }
+  .s1 .objet b { color: var(--c1); } .s2 .objet b { color: var(--c2); } .s3 .objet b { color: var(--c3); }
+
+  ul { list-style: none; }
+  li { position: relative; padding-left: 11px; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .58em; width: 5px; height: 5px; border-radius: 1px; background: var(--gris); }
+  .s1 li::before { background: var(--c1); } .s2 li::before { background: var(--c2); } .s3 li::before { background: var(--c3); } .s4 li::before { background: var(--c4); }
+
+  .archi { margin-top: 4px; font-size: 8.8pt; background: #fbf3e6; border-radius: 4px; padding: 3px 7px; }
+  .archi b { color: #8a5a12; }
+  .tag { display: inline-block; font-size: 7pt; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border-radius: 3px; padding: 0 5px; color: #fff; vertical-align: 1px; }
+  .s1 .tag { background: var(--c1); } .s2 .tag { background: var(--c2); } .s3 .tag { background: var(--c3); } .s4 .tag { background: var(--c4); }
+
+  /* proxémie */
+  .proxemie { display: grid; grid-template-columns: 112px 1fr; gap: 8px; align-items: center; margin: 4px 0 2px; }
+  .proxemie table { border-collapse: collapse; width: 100%; font-size: 8.4pt; }
+  .proxemie td { padding: 1.5px 4px; border-bottom: 1px solid var(--filet); }
+  .proxemie td:first-child { font-weight: 800; white-space: nowrap; }
+  .pastille { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 0; }
+
+  /* socialisation */
+  .socialisation { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 6px; margin: 0 0 6px; text-align: center; font-size: 8.4pt; }
+  .socialisation div.etape { border: 1.5px solid var(--c2); border-radius: 20px; padding: 3px 6px; }
+  .socialisation div.etape b { color: var(--c2); }
+  .socialisation .fleche { color: var(--c2); font-weight: 800; }
+
+  /* tableau ville / rural */
+  table.comp { width: 100%; border-collapse: collapse; font-size: 8.6pt; margin-top: 6px; break-inside: avoid; }
+  table.comp th { background: var(--c3); color: #fff; text-align: left; padding: 3px 7px; font-size: 8pt; letter-spacing: .06em; }
+  table.comp td { padding: 2px 7px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.comp td:first-child { font-weight: 800; color: var(--c3); width: 22%; }
+  table.comp tr:nth-child(even) td { background: #fbf6f5; }
+  .note { font-size: 8.4pt; color: var(--gris); margin-top: 3px; }
+
+  /* biophilie */
+  .principes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 5px 0; }
+  .principes div { background: #eef5ee; border-radius: 5px; padding: 4px 7px; font-size: 8.6pt; line-height: 1.3; break-inside: avoid; }
+  .principes b { color: var(--c4); display: block; }
+
+  /* synthèse */
+  .synthese { border: 2px solid var(--encre); border-radius: 8px; padding: 7px 10px 8px; margin-top: 8px; break-inside: avoid; }
+  .synthese h4, .retenir h4 { font-size: 8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 5px; }
+  .fil { display: grid; grid-template-columns: 1fr 14px 1fr 14px 1fr 14px 1fr; align-items: stretch; gap: 2px; font-size: 8.4pt; line-height: 1.3; }
+  .fil .e { border-radius: 5px; padding: 4px 6px; color: #fff; }
+  .fil .e b { display: block; }
+  .fil .f { display: grid; place-items: center; font-weight: 800; color: var(--gris); }
+  .lecon { margin-top: 6px; font-family: "Playfair", serif; font-style: italic; font-size: 11.5pt; text-align: center; }
+
+  .retenir { display: grid; grid-template-columns: 1.08fr 1fr; gap: 9px; margin-top: 8px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 6px 9px; break-inside: avoid; }
+  .retenir dl { font-size: 8.5pt; line-height: 1.33; }
+  .retenir dt { font-weight: 800; display: inline; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 2.5px; }
+  .auteurs { display: grid; grid-template-columns: auto 1fr; column-gap: 7px; row-gap: 2px; font-size: 8.4pt; line-height: 1.3; }
+  .auteurs span:nth-child(odd) { font-weight: 800; white-space: nowrap; }
+  .notes { margin-top: 8px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 6px 9px 4px; break-inside: avoid; }
+  .notes h4 { font-size: 8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 21px; border-bottom: 1px dotted #c4cad1; }
+</style>
+</head>
+<body>
+
+<!-- ===================== EN-TÊTE ===================== -->
+<div class="entete">
+  <div>
+    <div class="kicker">SOCIOLOGIE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">De la société à l'espace : comprendre pour qui et comment on construit</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>I · Les sciences sociales</b>sociologie, anthropologie, psychologie sociale (de l'espace)</div>
+  <div class="p2"><b>II · Les cadres sociaux</b>famille, école, espaces publics</div>
+  <div class="p3"><b>III · Sociologie de l'espace</b>la ville, les milieux ruraux</div>
+  <div class="p4"><b>IV · La biophilie</b>le besoin de nature et l'architecture</div>
+</div>
+
+<!-- ===================== I ===================== -->
+<section class="partie s1">
+  <h2><span class="num">I</span>Introduction : les sciences sociales</h2>
+  <div class="def">Les <b>sciences sociales</b> étudient l'être humain <b>en société</b> : ses comportements, ses relations, ses groupes et ses institutions. Pour l'architecte, elles aident à comprendre <b>pour qui</b> on construit et <b>comment</b> les gens vivront l'espace.</div>
+
+  <div class="grille">
+    <div class="carte">
+      <h3><span>1.</span>La sociologie</h3>
+      <p class="objet"><b>Objet d'étude :</b> la société et les <b>faits sociaux</b> : les groupes, les institutions (famille, école…), les normes et les relations entre individus.</p>
+      <ul>
+        <li>Mot inventé par <b>Auguste Comte</b> (1838).</li>
+        <li><b>Émile Durkheim</b> : <span class="q">« traiter les faits sociaux comme des choses »</span> (1895), c'est-à-dire les étudier de façon objective.</li>
+        <li><b>Max Weber</b> : comprendre le <b>sens</b> que les individus donnent à leurs actions.</li>
+        <li>Précurseur : <b>Ibn Khaldoun</b> (1332-1406, né à Tunis), la <i>Muqaddima</i> et la <i>‘asabiyya</i> (solidarité du groupe).</li>
+        <li>Méthodes : questionnaires, entretiens, observation, statistiques.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3><span>2.</span>L'anthropologie</h3>
+      <p class="objet"><b>Objet d'étude :</b> l'être humain dans la <b>diversité de ses cultures</b> : coutumes, rites, croyances, parenté, manières de vivre et d'habiter.</p>
+      <ul>
+        <li>Méthode du <b>terrain</b> : l'<b>observation participante</b> (Malinowski, années 1910-1920) : vivre longtemps avec le groupe étudié.</li>
+        <li>Exemple : <b>Pierre Bourdieu</b>, <i>La maison kabyle</i> (1970) : l'organisation de la maison reproduit l'ordre de la société (dedans / dehors, masculin / féminin, lumière / ombre).</li>
+        <li><b>Différence</b> : la sociologie étudie surtout les grands groupes des sociétés modernes ; l'anthropologie observe les cultures de près et sur la durée.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3><span>3.</span>La psychologie sociale</h3>
+      <p class="objet"><b>Objet d'étude :</b> comment l'individu <b>pense, ressent et agit sous l'influence des autres</b> (présents ou imaginés).</p>
+      <ul>
+        <li>Thèmes : attitudes, stéréotypes et préjugés, influence, <b>conformisme</b>, dynamique de groupe.</li>
+        <li>Expérience de <b>Solomon Asch</b> (1951) : face à un groupe qui donne exprès une réponse fausse, environ <b>1 réponse sur 3</b> suit la majorité.</li>
+        <li>Elle fait le pont entre la <b>psychologie</b> (l'individu) et la <b>sociologie</b> (le groupe).</li>
+        <li>Exemple du quotidien : dans un ascenseur, presque tout le monde se tourne vers la porte et évite de se regarder. Personne ne l'a écrit, mais chacun suit la règle.</li>
+      </ul>
+      <p class="archi"><b>→ Archi :</b> l'aménagement oriente les comportements du groupe : des gradins invitent à écouter, une table ronde invite à discuter.</p>
+    </div>
+    <div class="carte">
+      <h3><span>4.</span>La psychologie sociale de l'espace</h3>
+      <p class="objet"><b>Objet d'étude :</b> la relation entre l'individu et son <b>environnement physique</b> : comment l'espace agit sur nos comportements, et comment nous nous l'<b>approprions</b>.</p>
+      <ul>
+        <li>Notions : <b>espace personnel</b> (« bulle »), <b>territoire</b> et marquage, <b>appropriation</b>, intimité, densité et sentiment d'entassement.</li>
+      </ul>
+      <div class="proxemie">
+        <svg viewBox="0 0 112 112" width="112" height="112" aria-label="Les quatre distances de Hall">
+          <circle cx="56" cy="56" r="54" fill="#e3e9ee"/>
+          <circle cx="56" cy="56" r="39" fill="#c7d3dc"/>
+          <circle cx="56" cy="56" r="25" fill="#97adbd"/>
+          <circle cx="56" cy="56" r="12" fill="#2F4858"/>
+          <circle cx="56" cy="52" r="3.2" fill="#fff"/><rect x="53" y="56" width="6" height="7" rx="2" fill="#fff"/>
+        </svg>
+        <table>
+          <tr><td><span class="pastille" style="background:#2F4858"></span>intime</td><td>0 à 45 cm : famille, proches</td></tr>
+          <tr><td><span class="pastille" style="background:#97adbd"></span>personnelle</td><td>45 cm à 1,20 m : amis, conversation</td></tr>
+          <tr><td><span class="pastille" style="background:#c7d3dc"></span>sociale</td><td>1,20 à 3,60 m : travail, commerce</td></tr>
+          <tr><td><span class="pastille" style="background:#e3e9ee;border:1px solid #b9c5cf"></span>publique</td><td>plus de 3,60 m : cours, discours</td></tr>
+        </table>
+      </div>
+      <p style="font-size:8.6pt">La <b>proxémie</b> d'<b>Edward T. Hall</b> (<i>La Dimension cachée</i>, 1966).</p>
+      <p class="archi"><b>→ Archi :</b> dimensionner un banc, un bureau ou une salle d'attente, c'est gérer ces distances. Lien avec <b>Goffman</b> : scène et coulisses.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== II ===================== -->
+<section class="partie s2">
+  <h2><span class="num">II</span>Les cadres sociaux</h2>
+  <div class="def">Les <b>cadres sociaux</b> sont les milieux et les institutions qui <b>encadrent la vie</b> de l'individu et le <b>socialisent</b> : ils lui transmettent des normes, des valeurs et des rôles (expression du sociologue <b>Maurice Halbwachs</b>, 1925). La <b>socialisation</b> est l'apprentissage des règles de sa société : <b>primaire</b> dans l'enfance (famille), <b>secondaire</b> ensuite (école, travail…).</div>
+  <div class="socialisation">
+    <div class="etape"><b>Famille</b> · socialisation primaire, espace privé</div>
+    <div class="fleche">→</div>
+    <div class="etape"><b>École</b> · socialisation secondaire, espace collectif</div>
+    <div class="fleche">→</div>
+    <div class="etape"><b>Espaces publics</b> · vie en société, espace ouvert à tous</div>
+  </div>
+  <div class="grille" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="carte">
+      <h3><span>1.</span>La famille</h3>
+      <ul>
+        <li>Premier cadre de socialisation : langue, valeurs, manières de faire (manger, recevoir…).</li>
+        <li>Formes : famille <b>élargie</b> (plusieurs générations), <b>nucléaire</b> (parents + enfants), monoparentale, recomposée.</li>
+        <li>En Tunisie : de la grande famille autour du patio de la <i>dar</i> à la famille nucléaire en appartement ou en villa.</li>
+      </ul>
+      <p class="archi"><b>→ Archi :</b> le plan du logement traduit l'organisation de la famille (chambres, salon, cuisine).</p>
+    </div>
+    <div class="carte">
+      <h3><span>2.</span>L'école</h3>
+      <ul>
+        <li>Transmet des savoirs, mais aussi des <b>règles collectives</b> : horaires, discipline, respect, citoyenneté.</li>
+        <li><b>Durkheim</b> : l'école transmet une morale commune.</li>
+        <li><b>Bourdieu et Passeron</b> (<i>Les Héritiers</i>, 1964) : elle peut aussi <b>reproduire les inégalités</b>, car les élèves n'arrivent pas avec le même « capital culturel ».</li>
+      </ul>
+      <p class="archi"><b>→ Archi :</b> rangées face au tableau = autorité du maître ; îlots = travail de groupe. La cour de récréation socialise entre élèves.</p>
+    </div>
+    <div class="carte">
+      <h3><span>3.</span>Les espaces publics</h3>
+      <ul>
+        <li>Ouverts à tous : rues, places, jardins, marchés, souks, plages… Lieux de <b>rencontre</b>, de <b>mixité</b> et de citoyenneté.</li>
+        <li>Règles implicites : l'<b>inattention civile</b> (Goffman) : on se voit sans se dévisager.</li>
+        <li>Tous les groupes ne se les <b>approprient</b> pas de la même façon (âge, genre, milieu social).</li>
+        <li><b>Jan Gehl</b> (<i>Life Between Buildings</i>, 1971) : un bon espace public donne envie de <b>s'arrêter</b>.</li>
+      </ul>
+      <p class="archi"><b>→ Ex. :</b> l'avenue Habib-Bourguiba à Tunis : promenade, terrasses, rassemblements.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== III ===================== -->
+<section class="partie s3">
+  <h2><span class="num">III</span>La sociologie de l'espace</h2>
+  <div class="def">Elle étudie la relation entre <b>la société et l'espace</b> : la société <b>produit</b> l'espace, et l'espace <b>agit en retour</b> sur les relations sociales. <b>Henri Lefebvre</b> : <span class="q">« l'espace (social) est un produit (social) »</span> (<i>La Production de l'espace</i>, 1974) ; il défend aussi le « droit à la ville » (1968).</div>
+  <div class="grille">
+    <div class="carte">
+      <h3><span>1.</span>La ville</h3>
+      <ul>
+        <li>Forte <b>densité</b>, grande <b>diversité</b> de populations et d'activités, <b>anonymat</b>.</li>
+        <li><b>Georg Simmel</b> (1903) : sollicité en permanence, le citadin devient « blasé » et réservé.</li>
+        <li><b>École de Chicago</b> (années 1920) : la ville comme « laboratoire social » ; Burgess la décrit en <b>cercles concentriques</b>.</li>
+        <li>Phénomènes : <b>ségrégation</b> spatiale, étalement urbain, gentrification, habitat spontané.</li>
+      </ul>
+      <p class="archi"><b>→ Ex. Tunis :</b> la médina (tissu traditionnel dense), la ville européenne du XIX<sup>e</sup> siècle (plan en damier), les quartiers périphériques.</p>
+    </div>
+    <div class="carte">
+      <h3><span>2.</span>Les milieux ruraux</h3>
+      <ul>
+        <li>Faible densité, <b>interconnaissance</b> (« tout le monde se connaît »), agriculture, rythme des saisons, fortes solidarités familiales.</li>
+        <li><b>Exode rural</b> : départ des campagnes vers les villes ; en Tunisie, surtout de l'intérieur vers les villes côtières (Tunis, Sfax, Sousse).</li>
+        <li><b>Ibn Khaldoun</b> opposait déjà la vie bédouine (<i>badawa</i>) à la vie urbaine (<i>hadara</i>).</li>
+      </ul>
+      <p class="archi"><b>→ Archi :</b> un habitat adapté au climat et aux ressources : maisons troglodytes de Matmata, ksour et ghorfas du Sud.</p>
+    </div>
+  </div>
+  <table class="comp">
+    <tr><th></th><th>VILLE</th><th>MILIEU RURAL</th></tr>
+    <tr><td>Densité</td><td>forte, bâti continu, en hauteur</td><td>faible, habitat dispersé ou groupé en village</td></tr>
+    <tr><td>Relations</td><td>nombreuses, souvent anonymes</td><td>interconnaissance, liens familiaux forts</td></tr>
+    <tr><td>Contrôle social</td><td>faible : l'anonymat laisse plus de liberté</td><td>fort : « tout se sait »</td></tr>
+    <tr><td>Activités</td><td>services, commerce, industrie</td><td>agriculture, élevage, artisanat</td></tr>
+    <tr><td>Rythme de vie</td><td>rapide, réglé par les horaires</td><td>plus lent, réglé par les saisons</td></tr>
+    <tr><td>Lien (Tönnies)</td><td><b>société</b> : liens d'intérêt, contrats</td><td><b>communauté</b> : liens affectifs, tradition</td></tr>
+  </table>
+</section>
+
+<!-- ===================== IV ===================== -->
+<section class="partie s4">
+  <h2><span class="num">IV</span>La biophilie</h2>
+  <div class="def">La <b>biophilie</b> est la tendance <b>innée</b> de l'être humain à rechercher le <b>contact avec la nature et le vivant</b>. Le mot est employé par Erich Fromm (1964), puis popularisé par le biologiste <b>Edward O. Wilson</b> (<i>Biophilia</i>, 1984). Idée : nous avons vécu des milliers d'années dans la nature, elle nous apaise.</div>
+  <ul>
+    <li><b>Preuve célèbre</b> : <b>Roger Ulrich</b> (1984) a montré que des patients opérés dont la fenêtre donnait sur des <b>arbres</b> sortaient plus vite de l'hôpital et prenaient moins d'antidouleurs que ceux qui voyaient un <b>mur de briques</b>.</li>
+    <li><b>Bienfaits</b> : moins de stress, meilleure concentration, meilleur moral, récupération plus rapide.</li>
+  </ul>
+  <p style="margin-top:4px"><span class="tag">Design biophilique</span> faire entrer la nature dans l'architecture :</p>
+  <div class="principes">
+    <div><b>Lumière naturelle</b>orientation, ouvertures, puits de lumière</div>
+    <div><b>Végétation</b>jardins, patios, toitures et murs végétalisés</div>
+    <div><b>Eau</b>fontaines, bassins : bruit apaisant et fraîcheur</div>
+    <div><b>Matériaux naturels</b>bois, pierre, terre, textures</div>
+    <div><b>Vues sur la nature</b>fenêtres qui cadrent un paysage</div>
+    <div><b>Air et formes du vivant</b>ventilation naturelle, formes organiques</div>
+  </div>
+  <ul>
+    <li><b>Exemples</b> : la <i>Fallingwater</i> de Frank Lloyd Wright (années 1930), maison construite au-dessus d'une cascade ; le <i>Bosco Verticale</i> de Stefano Boeri (Milan, 2014), deux tours couvertes de centaines d'arbres.</li>
+    <li><b>Chez nous</b> : le patio de la <i>dar</i>, avec son ciel, sa fontaine, ses plantes et son jasmin : de la biophilie avant l'heure !</li>
+  </ul>
+</section>
+
+<!-- ===================== SYNTHÈSE ===================== -->
+<div class="synthese">
+  <h4>Le fil conducteur du cours</h4>
+  <div class="fil">
+    <div class="e p1"><b>Sciences sociales</b>des outils pour comprendre l'humain en société</div>
+    <div class="f">→</div>
+    <div class="e p2"><b>Cadres sociaux</b>les lieux où l'on apprend à vivre ensemble</div>
+    <div class="f">→</div>
+    <div class="e p3"><b>Sociologie de l'espace</b>la société façonne l'espace, et inversement</div>
+    <div class="f">→</div>
+    <div class="e p4"><b>Biophilie</b>l'espace doit aussi répondre au besoin de nature</div>
+  </div>
+  <p class="lecon">Pour l'architecte : concevoir un espace, c'est aussi concevoir des relations humaines.</p>
+</div>
+
+<div class="retenir">
+  <div>
+    <h4>Mots-clés à savoir définir</h4>
+    <dl>
+      <dt>Fait social :</dt> <dd>manière d'agir ou de penser, partagée par un groupe et qui s'impose à l'individu.</dd>
+      <dt>Socialisation :</dt> <dd>apprentissage des normes et valeurs de sa société.</dd>
+      <dt>Cadres sociaux :</dt> <dd>milieux qui encadrent et socialisent (famille, école…).</dd>
+      <dt>Observation participante :</dt> <dd>vivre avec le groupe que l'on étudie.</dd>
+      <dt>Conformisme :</dt> <dd>tendance à adopter l'avis ou le comportement du groupe.</dd>
+      <dt>Proxémie :</dt> <dd>étude des distances entre les personnes (Hall).</dd>
+      <dt>Appropriation :</dt> <dd>faire sien un espace en l'utilisant, le marquant, le décorant.</dd>
+      <dt>Exode rural :</dt> <dd>départ des habitants des campagnes vers les villes.</dd>
+      <dt>Biophilie :</dt> <dd>besoin inné de contact avec la nature.</dd>
+    </dl>
+  </div>
+  <div>
+    <h4>Auteurs à retenir</h4>
+    <div class="auteurs">
+      <span>Ibn Khaldoun</span><span>‘asabiyya ; badawa / hadara</span>
+      <span>A. Comte</span><span>invente le mot « sociologie »</span>
+      <span>É. Durkheim</span><span>les faits sociaux, l'école et la morale</span>
+      <span>M. Weber</span><span>le sens des actions</span>
+      <span>B. Malinowski</span><span>observation participante</span>
+      <span>S. Asch</span><span>le conformisme</span>
+      <span>E. T. Hall</span><span>la proxémie, 4 distances</span>
+      <span>M. Halbwachs</span><span>les cadres sociaux</span>
+      <span>P. Bourdieu</span><span>maison kabyle ; école et inégalités</span>
+      <span>E. Goffman</span><span>scène / coulisses, inattention civile</span>
+      <span>J. Gehl</span><span>la vie entre les bâtiments</span>
+      <span>H. Lefebvre</span><span>la production de l'espace</span>
+      <span>G. Simmel</span><span>le citadin blasé</span>
+      <span>F. Tönnies</span><span>communauté / société</span>
+      <span>E. O. Wilson</span><span>la biophilie</span>
+      <span>R. Ulrich</span><span>la vue sur les arbres qui soigne</span>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <h4>Mes notes · questions à revoir</h4>
+  <div class="ligne"></div><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div>
+</div>
+
+</body>
+</html>
