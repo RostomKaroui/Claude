@@ -265,7 +265,7 @@ function demarrer() {
     let s = sP, i = 0;
     while (i < seg.length - 1 && s > seg[i]) { s -= seg[i]; i++; }
     const a = CH[i], b = CH[i + 1], t = Math.min(1, s / seg[i]);
-    perso.position.copy(T([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, 0]));
+    perso.position.copy(T([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, (a[2] || 0) + ((b[2] || 0) - (a[2] || 0)) * t]));
     const dx = (b[0] - a[0]) * sens, dy = (b[1] - a[1]) * sens;
     perso.rotation.y = Math.atan2(dx, dy);
   }
@@ -315,9 +315,10 @@ function demarrer() {
   for (const id of BOUTONS) document.getElementById(id).addEventListener("click", () => {
     vue = id; marquer();
     if (id !== "v-3d" && etape !== ETAPES.length - 1) allerEtape(ETAPES.length - 1);
+    perso.visible = etape === ETAPES.length - 1 && id !== "v-perso";
     allerVers();
   });
-  controls.addEventListener("start", () => { if (vue !== "v-3d") { vue = null; marquer(); } });
+  controls.addEventListener("start", () => { if (vue !== "v-3d") { vue = null; marquer(); perso.visible = etape === ETAPES.length - 1; } });
   marquer();
 
   // ---- soleil ----
