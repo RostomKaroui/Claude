@@ -1,4 +1,4 @@
-<title>Montage sans texte</title>
+<title>Montage épuré</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -87,36 +87,57 @@ footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
   #scene { min-height: 320px; aspect-ratio: 1 / 1; }
   .soleil { grid-template-columns: auto 1fr; }
 }
-
-/* Version sans texte : la 3D prend la place, les commandes dessous. */
-body { padding-block: 14px 18px; }
-.epure { max-width: 1240px; margin-inline: auto; display: grid; gap: 12px; }
-.epure .cadre3d { border: 1.5px solid var(--encre); background: var(--feuille); }
-.epure #scene { min-height: 0; aspect-ratio: 16 / 10; max-height: 80vh; }
-.commandes { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: center; }
-.commandes > button { min-width: 46px; min-height: 42px; font-size: 1.1rem; padding: 4px 12px; }
-.commandes ol.etapes { gap: 6px; justify-content: center; }
-.commandes ol.etapes button { min-width: 3em; min-height: 42px; font-size: .95rem; padding: 4px 9px; gap: 6px; }
-@media (max-width: 860px) { .epure #scene { min-height: 0; aspect-ratio: 4 / 5; max-height: 72vh; } }
 </style>
 
-<main class="epure">
-  <div class="cadre3d"><canvas id="scene" aria-label="Maquette 3D animée"></canvas></div>
-  <div class="commandes">
-    <button id="prec" type="button" aria-label="Étape précédente">←</button>
-    <button id="suiv" type="button" aria-label="Étape suivante">→</button>
-    <ol class="etapes" id="liste"></ol>
-    <button id="rejouer" type="button" aria-label="Rejouer l'étape">↺</button>
-    <button id="tout" type="button" aria-label="Tout le montage">▶</button>
+<main class="planche">
+
+  <div class="atelier">
+    <div class="vue">
+      <div class="barre" role="toolbar" aria-label="Vues">
+        <button id="v-3d" type="button">Vue 3D</button>
+        <button id="v-ouest" type="button">Depuis l'ouest</button>
+        <button id="v-dessus" type="button">Plan</button>
+        <button id="v-perso" type="button">Vue du personnage</button>
+        <span class="sep"></span>
+        <button id="promenade" type="button" aria-pressed="false">Promenade</button>
+        <button id="couleurs" type="button" aria-pressed="true">Couleurs</button>
+      </div>
+      <div class="cadre3d">
+        <canvas id="scene" aria-label="Maquette 3D animée"></canvas>
+        <div class="legende" aria-live="polite"><span class="op" id="op"></span><span class="det" id="det"></span></div>
+      </div>
+      <div class="soleils" role="group" aria-label="Soleil à Tunis">
+        <span>Soleil à Tunis :</span>
+        <button type="button" data-soleil="180,77">Midi été</button>
+        <button type="button" data-soleil="180,30">Midi hiver</button>
+        <button type="button" data-soleil="302,5">Couchant été</button>
+        <button type="button" data-soleil="238,5">Couchant hiver</button>
+      </div>
+      <div class="soleil">
+        <span>Soleil</span>
+        <input id="azimut" type="range" min="0" max="360" value="25" aria-label="Direction du soleil">
+        <input id="hauteur" type="range" min="5" max="88" value="38" aria-label="Hauteur du soleil">
+        <button id="tourner" type="button" aria-pressed="false">Faire tourner</button>
+      </div>
+    </div>
+
+    <div class="fiche">
+      <div class="nav">
+        <button id="prec" type="button">← Précédent</button>
+        <button id="suiv" type="button">Suivant →</button>
+        <button id="rejouer" type="button">Rejouer</button>
+        <button id="tout" type="button">▶ Tout le montage</button>
+        <span class="compte" id="compte"></span>
+      </div>
+      <ol class="etapes" id="liste"></ol>
+      <div class="etape" id="etape"></div>
+    </div>
   </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-// Commandes retirées de cette version (soleil, vues, promenade, légende) : le code qui les cherche ne casse pas.
-const FANTOME = () => ({ value: 0, disabled: false, addEventListener() {}, setAttribute() {} });
-const $ = id => document.getElementById(id) || FANTOME();
 const DATA = {"depart": {"G1": [[2.8284271247461903, -0.0, 0.08], [0.0, -2.8284271247461903, 0.08], [0.0, -0.0, 0.08]], "G2": [[0.0, -0.0, 0.08], [2.8284271247461903, -0.0, 0.08], [0.0, 2.8284271247461903, 0.08]], "M": [[-1.4142135623730951, 1.4142135623730951, 0.0], [-1.4142135623730951, -1.4142135623730951, 0.0], [-2.8284271247461903, -0.0, 0.0]], "C": [[0.0, -0.0, 0.0], [0.0, -1.4142135623730951, 0.0], [-1.4142135623730951, -1.4142135623730951, 0.0], [-1.4142135623730951, -0.0, 0.0]], "P1": [[0.0, -2.8284271247461903, 0.0], [-1.4142135623730951, -1.4142135623730951, 0.0], [0.0, -1.4142135623730951, 0.0]], "P2": [[0.0, -0.0, 0.0], [-1.4142135623730951, -0.0, 0.0], [0.0, 1.4142135623730951, 0.0]], "Pa": [[-1.4142135623730951, 1.4142135623730951, 0.0], [0.0, 2.8284271247461903, 0.0], [0.0, 1.4142135623730951, 0.0], [-1.4142135623730951, -0.0, 0.0]]}, "pieces": {"G1": {"nom": "Grand triangle orange", "couleur": "#f4a93a"}, "G2": {"nom": "Grand triangle turquoise", "couleur": "#8fcfc3"}, "M": {"nom": "Triangle moyen jaune", "couleur": "#f5dc2a"}, "C": {"nom": "Carré rouge", "couleur": "#e04b30"}, "P1": {"nom": "Petit triangle bleu clair", "couleur": "#3cb2e4"}, "P2": {"nom": "Petit triangle vert", "couleur": "#16984a"}, "Pa": {"nom": "Parallélogramme bleu", "couleur": "#1f5aa6"}}, "etapes": [{"titre": "Le tangram", "pieces": [], "texte": "Deux tangrams de 15 cm collés : 7 pièces en double épaisseur. Le carré est posé en losange : sa diagonale suit l'axe est–ouest, l'axe de la vue vers le coucher du soleil.", "logique": "Toutes les pièces partent d'ici et ne quittent jamais la table d'un coup : elles glissent, tournent ou se relèvent.", "mouvements": []}, {"titre": "Le pli", "pieces": ["G1", "G2"], "texte": "Les deux grands triangles se relèvent ensemble autour de leur côté commun : la ligne de pli monte à 5,3 cm, les deux pointes glissent sur la table vers l'axe.", "logique": "Un seul pli donne la couverture : deux pentes à 30°, l'une vers le nord, l'autre vers le sud. Le pli est l'axe de symétrie de toute la maquette.", "mouvements": [{"type": "PLIAGE", "texte": "30° chacun : la ligne de pli monte à 5,3 cm", "ops": {"G2": {"type": "R", "c": [0, 0, 0.08], "axe": [1, 0, 0], "angle": -30, "leve": [0, 0, 2.8284271247461903], "glisse": [0, 0, -0.08]}, "G1": {"type": "R", "c": [0, 0, 0.08], "axe": [1, 0, 0], "angle": 30, "leve": [0, 0, 2.8284271247461903], "glisse": [0, 0, -0.08]}}}]}, {"titre": "L'appui nord", "pieces": ["P2"], "texte": "Le petit triangle vert glisse vers l'est sous la pente nord, puis vers le nord, et se relève.", "logique": "Debout, il tient un coin du toit de l'entrée. Son grand côté descend vers l'intérieur : l'entrée s'ouvre en biais.", "mouvements": [{"type": "TRANSLATION", "texte": "15,9 cm vers l'est, sous la pente nord", "ops": {"P2": {"type": "T", "v": [4.242640687119286, 0, 0]}}, "voir": true}, {"type": "TRANSLATION", "texte": "5,3 cm vers le nord", "ops": {"P2": {"type": "T", "v": [0, 1.4142135623730951, 0]}}}, {"type": "PLIAGE", "texte": "90° : il se relève autour de son petit côté", "ops": {"P2": {"type": "R", "c": [0, 1.4142135623730951, 0], "axe": [1, 0, 0], "angle": 90, "leve": [0, 0, 0], "glisse": [0, 0, 0]}}}]}, {"titre": "L'appui sud", "pieces": ["P1"], "texte": "Le petit triangle bleu clair contourne le pied de la pente sud, glisse vers l'est, revient vers le nord et se relève.", "logique": "C'est l'appui nord renversé de l'autre côté de l'axe : la même pièce, le même geste, en symétrie.", "mouvements": [{"type": "TRANSLATION", "texte": "4,5 cm vers le sud, pour contourner le pied de la pente", "ops": {"P1": {"type": "T", "v": [0, -1.2, 0]}}}, {"type": "TRANSLATION", "texte": "15,9 cm vers l'est", "ops": {"P1": {"type": "T", "v": [4.242640687119286, 0, 0]}}}, {"type": "TRANSLATION", "texte": "4,5 cm vers le nord", "ops": {"P1": {"type": "T", "v": [0, 1.2, 0]}}}, {"type": "PLIAGE", "texte": "90° : il se relève autour de son petit côté", "ops": {"P1": {"type": "R", "c": [0, -1.4142135623730951, 0], "axe": [1, 0, 0], "angle": -90, "leve": [0, 0, 0], "glisse": [0, 0, 0]}}}]}, {"titre": "Le toit de l'entrée", "pieces": ["M"], "texte": "Le triangle moyen monte à la hauteur du pli, puis glisse le long du pli jusqu'aux deux appuis.", "logique": "Il continue la ligne de pli à l'horizontale : l'entrée est couverte, à 5,3 cm, à l'est.", "mouvements": [{"type": "TRANSLATION", "texte": "5,3 cm vers le haut, à la hauteur du pli", "ops": {"M": {"type": "T", "v": [0, 0, 1.4142135623730951]}}}, {"type": "TRANSLATION", "texte": "21,2 cm vers l'est, le long du pli", "ops": {"M": {"type": "T", "v": [5.656854249492381, 0, 0]}}}]}, {"titre": "La paroi penchée", "pieces": ["Pa"], "texte": "Le parallélogramme tourne d'un quart de tour sur la table autour de son coin, se relève, puis glisse vers l'est sous le pli.", "logique": "Il tient le pli par en dessous. Penché, il laisse sous lui un passage pour le personnage, d'un côté de l'axe à l'autre.", "mouvements": [{"type": "ROTATION", "texte": "90°, sens inverse des aiguilles d'une montre, autour de son coin", "ops": {"Pa": {"type": "R", "c": [-1.4142135623730951, 0, 0], "axe": [0, 0, 1], "angle": 90, "leve": [0, 0, 0], "glisse": [0, 0, 0]}}}, {"type": "PLIAGE", "texte": "90° : il se relève autour de son petit côté", "ops": {"Pa": {"type": "R", "c": [0, 0, 0], "axe": [1, 0, 0], "angle": 90, "leve": [0, 0, 0], "glisse": [0, 0, 0]}}}, {"type": "TRANSLATION", "texte": "21,2 cm vers l'est, sous le pli", "ops": {"Pa": {"type": "T", "v": [5.656854249492381, 0, 0]}}, "voir": true}]}, {"titre": "La paroi de la vue", "pieces": ["C"], "texte": "Le carré se relève autour de son côté nord, puis glisse vers l'est sous le pli.", "logique": "Debout dans l'axe, à l'ouest, il partage la vue en deux cadrages sur le coucher du soleil.", "mouvements": [{"type": "PLIAGE", "texte": "90° : il se relève autour de son côté nord", "ops": {"C": {"type": "R", "c": [0, 0, 0], "axe": [1, 0, 0], "angle": -90, "leve": [0, 0, 0], "glisse": [0, 0, 0]}}}, {"type": "TRANSLATION", "texte": "5,3 cm vers l'est, sous le pli", "ops": {"C": {"type": "T", "v": [1.4142135623730951, 0, 0]}}, "voir": true}]}], "chemin": [[5.2, 0.6, 0], [1.85, 0.6, 0], [1.85, -0.6, 0], [-0.9, -0.6, 0]], "ep": 0.08};
 const PIECES = DATA.pieces, DEPART = DATA.depart, EP = DATA.ep;
 const NOMS = Object.keys(DEPART);
@@ -135,7 +156,7 @@ let g = 0, gCible = 0, toutJouer = false;      // position sur la frise (1 = un 
 
 function demarrer() {
   if (!window.THREE || !THREE.OrbitControls) throw new Error("three.js n'a pas pu être chargé.");
-  const canvas = $("scene");
+  const canvas = document.getElementById("scene");
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
@@ -161,6 +182,7 @@ function demarrer() {
   soleil.shadow.bias = -0.0006; soleil.shadow.normalBias = 0.02;
   scene.add(soleil, soleil.target);
   const disque = new THREE.Mesh(new THREE.SphereGeometry(0.35, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffc94a }));
+  scene.add(disque);
   const sol = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), new THREE.MeshStandardMaterial({ roughness: 1 }));
   sol.rotation.x = -Math.PI / 2; sol.receiveShadow = true; scene.add(sol);
   const grille = new THREE.GridHelper(28, 28, 0x000000, 0x000000);
@@ -182,7 +204,7 @@ function demarrer() {
   const cv = document.createElement("canvas"); cv.width = cv.height = 64;
   const cx = cv.getContext("2d"); cx.fillStyle = "#2346a8"; cx.font = "bold 48px sans-serif"; cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText("N", 32, 34);
   const lettre = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true }));
-  lettre.rotation.x = -Math.PI / 2; lettre.position.z = -0.85;
+  lettre.rotation.x = -Math.PI / 2; lettre.position.z = -0.85; nord.add(lettre);
   nord.position.copy(T([-4.6, 3.2, 0.004])); scene.add(nord);
 
   // ---- mouvements : matrice (repère maths) d'un mouvement arrivé à la fraction t ----
@@ -288,7 +310,7 @@ function demarrer() {
     perso.rotation.y = Math.atan2((b[0] - a[0]) * sens, (b[1] - a[1]) * sens);
   }
   placerPerso();
-  const btnProm = $("promenade");
+  const btnProm = document.getElementById("promenade");
   btnProm.addEventListener("click", () => { marche = !marche; btnProm.setAttribute("aria-pressed", marche); if (marche && etape !== FIN) window.allerEtape(FIN); });
 
   // ---- caméra ----
@@ -306,7 +328,7 @@ function demarrer() {
   function cible() {
     if (vue !== "v-3d") return ABSOLUES[vue]();
     const C = cadre();
-    const k = Math.pow(Math.max(1, 1.6 / camera.aspect), 0.85);
+    const k = Math.pow(Math.max(1, 1.25 / camera.aspect), 0.9);
     return { p: T([C.c[0] + C.d[0] * k, C.c[1] + C.d[1] * k, C.c[2] + C.d[2] * k]), c: T(C.c) };
   }
   function allerVers(instant) {
@@ -318,8 +340,8 @@ function demarrer() {
     anim = { p0: camera.position.clone(), c0: controls.target.clone(), p1: W.p, c1: W.c, t: 0 };
   }
   const BOUTONS = ["v-3d", "v-ouest", "v-dessus", "v-perso"];
-  const marquer = () => BOUTONS.forEach(id => $(id).setAttribute("aria-pressed", id === vue));
-  for (const id of BOUTONS) $(id).addEventListener("click", () => {
+  const marquer = () => BOUTONS.forEach(id => document.getElementById(id).setAttribute("aria-pressed", id === vue));
+  for (const id of BOUTONS) document.getElementById(id).addEventListener("click", () => {
     vue = id; marquer();
     if (id !== "v-3d" && etape !== FIN) window.allerEtape(FIN);
     allerVers();
@@ -328,8 +350,8 @@ function demarrer() {
   marquer();
 
   // ---- soleil ----
-  const az = { value: 25, addEventListener() {} }, ht = { value: 38, addEventListener() {} };   // soleil fixe
-  const btnTourner = $("tourner");
+  const az = document.getElementById("azimut"), ht = document.getElementById("hauteur");
+  const btnTourner = document.getElementById("tourner");
   function placerSoleil() {
     const a = THREE.MathUtils.degToRad(+az.value), h = THREE.MathUtils.degToRad(+ht.value);
     const dir = new THREE.Vector3(Math.cos(h) * Math.sin(a), Math.sin(h), Math.cos(h) * Math.cos(a));
@@ -347,7 +369,7 @@ function demarrer() {
   btnTourner.addEventListener("click", () => { tourne = !tourne; btnTourner.setAttribute("aria-pressed", tourne); });
 
   // ---- couleurs ----
-  const btnCoul = $("couleurs");
+  const btnCoul = document.getElementById("couleurs");
   btnCoul.addEventListener("click", () => { enCouleurs = !enCouleurs; btnCoul.setAttribute("aria-pressed", enCouleurs); majCouleurs(); });
   function majCouleurs() {
     const cur = ETAPES[etape].pieces;
@@ -386,7 +408,7 @@ function demarrer() {
     }
   }
   const lisse = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  const legOp = $("op"), legDet = $("det");
+  const legOp = document.getElementById("op"), legDet = document.getElementById("det");
   let legende = "", dejaActif = -2, dejaEtape = -1;
   function poser() {
     const i = Math.min(Math.floor(g), MV.length - 1), t = g >= MV.length ? 1 : lisse(g - Math.floor(g));
@@ -447,25 +469,33 @@ function demarrer() {
 
 // ---- fiche (lisible même sans 3D) ----
 function afficherFiche() {
+  const E = ETAPES[etape];
+  document.getElementById("etape").innerHTML =
+    `<h2><span class="n">${etape}</span>${E.titre}</h2>` +
+    (E.pieces.length ? `<div class="pieces">${E.pieces.map(k => `<span class="piece"><i style="background:${PIECES[k].couleur}"></i>${PIECES[k].nom}</span>`).join("")}</div>` : "") +
+    `<p>${E.texte}</p>` +
+    (E.mouvements.length ? `<ol class="mvts" id="mvts">${E.mouvements.map(m => `<li><b>${m.type}</b><span>${m.texte}</span></li>`).join("")}</ol>` : "") +
+    (E.logique ? `<div class="logique"><b>Logique :</b> ${E.logique}</div>` : "");
+  document.getElementById("compte").textContent = `Étape ${etape} / ${FIN}`;
   document.querySelectorAll("#liste button").forEach((b, i) => b.setAttribute("aria-pressed", i === etape));
-  $("prec").disabled = etape === 0;
-  $("suiv").disabled = etape === FIN;
-  $("rejouer").disabled = etape === 0 || etape === FIN;
+  document.getElementById("prec").disabled = etape === 0;
+  document.getElementById("suiv").disabled = etape === FIN;
+  document.getElementById("rejouer").disabled = etape === 0 || etape === FIN;
 }
-const liste = $("liste");
+const liste = document.getElementById("liste");
 ETAPES.forEach((E, i) => {
   const li = document.createElement("li"), b = document.createElement("button");
   b.type = "button"; b.id = "etape-" + i;
   b.innerHTML = E.pieces.map(k => `<i style="background:${PIECES[k].couleur}"></i>`).join("") + i;
-  b.setAttribute("aria-label", "Étape " + i);
+  b.title = E.titre;
   b.addEventListener("click", () => window.allerEtape(i));
   li.append(b); liste.append(li);
 });
 window.allerEtape = n => { etape = Math.max(0, Math.min(FIN, n)); afficherFiche(); };
-$("prec").addEventListener("click", () => window.allerEtape(etape - 1));
-$("suiv").addEventListener("click", () => window.allerEtape(etape + 1));
-$("rejouer").addEventListener("click", () => window.rejouer && window.rejouer());
-$("tout").addEventListener("click", () => window.toutLeMontage && window.toutLeMontage());
+document.getElementById("prec").addEventListener("click", () => window.allerEtape(etape - 1));
+document.getElementById("suiv").addEventListener("click", () => window.allerEtape(etape + 1));
+document.getElementById("rejouer").addEventListener("click", () => window.rejouer && window.rejouer());
+document.getElementById("tout").addEventListener("click", () => window.toutLeMontage && window.toutLeMontage());
 document.addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("input")) return;
   if (e.key === "ArrowRight") window.allerEtape(etape + 1);
@@ -474,6 +504,6 @@ document.addEventListener("keydown", e => {
 afficherFiche();
 try { demarrer(); }
 catch (e) {
-  $("scene").replaceWith(Object.assign(document.createElement("div"), { className: "erreur", textContent: "La vue 3D n'a pas pu démarrer (" + e.message + ")." }));
+  document.getElementById("scene").replaceWith(Object.assign(document.createElement("div"), { className: "erreur", textContent: "La vue 3D n'a pas pu démarrer (" + e.message + "). Les étapes du montage restent lisibles à droite." }));
 }
 </script>
