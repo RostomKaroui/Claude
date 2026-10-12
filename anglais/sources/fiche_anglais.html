@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>English · revision sheet</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root { --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --c: #5B3E8F; --clair: #f1edf8; --or: #B7791F; }
+  @page { size: A4; margin: 12mm 14mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 10.2pt; line-height: 1.45; color: var(--encre); }
+  b { font-weight: 800; }
+  .fr { color: var(--gris); font-style: italic; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .2em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 75mm; line-height: 1.3; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 14.5pt; color: var(--c); margin: 2px 0 6px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 10pt; color: #fff; background: var(--c); width: 25px; height: 25px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  h2 .trad { font-family: "Inter", sans-serif; font-size: 9pt; font-weight: 400; font-style: italic; color: var(--gris); }
+  section { margin-bottom: 16px; break-inside: avoid; }
+
+  .types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .type { border: 1px solid var(--filet); border-top: 4px solid var(--c); border-radius: 6px; padding: 7px 9px; text-align: center; }
+  .type svg { display: block; margin: 0 auto 4px; }
+  .type b { display: block; font-size: 10.4pt; color: var(--c); }
+  .type .ex { font-size: 9pt; }
+
+  .cote { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; }
+  .encadre { background: var(--clair); border-left: 4px solid var(--c); padding: 6px 10px; }
+  ul { list-style: none; }
+  ul li { position: relative; padding-left: 12px; margin-bottom: 3px; }
+  ul li::before { content: ""; position: absolute; left: 1px; top: .55em; width: 5px; height: 5px; border-radius: 1px; background: var(--c); }
+
+  .qualites { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .qualites div { background: var(--clair); border-radius: 6px; padding: 6px 8px; font-size: 9pt; line-height: 1.3; }
+  .qualites b { display: block; color: var(--c); font-size: 10pt; }
+
+  table.voc { width: 100%; border-collapse: collapse; font-size: 9.3pt; }
+  table.voc th { background: var(--c); color: #fff; text-align: left; padding: 4px 8px; font-size: 8pt; letter-spacing: .08em; }
+  table.voc td { padding: 3.5px 8px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.voc td:first-child { font-weight: 800; white-space: nowrap; }
+  table.voc td:nth-child(2) { font-style: italic; color: var(--gris); white-space: nowrap; }
+  table.voc tr:nth-child(even) td { background: #faf8fd; }
+  .gn { display: inline-block; font-size: 7pt; font-weight: 800; color: #fff; background: var(--or); border-radius: 3px; padding: 0 4px; margin-left: 4px; vertical-align: 1px; font-style: normal; }
+
+  .messages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 6px; }
+  .messages div { border: 1px solid var(--filet); border-radius: 6px; padding: 6px 8px; font-size: 9pt; line-height: 1.3; }
+  .messages b { display: block; color: var(--c); font-size: 10pt; }
+
+  .essentiel { border: 2px solid var(--encre); border-radius: 8px; padding: 7px 12px 4px; background: #f7f8f9; break-inside: avoid; }
+  .essentiel h4 { font-size: 8.4pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 5px; }
+  .essentiel li { margin-bottom: 3px; }
+  .essentiel li::before { background: var(--encre); }
+  .saut { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">ENGLISH · 1ST YEAR ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Revision sheet</h1>
+  </div>
+  <div class="sous">Buildings: types, materials, qualities and meanings</div>
+</div>
+
+<!-- 1. TYPES -->
+<section>
+  <h2><span class="num">1</span>Types of buildings <span class="trad">les types de bâtiments</span></h2>
+  <div class="types">
+    <div class="type"><svg id="i-res" width="70" height="52" viewBox="0 0 70 52"></svg><b>Residential buildings</b><span class="fr">bâtiments résidentiels</span><div class="ex">houses, apartments, villas…</div></div>
+    <div class="type"><svg id="i-inst" width="70" height="52" viewBox="0 0 70 52"></svg><b>Institutional buildings</b><span class="fr">bâtiments institutionnels</span><div class="ex">schools, colleges, courts…</div></div>
+    <div class="type"><svg id="i-com" width="70" height="52" viewBox="0 0 70 52"></svg><b>Commercial buildings</b><span class="fr">bâtiments commerciaux</span><div class="ex">shops, malls, supermarkets…</div></div>
+  </div>
+</section>
+
+<!-- 2. MATERIALS -->
+<section>
+  <h2><span class="num">2</span>Materials: concrete <span class="trad">les matériaux : le béton</span></h2>
+  <div class="cote" style="grid-template-columns: 1.4fr 1fr;">
+    <div><svg id="fig-beton" width="410" height="120" viewBox="0 0 410 120"></svg></div>
+    <div class="encadre"><b>Concrete</b> <span class="fr">(le béton)</span> is a mix of <b>sand</b>, <b>water</b>, <b>cement</b>, <b>gravel</b> and <b>crushed stones</b>.</div>
+  </div>
+</section>
+
+<!-- 3. QUALITIES -->
+<section>
+  <h2><span class="num">3</span>Buildings have to be… <span class="trad">un bâtiment doit être…</span></h2>
+  <div class="qualites">
+    <div><b>functional</b><span class="fr">fonctionnel</span><br>it works well for its use</div>
+    <div><b>aesthetically pleasing</b><span class="fr">beau, agréable à regarder</span></div>
+    <div><b>inviting</b><span class="fr">accueillant</span><br>it makes you want to come in</div>
+    <div><b>practical</b><span class="fr">pratique</span><br>easy to use every day</div>
+  </div>
+  <p style="margin-top:6px">They are designed for the <b>space users</b> = the <b>space occupants</b> <span class="fr">(les usagers, les occupants de l'espace)</span>.</p>
+</section>
+
+<!-- 4. WHY -->
+<section>
+  <h2><span class="num">4</span>Why do we need buildings? <span class="trad">pourquoi construire ?</span></h2>
+  <div class="cote" style="grid-template-columns: 1fr 1fr; align-items: start;">
+    <div>
+      <p><b style="color:var(--c)">Shelter</b> <span class="fr">(un abri)</span>: to protect people from</p>
+      <ul style="margin-top:3px">
+        <li><b>natural calamities</b> <span class="fr">catastrophes naturelles</span> (earthquakes, floods…)</li>
+        <li><b>inclement weather</b> <span class="fr">le mauvais temps</span> (rain, storms, heat…)</li>
+      </ul>
+    </div>
+    <div>
+      <p><b style="color:var(--c)">Comfort</b> <span class="fr">(le confort)</span>, for example:</p>
+      <ul style="margin-top:3px">
+        <li><b>a curtain wall</b> <span class="fr">un mur-rideau</span>: an outer wall made of <b>glass</b>, hung on the structure</li>
+        <li><b>glazed</b> <span class="fr">vitré</span> = fitted with glass</li>
+      </ul>
+    </div>
+    <div style="text-align:center"><svg id="fig-abri" width="250" height="150" viewBox="0 0 250 150"></svg></div>
+    <div style="text-align:center"><svg id="fig-mur" width="250" height="150" viewBox="0 0 250 150"></svg></div>
+  </div>
+</section>
+
+<!-- 5. VOCABULARY -->
+<section class="saut">
+  <h2><span class="num">5</span>Key vocabulary <span class="trad">le vocabulaire à connaître</span></h2>
+  <div class="cote" style="grid-template-columns: 1.55fr 1fr; align-items: start;">
+    <table class="voc">
+      <tr><th>ENGLISH</th><th>FRANÇAIS</th><th>NOTE</th></tr>
+      <tr><td>a dwelling <span class="gn">G.N</span></td><td>une habitation</td><td>the place where you live</td></tr>
+      <tr><td>a dweller <span class="gn">P.N</span></td><td>un habitant</td><td>the person who lives there</td></tr>
+      <tr><td>space users / occupants</td><td>les usagers</td><td>people who use a space</td></tr>
+      <tr><td>openings</td><td>les ouvertures</td><td>= doors + windows</td></tr>
+      <tr><td>a revolving door</td><td>une porte tournante</td><td>found in hotels</td></tr>
+      <tr><td>to step in</td><td>entrer</td><td>to walk into a place</td></tr>
+      <tr><td>a curtain wall</td><td>un mur-rideau</td><td>glass façade</td></tr>
+      <tr><td>glazed</td><td>vitré</td><td>with glass</td></tr>
+      <tr><td>shelter</td><td>un abri</td><td>protection</td></tr>
+      <tr><td>a skyscraper</td><td>un gratte-ciel</td><td>a very tall building</td></tr>
+    </table>
+    <div style="text-align:center"><svg id="fig-porte" width="230" height="190" viewBox="0 0 230 190"></svg>
+      <p style="font-size:8.5pt;color:var(--gris)">A <b>revolving door</b> seen from above (plan).</p></div>
+  </div>
+</section>
+
+<!-- 6. MESSAGES -->
+<section>
+  <h2><span class="num">6</span>What are the messages behind buildings? <span class="trad">le sens des bâtiments</span></h2>
+  <div class="cote" style="grid-template-columns: 1fr 1.6fr;">
+    <div style="text-align:center"><svg id="fig-sky" width="190" height="150" viewBox="0 0 190 150"></svg></div>
+    <div>
+      <p>A building is not only a construction: it has a <b>meaning</b>. <span class="fr">(un bâtiment a un sens)</span></p>
+      <p class="encadre" style="margin-top:6px"><b>A building speaks volumes about…</b><br><span class="fr">un bâtiment en dit long sur…</span></p>
+      <p style="margin-top:6px"><b>Skyscrapers</b> <span class="fr">(gratte-ciel)</span> are built <b>to display</b> <span class="fr">(montrer)</span> power and <b>wealth</b>.</p>
+    </div>
+  </div>
+  <div class="messages">
+    <div><b>people's culture</b><span class="fr">la culture</span></div>
+    <div><b>people's religion</b><span class="fr">la religion</span></div>
+    <div><b>the climate</b><span class="fr">le climat</span></div>
+    <div><b>wealth</b><span class="fr">la richesse</span></div>
+  </div>
+</section>
+
+<div class="essentiel">
+  <h4>Learn by heart · à savoir par cœur</h4>
+  <ul>
+    <li>3 types: <b>residential</b>, <b>institutional</b>, <b>commercial</b> buildings.</li>
+    <li><b>Concrete</b> = sand + water + cement + gravel + crushed stones.</li>
+    <li>Buildings have to be <b>functional</b>, <b>aesthetically pleasing</b>, <b>inviting</b> and <b>practical</b>.</li>
+    <li>Buildings give <b>shelter</b> (natural calamities, inclement weather) and <b>comfort</b>.</li>
+    <li><b>a dwelling</b> (the place) ≠ <b>a dweller</b> (the person) ; <b>openings</b> = doors + windows.</li>
+    <li>A building <b>speaks volumes about</b> culture, religion, climate and wealth.</li>
+  </ul>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const C = "#5B3E8F", ENCRE = "#1f2328", CLAIR = "#e6def3";
+function el(p, n, a = {}, t) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t !== undefined) e.textContent = t; p.appendChild(e); return e; }
+
+/* icônes des 3 types */
+(() => {
+  let g = document.getElementById("i-res");
+  el(g, "polygon", { points: "8,24 35,4 62,24", fill: C });
+  el(g, "rect", { x: 14, y: 24, width: 42, height: 26, fill: CLAIR, stroke: C, "stroke-width": 2 });
+  el(g, "rect", { x: 30, y: 34, width: 10, height: 16, fill: C });
+  el(g, "rect", { x: 18, y: 29, width: 8, height: 8, fill: "#fff", stroke: C, "stroke-width": 1.5 });
+  el(g, "rect", { x: 44, y: 29, width: 8, height: 8, fill: "#fff", stroke: C, "stroke-width": 1.5 });
+  g = document.getElementById("i-inst");
+  el(g, "polygon", { points: "6,16 35,3 64,16", fill: C });
+  el(g, "rect", { x: 8, y: 16, width: 54, height: 5, fill: C });
+  [13, 25, 37, 49].forEach((x) => el(g, "rect", { x, y: 22, width: 7, height: 22, fill: CLAIR, stroke: C, "stroke-width": 1.5 }));
+  el(g, "rect", { x: 5, y: 44, width: 60, height: 6, fill: C });
+  g = document.getElementById("i-com");
+  el(g, "rect", { x: 6, y: 14, width: 58, height: 36, fill: CLAIR, stroke: C, "stroke-width": 2 });
+  for (let i = 0; i < 6; i++) el(g, "path", { d: `M${6 + i * 9.7} 14 h9.7 v7 a4.85 4.85 0 0 1 -9.7 0 z`, fill: i % 2 ? "#fff" : C, stroke: C, "stroke-width": 1 });
+  el(g, "rect", { x: 12, y: 30, width: 20, height: 14, fill: "#fff", stroke: C, "stroke-width": 1.5 });
+  el(g, "rect", { x: 40, y: 28, width: 16, height: 22, fill: C });
+})();
+
+/* béton = mélange */
+(() => {
+  const g = document.getElementById("fig-beton");
+  const items = [["sand", "sable", "#e3c58f"], ["water", "eau", "#8cc3e6"], ["cement", "ciment", "#b9bcc2"], ["gravel", "gravier", "#a39280"], ["crushed stones", "pierres concassées", "#7f7a73"]];
+  items.forEach(([en, fr, col], i) => {
+    const y = 6 + i * 22;
+    el(g, "circle", { cx: 12, cy: y + 9, r: 8, fill: col, stroke: ENCRE, "stroke-width": 0.8 });
+    el(g, "text", { x: 26, y: y + 8, "font-family": "Inter", "font-weight": 800, "font-size": 10.5, fill: ENCRE }, en);
+    el(g, "text", { x: 26 + en.length * 6.4 + 6, y: y + 8, "font-family": "Inter", "font-style": "italic", "font-size": 9, fill: "#6b737c" }, fr);
+    el(g, "line", { x1: 205, y1: y + 9, x2: 258, y2: 60, stroke: "#9aa1a9", "stroke-width": 1 });
+  });
+  el(g, "polygon", { points: "258,52 272,60 258,68", fill: ENCRE });
+  el(g, "rect", { x: 280, y: 28, width: 126, height: 64, rx: 8, fill: C });
+  el(g, "text", { x: 343, y: 58, "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 15, fill: "#fff" }, "CONCRETE");
+  el(g, "text", { x: 343, y: 76, "text-anchor": "middle", "font-family": "Inter", "font-style": "italic", "font-size": 10, fill: "#e6def3" }, "le béton");
+})();
+
+/* porte tournante en plan */
+(() => {
+  const g = document.getElementById("fig-porte");
+  const cx = 115, cy = 95, R = 60;
+  const pt = (deg, r = R) => [cx + r * Math.cos(deg * Math.PI / 180), cy + r * Math.sin(deg * Math.PI / 180)];
+  el(g, "circle", { cx, cy, r: R, fill: "rgba(91,62,143,0.08)" });
+  // murs de la façade
+  el(g, "rect", { x: 4, y: cy - 6, width: cx - R - 4, height: 12, fill: ENCRE });
+  el(g, "rect", { x: cx + R, y: cy - 6, width: 226 - cx - R, height: 12, fill: ENCRE });
+  // parois courbes vitrées (gauche et droite), ouvertes en haut et en bas
+  const arc = (d1, d2) => { const [x1, y1] = pt(d1), [x2, y2] = pt(d2); el(g, "path", { d: `M${x1} ${y1} A${R} ${R} 0 0 1 ${x2} ${y2}`, fill: "none", stroke: ENCRE, "stroke-width": 4 }); };
+  arc(130, 230); arc(-50, 50);
+  // 4 vantaux
+  [45, 135, 225, 315].forEach((d) => { const [x, y] = pt(d, R - 3); el(g, "line", { x1: cx, y1: cy, x2: x, y2: y, stroke: C, "stroke-width": 4, "stroke-linecap": "round" }); });
+  el(g, "circle", { cx, cy, r: 5, fill: C });
+  // sens de rotation
+  const [ax, ay] = pt(-80, R + 10), [bx, by] = pt(-20, R + 10);
+  el(g, "path", { d: `M${ax} ${ay} A${R + 10} ${R + 10} 0 0 1 ${bx} ${by}`, fill: "none", stroke: "#B7791F", "stroke-width": 2 });
+  el(g, "polygon", { points: `${bx + 4},${by + 6} ${bx - 6},${by + 2} ${bx + 4},${by - 6}`, fill: "#B7791F" });
+  el(g, "text", { x: cx, y: 14, "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 9.5, fill: "#6b737c" }, "INSIDE");
+  el(g, "text", { x: cx, y: 186, "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 9.5, fill: "#6b737c" }, "OUTSIDE");
+})();
+
+/* abri : maison sous l'orage */
+(() => {
+  const g = document.getElementById("fig-abri");
+  el(g, "rect", { width: 250, height: 150, rx: 8, fill: "#e9edf3" });
+  el(g, "ellipse", { cx: 80, cy: 26, rx: 46, ry: 14, fill: "#9aa3b2" });
+  el(g, "ellipse", { cx: 150, cy: 22, rx: 52, ry: 16, fill: "#8590a2" });
+  for (let i = 0; i < 16; i++) { const x = 40 + i * 11; el(g, "line", { x1: x, y1: 42, x2: x - 6, y2: 58 + (i % 3) * 6, stroke: "#6d8fb3", "stroke-width": 1.6, "stroke-linecap": "round" }); }
+  el(g, "polygon", { points: "182,30 172,52 182,52 174,72 196,44 185,44 192,30", fill: "#f2b84b" });
+  el(g, "polygon", { points: "70,86 125,56 180,86", fill: C });
+  el(g, "rect", { x: 82, y: 86, width: 86, height: 50, fill: "#f1edf8", stroke: C, "stroke-width": 2 });
+  el(g, "rect", { x: 116, y: 106, width: 18, height: 30, fill: C });
+  el(g, "rect", { x: 92, y: 96, width: 14, height: 12, fill: "#fff8e1", stroke: C, "stroke-width": 1.5 });
+  el(g, "rect", { x: 144, y: 96, width: 14, height: 12, fill: "#fff8e1", stroke: C, "stroke-width": 1.5 });
+  el(g, "rect", { y: 136, width: 250, height: 14, fill: "#b9c2cf" });
+  el(g, "text", { x: 125, y: 147, "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 9, fill: "#3d4552" }, "SHELTER from inclement weather");
+})();
+
+/* mur-rideau : façade vitrée */
+(() => {
+  const g = document.getElementById("fig-mur");
+  el(g, "rect", { width: 250, height: 150, rx: 8, fill: "#eef3f8" });
+  el(g, "rect", { x: 60, y: 14, width: 130, height: 122, fill: "#bcd6ea" });
+  for (let i = 0; i <= 5; i++) el(g, "line", { x1: 60 + i * 26, y1: 14, x2: 60 + i * 26, y2: 136, stroke: "#3d4552", "stroke-width": 2 });
+  for (let j = 0; j <= 5; j++) el(g, "line", { x1: 60, y1: 14 + j * 24.4, x2: 190, y2: 14 + j * 24.4, stroke: "#3d4552", "stroke-width": 2 });
+  [[70, 20], [122, 70], [148, 44], [96, 96]].forEach(([x, y]) => el(g, "line", { x1: x, y1: y + 14, x2: x + 12, y2: y, stroke: "#fff", "stroke-width": 3, opacity: 0.8 }));
+  el(g, "rect", { y: 136, width: 250, height: 14, fill: "#b9c2cf" });
+  el(g, "text", { x: 125, y: 147, "text-anchor": "middle", "font-family": "Inter", "font-weight": 800, "font-size": 9, fill: "#3d4552" }, "a CURTAIN WALL: glazed façade");
+})();
+
+/* gratte-ciel */
+(() => {
+  const g = document.getElementById("fig-sky");
+  el(g, "rect", { width: 190, height: 150, rx: 8, fill: "#eef1f8" });
+  el(g, "rect", { y: 136, width: 190, height: 14, fill: "#c9cfdb" });
+  const tour = (x, w, h, col) => {
+    el(g, "rect", { x, y: 136 - h, width: w, height: h, fill: col });
+    for (let y = 136 - h + 6; y < 132; y += 9) for (let xx = x + 4; xx < x + w - 4; xx += 7) el(g, "rect", { x: xx, y, width: 3.5, height: 5, fill: "#dfe7f5", opacity: 0.85 });
+  };
+  tour(18, 30, 70, "#8d97ad"); tour(140, 32, 82, "#8d97ad");
+  tour(58, 36, 104, "#6e7a96");
+  el(g, "polygon", { points: "100,136 100,40 112,26 124,40 124,136", fill: C });
+  el(g, "line", { x1: 112, y1: 26, x2: 112, y2: 6, stroke: C, "stroke-width": 3 });
+  for (let y = 46; y < 132; y += 9) el(g, "rect", { x: 105, y, width: 14, height: 4, fill: "#e6def3" });
+})();
+</script>
+</body>
+</html>

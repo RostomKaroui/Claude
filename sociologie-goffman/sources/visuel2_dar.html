@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Visuel 2 · La dar de la médina</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --rouge: #8C1C13; --encre: #1f1f1f; --gris: #6b6b6b; --ardoise: #2F4858; --creme: #FBF6EC;
+    --rue: #E6D2A8; --scene: #EFA368; --filtre: #F6D2A6; --patio: #CFE4EA; --bit: #93BCCF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1400px; height: 990px; background: var(--creme); }
+  body { font-family: "Inter", sans-serif; color: var(--encre); padding: 34px 40px 24px; display: flex; flex-direction: column; }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 3px solid var(--rouge); padding-bottom: 10px; }
+  .kicker { font-weight: 800; font-size: 15px; letter-spacing: .22em; color: var(--rouge); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 50px; line-height: 1.05; margin-top: 4px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 21px; color: var(--gris); text-align: right; max-width: 440px; line-height: 1.3; }
+
+  main { display: flex; gap: 28px; margin-top: 16px; align-items: flex-start; }
+  svg { display: block; flex: none; }
+  .panneau { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+
+  .goffman { background: #fff; border-left: 6px solid var(--rouge); padding: 12px 16px; }
+  .goffman p { font-family: "Playfair", serif; font-style: italic; font-size: 23.5px; line-height: 1.3; }
+  .goffman span { display: block; margin-top: 4px; font-size: 13.5px; color: var(--gris); }
+
+  ol { list-style: none; display: flex; flex-direction: column; gap: 13px; }
+  li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; }
+  .num { width: 34px; height: 34px; border-radius: 50%; background: var(--encre); color: #fff; font-weight: 800; font-size: 17px; display: grid; place-items: center; }
+  .t { font-size: 19px; line-height: 1.34; }
+  .t b { font-weight: 800; }
+  .role { display: inline-block; font-weight: 800; font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-left: 4px; vertical-align: 2px; }
+  .r-public { background: var(--rue); }
+  .r-scene { background: var(--scene); }
+  .r-filtre { background: var(--filtre); }
+  .r-coulisses { background: var(--patio); }
+  .r-intime { background: var(--bit); }
+
+  .gradient { margin-top: 4px; }
+  .barre { height: 16px; border-radius: 8px; background: linear-gradient(90deg, var(--rue) 0%, var(--scene) 30%, var(--filtre) 52%, var(--patio) 74%, var(--bit) 100%); border: 1.5px solid #00000022; }
+  .bornes { display: flex; justify-content: space-between; font-weight: 800; font-size: 13px; letter-spacing: .14em; margin-top: 5px; }
+
+  footer { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; gap: 30px; }
+  .lecon { font-family: "Playfair", serif; font-style: italic; font-size: 24px; }
+  .source { font-size: 13.5px; color: var(--gris); text-align: right; white-space: nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="kicker">VISUEL 2 · LA DAR DE LA MÉDINA DE TUNIS</div>
+    <h1>Une maison qui trie ses publics</h1>
+  </div>
+  <div class="sous">Plan schématique d'une maison à patio, lu avec les « régions » de Goffman</div>
+</header>
+
+<main>
+<svg id="plan" width="800" height="738" viewBox="0 0 780 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="voisins" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="12" height="12" fill="#ECE5D8"/>
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#D6CBB8" stroke-width="3"/>
+    </pattern>
+    <pattern id="filtre" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="10" height="10" fill="#F6D2A6"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#EDBB82" stroke-width="3"/>
+    </pattern>
+    <pattern id="zellige" width="24" height="24" patternUnits="userSpaceOnUse">
+      <rect width="24" height="24" fill="#CFE4EA"/>
+      <path d="M24 0H0V24" fill="none" stroke="#B5D2DB" stroke-width="2"/>
+    </pattern>
+    <marker id="flecheBleue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#2F4858"/>
+    </marker>
+    <marker id="flecheOrange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#B4501E"/>
+    </marker>
+  </defs>
+
+  <!-- îlot : maisons voisines, puis la rue -->
+  <rect x="0" y="0" width="780" height="620" fill="url(#voisins)"/>
+  <rect x="0" y="620" width="780" height="100" fill="#E6D2A8"/>
+  <text x="700" y="684" text-anchor="end" font-family="Inter" font-weight="800" font-size="15" letter-spacing="3" fill="#7A6440">IMPASSE · ESPACE PUBLIC</text>
+  <text x="40" y="34" font-family="Inter" font-weight="600" font-size="13" letter-spacing="2" fill="#9C8F78">MAISONS VOISINES (MITOYENNES)</text>
+
+  <!-- massif des murs (généré) puis espaces -->
+  <g id="murs" fill="#2B2B2B"></g>
+  <g id="espaces"></g>
+
+  <!-- banquettes (dokkana) de la driba -->
+  <rect x="98" y="536" width="18" height="58" fill="#C77A3E"/>
+  <rect x="250" y="566" width="18" height="30" fill="#C77A3E"/>
+
+  <!-- portique et fontaine du patio -->
+  <g fill="#2B2B2B"><rect x="325" y="204" width="11" height="11"/><rect x="385" y="204" width="11" height="11"/><rect x="444" y="204" width="11" height="11"/><rect x="504" y="204" width="11" height="11"/></g>
+  <line x1="300" y1="226" x2="540" y2="226" stroke="#7FA6B4" stroke-width="2" stroke-dasharray="6 5"/>
+  <polygon points="420,293 438,301 446,319 438,337 420,345 402,337 394,319 402,301" fill="#8DBCCB" stroke="#4F8496" stroke-width="3"/>
+  <circle cx="420" cy="319" r="8" fill="#ffffff" stroke="#4F8496" stroke-width="2"/>
+
+  
+  <!-- regard depuis la rue : bloqué -->
+  <g id="oeil" transform="translate(150 678)">
+    <path d="M-22 0 Q0 -16 22 0 Q0 16 -22 0 Z" fill="#ffffff" stroke="#8C1C13" stroke-width="3"/>
+    <circle r="6" fill="#8C1C13"/>
+  </g>
+  <line x1="150" y1="662" x2="150" y2="540" stroke="#8C1C13" stroke-width="3.5" stroke-dasharray="9 6"/>
+  <g stroke="#8C1C13" stroke-width="5" stroke-linecap="round"><line x1="138" y1="507" x2="162" y2="531"/><line x1="162" y1="507" x2="138" y2="531"/></g>
+  <rect x="12" y="420" width="178" height="50" rx="8" fill="#FBF6EC" stroke="#8C1C13" stroke-width="1.5"/>
+  <text x="101" y="441" text-anchor="middle" font-family="Inter" font-weight="800" font-size="14.5" fill="#8C1C13">le regard de la rue</text>
+  <text x="101" y="460" text-anchor="middle" font-family="Inter" font-weight="800" font-size="14.5" fill="#8C1C13">s'arrête sur ce mur</text>
+  <line x1="140" y1="470" x2="149" y2="500" stroke="#8C1C13" stroke-width="2"/>
+
+  <!-- parcours de la famille : driba -> skifa -> patio -->
+  <path d="M222 668 L182 634 L182 552 L248 552 L248 500 L410 500 L410 436" fill="none" stroke="#2F4858" stroke-width="3.5" stroke-dasharray="2 8" stroke-linecap="round" marker-end="url(#flecheBleue)"/>
+  <!-- l'étranger s'arrête dans la driba -->
+  <circle cx="128" cy="566" r="9" fill="#B4501E" stroke="#ffffff" stroke-width="2.5"/>
+
+  <!-- pastilles numérotées -->
+  <g id="pastilles" font-family="Inter" font-weight="800" font-size="17" text-anchor="middle"></g>
+
+  <!-- noms des espaces -->
+  <g font-family="Playfair" font-weight="700" fill="#1f1f1f" text-anchor="middle">
+    <text x="420" y="388" font-size="24">West ed-dar</text>
+    <text x="420" y="409" font-size="15" font-family="Inter" font-weight="600" fill="#2F4858">(patio)</text>
+    <text x="420" y="152" font-size="21">Bit</text>
+    <text x="218" y="597" font-size="17">Driba</text>
+    <text x="345" y="490" font-size="17">Skifa</text>
+  </g>
+  <text x="420" y="94" text-anchor="middle" font-family="Inter" font-weight="600" font-size="12" fill="#2F4858">kbou</text>
+</svg>
+
+<div class="panneau">
+  <div class="goffman">
+    <p>« Une région : tout lieu borné, dans une certaine mesure, par des barrières à la perception. »</p>
+    <span>Erving Goffman, <i>La Mise en scène de la vie quotidienne</i></span>
+  </div>
+  <ol>
+    <li><div class="num">1</div><div class="t"><b>L'impasse</b> <span class="role r-public">public</span><br>Tout le monde passe, mais les façades sont presque aveugles : on ne voit rien de l'intérieur.</div></li>
+    <li><div class="num">2</div><div class="t"><b>La driba</b> <span class="role r-scene">la scène</span><br>Vestibule à banquettes où le maître de maison reçoit les visiteurs étrangers à la famille.</div></li>
+    <li><div class="num">3</div><div class="t"><b>La skifa</b> <span class="role r-filtre">le filtre</span><br>Vestibule coudé, en chicane : depuis la porte, aucune vue directe sur le patio.</div></li>
+    <li><div class="num">4</div><div class="t"><b>West ed-dar</b> <span class="role r-coulisses">les coulisses</span><br>Le patio, cœur de la vie familiale : ouvert sur le ciel, fermé à la rue.</div></li>
+    <li><div class="num">5</div><div class="t"><b>Les bit</b> <span class="role r-intime">l'intime</span><br>Les chambres en T, avec leur alcôve (kbou), au plus loin de l'entrée.</div></li>
+  </ol>
+  <div class="gradient">
+    <div class="barre"></div>
+    <div class="bornes"><span>PUBLIC</span><span>PRIVÉ</span></div>
+  </div>
+  <div class="t" style="font-size:16px; color:#2F4858;">
+    <span style="color:#B4501E; font-weight:800;">●&nbsp;l'étranger s'arrête dans la driba</span><br>
+    <span style="font-weight:800;">··· la famille continue jusqu'au patio</span>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="lecon">Avant Goffman, l'architecture savait déjà mettre en scène la vie quotidienne.</div>
+  <div class="source">Plan simplifié, sans échelle, d'après la typologie<br>des maisons à patio de la médina de Tunis · dessin original</div>
+</footer>
+
+<script>
+  const NS = "http://www.w3.org/2000/svg";
+  function rect(g, [x1, y1, x2, y2], attrs) {
+    const e = document.createElementNS(NS, "rect");
+    Object.entries({ x: x1, y: y1, width: x2 - x1, height: y2 - y1, ...attrs }).forEach(([k, v]) => e.setAttribute(k, v));
+    g.appendChild(e);
+  }
+  const T = 18; // épaisseur des murs
+  // espaces [x1, y1, x2, y2] et couleur
+  const ESPACES = [
+    { r: [300, 190, 540, 448], fill: "url(#zellige)" },   // patio (west ed-dar)
+    { r: [280, 112, 560, 172], fill: "#93BCCF" },          // bit nord
+    { r: [385, 72, 455, 112], fill: "#93BCCF" },           // kbou nord
+    { r: [222, 220, 282, 430], fill: "#93BCCF" },          // bit ouest
+    { r: [170, 292, 222, 352], fill: "#93BCCF" },          // kbou ouest
+    { r: [558, 220, 618, 430], fill: "#93BCCF" },          // bit est
+    { r: [618, 292, 670, 352], fill: "#93BCCF" },          // kbou est
+    { r: [228, 466, 440, 510], fill: "url(#filtre)" },     // skifa
+    { r: [98, 528, 268, 602], fill: "#EFA368" },           // driba
+  ];
+  const OUVERTURES = [
+    { r: [136, 602, 196, 620], fill: "#EFA368" },  // rue -> driba
+    { r: [228, 510, 268, 528], fill: "url(#filtre)" }, // driba -> skifa
+    { r: [390, 448, 430, 466], fill: "url(#zellige)" }, // skifa -> patio
+    { r: [400, 172, 440, 190], fill: "#93BCCF" },  // patio -> bit nord
+    { r: [282, 306, 300, 346], fill: "#93BCCF" },  // patio -> bit ouest
+    { r: [540, 306, 558, 346], fill: "#93BCCF" },  // patio -> bit est
+  ];
+  const murs = document.getElementById("murs");
+  ESPACES.forEach(({ r }) => rect(murs, [r[0] - T, r[1] - T, r[2] + T, r[3] + T]));
+  const esp = document.getElementById("espaces");
+  ESPACES.forEach(({ r, fill }) => rect(esp, r, { fill }));
+  OUVERTURES.forEach(({ r, fill }) => rect(esp, r, { fill }));
+
+  // pastilles
+  const P = [[1, 300, 670], [2, 232, 572], [3, 300, 486], [4, 470, 260], [5, 506, 142]];
+  const gp = document.getElementById("pastilles");
+  P.forEach(([n, x, y]) => {
+    const c = document.createElementNS(NS, "circle");
+    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 15); c.setAttribute("fill", "#1f1f1f");
+    c.setAttribute("stroke", "#ffffff"); c.setAttribute("stroke-width", 2.5);
+    gp.appendChild(c);
+    const t = document.createElementNS(NS, "text");
+    t.setAttribute("x", x); t.setAttribute("y", y + 6); t.setAttribute("fill", "#ffffff"); t.textContent = n;
+    gp.appendChild(t);
+  });
+</script>
+</body>
+</html>
