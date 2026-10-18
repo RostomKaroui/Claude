@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Construction générale · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   démarche du projet */
+    --c2: #B4501E;  /* II  le terrain */
+    --c3: #8C1C13;  /* III l'édifice */
+    --c4: #3C7A3E;  /* IV  charges et fondations */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.1pt; line-height: 1.34; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.05em; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  .s4 { break-before: page; }
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.6pt; font-weight: 800; margin-bottom: 2px; }
+  .s1 .carte h3 { color: var(--c1); } .s2 .carte h3 { color: var(--c2); } .s3 .carte h3 { color: var(--c3); } .s4 .carte h3 { color: var(--c4); }
+  .carte p, .carte li { font-size: 8.7pt; line-height: 1.32; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .alerte { color: var(--rouge); font-weight: 800; }
+
+  /* étapes du projet */
+  .etapes { display: grid; grid-template-columns: 1fr 12px 1fr 12px 1fr 12px 1fr; align-items: stretch; gap: 2px; margin-bottom: 5px; }
+  .etapes .e { background: var(--c1); color: #fff; border-radius: 5px; padding: 3px 6px; font-size: 8.3pt; line-height: 1.27; }
+  .etapes .e b { display: block; font-size: 8.4pt; }
+  .etapes .f { display: grid; place-items: center; font-weight: 800; color: var(--c1); }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.8pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  /* tableau charges */
+  table.ch { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
+  table.ch th { background: var(--c4); color: #fff; text-align: left; padding: 2px 6px; font-size: 7.7pt; letter-spacing: .05em; }
+  table.ch td { padding: 2px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.ch td:first-child { font-weight: 800; color: var(--c4); white-space: nowrap; }
+  table.ch tr:nth-child(even) td { background: #f3f8f3; }
+
+  /* chaîne de charges */
+  .synthese { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 10px 7px; margin-top: 7px; break-inside: avoid; }
+  .synthese h4, .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .fil { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; font-size: 8.4pt; line-height: 1.25; }
+  .fil .e { color: #fff; padding: 4px 4px 4px 12px; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e b { display: block; }
+  .lecon { margin-top: 5px; font-family: "Playfair", serif; font-style: italic; font-size: 11pt; text-align: center; }
+
+  .retenir { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 7px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir dl { font-size: 8.6pt; line-height: 1.3; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 2px; }
+  .notes { margin-top: 7px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 17px; border-bottom: 1px dotted #c4cad1; }
+</style>
+</head>
+<body>
+
+<!-- ===================== EN-TÊTE ===================== -->
+<div class="entete">
+  <div>
+    <div class="kicker">CONSTRUCTION GÉNÉRALE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">Du projet au sol : comment un bâtiment est conçu, posé et tient debout</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>I · Démarche du projet</b>programme, APS, APD, PE</div>
+  <div class="p2"><b>II · Le terrain</b>orientation, relevés, topographie, sol</div>
+  <div class="p3"><b>III · L'édifice</b>ossature, enveloppe, revêtement</div>
+  <div class="p4"><b>IV · Charges et fondations</b>forces, sollicitations, transmission au sol</div>
+</div>
+
+<!-- ===================== I ===================== -->
+<section class="partie s1">
+  <h2><span class="num">I</span>De l'idée au projet d'exécution</h2>
+
+  <div class="etapes">
+    <div class="e"><b>1 · Programme</b>besoins, budget, contraintes du terrain</div><div class="f">▶</div>
+    <div class="e"><b>2 · APS</b>avant-projet sommaire : esquisse, volumes, implantation</div><div class="f">▶</div>
+    <div class="e"><b>3 · APD</b>avant-projet détaillé : plans précis, coûts, permis</div><div class="f">▶</div>
+    <div class="e"><b>4 · PE</b>projet d'exécution : plans pour l'entreprise</div>
+  </div>
+
+  <div class="g2">
+    <div class="carte">
+      <h3>Les soucis d'un acquéreur de logement</h3>
+      <p>Ce que l'architecte doit anticiper dès le programme :</p>
+      <ul>
+        <li><b>Situation</b> et <b>environnement</b> du lieu</li>
+        <li><b>Orientation</b> et <b>forme</b> (topographie du terrain)</li>
+        <li><b>Esthétique</b>, <b>ambiance intérieure</b>, <b>qualité des finitions</b></li>
+        <li><b>Coût</b> : à l'achat <u>et</u> à l'exploitation</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>Le principe à retenir</h3>
+      <p>Chaque étape précise la précédente : on passe de l'<b>esquisse</b> (idée, croquis) aux <b>plans cotés</b> que l'entreprise peut construire. Les choix de <b>structure</b> et de <b>fondations</b> se décident avec l'<b>ingénieur</b>, à partir de l'étude du sol, avant le PE.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== II ===================== -->
+<section class="partie s2">
+  <h2><span class="num">II</span>Connaître le terrain avant de construire</h2>
+
+  <div class="g2">
+    <div class="carte">
+      <h3>1. Concevoir avec le site</h3>
+      <ul>
+        <li>Placer le bâtiment pour <b>profiter de l'énergie solaire</b> : sur une <b>pente</b>, rayons solaires l'hiver et air frais l'été.</li>
+        <li>Construction <b>semi-enterrée</b> en pente : limite les écarts de température (comme les <i>Matmata</i>).</li>
+        <li><span class="alerte">ATTENTION :</span> on <b>adapte la maison au terrain</b>, pas le contraire.</li>
+        <li><b>Été</b> : limiter les apports solaires, évacuer la chaleur. <b>Hiver</b> : maximiser les apports, se protéger des <b>vents dominants</b>.</li>
+      </ul>
+      <p class="gris" style="margin-top:2px">Ex. : masque au sol qui ôte le soleil du matin → tourner le bâtiment de quelques degrés vers l'ouest.</p>
+    </div>
+    <div class="carte">
+      <h3>2. Les autres données à relever</h3>
+      <ul>
+        <li><b>Végétation</b> et sa taille ; <b>brise-vents</b> dominants en hiver, <b>ombre</b> en été.</li>
+        <li>Terrain viabilisé : repérer les <b>réseaux</b> (<b>ONAS</b> assainissement, <b>STEG</b> électricité-gaz, <b>SONEDE</b> eau, <b>PTT</b> télécom).</li>
+        <li>Relever les <b>cotes de niveau</b> des regards de branchement : eaux usées et eaux pluviales.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>3. Topographie et implantation</h3>
+      <p><b>Levé topographique</b> : créer un <b>plan</b> ou une <b>carte</b> à partir des informations mesurées sur le terrain, avec un appareil posé sur un <b>point de station</b> (<b>théodolite</b>, <b>niveau à lunette</b>…).</p>
+      <p style="margin-top:2px"><b>Implantation</b> : le topographe rattache le plan à un <b>repère</b> choisi, place des <b>stations hors du site</b> (elles survivent au terrassement). L'architecte et le maître d'ouvrage vérifient les <b>blocs</b> et les <b>retraits</b>. Le bureau d'étude fournit le <b>plan de terrassement</b> (cotes des plates-formes).</p>
+    </div>
+    <div class="carte">
+      <h3>4. Étude géotechnique</h3>
+      <div class="def" style="margin-bottom:3px"><b>Tout terrain</b> exige des <b>sondages</b> pour connaître la nature du sous-sol. Obligation de l'<b>ingénieur et/ou de l'architecte</b>.</div>
+      <ul>
+        <li>Nature des sous-sols</li>
+        <li>Niveau du <b>bon sol</b> (sol d'assise)</li>
+        <li><b>Taux de travail</b> du sol = <b>portance</b></li>
+        <li>Profondeur de la <b>nappe phréatique</b>, s'il y en a une</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== III ===================== -->
+<section class="partie s3">
+  <h2><span class="num">III</span>De quoi se constitue un édifice ?</h2>
+
+  <div style="display:grid; grid-template-columns: 1fr 1.18fr; gap:8px; align-items:start;">
+    <div>
+      <div class="def"><b>L'édifice</b> = <b>ossature</b> + <b>enveloppe</b> + <b>revêtement</b>.</div>
+      <ul style="margin-bottom:4px">
+        <li><b>Ossature</b> (structure) : le « squelette » qui <b>porte</b> et reprend toutes les charges.</li>
+        <li><b>Enveloppe</b> : ce qui <b>ferme</b> et protège (murs extérieurs, toiture, ouvertures).</li>
+        <li><b>Revêtement</b> : les <b>finitions</b> (enduits, sols, peintures).</li>
+      </ul>
+      <p style="margin-bottom:2px"><b>La structure se lit de bas en haut :</b></p>
+      <table class="ch" style="font-size:8.4pt">
+        <tr><td style="color:var(--c3)">1 · Soubassement</td><td>partie enterrée, sous le RDC</td></tr>
+        <tr><td style="color:var(--c3)">2 · Plancher bas du RDC</td><td>dallage posé sur le sol</td></tr>
+        <tr><td style="color:var(--c3)">3 · Murs et poteaux</td><td>éléments <b>verticaux</b> porteurs</td></tr>
+        <tr><td style="color:var(--c3)">4 · Poutres, linteaux</td><td>éléments <b>horizontaux</b> qui reportent les charges</td></tr>
+        <tr><td style="color:var(--c3)">5 · Plancher haut</td><td>dalle qui couvre le niveau</td></tr>
+      </table>
+    </div>
+
+    <div class="fig">
+      <!-- Coupe d'un bâtiment à ossature : le poids propre -->
+      <svg viewBox="0 0 330 212" width="100%" role="img" aria-label="Éléments de la structure d'un bâtiment">
+        <rect x="0" y="170" width="330" height="42" fill="#e9dcc7"/>
+        <line x1="0" y1="170" x2="330" y2="170" stroke="#7a6a4f" stroke-width="1.5"/>
+        <g stroke="#b9a584" stroke-width="1"><line x1="10" y1="184" x2="22" y2="178"/><line x1="40" y1="198" x2="52" y2="192"/><line x1="290" y1="196" x2="302" y2="190"/><line x1="120" y1="200" x2="132" y2="194"/></g>
+        <!-- semelles -->
+        <g fill="#8C1C13"><rect x="62" y="170" width="34" height="14"/><rect x="152" y="170" width="34" height="14"/><rect x="242" y="170" width="34" height="14"/></g>
+        <!-- longrines -->
+        <g fill="#d98b82"><rect x="96" y="160" width="56" height="10"/><rect x="186" y="160" width="56" height="10"/></g>
+        <!-- poteaux -->
+        <g fill="#c0392b"><rect x="73" y="54" width="11" height="116"/><rect x="163" y="54" width="11" height="116"/><rect x="253" y="54" width="11" height="116"/></g>
+        <!-- voile -->
+        <rect x="34" y="108" width="28" height="62" fill="#e8c547"/>
+        <!-- planchers + poutres -->
+        <rect x="26" y="100" width="260" height="8" fill="#5b5fa8"/><rect x="264" y="100" width="46" height="8" fill="#5b5fa8"/>
+        <rect x="26" y="48" width="260" height="8" fill="#5b5fa8"/><rect x="264" y="48" width="46" height="8" fill="#5b5fa8"/>
+        <g fill="#3C7A3E"><rect x="84" y="108" width="79" height="7"/><rect x="174" y="108" width="79" height="7"/><rect x="84" y="56" width="79" height="7"/><rect x="174" y="56" width="79" height="7"/></g>
+        <!-- chapes -->
+        <rect x="26" y="44" width="260" height="4" fill="#c9cfd6"/><rect x="26" y="96" width="260" height="4" fill="#c9cfd6"/>
+        <!-- flèches de poids -->
+        <g stroke="#c0392b" stroke-width="1.6" fill="#c0392b">
+          <line x1="60" y1="20" x2="60" y2="38"/><polygon points="56,36 64,36 60,43" stroke="none"/>
+          <line x1="215" y1="20" x2="215" y2="38"/><polygon points="211,36 219,36 215,43" stroke="none"/>
+        </g>
+        <!-- étiquettes -->
+        <g font-size="8.6" font-weight="700" fill="#1f2328" stroke="none">
+          <text x="70" y="17" fill="#c0392b" font-weight="800">poids</text>
+          <text x="226" y="17" fill="#c0392b" font-weight="800">poids</text>
+          <text x="2" y="30">Chape</text><line x1="26" y1="33" x2="36" y2="44" stroke="#1f2328" stroke-width=".8"/>
+          <text x="100" y="30">Plancher (dalle)</text><line x1="130" y1="33" x2="130" y2="47" stroke="#1f2328" stroke-width=".8"/>
+          <text x="252" y="30">Porte-à-faux</text><line x1="290" y1="33" x2="292" y2="47" stroke="#1f2328" stroke-width=".8"/>
+          <text x="94" y="86">Poutre</text><line x1="112" y1="72" x2="112" y2="63" stroke="#1f2328" stroke-width=".8"/>
+          <text x="182" y="86">Poteau</text><line x1="180" y1="82" x2="175" y2="82" stroke="#1f2328" stroke-width=".8"/>
+          <text x="2" y="144">Voile</text><line x1="26" y1="141" x2="34" y2="141" stroke="#1f2328" stroke-width=".8"/>
+          <text x="100" y="151">Longrine</text>
+          <text x="44" y="204">Semelle</text><line x1="78" y1="200" x2="80" y2="185" stroke="#1f2328" stroke-width=".8"/>
+          <text x="188" y="204">Sol d'assise (bon sol)</text>
+        </g>
+      </svg>
+      <div class="legende">Le <b>poids propre</b> du bâtiment : planchers, poutres, poteaux, voiles, semelles</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== IV ===================== -->
+<section class="partie s4">
+  <h2><span class="num">IV</span>Les charges et leur chemin jusqu'au sol</h2>
+
+  <div class="def">Une <b>charge</b> est une <b>force</b> exercée sur l'édifice. La structure doit toutes les <b>transmettre au sol</b> sans casser ni se déformer de façon dangereuse.</div>
+
+  <table class="ch" style="margin-bottom:5px">
+    <tr><th style="width:17%">LES CHARGES EXERCÉES</th><th style="width:36%">EXEMPLES</th><th>CARACTÉRISTIQUES</th></tr>
+    <tr><td>Permanentes</td><td>le <b>poids propre</b> de la construction (planchers, murs, poutres…)</td><td><b>intensité constante</b>, peu variable dans le temps</td></tr>
+    <tr><td>Variables</td><td><b>charges d'exploitation</b> : meubles, personnes, voitures… ; <b>actions climatiques</b> : vent, précipitations…</td><td><b>intensité très variable</b> dans le temps</td></tr>
+    <tr><td>Accidentelles</td><td>séisme, tsunami, explosion…</td><td><b>rares</b> (faible fréquence), <b>faible durée</b> d'application</td></tr>
+  </table>
+
+  <div class="g2">
+    <!-- types de charges -->
+    <div class="carte">
+      <h3>Types de charges (selon leur répartition)</h3>
+      <svg viewBox="0 0 300 124" width="100%" role="img" aria-label="Quatre types de charges">
+        <defs><marker id="fl" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker></defs>
+        <g stroke="#c0392b" stroke-width="1.5" fill="none" marker-end="url(#fl)">
+          <line x1="64" y1="4" x2="64" y2="30"/>
+          <line x1="178" y1="8" x2="178" y2="30"/><line x1="198" y1="8" x2="198" y2="30"/><line x1="218" y1="8" x2="218" y2="30"/><line x1="238" y1="8" x2="238" y2="30"/><line x1="258" y1="8" x2="258" y2="30"/>
+          <line x1="22" y1="72" x2="22" y2="90"/><line x1="38" y1="72" x2="38" y2="90"/><line x1="54" y1="72" x2="54" y2="90"/><line x1="70" y1="72" x2="70" y2="90"/><line x1="86" y1="72" x2="86" y2="90"/><line x1="102" y1="72" x2="102" y2="90"/>
+        </g>
+        <!-- ponctuelle -->
+        <rect x="14" y="32" width="100" height="10" fill="#d9dde3" stroke="#5f6670"/>
+        <!-- surface -->
+        <rect x="166" y="32" width="104" height="10" fill="#d9dde3" stroke="#5f6670"/><rect x="166" y="28" width="104" height="4" fill="#e9a79f"/>
+        <!-- ligne -->
+        <line x1="14" y1="91" x2="114" y2="91" stroke="#c0392b" stroke-width="2.6"/><rect x="14" y="93" width="100" height="10" fill="#d9dde3" stroke="#5f6670"/>
+        <!-- volume -->
+        <rect x="166" y="76" width="104" height="27" fill="#f6dcd8" stroke="#c0392b"/>
+        <g stroke="#c0392b" stroke-width="1.2" fill="none" marker-end="url(#fl)"><line x1="182" y1="80" x2="182" y2="94"/><line x1="200" y1="80" x2="200" y2="94"/><line x1="218" y1="80" x2="218" y2="94"/><line x1="236" y1="80" x2="236" y2="94"/><line x1="254" y1="80" x2="254" y2="94"/></g>
+        <g font-size="7.8" fill="#1f2328" font-weight="800" text-anchor="middle">
+          <text x="64" y="56">ponctuelle · N</text>
+          <text x="218" y="56">sur une surface · N/m²</text>
+          <text x="64" y="118">sur une ligne · N/m</text>
+          <text x="218" y="118">sur un volume · N/m³</text>
+        </g>
+      </svg>
+      <p class="gris" style="margin-top:1px">Les <b>forces concentrées</b> (un point) s'opposent aux <b>forces réparties</b> (ligne, surface, volume).</p>
+    </div>
+
+    <!-- sollicitations -->
+    <div class="carte">
+      <h3>Les trois sollicitations</h3>
+      <svg viewBox="0 0 300 124" width="100%" role="img" aria-label="Compression, traction, cisaillement">
+        <defs><marker id="fb" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#3C7A3E"/></marker></defs>
+        <g stroke="#3C7A3E" stroke-width="2.2" fill="none" marker-end="url(#fb)">
+          <line x1="6" y1="36" x2="26" y2="36"/><line x1="94" y1="36" x2="74" y2="36"/>
+          <line x1="126" y1="36" x2="106" y2="36"/><line x1="174" y1="36" x2="194" y2="36"/>
+          <line x1="226" y1="18" x2="262" y2="18"/><line x1="276" y1="56" x2="240" y2="56"/>
+        </g>
+        <rect x="28" y="26" width="44" height="20" fill="#dbe9db" stroke="#3C7A3E"/>
+        <rect x="128" y="26" width="44" height="20" fill="#dbe9db" stroke="#3C7A3E"/>
+        <rect x="232" y="24" width="38" height="26" fill="#dbe9db" stroke="#3C7A3E"/><line x1="232" y1="37" x2="270" y2="37" stroke="#3C7A3E" stroke-dasharray="3 2"/>
+        <g font-size="8.6" font-weight="800" fill="#3C7A3E" text-anchor="middle">
+          <text x="50" y="80">Compression</text><text x="150" y="80">Traction</text><text x="250" y="80">Cisaillement</text>
+        </g>
+        <g font-size="7.8" fill="#1f2328" text-anchor="middle">
+          <text x="50" y="93">forces qui</text><text x="50" y="103">écrasent :</text><text x="50" y="113">raccourcit</text>
+          <text x="150" y="93">forces qui</text><text x="150" y="103">étirent :</text><text x="150" y="113">allonge</text>
+          <text x="250" y="93">forces qui</text><text x="250" y="103">font glisser :</text><text x="250" y="113">coupe</text>
+        </g>
+      </svg>
+      <p class="gris" style="margin-top:1px">Sous ces efforts, un solide subit une <b>déformation</b> : il se raccourcit, s'allonge ou se cisaille.</p>
+    </div>
+
+    <!-- poutre BA -->
+    <div class="carte">
+      <h3>Comportement d'une poutre en béton armé</h3>
+      <svg viewBox="0 0 300 126" width="100%" role="img" aria-label="Poutre en béton armé : zones comprimée et tendue">
+        <defs><marker id="fp" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker></defs>
+        <g stroke="#c0392b" stroke-width="1.3" marker-end="url(#fp)">
+          <line x1="40" y1="6" x2="40" y2="22"/><line x1="70" y1="6" x2="70" y2="22"/><line x1="100" y1="6" x2="100" y2="22"/><line x1="130" y1="6" x2="130" y2="22"/><line x1="160" y1="6" x2="160" y2="22"/><line x1="190" y1="6" x2="190" y2="22"/><line x1="220" y1="6" x2="220" y2="22"/><line x1="250" y1="6" x2="250" y2="22"/>
+        </g>
+        <line x1="34" y1="6" x2="256" y2="6" stroke="#c0392b" stroke-width="1.3"/>
+        <rect x="34" y="24" width="222" height="12" fill="#dde0e5" stroke="#5f6670"/>
+        <polygon points="46,36 40,46 52,46" fill="#fff" stroke="#5f6670"/><polygon points="244,36 238,46 250,46" fill="#fff" stroke="#5f6670"/>
+        <text x="145" y="33.5" font-size="7.4" text-anchor="middle" font-weight="700" fill="#5f6670">poutre sous charge (poids propre + charges)</text>
+        <!-- déformée -->
+        <path d="M34,66 Q145,92 256,66 L256,92 Q145,118 34,92 Z" fill="#e8ece9" stroke="#5f6670"/>
+        <path d="M34,66 Q145,92 256,66" fill="none" stroke="#c0392b" stroke-width="2.4"/>
+        <path d="M34,92 Q145,118 256,92" fill="none" stroke="#2F4858" stroke-width="2.4"/>
+        <g font-size="7.8" font-weight="800" text-anchor="middle">
+          <text x="145" y="63" fill="#c0392b">Zone comprimée (béton) ▸ ◂</text>
+          <text x="145" y="124" fill="#2F4858">◂ ▸ Zone tendue (acier)</text>
+        </g>
+      </svg>
+      <p class="gris" style="margin-top:1px">Le <b>béton</b> résiste bien à la <b>compression</b>, mal à la traction : on place les <b>armatures en acier</b> dans la <b>zone tendue</b> (en bas, entre appuis).</p>
+    </div>
+
+    <!-- fondations -->
+    <div class="carte">
+      <h3>Transmission au sol : les fondations</h3>
+      <svg viewBox="0 0 300 126" width="100%" role="img" aria-label="Semelle isolée et semelle filante">
+        <rect x="0" y="82" width="300" height="44" fill="#ece0cb"/><line x1="0" y1="82" x2="300" y2="82" stroke="#7a6a4f" stroke-width="1.5"/>
+        <!-- isolée -->
+        <rect x="36" y="14" width="22" height="68" fill="#c0392b"/><rect x="14" y="82" width="66" height="14" fill="#8C1C13"/>
+        <g stroke="#c0392b" stroke-width="1.3" fill="none" marker-end="url(#fp)"><line x1="47" y1="2" x2="47" y2="14"/></g>
+        <g stroke="#3C7A3E" stroke-width="1.3" fill="none" marker-end="url(#fb)"><line x1="22" y1="97" x2="12" y2="112"/><line x1="47" y1="97" x2="47" y2="114"/><line x1="72" y1="97" x2="82" y2="112"/></g>
+        <!-- filante -->
+        <rect x="190" y="14" width="28" height="68" fill="#d7bd8b" stroke="#7a6a4f"/><rect x="156" y="82" width="96" height="14" fill="#8C1C13"/>
+        <g stroke="#c0392b" stroke-width="1.3" fill="none" marker-end="url(#fp)"><line x1="196" y1="2" x2="196" y2="14"/><line x1="204" y1="2" x2="204" y2="14"/><line x1="212" y1="2" x2="212" y2="14"/></g>
+        <g stroke="#3C7A3E" stroke-width="1.3" fill="none" marker-end="url(#fb)"><line x1="166" y1="97" x2="158" y2="112"/><line x1="186" y1="97" x2="184" y2="114"/><line x1="204" y1="97" x2="204" y2="114"/><line x1="222" y1="97" x2="224" y2="114"/><line x1="242" y1="97" x2="250" y2="112"/></g>
+        <g font-size="7.8" font-weight="800" fill="#1f2328" text-anchor="middle">
+          <text x="47" y="122">Semelle isolée</text><text x="204" y="122">Semelle filante</text>
+          <text x="104" y="52" fill="#c0392b">Poteau</text><text x="104" y="60" font-size="6.8" fill="#5f6670" font-weight="600">→ semelle isolée</text>
+          <text x="262" y="52" fill="#7a6a4f">Mur</text><text x="262" y="60" font-size="6.8" fill="#5f6670" font-weight="600">→ semelle filante</text>
+        </g>
+      </svg>
+      <p class="gris" style="margin-top:1px">Les fondations <b>transmettent au sol</b> les charges. La <b>semelle</b> <b>élargit la surface d'appui</b> et <b>répartit la charge sur le sol</b>. Le sol doit pouvoir la porter (<b>portance</b>).</p>
+    </div>
+  </div>
+
+  <div class="synthese">
+    <h4>Synthèse : le chemin des charges</h4>
+    <div class="fil">
+      <div class="e" style="background:var(--c2)"><b>Charges</b>poids propre, usage, vent</div>
+      <div class="e" style="background:var(--c1)"><b>Plancher</b>reçoit et répartit</div>
+      <div class="e" style="background:var(--c3)"><b>Poutres</b>reportent sur les appuis</div>
+      <div class="e" style="background:#a0301f"><b>Poteaux / murs</b>descendent la charge</div>
+      <div class="e" style="background:#6b7a2a"><b>Semelles</b>étalent la charge</div>
+      <div class="e" style="background:var(--c4)"><b>Sol</b>reçoit, s'il est assez portant</div>
+    </div>
+    <div class="lecon">Toute charge doit trouver un chemin continu jusqu'au bon sol.</div>
+  </div>
+
+  <div class="retenir">
+    <div>
+      <h4>À retenir</h4>
+      <dl>
+        <dt>APS → APD → PE :</dt><dd>de l'esquisse aux plans d'exécution.</dd>
+        <dt>Géotechnique :</dt><dd>nature du sol, bon sol, portance, nappe.</dd>
+        <dt>Édifice :</dt><dd>ossature + enveloppe + revêtement.</dd>
+        <dt>Charges :</dt><dd>permanentes, variables, accidentelles.</dd>
+        <dt>Sollicitations :</dt><dd>compression, traction, cisaillement.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Longrine :</dt><dd>poutre basse reliant les semelles.</dd>
+        <dt>Voile :</dt><dd>mur porteur en béton armé.</dd>
+        <dt>Linteau :</dt><dd>poutre au-dessus d'une ouverture.</dd>
+        <dt>Chape :</dt><dd>couche de mortier qui nivelle le plancher.</dd>
+        <dt>Porte-à-faux :</dt><dd>partie de plancher qui dépasse des appuis.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h4>Mes notes</h4>
+    <div class="ligne"></div><div class="ligne"></div>
+  </div>
+</section>
+
+</body>
+</html>
