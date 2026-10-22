@@ -1,15 +1,17 @@
-"""Séance 4 : deux croquis de la médina de Tunis (la voûte, la rue aux portes bleues).
+"""Séance 4 : deux croquis de la médina de Tunis (la voûte, la rue aux portes bleues), version détaillée.
 
 Même méthode que les séances 2 et 3 : grille de 4 cm, arête AB, verticale A'B', horizontales,
 C et D relevés au crayon bras tendu, fuyantes AC et BD jusqu'au point de fuite PF sur la LH.
 Remarques de la prof : pas de hachures, contours forts, détails fins, construction très légère.
-La moto et la végétation sont laissées de côté.
+La moto, la main au premier plan et la végétation sont laissées de côté.
 
-Entrée : redresse_voute.png, redresse_rue.png (cadre 18 x 24 cm, 40 px = 1 cm).
-Sortie : croquis-4-voute.html et croquis-4-rue.html (A4).
+Entrée : redresse_*.png (cadre 18 x 24 cm, 40 px = 1 cm) et redresse2_*.jpg (la même, 2x, pour les relevés).
+Sortie : croquis-4-voute.html et croquis-4-rue.html (A4) ; avec CALQUE=1, aussi calque-*.html (dessin sur la photo).
 """
-import math, random, sys
+import math, os, random, sys
+import cv2
 import numpy as np
+import releve
 
 ICI = sys.argv[1] if len(sys.argv) > 1 else "."
 S = 40; MM = 10 / S
@@ -84,8 +86,24 @@ class Crayon:
         ) + f" T{pts[-1][0]:.2f},{pts[-1][1]:.2f}"
         self.out.append(f'<path d="{d}" fill="none" stroke="{col}" stroke-width="{lw:.2f}" stroke-opacity="{op:.2f}" stroke-linecap="round"/>')
 
+    def brisee(self, pts_px, sorte="leger", ferme=False):
+        """ligne brisée à main levée (pierres anguleuses)"""
+        lw, op, col = self.TRAITS[sorte]
+        p = [P(*q) for q in pts_px] + ([P(*pts_px[0])] if ferme else [])
+        self.out.append(f'<polyline points="{" ".join(f"{x:.2f},{y:.2f}" for x, y in p)}" fill="none" stroke="{col}" '
+                        f'stroke-width="{lw:.2f}" stroke-opacity="{op:.2f}" stroke-linecap="round" stroke-linejoin="round"/>')
+
+    def forme(self, pts_px, sorte="leger"):
+        """contour fermé arrondi (tache d'enduit)"""
+        lw, op, col = self.TRAITS[sorte]
+        p = [P(*q) for q in pts_px]; n = len(p)
+        if n < 3: return
+        m = [((p[i][0] + p[(i+1) % n][0]) / 2, (p[i][1] + p[(i+1) % n][1]) / 2) for i in range(n)]
+        d = f"M{m[-1][0]:.2f},{m[-1][1]:.2f} " + " ".join(f"Q{p[i][0]:.2f},{p[i][1]:.2f} {m[i][0]:.2f},{m[i][1]:.2f}" for i in range(n)) + " Z"
+        self.out.append(f'<path d="{d}" fill="none" stroke="{col}" stroke-width="{lw:.2f}" stroke-opacity="{op:.2f}" stroke-linejoin="round"/>')
+
     def arc(self, cx, cy, r, a0, a1, sorte="moyen", ry=None, double=False):
-        """arc de cercle (angles en degrés, 0 = droite, 90 = haut), tremblé à la main"""
+        """arc d'ellipse (angles en degrés, 0 = droite, 90 = haut), tremblé à la main"""
         lw, op, col = self.TRAITS[sorte]; ry = ry or r
         for k in range(2 if double else 1):
             ph = self.r.uniform(0, 6.3); n = max(12, int(abs(a1 - a0) / 3)); pts = []
@@ -99,6 +117,18 @@ class Crayon:
 
     def cercle(self, cx, cy, r, sorte="moyen", ry=None):
         self.arc(cx, cy, r, 0, 365, sorte, ry)
+
+    def volute(self, cx, cy, r, tours=1.6, a0=0, sens=1, sorte="fin", queue=None):
+        """spirale de fer forgé ; queue = point (px) où la spirale rejoint la barre"""
+        lw, op, col = self.TRAITS[sorte]
+        pts = []
+        n = int(40 * tours)
+        for i in range(n + 1):
+            t = i / n; a = math.radians(a0) + sens * t * tours * 2 * math.pi; rr = r * (1 - 0.82 * t)
+            pts.append(P(cx + rr * math.cos(a), cy - rr * math.sin(a)))
+        if queue: pts.insert(0, P(*queue))
+        self.out.append(f'<polyline points="{" ".join(f"{x:.2f},{y:.2f}" for x, y in pts)}" fill="none" stroke="{col}" '
+                        f'stroke-width="{lw:.2f}" stroke-opacity="{op:.2f}" stroke-linecap="round" stroke-linejoin="round"/>')
 
     def texte(self, x, y, t, taille=3.2, couleur="#7d8fa6", ancre="start", op=0.9, rot=0):
         tr = f' transform="rotate({rot} {x:.1f} {y:.1f})"' if rot else ""
@@ -125,245 +155,387 @@ def quad_mur(c, x1, x2, yt, yb, sorte="fort", **kw):
     L_(c, x1, yt, x1, yb, sorte, **kw); L_(c, x2, sur(x1, yt, x2), x2, sur(x1, yb, x2), sorte, **kw)
 
 
-def paves(c, y_debut, y_fin, pas, graine, x_min=0, x_max=W, saut=9):
-    """les pavés : des rangs de joints interrompus, plus serrés au fond (1/(y - YH) régulier).
-    Ce ne sont pas des hachures : chaque joint est un petit trait court, avec des vides."""
+def pierres(c, poly, y_fond, graine, pas=1.25e-4, garde=None, larg=(0.11, 0.22)):
+    """les pavés, un par un : des pierres plates arrondies, rang par rang (perspective : 1/(y - YH) régulier).
+    On en laisse une partie en blanc, surtout au fond, comme on le fait à la main."""
     r = random.Random(graine)
-    a0 = 1 / (y_fin - YH); a1 = 1 / (y_debut - YH)
-    k = 0; y_av = None
+    pp = np.array(poly, np.float32)
+    y = H + 25
     while True:
-        a = a0 + k * pas
-        if a > a1: break
-        y = YH + 1 / a; k += 1
-        if y_av is not None and y_av - y < saut: continue
-        ech = (y - YH) / (H - YH)                         # taille des pavés à cette profondeur
-        x = x_min + r.uniform(0, 30) * ech
-        while x < x_max:
-            lg = r.uniform(26, 60) * ech + 4
-            dy = r.uniform(-2.5, 2.5) * ech
-            L_(c, x, y + dy, min(x_max, x + lg), y + dy + r.uniform(-2, 2) * ech, "leger", depasse=False)
-            if y_av is not None and r.random() < 0.4:      # joint de travers entre deux rangs
-                xm = x + lg * r.uniform(0.3, 0.9)
-                L_(c, xm, y + dy, xm + (xm - PF[0]) * (y_av - y) / (y - YH) * 0.15 + r.uniform(-3, 3) * ech,
-                   y_av + 2, "leger", depasse=False)
-            x += lg + r.uniform(6, 16) * ech
-        y_av = y
+        y2 = YH + 1 / (1 / (y - YH) + pas)           # rang suivant, plus au fond
+        if y2 < y_fond: break
+        h = y - y2; prof = (y - YH) / (H - YH)
+        if h >= 3.2:
+            x = -r.uniform(0, 30)
+            while x < W + 10:
+                w = (y - YH) * r.uniform(*larg)
+                g = max(0.9, 0.13 * h)
+                cx, cy = x + w / 2, y2 + h / 2 + r.uniform(-0.12, 0.12) * h
+                p_garde = (0.2 + 0.5 * prof) if garde is None else garde(cx, cy, prof)
+                if cv2.pointPolygonTest(pp, (cx, cy), False) > 0 and r.random() < p_garde:
+                    a, b = w / 2 - g, (h / 2 - g) * r.uniform(0.7, 1.0)
+                    pen = r.uniform(-0.25, 0.25) * b                                  # pierre un peu de travers
+                    pts = []
+                    for (ux, uy) in ((-1, -0.75), (r.uniform(-0.5, 0.3), -1.1), (0.92, -0.95), (1.06, r.uniform(-0.2, 0.4)),
+                                     (0.85, 1.0), (r.uniform(-0.4, 0.2), 1.08), (-1.04, 0.8)):
+                        pts.append((cx + ux * a * r.uniform(0.9, 1.05), cy + uy * b + pen * ux + r.uniform(-0.18, 0.18) * b))
+                    sorte = "leger" if prof < 0.75 or r.random() < 0.6 else "fin"
+                    if r.random() < 0.45:                                             # contour laissé ouvert, comme à la main
+                        k0 = r.randrange(len(pts)); pts = pts[k0:] + pts[:k0]
+                        c.brisee(pts[:-r.randint(1, 3)], sorte)
+                    else:
+                        c.brisee(pts, sorte, ferme=True)
+                x += w
+        y = y2
+
+
+def rosaces(c, x1, x2, y1, y2, s, mur=True, sorte="leger"):
+    """motif de zellige : petites rosaces en quinconce ; mur=True -> les rangs suivent les fuyantes"""
+    j = 0; y = y1
+    while y < y2:
+        x = x1 + (s / 2 if j % 2 else 0) + s / 2
+        while x < x2 - s / 3:
+            yy = sur(x1, y, x) if mur else y
+            c.cercle(x, yy, s * 0.3, sorte)
+            x += s
+        y += s * 0.9; j += 1
+
+
+def briques(c, x1, x2, y1, y2, hb=7, sorte="leger", graine=1):
+    """quelques assises de briques (joints horizontaux et joints verticaux décalés)"""
+    r = random.Random(graine); y = y1; k = 0
+    while y < y2:
+        L_(c, x1, y, x2, y + r.uniform(-0.6, 0.6), sorte, depasse=False)
+        xv = x1 + (6 if k % 2 else 12)
+        while xv < x2 - 2:
+            L_(c, xv, y, xv, y + hb, sorte, depasse=False); xv += 13
+        y += hb; k += 1
+
+
+def grillage(c, x1, y1, x2, y2, pas=9, sorte="leger"):
+    """grillage juste suggéré : quelques fils verticaux et deux fils horizontaux (pas de hachures)"""
+    x = x1 + pas
+    while x < x2 - 2:
+        L_(c, x, y1, x, y2, sorte, depasse=False); x += pas * 1.6
+    for y in (y1 + (y2 - y1) * 0.3, y1 + (y2 - y1) * 0.7):
+        L_(c, x1, y, x2, y, sorte, depasse=False)
+
+
+def taches_auto(c, hi, zone, aire_max=5000, sorte="leger", **kw):
+    """plaques d'enduit tombé relevées sur la photo"""
+    for t in releve.taches(hi, zone, **kw):
+        if cv2.contourArea(np.float32(t)) > aire_max: continue
+        c.forme([tuple(p) for p in t[:-1]], sorte)
 
 
 # ================================================================ 1. la voûte
 def voute():
     regler((335, 615))
+    hi = cv2.imread(f"{ICI}/redresse2_voute.jpg")
     c = Crayon(41)
     A, B, XP = (506, sur(518, 353, 506)), (506, sur(720, 923, 506)), 640
 
     # --- le bâtiment au fond, au-dessus de la voûte
-    rect(c, 200, 9, 306, 169, "moyen")                                             # fenêtre verte
-    L_(c, 208, 17, 298, 17, "fin", depasse=False); L_(c, 208, 17, 208, 165, "fin", depasse=False)
-    L_(c, 298, 17, 298, 165, "fin", depasse=False); L_(c, 253, 17, 253, 165, "fin")
-    L_(c, 208, 100, 298, 100, "fin")
-    L_(c, 196, 169, 310, 169, "moyen")                                             # appui
-    L_(c, 226, 240, 326, 240, "moyen"); L_(c, 226, 252, 326, 252, "moyen")         # balcon
-    L_(c, 226, 240, 226, 252, "moyen"); L_(c, 326, 240, 326, 252, "moyen")
-    for x in (240, 262, 290, 312): L_(c, x, 252, x - 2, 262, "fin", depasse=False)
-    L_(c, 236, 262, 316, 262, "fin")
-    for x0, y0 in ((262, 262), (300, 262)):                                       # consoles
-        c.courbe([(x0, y0), (x0 + 4, y0 + 18), (x0 + 1, y0 + 34)], "fin")
+    L_(c, 200, 4, 200, 247, "fort"); L_(c, 308, 4, 308, 247, "fort")                # fenêtre verte (porte-fenêtre)
+    L_(c, 196, 8, 312, 8, "moyen")
+    L_(c, 207, 14, 207, 245, "fin"); L_(c, 301, 14, 301, 245, "fin"); L_(c, 207, 14, 301, 14, "fin")
+    L_(c, 251, 14, 251, 245, "moyen"); L_(c, 256, 14, 256, 245, "fin", depasse=False)
+    L_(c, 207, 100, 301, 100, "fin"); L_(c, 207, 104, 301, 104, "leger", depasse=False)
+    for x0, x1 in ((212, 247), (260, 296)):                                         # carreaux
+        for ya, yb in ((20, 96), (110, 240)):
+            rect(c, x0, ya, x1, yb, "leger", depasse=False)
+    c.courbe([(262, 22), (270, 60), (266, 96)], "leger")                           # rideau
+    L_(c, 226, 247, 332, 247, "fort"); L_(c, 226, 256, 332, 256, "moyen")          # balcon
+    L_(c, 226, 247, 226, 256, "fin"); L_(c, 332, 247, 332, 256, "fin")
+    L_(c, 234, 256, 234, 276, "moyen"); L_(c, 326, 256, 326, 276, "moyen"); L_(c, 234, 276, 326, 276, "moyen")
+    for x in range(244, 320, 10): L_(c, x, 258, x, 274, "leger", depasse=False)
+    L_(c, 300, 276, 300, 321, "fin"); L_(c, 325, 276, 325, 321, "fin"); L_(c, 300, 321, 325, 321, "fin")   # console
+    c.courbe([(300, 300), (310, 312), (325, 316)], "leger")
+    L_(c, 462, 97, 462, 200, "fort")                                               # angle du bâtiment de droite
+    L_(c, 488, 0, 452, 97, "fort")                                                 # rive du toit en tuiles
+    for i in range(1, 9):
+        t = i / 9; x, y = 488 - 36 * t, 97 * t; L_(c, x, y, x - 10, y - 2, "fin", depasse=False)
+    L_(c, 452, 97, 462, 97, "moyen")
+    L_(c, 503, 40, 503, 200, "fin"); L_(c, 513, 36, 513, 205, "fin")              # renfoncement haut
+    taches_auto(c, hi, releve.masque_poly([[(330, 190), (455, 190), (455, 380), (330, 380)]]) & ~releve.vert(hi), aire_max=3000)
 
-    # --- le mur de gauche (fuit vers PF)
-    L_(c, 58, 0, 58, 705, "fort", double=True)                                     # l'angle avec la façade
+    # --- le mur de gauche
+    L_(c, 57, 0, 57, 700, "fort", double=True)                                     # l'angle avec la façade
     L_(c, 28, 238, 28, 524, "moyen"); L_(c, 37, 245, 37, 520, "fin")              # cadre bleu d'une porte
-    fuyante(c, 28, 238, 37, "moyen")
-    rect(c, 0, 580, 20, 950, "fin")                                                # grillage
-    L_(c, 10, 580, 10, 950, "leger", depasse=False)
-    # bac (on laisse l'arbre de côté)
-    L_(c, 55, 705, 134, 705, "fort"); L_(c, 55, 705, 55, 800, "fort"); L_(c, 134, 705, 134, 800, "fort")
-    L_(c, 55, 714, 134, 714, "fin", depasse=False); L_(c, 50, 800, 140, 800, "moyen")
-    L_(c, 50, 800, 52, 815, "fin"); L_(c, 140, 800, 138, 812, "fin")
+    L_(c, 28, 238, 37, 245, "moyen")
+    L_(c, 3, 578, 3, 950, "fin"); L_(c, 21, 582, 21, 948, "fin"); L_(c, 3, 578, 21, 582, "fin")   # grillage du coin
+    grillage(c, 3, 600, 21, 760)
+    # le bac de l'arbre et sa cage (on laisse l'arbre de côté)
+    L_(c, 60, 560, 60, 700, "fin"); L_(c, 130, 562, 130, 700, "fin"); L_(c, 60, 560, 130, 562, "fin")
+    grillage(c, 62, 600, 128, 698, 11)
+    L_(c, 52, 700, 138, 700, "fort"); L_(c, 55, 700, 55, 800, "fort"); L_(c, 134, 700, 134, 800, "fort")
+    L_(c, 55, 710, 134, 710, "fin", depasse=False)
+    L_(c, 48, 800, 140, 800, "moyen"); L_(c, 48, 800, 48, 815, "fin"); L_(c, 140, 800, 140, 812, "fin")
+    L_(c, 48, 815, 140, 812, "fin")
 
-    # --- la voûte : arc d'entrée (épais), puis l'arc du fond
-    c.arc(243, 540, 166, 0, 180, "fort", double=True)                              # extrados
-    c.arc(240, 545, 148, 0, 180, "moyen")                                          # intrados
-    L_(c, 77, 540, 77, 705, "fort"); L_(c, 92, 545, 92, 705, "moyen")             # pied gauche
-    L_(c, 92, 548, 121, 582, "fin")                                               # naissance de la voûte
-    L_(c, 384, 548, 318, 598, "fin")
-    c.arc(218, 600, 97, 0, 180, "moyen")                                           # arc du fond
-    c.arc(215, 615, 82, 5, 175, "fin")
-    L_(c, 315, 600, 315, 740, "moyen"); L_(c, 297, 612, 297, 737, "fin")
-    L_(c, 121, 600, 121, 705, "moyen")
-    # lanterne suspendue
-    L_(c, 211, 400, 211, 414, "fin", depasse=False)
-    L_(c, 201, 414, 221, 414, "moyen"); L_(c, 197, 422, 225, 422, "moyen")
-    L_(c, 201, 414, 197, 422, "fin", depasse=False); L_(c, 221, 414, 225, 422, "fin", depasse=False)
-    L_(c, 197, 422, 204, 462, "moyen"); L_(c, 225, 422, 218, 462, "moyen"); L_(c, 204, 462, 218, 462, "moyen")
-    L_(c, 211, 422, 211, 462, "leger", depasse=False); L_(c, 211, 462, 211, 470, "fin", depasse=False)
+    # --- l'arc d'entrée (épais) et la voûte
+    c.arc(247, 540, 170, 3, 180, "fort", double=True)                              # extrados
+    c.arc(246, 540, 146, 0, 180, "moyen")                                          # intrados
+    L_(c, 77, 540, 77, 700, "fort"); L_(c, 100, 540, 100, 700, "moyen")            # pied gauche de l'arc
+    L_(c, 392, 545, 318, 612, "fin")                                               # naissance de la voûte, à droite
+    # l'arc du fond : bord extérieur et ouverture (plus large à gauche, on voit le tableau de droite)
+    c.arc(213, 612, 112, 90, 180, "moyen", ry=105); c.arc(213, 612, 104, 0, 90, "moyen", ry=105)
+    c.arc(213, 615, 95, 90, 180, "moyen", ry=83); c.arc(213, 615, 85, 0, 90, "moyen", ry=83)
+    L_(c, 298, 615, 298, 736, "moyen"); L_(c, 317, 612, 317, 741, "moyen")
+    L_(c, 101, 612, 101, 700, "fin")
+    # la lanterne suspendue
+    L_(c, 210, 396, 210, 407, "fin", depasse=False)
+    L_(c, 202, 407, 218, 407, "moyen"); L_(c, 195, 417, 225, 417, "moyen")
+    L_(c, 202, 407, 195, 417, "moyen", depasse=False); L_(c, 218, 407, 225, 417, "moyen", depasse=False)
+    L_(c, 196, 420, 226, 420, "fin", depasse=False)
+    L_(c, 196, 420, 202, 462, "moyen"); L_(c, 226, 420, 220, 462, "moyen"); L_(c, 202, 462, 220, 462, "moyen")
+    L_(c, 211, 420, 211, 462, "leger", depasse=False); L_(c, 199, 440, 223, 440, "leger", depasse=False)
+    L_(c, 211, 462, 211, 470, "fin", depasse=False)
 
-    # --- au fond, sous l'arc : porte bleue, panneau, compteur
-    L_(c, 118, 577, 206, 577, "moyen"); L_(c, 118, 584, 206, 584, "fin")
-    L_(c, 134, 584, 134, 732, "moyen"); L_(c, 206, 584, 206, 734, "moyen"); L_(c, 210, 531, 210, 734, "fin")
-    L_(c, 162, 586, 162, 732, "fin")
-    for xa, xb in ((138, 158), (166, 202)):
-        for ya, yb in ((594, 632), (642, 688), (698, 726)):
+    # --- au fond, sous l'arc : porte bleue, imposte, plaque, compteur
+    L_(c, 118, 583, 205, 583, "moyen"); L_(c, 133, 579, 203, 579, "fin")
+    rect(c, 137, 540, 200, 576, "leger", depasse=False)                            # imposte vitrée
+    L_(c, 118, 583, 118, 733, "moyen"); L_(c, 203, 532, 203, 734, "moyen"); L_(c, 209, 534, 209, 734, "fin")
+    L_(c, 161, 586, 161, 732, "fin")
+    for xa, xb in ((123, 157), (165, 199)):                                         # panneaux de la porte
+        for ya, yb in ((591, 620), (625, 656), (661, 693), (698, 727)):
             rect(c, xa, ya, xb, yb, "leger", depasse=False)
-    rect(c, 224, 539, 256, 554, "fin")                                             # plaque de la rue
-    rect(c, 246, 674, 265, 706, "fin")                                             # compteur
-    L_(c, 279, 577, 279, 734, "fin"); L_(c, 290, 577, 290, 734, "fin")
-    L_(c, 121, 737, 315, 740, "moyen")                                             # pied du mur du fond
+    c.cercle(161, 621, 2, "fin"); c.cercle(163, 690, 2, "fin")
+    L_(c, 116, 734, 300, 736, "moyen")                                             # pied du mur du fond
+    L_(c, 112, 744, 318, 745, "fin")
+    rect(c, 225, 537, 258, 552, "fin"); L_(c, 229, 545, 254, 545, "leger", depasse=False)   # plaque de la rue
+    rect(c, 245, 674, 266, 706, "fin"); rect(c, 249, 678, 262, 702, "leger", depasse=False)  # compteur
+    c.courbe([(262, 703), (275, 708), (288, 702)], "leger")
+    L_(c, 278, 575, 278, 734, "fin"); L_(c, 290, 575, 290, 735, "fin")
+    for y in (600, 640, 690): L_(c, 280, y, 288, y, "leger", depasse=False)
 
-    # --- colonne, pilastre, encadrement en brique
-    L_(c, 362, 540, 418, 540, "moyen"); L_(c, 362, 548, 418, 548, "moyen")         # tailloir
-    L_(c, 362, 540, 362, 548, "fin"); L_(c, 418, 540, 418, 548, "fin")
-    c.courbe([(368, 548), (372, 558), (379, 563)], "fin"); c.courbe([(412, 548), (408, 558), (408, 563)], "fin")
-    L_(c, 379, 563, 379, 724, "fort"); L_(c, 408, 563, 408, 724, "fort")           # fût
-    L_(c, 373, 724, 414, 724, "moyen"); L_(c, 371, 738, 416, 738, "moyen")         # base
-    L_(c, 373, 724, 371, 738, "fin"); L_(c, 414, 724, 416, 738, "fin")
-    L_(c, 418, 532, 458, 532, "moyen"); L_(c, 418, 558, 458, 558, "fin")           # pilastre
-    L_(c, 418, 532, 418, 745, "moyen"); L_(c, 458, 532, 458, 745, "moyen")
-    rect(c, 423, 600, 453, 742, "leger", depasse=False)                            # son grillage
-    L_(c, 462, 125, 462, 745, "fort", double=True)
-    L_(c, 462, 125, 506, 132, "moyen")
-    c.arc(479, 312, 11, 0, 180, "moyen")
-    L_(c, 468, 312, 468, 740, "moyen"); L_(c, 490, 312, 490, 742, "moyen")
-    L_(c, 458, 745, 506, 754, "moyen")
-    L_(c, 505, 0, 462, sur(505, 0, 462), "fort")                                   # bord du toit en tuiles
-    for x in (500, 492, 484, 476, 468):
-        y = sur(505, 0, x); L_(c, x, y, x - 9, y - 4, "fin", depasse=False)
+    # --- la colonne (sous l'arc) et le pilier sculpté
+    L_(c, 375, 545, 416, 545, "moyen"); L_(c, 375, 550, 416, 550, "fin")          # tailloir
+    c.courbe([(379, 550), (382, 560), (383, 566)], "fin"); c.courbe([(412, 550), (409, 560), (408, 566)], "fin")
+    L_(c, 381, 566, 409, 566, "fin"); L_(c, 381, 588, 409, 588, "leger", depasse=False)
+    L_(c, 381, 566, 381, 683, "fort"); L_(c, 409, 566, 409, 745, "fort")           # fût
+    L_(c, 403, 531, 463, 531, "fort"); L_(c, 403, 541, 463, 541, "moyen")          # tailloir du pilier
+    L_(c, 403, 531, 403, 541, "fin"); L_(c, 463, 531, 463, 541, "fin")
+    L_(c, 414, 541, 414, 600, "moyen"); L_(c, 458, 541, 458, 600, "moyen")         # chapiteau
+    c.volute(423, 552, 6, 1.5, 90, 1, "fin"); c.volute(449, 552, 6, 1.5, 90, -1, "fin")
+    for x0 in (420, 436, 452):                                                      # feuilles d'acanthe
+        c.courbe([(x0 - 5, 600), (x0 - 4, 585), (x0, 574), (x0 + 4, 585), (x0 + 5, 600)], "fin")
+    L_(c, 414, 566, 458, 566, "leger", depasse=False)
+    L_(c, 412, 600, 460, 600, "moyen")
+    L_(c, 412, 600, 412, 732, "moyen"); L_(c, 460, 600, 460, 732, "moyen")         # le pilier sous grillage
+    rect(c, 416, 606, 456, 728, "fin", depasse=False); grillage(c, 416, 640, 456, 728, 8)
+    L_(c, 408, 732, 464, 732, "moyen"); L_(c, 406, 748, 466, 750, "moyen")         # base
+    L_(c, 408, 732, 406, 748, "fin"); L_(c, 464, 732, 466, 750, "fin")
+    # l'encadrement de porte en brique et pierre (mur de droite)
+    L_(c, 461, 200, 461, 750, "fort", double=True)
+    L_(c, 477, 205, 477, 752, "fin"); L_(c, 500, 205, 500, 752, "fin")
+    L_(c, 461, 200, 506, 206, "moyen")
+    briques(c, 478, 499, 330, 372, graine=2); briques(c, 478, 499, 470, 512, graine=3); briques(c, 478, 499, 610, 645, graine=4)
+    c.arc(478, 304, 9, 0, 180, "moyen"); L_(c, 469, 304, 469, 742, "moyen"); L_(c, 487, 304, 487, 744, "moyen")
+    L_(c, 458, 750, 506, 754, "moyen"); L_(c, 456, 760, 506, 765, "fin")         # seuil
 
     # --- le mur de droite (fuit vers PF)
     fuyante(c, *B, W, "fort", double=True)                                         # pied du mur
-    L_(c, A[0], 132, A[0], B[1], "fort", double=True)                              # l'arête AB
-    quad_mur(c, 518, 531, 353, 437, "moyen")                                       # petite fenêtre
+    L_(c, A[0], 206, A[0], B[1], "fort", double=True)                              # l'arête AB
+    fuyante(c, 506, B[1] - 14, W, "leger")                                         # soubassement
+    quad_mur(c, 518, 531, 353, 437, "moyen")                                       # petite fenêtre à barreaux
+    fuyante(c, 515, 350, 534, "fin"); fuyante(c, 515, 441, 534, "fin")
     for x in (522, 527): L_(c, x, sur(518, 353, x) + 3, x, sur(518, 437, x) - 3, "fin", depasse=False)
     quad_mur(c, 527, 537, 649, 696, "fin")                                         # petite trappe
-    yb = sur(509, 700, 601)                                                        # niche en arc
+    yb = sur(506, 705, 601)                                                        # niche en arc
     L_(c, 601, 300, 601, yb, "fort"); L_(c, XP, 300, XP, sur(601, yb, XP), "fort")
-    c.courbe([(601, 300), (606, 280), (620, 272), (634, 280), (XP, 300)], "fort")
+    c.courbe([(601, 300), (604, 282), (620, 270), (636, 282), (XP, 300)], "fort")
     fuyante(c, 601, yb, XP, "moyen")
-    L_(c, 607, 305, 607, yb - 3, "leger", depasse=False)
+    L_(c, 608, 302, 608, yb - 2, "leger", depasse=False); c.courbe([(608, 302), (612, 288), (622, 282)], "leger")
+    c.courbe([(615, 380), (622, 410), (618, 450)], "leger")                        # fissure
     quad_mur(c, 702, W, 225, 338, "moyen")                                         # fenêtre à grille
-    for i in range(3):
-        x = 706 + i * 6; c.courbe([(x, sur(702, 225, x) + 8), (x + 4, sur(702, 280, x)), (x, sur(702, 338, x) - 8)], "fin")
+    for i, y in enumerate((250, 280, 310)):
+        c.volute(711, sur(702, y, 711), 5, 1.4, 90, 1 if i % 2 else -1, "fin")
+    zone = releve.masque_poly([[(512, 0), (720, 0), (720, 530), (560, 530), (560, 780), (512, 760)]])
+    zone &= ~releve.masque_poly([[(596, 262), (645, 262), (645, 730), (596, 730)], [(512, 340), (540, 340), (540, 450), (512, 450)],
+                                [(695, 215), (720, 215), (720, 345), (695, 345)]])
+    taches_auto(c, hi, zone & ~releve.vert(hi))
 
-    # --- un personnage assis (pour l'échelle)
-    c.cercle(379, 690, 8, "moyen")
-    c.courbe([(371, 703), (366, 722), (370, 746)], "moyen"); c.courbe([(386, 700), (396, 718), (394, 746)], "moyen")
-    c.courbe([(370, 712), (360, 730), (372, 734)], "fin")
-    c.courbe([(370, 746), (348, 750), (326, 752)], "moyen"); c.courbe([(394, 746), (360, 758), (330, 759)], "moyen")
-    L_(c, 326, 752, 322, 760, "fin", depasse=False)
+    # --- un personnage assis contre la colonne (pour l'échelle)
+    c.cercle(381, 692, 9, "moyen")
+    c.courbe([(372, 690), (376, 681), (388, 682), (391, 690)], "fin")               # cheveux
+    c.courbe([(373, 702), (368, 722), (368, 746)], "moyen"); c.courbe([(389, 702), (398, 716), (400, 742)], "moyen")
+    c.courbe([(391, 707), (402, 716), (407, 727)], "fin")                           # bras
+    c.courbe([(373, 712), (362, 728), (378, 736), (392, 732)], "fin")
+    c.courbe([(368, 746), (345, 750), (328, 752)], "moyen"); c.courbe([(400, 745), (365, 757), (330, 760)], "moyen")
+    c.courbe([(328, 752), (322, 755), (330, 760)], "fin")
 
     # --- le sol en pavés
     sol = Crayon(43)
-    paves(sol, 748, H, 0.00045, 5)
-    sol_poly = [(0, 960), (0, 900), (20, 880), (50, 815), (140, 812), (140, 740), (318, 742), (370, 748), (509, 755), (W, sur(509, 755, W)), (W, H)]
+    sol_poly = [(0, 960), (0, 950), (24, 945), (48, 818), (140, 814), (140, 748), (318, 748), (370, 752), (506, 756),
+                (W, sur(506, 756, W)), (W, H)]
+    pierres(sol, sol_poly, 748, 5)
 
-    lignes = {"ab": "le bord de la niche", "omis": "la moto et la végétation sont laissées de côté", "titre": "Croquis 1 · la voûte",
-              "pf": "PF : point de fuite, au fond sous la voûte"}
+    lignes = {"ab": "le bord de la niche", "omis": "la moto, la main et la végétation sont laissées de côté",
+              "titre": "Croquis 1 · la voûte", "pf": "PF : point de fuite, au fond sous la voûte"}
     return c, sol, sol_poly, A, B, XP, lignes
 
 
 # ================================================================ 2. la rue aux portes bleues
 def rue():
     regler((528, 570))
+    hi = cv2.imread(f"{ICI}/redresse2_rue.jpg")
     c = Crayon(51)
     A, B, XP = (346, 448), (346, 660), 232
 
-    # --- façade de gauche (fuit vers PF)
-    quad_mur(c, 12, 80, 14, 228, "fort")                                           # fenêtre à grille bleue
-    for x in (30, 48, 64):
-        c.courbe([(x, sur(12, 14, x) + 8), (x + 5, sur(12, 80, x)), (x - 4, sur(12, 140, x)), (x + 3, sur(12, 220, x) - 6)], "fin")
-    c.cercle(40, sur(12, 60, 40), 8, "fin"); c.cercle(56, sur(12, 165, 56), 7, "fin")
-    fuyante(c, 8, 234, 88, "moyen"); fuyante(c, 8, 246, 88, "fin"); L_(c, 8, 234, 8, 246, "fin")   # appui
+    # --- façade de gauche : la fenêtre à grille bleue
+    L_(c, 11, 14, 11, 222, "fort"); L_(c, 79, 82, 79, 262, "fort")
+    L_(c, 11, 14, 79, 82, "fort"); L_(c, 9, 215, 80, 262, "fort")
+    L_(c, 16, 22, 16, 220, "fin", depasse=False); L_(c, 74, 84, 74, 256, "fin", depasse=False)
+    for yl, yr in ((70, 130), (128, 180), (178, 228)):                              # barres en biais (suivent le mur)
+        L_(c, 12, yl, 78, yr, "fin", depasse=False)
+    for x in (27, 45, 62):                                                          # barres ondulées
+        c.courbe([(x, 14 + 0.98 * (x - 11) + 4), (x + 4, 60 + x * 0.9), (x - 3, 120 + x * 0.8), (x + 4, 170 + x * 0.7), (x, 214 + 0.68 * (x - 9) - 3)], "fin")
+    for cx, cy, r, s in ((25, 40, 6, 1), (68, 90, 6, -1), (50, 145, 10, 1), (25, 205, 6, -1), (70, 244, 6, 1), (38, 100, 5, -1)):
+        c.volute(cx, cy, r, 1.5, 0, s, "fin")
+    L_(c, 6, 222, 84, 270, "moyen"); L_(c, 6, 233, 84, 279, "fin"); L_(c, 6, 222, 6, 233, "fin")   # appui
+    L_(c, 3, 8, 3, 222, "leger"); L_(c, 3, 8, 11, 14, "leger")                     # tableau de la fenêtre
 
-    # l'auvent au-dessus de la porte
+    # --- l'auvent au-dessus de la porte
     L_(c, 99, 54, 180, 44, "moyen"); L_(c, 104, 64, 180, 58, "fin"); L_(c, 99, 54, 104, 64, "fin")
     L_(c, 180, 44, 297, 196, "fort", double=True)                                  # rive avec les tuiles
     L_(c, 180, 58, 297, 216, "moyen")
-    L_(c, 107, 72, 230, 219, "fort")                                               # contre le mur
-    L_(c, 230, 219, 297, 216, "moyen"); L_(c, 297, 196, 297, 216, "moyen")
-    for i in range(11):                                                            # tuiles rondes, en écailles
-        t = (i + 0.5) / 11; x, y = 180 + 117 * t, 44 + 152 * t
+    L_(c, 107, 73, 231, 219, "fort")                                               # contre le mur
+    L_(c, 231, 219, 297, 216, "moyen"); L_(c, 297, 196, 297, 216, "moyen")
+    for i in range(12):                                                            # tuiles rondes, en écailles
+        t = (i + 0.5) / 12; x, y = 180 + 117 * t, 44 + 152 * t
         c.arc(x, y, 6, -52, 128, "fin")
-    # l'encadrement en zellige et la porte
-    L_(c, 106, 72, 106, 762, "fort", double=True); L_(c, 232, 219, 232, 716, "fort", double=True)
-    L_(c, 113, 80, 113, 755, "leger", depasse=False); L_(c, 226, 226, 226, 712, "leger", depasse=False)
-    L_(c, 129, 150, 129, 703, "moyen"); fuyante(c, 129, 150, 184, "moyen")
-    L_(c, 184, sur(129, 150, 184), 184, sur(129, 703, 184), "moyen")
-    fuyante(c, 129, 298, 184, "moyen")                                             # haut de la porte
-    quad_mur(c, 150, 168, 330, 520, "fin"); quad_mur(c, 150, 168, 580, 672, "fin")  # panneaux
-    c.cercle(165, sur(150, 552, 165), 4, "fin")
-    fuyante(c, 120, 704, 218, "moyen"); fuyante(c, 106, 718, 226, "fin")           # seuil en marbre
-    L_(c, 106, 762, 232, 716, "fort")
-    # descente, applique, plinthe, barres bleues
-    c.courbe([(232, 238), (244, 244), (247, 262)], "moyen"); L_(c, 247, 262, 247, 298, "moyen")
-    rect(c, 240, 298, 254, 312, "moyen"); L_(c, 252, 312, 255, 560, "fin")
-    L_(c, 0, 594, 106, 614, "fin"); fuyante(c, 232, 594, 345, "fin")
+    L_(c, 298, 229, 352, 300, "leger")                                             # câble
+
+    # --- l'encadrement en zellige et la porte bleue
+    L_(c, 106, 73, 106, 762, "fort", double=True); L_(c, 231, 219, 231, 714, "fort", double=True)
+    L_(c, 129, 160, 129, 707, "moyen")                                             # tableau gauche
+    L_(c, 129, 160, 218, 243, "moyen")                                             # haut du renfoncement
+    L_(c, 184, sur(129, 160, 184) + 2, 184, 700, "moyen")                          # la porte, côté droit
+    L_(c, 222, 238, 222, 708, "fin")
+    rosaces(c, 108, 128, 80, 750, 7.5)                                             # zellige, face avant
+    rosaces(c, 186, 221, 250, 700, 8, mur=False)                                   # zellige, dans le tableau
+    for i in range(1, 15):                                                         # zellige du linteau (biais)
+        t = i / 15; x = 112 + 108 * t; c.cercle(x, 80 + 137 * t + 8 + 4 * t, 2.0, "leger"); c.cercle(x + 4, 80 + 137 * t + 22 + 4 * t, 2.0, "leger")
+    L_(c, 129, 318, 184, 318, "moyen")                                             # haut de la porte
+    for y in (200, 240, 280):                                                      # imposte à grille, en arabesques
+        c.courbe([(133, y), (146, y - 6), (158, y), (170, y + 6), (182, y)], "leger")
+    L_(c, 147, 322, 147, 700, "leger", depasse=False)                              # battant
+    rect(c, 152, 362, 167, 525, "fin"); rect(c, 155, 367, 164, 520, "leger", depasse=False)   # panneaux
+    rect(c, 152, 580, 167, 662, "fin"); rect(c, 155, 585, 164, 657, "leger", depasse=False)
+    L_(c, 132, 540, 182, 540, "fin"); L_(c, 132, 562, 182, 562, "fin")
+    c.cercle(163, 553, 3, "fin"); c.cercle(147, 550, 2, "fin")
+    L_(c, 125, 705, 215, 697, "moyen"); L_(c, 115, 732, 228, 706, "fin")            # seuil en marbre
+    L_(c, 125, 705, 115, 732, "fin")
+    L_(c, 106, 762, 231, 714, "fort")
+    # descente, applique, plinthe, barres et coffrets bleus
+    c.courbe([(231, 250), (238, 252), (240, 262)], "moyen"); L_(c, 240, 262, 240, 294, "moyen")
+    rect(c, 232, 294, 247, 310, "moyen"); L_(c, 239, 310, 239, 318, "fin")
+    L_(c, 241, 318, 243, 560, "fin"); L_(c, 245, 318, 247, 560, "leger", depasse=False)
+    L_(c, 0, 594, 106, 614, "fin"); fuyante(c, 231, 594, 345, "fin")
     rect(c, 81, 580, 93, 759, "moyen"); rect(c, 254, 569, 261, 676, "moyen"); rect(c, 238, 609, 249, 655, "fin")
     L_(c, 4, 647, 68, 641, "moyen"); L_(c, 68, 641, 68, 734, "moyen"); L_(c, 68, 734, 4, 736, "moyen"); L_(c, 4, 736, 4, 647, "moyen")
-    # fenêtre à grille du rez-de-chaussée
+    L_(c, 10, 652, 62, 647, "leger", depasse=False)
+    c.cercle(22, 440, 3, "fin"); L_(c, 22, 443, 24, 452, "fin")                     # crochet au mur
+    taches_auto(c, hi, releve.masque_poly([[(250, 330), (340, 380), (340, 640), (250, 640)]]), aire_max=1500)
+
+    # --- fenêtre à grille du rez-de-chaussée
     quad_mur(c, 287, 323, 419, 557, "fort")
-    for i in range(1, 4):
-        x = 287 + 9 * i; L_(c, x, sur(287, 419, x) + 2, x, sur(287, 557, x) - 2, "fin", depasse=False)
-    for j in range(1, 6):
-        fuyante(c, 289, 419 + 23 * j, 321, "fin", depasse=False)
-    # porte en arc et son encadrement en pierre
-    L_(c, A[0], A[1] + 20, A[0], B[1], "fort")
+    for i in range(1, 6):
+        x = 287 + 6 * i; L_(c, x, sur(287, 419, x) + 2, x, sur(287, 557, x) - 2, "fin", depasse=False)
+    for j in range(1, 8):
+        fuyante(c, 289, 419 + 17 * j, 321, "fin", depasse=False)
+
+    # --- porte en arc et son encadrement de pierre, puis le fond
+    L_(c, A[0], A[1] + 20, A[0], B[1], "fort", double=True)
     c.arc(369, 471, 23, 0, 180, "moyen"); L_(c, 392, 471, 392, 666, "moyen")
     c.arc(368.5, 476, 13.5, 0, 180, "moyen"); L_(c, 355, 476, 355, 637, "moyen"); L_(c, 382, 476, 382, 637, "moyen")
-    L_(c, 355, 637, 382, 637, "fin")
-    L_(c, 340, 650, 398, 652, "fin")
-    L_(c, 400, 425, 400, 640, "moyen"); L_(c, 414, 420, 414, 638, "fin"); L_(c, 400, 425, 414, 420, "fin")
-    # les balcons en fer forgé, en haut
-    c.courbe([(262, 0), (272, 50), (290, 108)], "moyen"); c.courbe([(305, 0), (334, 55), (318, 112)], "moyen")
-    c.courbe([(290, 108), (305, 116), (318, 112)], "moyen")
-    for x in (280, 298): c.courbe([(x, 4), (x + 12, 50), (x + 10, 100)], "fin")
-    L_(c, 340, 62, 340, 244, "moyen"); L_(c, 364, 74, 364, 248, "moyen")
-    c.courbe([(352, 0), (376, 95), (396, 200), (392, 238), (366, 248)], "moyen")
-    for y in (110, 160, 210): c.cercle(358, y, 6, "fin")
-    fuyante(c, 336, 248, 372, "moyen"); fuyante(c, 336, 262, 372, "fin"); L_(c, 336, 248, 336, 262, "fin")
-    for ya, yb in ((30, 150), (230, 310), (360, 470)):
-        rect(c, 405, ya, 425, yb, "fin")
-    # la lanterne
-    L_(c, 446, 107, 468, 107, "moyen"); L_(c, 446, 107, 457, 99, "fin"); L_(c, 468, 107, 457, 99, "fin")
-    L_(c, 440, 120, 473, 120, "moyen"); L_(c, 446, 107, 440, 120, "fin"); L_(c, 468, 107, 473, 120, "fin")
-    L_(c, 440, 120, 447, 160, "moyen"); L_(c, 473, 120, 466, 160, "moyen"); L_(c, 447, 160, 466, 160, "moyen")
-    L_(c, 457, 160, 457, 192, "fin"); c.courbe([(457, 192), (442, 192), (428, 186)], "fin")
+    L_(c, 355, 637, 382, 637, "fin"); L_(c, 368, 480, 368, 636, "leger", depasse=False)
+    c.arc(369, 471, 18, 10, 170, "leger")
+    L_(c, 340, 650, 398, 652, "fin"); L_(c, 342, 664, 400, 660, "fin")             # marche
+    for y in (520, 570, 610): c.courbe([(347, y), (350, y + 8), (347, y + 16)], "leger")   # pierre usée
+    L_(c, 395, 410, 395, 645, "moyen"); L_(c, 407, 405, 407, 643, "fin")           # pilastre blanc
+    c.arc(420, 510, 6, 0, 180, "fin"); L_(c, 414, 510, 414, 541, "fin"); L_(c, 426, 510, 426, 541, "fin")   # petite niche
+    L_(c, 418, 330, 418, 645, "fin"); L_(c, 407, 643, 480, 645, "moyen")            # le fond de la rue
+    c.forme([(395, 648), (402, 641), (412, 643), (416, 652), (408, 657), (398, 656)], "fin")   # sac blanc
+    L_(c, 418, 330, 445, 330, "leger")
+    rr = random.Random(9)                                                          # le mur de pierre au fond (sans le figuier)
+    for _ in range(26):
+        x, y = rr.uniform(424, 556), rr.uniform(400, 600)
+        if 470 < x < 562 and y > 595: continue
+        w, h = rr.uniform(10, 20), rr.uniform(6, 11)
+        c.brisee([(x, y), (x + w * 0.55, y - 1), (x + w, y + 1), (x + w + 1, y + h * 0.6), (x + w * 0.6, y + h), (x - 1, y + h * 0.8)], "leger", ferme=True)
 
-    # --- au fond
-    L_(c, 418, 330, 418, 640, "fin"); L_(c, 418, 640, 470, 640, "moyen")
+    # --- les balcons en fer forgé, en haut
+    L_(c, 258, 12, 302, 112, "moyen")                                              # balcon-corbeille
+    c.courbe([(300, 0), (326, 30), (340, 70), (332, 102), (304, 114)], "moyen")
+    for t in (0.2, 0.4, 0.6, 0.8):
+        x0, y0 = 258 + 44 * t, 12 + 100 * t
+        c.courbe([(x0, y0), (x0 + 22, y0 - 10), (x0 + 38 - 12 * t, y0 + 4)], "fin")
+    for x, y in ((276, 20), (290, 48), (305, 75)): c.volute(x, y, 4, 1.3, 0, 1, "leger")
+    L_(c, 339, 62, 339, 248, "moyen"); L_(c, 357, 66, 357, 250, "moyen"); L_(c, 339, 62, 357, 66, "moyen")   # 2e balcon
+    c.courbe([(352, 62), (376, 120), (394, 190), (393, 236), (376, 258)], "moyen")
+    for t in (0.25, 0.5, 0.75):
+        y0 = 70 + 180 * t; c.courbe([(357, y0), (372, y0 + 12), (388 - 4 * (1 - t), y0 + 30)], "fin")
+    for y in (110, 150, 195, 230): c.volute(348, y, 5, 1.4, 90, 1 if y % 20 else -1, "fin")
+    L_(c, 336, 246, 374, 252, "moyen"); L_(c, 336, 260, 374, 266, "fin"); L_(c, 336, 246, 336, 260, "fin")
+    L_(c, 345, 266, 345, 290, "leger"); L_(c, 372, 268, 372, 290, "leger")
+    for (ya, yb) in ((42, 192), (262, 320)):                                        # balcons plus loin
+        L_(c, 407, ya - 17, 436, ya, "fin"); L_(c, 412, ya, 412, yb, "fin"); L_(c, 434, ya + 4, 434, yb, "fin")
+        for y in range(ya + 18, yb, 28): c.volute(423, y, 4, 1.3, 0, 1, "leger")
+    L_(c, 400, 0, 400, 330, "fin")                                                 # arête de la façade, au loin
+
+    # --- la lanterne
+    L_(c, 448, 107, 466, 107, "moyen"); L_(c, 448, 107, 457, 98, "fin"); L_(c, 466, 107, 457, 98, "fin")
+    L_(c, 441, 119, 472, 119, "moyen"); L_(c, 448, 107, 441, 119, "fin"); L_(c, 466, 107, 472, 119, "fin")
+    L_(c, 441, 119, 448, 160, "moyen"); L_(c, 472, 119, 465, 160, "moyen"); L_(c, 448, 160, 465, 160, "moyen")
+    L_(c, 456, 119, 456, 160, "leger", depasse=False); L_(c, 444, 138, 469, 138, "leger", depasse=False)
+    L_(c, 456, 160, 456, 192, "fin"); c.courbe([(456, 172), (444, 176), (430, 186)], "fin"); c.courbe([(456, 192), (444, 192), (428, 188)], "fin")
 
     # --- la banquette couverte d'un tissu rayé
-    c.courbe([(483, 612), (520, 606), (560, 612)], "moyen")                        # haut du dossier
-    c.courbe([(483, 612), (474, 650), (470, 690)], "moyen")
-    L_(c, 560, 612, 562, 735, "moyen")
-    c.courbe([(470, 690), (440, 696), (423, 708)], "moyen")                        # l'assise
-    c.courbe([(423, 708), (420, 725), (424, 740)], "moyen")
-    c.courbe([(424, 740), (470, 748), (525, 760)], "moyen")                        # bas du tissu
-    c.courbe([(525, 760), (545, 748), (562, 735)], "moyen")
-    c.courbe([(470, 690), (500, 698), (526, 712), (525, 760)], "fin")
-    for y0 in (640, 668): c.courbe([(480, y0), (520, y0 - 3), (558, y0 + 2)], "leger")
-    for y0 in (716, 730): c.courbe([(426, y0), (470, y0 + 6), (522, y0 + 14)], "leger")
-    L_(c, 440, 740, 441, 750, "fin", depasse=False); L_(c, 522, 760, 523, 770, "fin", depasse=False)
+    c.courbe([(484, 624), (520, 618), (561, 626)], "moyen")                        # haut du dossier
+    c.courbe([(484, 624), (480, 650), (480, 672)], "moyen")
+    L_(c, 561, 626, 561, 718, "moyen")
+    c.courbe([(480, 672), (450, 676), (428, 686)], "moyen")                        # l'assise
+    c.courbe([(428, 686), (422, 712), (423, 742)], "moyen")
+    c.courbe([(423, 742), (470, 748), (516, 758)], "moyen")                        # bas du tissu
+    c.courbe([(516, 758), (540, 742), (561, 718)], "moyen")
+    c.courbe([(480, 672), (505, 684), (516, 720), (516, 758)], "fin")
+    for y0 in (636, 650, 664): c.courbe([(482, y0), (522, y0 - 4), (560, y0 + 3)], "leger")   # rayures
+    for y0 in (696, 712, 728): c.courbe([(425, y0 - 4), (470, y0 + 2), (514, y0 + 12)], "leger")
+    for x in range(426, 512, 7): L_(c, x, 742 + (x - 423) * 0.14, x - 1, 748 + (x - 423) * 0.14, "leger", depasse=False)   # franges
+    L_(c, 440, 745, 441, 752, "fin", depasse=False); L_(c, 518, 760, 519, 768, "fin", depasse=False)
 
-    # --- façade de droite (très proche, elle fuit vite)
-    L_(c, 560, 470, 560, 776, "fort", double=True)
-    L_(c, 587, 0, 587, 776, "fort"); L_(c, 653, 0, 653, 774, "fort", double=True); L_(c, 687, 0, 687, 776, "fort")
-    L_(c, 600, 300, 600, 760, "leger", depasse=False); L_(c, 640, 300, 640, 760, "leger", depasse=False)
-    L_(c, 661, 0, 661, 772, "fin", depasse=False)
+    # --- façade de droite, toute proche
+    L_(c, 579, 150, 579, 776, "moyen"); L_(c, 561, 470, 561, 780, "fort", double=True)
+    L_(c, 591, 0, 591, 776, "fort"); L_(c, 651, 0, 651, 774, "fort", double=True); L_(c, 686, 0, 686, 778, "fort")
+    L_(c, 604, 40, 604, 760, "leger", depasse=False); L_(c, 626, 300, 626, 760, "leger", depasse=False)
+    L_(c, 640, 40, 640, 760, "leger", depasse=False)
+    L_(c, 659, 0, 659, 770, "fin", depasse=False); L_(c, 680, 0, 680, 772, "leger", depasse=False)
     L_(c, 700, 0, 700, 790, "fin")
+    for y in (420, 520): L_(c, 686, y, 700, y + 2, "leger", depasse=False)
     # les marches en marbre
-    L_(c, 558, 776, 690, 806, "moyen"); L_(c, 558, 776, 600, H, "fort"); L_(c, 578, 782, 628, H, "moyen")
-    L_(c, 638, 806, 720, 925, "moyen"); L_(c, 653, 774, 720, 786, "fin")
+    L_(c, 561, 780, 651, 796, "moyen"); L_(c, 561, 780, 622, H, "fort"); L_(c, 586, 776, 645, H, "moyen")
+    L_(c, 651, 777, 720, 800, "moyen"); L_(c, 640, 790, 720, 880, "moyen"); L_(c, 651, 777, 640, 790, "fin")
+    L_(c, 700, 790, 720, 812, "fin")
     # le balcon arrondi en fer forgé
-    c.courbe([(575, 160), (580, 300), (580, 420), (566, 470), (530, 474), (507, 430), (512, 350), (540, 260), (566, 190), (575, 160)], "moyen")
-    for (x, y, r) in ((548, 330, 9), (556, 400, 11), (532, 430, 8)): c.cercle(x, y, r, "fin")
-    c.courbe([(565, 200), (552, 300), (545, 380), (546, 460)], "fin")
+    c.courbe([(557, 154), (579, 154)], "moyen")
+    c.courbe([(557, 154), (548, 210), (530, 290), (510, 370), (507, 420), (516, 460), (545, 468), (570, 456), (579, 430)], "moyen")
+    L_(c, 579, 154, 579, 430, "moyen")
+    c.courbe([(568, 160), (560, 240), (548, 330), (538, 420), (548, 462)], "fin")
+    for (x, y, r, s) in ((564, 247, 7, 1), (545, 329, 8, -1), (551, 385, 7, 1), (528, 412, 6, -1), (564, 429, 6, 1), (566, 300, 5, -1)):
+        c.volute(x, y, r, 1.5, 0, s, "fin")
+    for y in (360, 400, 440): c.courbe([(512, y), (540, y + 6), (578, y)], "leger")
 
     sol = Crayon(53)
-    c.cercle(262, 828, 45, "fin", 11)                                              # plaque d'égout
-    paves(sol, 652, H, 0.00055, 7, saut=10)
-    sol_poly = [(0, 960), (0, 772), (106, 764), (232, 718), (418, 642), (430, 645), (420, 742), (525, 764), (558, 778), (600, 960)]
+    c.cercle(262, 828, 45, "fin", 11); c.cercle(262, 828, 40, "leger", 9)          # plaque d'égout
+    sol_poly = [(0, 960), (0, 772), (106, 764), (231, 716), (407, 646), (480, 646), (480, 660), (423, 690), (423, 745),
+                (516, 762), (561, 782), (622, 960)]
+    pierres(sol, sol_poly, 648, 7,                                                   # pas de pavé sur la plaque
+            garde=lambda x, y, prof: 0 if ((x - 262) / 52) ** 2 + ((y - 828) / 16) ** 2 < 1 else 0.2 + 0.5 * prof)
 
-    lignes = {"ab": "le bord de l'encadrement en zellige", "omis": "la végétation est laissée de côté", "titre": "Croquis 2 · la rue aux portes bleues",
-              "pf": "PF : point de fuite, au bout de la rue"}
+    lignes = {"ab": "le bord de l'encadrement en zellige", "omis": "la végétation est laissée de côté",
+              "titre": "Croquis 2 · la rue aux portes bleues", "pf": "PF : point de fuite, au bout de la rue"}
     return c, sol, sol_poly, A, B, XP, lignes
 
 
@@ -397,7 +569,7 @@ def construction(A, B, XP):
     return k
 
 
-def page(vue):
+def page(vue, nom, calque=False):
     c, sol, sol_poly, A, B, XP, lg = vue()
     k = construction(A, B, XP)
     t = Crayon(5)
@@ -415,17 +587,24 @@ def page(vue):
     for i in range(4): L_(cadre, *co[i], *co[(i+1) % 4], "moyen")
     clip = f'<clipPath id="fen"><rect x="{OX}" y="{OY}" width="{W*MM}" height="{H*MM}"/></clipPath>'
     sol_clip = (f'<clipPath id="sol"><polygon points="{" ".join(f"{P(x, y)[0]:.2f},{P(x, y)[1]:.2f}" for x, y in sol_poly)}"/></clipPath>')
-    return (f'<svg viewBox="0 0 {PAGE_W} {PAGE_H}" xmlns="http://www.w3.org/2000/svg"><defs>{clip}{sol_clip}</defs>'
+    photo = (f'<image href="redresse2_{nom}.jpg" x="{OX}" y="{OY}" width="{W*MM}" height="{H*MM}" opacity="0.45" '
+             f'preserveAspectRatio="none"/>') if calque else ""
+    return (f'<svg viewBox="0 0 {PAGE_W} {PAGE_H}" xmlns="http://www.w3.org/2000/svg"><defs>{clip}{sol_clip}</defs>{photo}'
             f'{"".join(k.out)}<g clip-path="url(#fen)"><g clip-path="url(#sol)">{"".join(sol.out)}</g>{"".join(c.out)}</g>'
             f'{"".join(cadre.out)}{"".join(t.out)}</svg>')
 
 
-if __name__ == "__main__":
-    for nom, vue in (("voute", voute), ("rue", rue)):
-        html = f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Croquis {nom}</title>
+def html(svg, nom):
+    return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Croquis {nom}</title>
 <link rel="stylesheet" href="../polices-local.css">
 <style>@page {{ size: 210mm 297mm; margin: 0; }} html, body {{ margin: 0; background: #fff; }}
 .p {{ width: 210mm; height: 297mm; overflow: hidden; background: #fdfcf8; }} svg {{ width: 100%; height: 100%; display: block; }}</style></head>
-<body><div class="p">{page(vue)}</div></body></html>"""
-        open(f"{ICI}/croquis-4-{nom}.html", "w", encoding="utf-8").write(html)
+<body><div class="p">{svg}</div></body></html>"""
+
+
+if __name__ == "__main__":
+    for nom, vue in (("voute", voute), ("rue", rue)):
+        open(f"{ICI}/croquis-4-{nom}.html", "w", encoding="utf-8").write(html(page(vue, nom), nom))
         print(f"croquis-4-{nom}.html écrit")
+        if os.environ.get("CALQUE"):
+            open(f"{ICI}/calque-{nom}.html", "w", encoding="utf-8").write(html(page(vue, nom, True), nom))

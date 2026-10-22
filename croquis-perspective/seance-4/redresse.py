@@ -35,5 +35,8 @@ for n, nom in ((32, "voute"), (33, "rue")):
     D = np.array([[W / bw, 0, -x0 * W / bw], [0, H / bh, -y0 * H / bh], [0, 0, 1]]) @ M
     out = cv2.warpPerspective(im, D, (W, H), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
     cv2.imwrite(f"redresse_{nom}.png", out); np.save(f"D_{nom}.npy", D)
+    # la même vue en 2x, pour relever les détails (releve.py)
+    cv2.imwrite(f"redresse2_{nom}.jpg", cv2.warpPerspective(im, np.diag([2, 2, 1.]) @ D, (2 * W, 2 * H), flags=cv2.INTER_CUBIC,
+                borderMode=cv2.BORDER_REPLICATE), [cv2.IMWRITE_JPEG_QUALITY, 92])
     g2 = cv2.GaussianBlur(cv2.cvtColor(out, cv2.COLOR_BGR2GRAY), (3, 3), 0)
     v2, _ = vp_vertical(g2); print("   après :", (v2[:2] / v2[2]).round(0) if abs(v2[2]) > 1e-9 else "à l'infini")
