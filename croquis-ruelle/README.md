@@ -2,24 +2,26 @@
 
 | fichier | à quoi il sert |
 |---|---|
-| `croquis-A3.pdf` | le croquis corrigé, 1 page **A3 paysage** |
-| `croquis-2xA4.pdf` | le même croquis en 2 pages **A4 portrait**, à l'échelle 1 (feuille 1 = moitié gauche, feuille 2 = moitié droite) |
+| `croquis-A3.pdf` | le croquis corrigé, 1 page **A3 portrait** |
+| `croquis-2xA4.pdf` | le même croquis en 2 pages **A4 paysage**, à l'échelle 1 : feuille 1 = moitié HAUTE de l'A3, feuille 2 = moitié BASSE |
 | `apercu-*.png` | aperçus des pages |
 | `photos/ruelle-photo-telephone.jpg` | la photo de la ruelle (prise au téléphone, debout) |
-| `photos/croquis-eleve.webp` | le croquis de départ ; `croquis-eleve-contraste.png` : le même, contraste renforcé pour voir les traits |
+| `photos/croquis-eleve.webp` | le croquis de départ ; `croquis-eleve-contraste.png` : le même, contraste renforcé |
 
-Imprimer en **taille réelle (100 %)**.
+Imprimer en **taille réelle (100 %)**. La LH est à 1,6 cm sous la jonction des deux A4 (sur la feuille 2).
 
 ## Le point de vue (ce n'est pas un calque de la photo)
 - assis, **yeux à 1,20 m** du sol → la LH est à 1,20 m (la photo, prise debout, la met plus haut) ;
 - regard droit devant → la **LH au milieu du cadre**, le PF au centre ;
-- des **passants debout** (1,75 m) : leur tête dépasse la LH, qui leur passe à la poitrine — c'est ce qui montre qu'on est assis ;
 - face à la porte bleue du fond, **un tout petit peu à droite**, à **20 m** d'elle ;
-- champ de vision naturel de l'œil (~55° en largeur), pas le zoom du téléphone ;
-- les verticales restent verticales ; ce qui est au-dessus du regard (le haut des murs, le fil, le support en fer forgé, la treille) est coupé ou sort du cadre.
+- des **passants debout** (1,75 m) : leur tête dépasse la LH, qui leur passe à la poitrine — c'est ce qui montre qu'on est assis ;
+- le support en fer forgé de la photo est au-dessus du regard : hors cadre.
+
+## Le dessin
+Au trait seulement : **ni hachures ni remplissage**. Les détails sont dessinés : claveaux, clé et piédroits en pierre taillée de l'arc, briques de son épaisseur, volets à panneaux, descente d'eau et ses colliers, pilier et panneau « Rue du Tribunal », tablette de marbre, porte à deux battants, panneaux et clous, heurtoirs, grille de la fenêtre, compteur, moellons du mur du fond, antenne, moucharabieh et lanterne en fer forgé, lampe en col de cygne, portail à volutes, serrure, tag, sacs, treille, pavés.
 
 ## Régénérer
 ```
-python3 ruelle.py .                                  # écrit croquis-A3.html et croquis-2xA4.html
-node ../perspective-frontale-rue/rendu.js "$PWD"     # PDF + aperçus (Playwright)
+python3 ruelle.py .     # écrit croquis-A3.html et croquis-2xA4.html
+node rendu.js "$PWD"    # PDF + aperçus (Playwright)
 ```

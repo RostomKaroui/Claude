@@ -85,3 +85,8 @@ Reconstruit en 3D d'après la photo puis dessiné **depuis la place assise** : L
 La première version calculait bien des yeux à 1,20 m, mais elle ne se lisait pas comme une vue assise : la LH était placée bas dans le cadre (comme si on regardait vers le haut) et il n'y avait personne dans la scène pour comparer. Corrigé :
 - regard droit devant : la **LH au milieu du cadre**, le PF au centre, plus de sol au premier plan, le haut des murs coupé ;
 - trois **passants debout** (1,75 m) : leur tête dépasse la LH, qui leur passe à la poitrine. Debout, c'est la tête des passants qui serait sur la LH.
+
+### Retouche : « pas de hachures, il manque des détails, et c'est en portrait »
+- **Plus aucune hachure ni aucun remplissage** : tout est au trait (« ce n'est pas de l'art plastique »).
+- **Les détails** : la pierre taillée de l'arc (claveaux, clé, piédroits alternés, imposte), les briques de son épaisseur, les volets à panneaux, la descente d'eau et ses colliers, le pilier avec sa corniche et le panneau « Rue du Tribunal », la porte bleue (2 battants, panneaux, clous, heurtoirs, seuil), la grille de la fenêtre, les moellons du mur du fond, le moucharabieh, la lanterne et sa potence à volutes, le portail à volutes avec sa serrure, la treille, les pavés.
+- **A3 portrait** (et 2 × A4 paysage : moitié haute et moitié basse).
