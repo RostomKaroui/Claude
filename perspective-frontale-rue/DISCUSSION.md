@@ -59,3 +59,24 @@ Imprimer en **taille réelle (100 %)**. Le PF tombe pile sur la jonction des deu
 
 - Proposition restée ouverte : faire de la même façon la **fig. 46** (le boulevard avec les lampadaires au milieu).
 - 18 octobre : à la demande, création de la branche `claude/dessin-perspective-frontale` pour ce dessin, avec ce compte rendu et les photos du cours.
+
+## 5 · Le rendu de dessin : la ruelle à la porte bleue (25 octobre)
+
+> du coup on a un rendu pour le dessin la prochaine fois j'ai deja fait un croquis je vais te le donner et dis moi si il est juste ou pas stp sinon corrige le et rend le moi en croquis fait a la main et aussi quand je vais te demander de faire lautre croquis stp il faut que tu mettes a ma place comme si tu etais assis et tu faisait le croquis et non pas a partir de la photo du telephone
+
+Puis, avec la photo : *« la LH et LT et PF elles y sont mais c'est en trait très très très fin […] j'étais assis en face de la porte bleue un tout petit peu à droite et à environ 20 mètres »*.
+
+Tout est dans [`../croquis-ruelle/`](../croquis-ruelle/) : la photo, le croquis de départ (et une version au contraste renforcé), le croquis corrigé en A3 et en 2 × A4.
+
+### Le retour sur le croquis de départ
+**Bien :** les verticales sont verticales ; les faces vues de face ont leurs horizontales horizontales ; un cadre est posé ; la LH, la LT et le PF sont tracés (mais invisibles sur la photo).
+
+**À reprendre :**
+1. LH, LT et PF tracés trop fin : il faut qu'ils se voient (trait fin mais net, ou en couleur), c'est la construction que la prof note.
+2. Les murs de la ruelle ne fuient pas vers le PF : la profondeur de la ruelle n'est pas construite.
+3. Les grands volumes (le mur à l'arc à gauche, le mur au portail à droite, la ruelle, le mur du fond) manquent ou sont à peine indiqués, alors que des détails (le support en fer forgé, la planche) sont dessinés grands.
+4. Des éléments flottent, sans ligne de sol.
+5. Le trait est partout du même poids et très léger ; la feuille est peu remplie et froissée.
+
+### Le croquis corrigé
+Reconstruit en 3D d'après la photo puis dessiné **depuis la place assise** : LH à 1,20 m, PF un peu à droite de la porte, porte à 20 m (petite, juste sous la LH), champ de vision de l'œil (~55°), verticales verticales. Le support en fer forgé et la treille, au-dessus du regard, sortent du cadre.
