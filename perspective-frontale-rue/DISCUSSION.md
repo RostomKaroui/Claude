@@ -101,3 +101,7 @@ Nouvelle analyse de la photo, zone par zone (zooms dans `croquis-ruelle/`), et d
 - la **potence en fer forgé** en haut à gauche est bien **dans** le champ de vision assis (elle était à tort « hors cadre ») ; le fil part de son crochet ;
 - corrigés ou ajoutés : gaine fine à côté de la descente d'eau, sabot, tige noire, planche, panneau en creux du pilier, plaque presque carrée, anneau d'angle, gargouille, porte du fond **à planches** (pas de clous), fenêtre sans grille, compteur et numéro à leur place, 6 ouvertures et une porte de profil sur le mur droit, col de cygne plus bas, portail en tôle lisse avec loquet, marche et linteau, haut du mur au portail en pente, pilier d'angle et pitons, mur du fond enduit avec quelques moellons, dalles dans la ruelle ;
 - **retirés** : les passants (ils ne sont pas sur la photo) et les plantes.
+
+## 6 · La 2e ruelle : les portes bleues (photo suivante)
+Dossier [`../croquis-ruelle-2/`](../croquis-ruelle-2/). Même règles : vue assise, au trait, sans hachures ni plantes, A3 portrait + 2 × A4.
+La photo est redressée par le calcul (points de fuite de la ruelle et des verticales) puis tout est relevé dessus : le cadre de faïence et sa porte en retrait, l'auvent à tuiles rondes, la fenêtre à grille en spirales, le col de cygne, les barres et panneaux bleus, la petite fenêtre à barreaux, la porte à arc en pierre, les balcons et la lanterne, le pilier de marbre cannelé, les marches, le banc et sa couverture, la plaque d'égout. Vérification de l'échelle : avec les yeux à 1,20 m, la plaque d'égout mesure 61 cm.
