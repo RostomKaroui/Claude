@@ -90,3 +90,7 @@ La première version calculait bien des yeux à 1,20 m, mais elle ne se lisait p
 - **Plus aucune hachure ni aucun remplissage** : tout est au trait (« ce n'est pas de l'art plastique »).
 - **Les détails** : la pierre taillée de l'arc (claveaux, clé, piédroits alternés, imposte), les briques de son épaisseur, les volets à panneaux, la descente d'eau et ses colliers, le pilier avec sa corniche et le panneau « Rue du Tribunal », la porte bleue (2 battants, panneaux, clous, heurtoirs, seuil), la grille de la fenêtre, les moellons du mur du fond, le moucharabieh, la lanterne et sa potence à volutes, le portail à volutes avec sa serrure, la treille, les pavés.
 - **A3 portrait** (et 2 × A4 paysage : moitié haute et moitié basse).
+
+### Retouche : « pas de plantes, plus de détails dans le fer forgé, fidèle à la vraie vie »
+- **La treille est retirée.**
+- **Les fers forgés sont redessinés d'après la photo**, élément par élément : l'imposte du portail (bande pleine, modules à barreau central, V et trois rangées de volutes), la grille ventrue du mur gauche de la ruelle (partie plate, ventre arrondi, grandes volutes, barres en panier), la lanterne **posée** sur sa potence (elle était suspendue par erreur) avec sa console à volutes, et le col de cygne avec son câble tendu.

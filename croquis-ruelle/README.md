@@ -18,7 +18,13 @@ Imprimer en **taille réelle (100 %)**. La LH est à 1,6 cm sous la jonction des
 - le support en fer forgé de la photo est au-dessus du regard : hors cadre.
 
 ## Le dessin
-Au trait seulement : **ni hachures ni remplissage**. Les détails sont dessinés : claveaux, clé et piédroits en pierre taillée de l'arc, briques de son épaisseur, volets à panneaux, descente d'eau et ses colliers, pilier et panneau « Rue du Tribunal », tablette de marbre, porte à deux battants, panneaux et clous, heurtoirs, grille de la fenêtre, compteur, moellons du mur du fond, antenne, moucharabieh et lanterne en fer forgé, lampe en col de cygne, portail à volutes, serrure, tag, sacs, treille, pavés.
+Au trait seulement : **ni hachures ni remplissage**. Les détails sont dessinés : claveaux, clé et piédroits en pierre taillée de l'arc, briques de son épaisseur, volets à panneaux, descente d'eau et ses colliers, pilier et panneau « Rue du Tribunal », tablette de marbre, porte à deux battants, panneaux et clous, heurtoirs, grille de la fenêtre, compteur, moellons du mur du fond, antenne, pavés, serrure, tag, sacs. Pas de plantes.
+
+Les fers forgés sont relevés sur la photo :
+- **l'imposte du portail** : bande pleine en haut, 12 modules à barreau central, barres en V et 3 rangées de volutes en paires ;
+- **la grille ventrue** du mur gauche de la ruelle, vue de profil : partie plate à petits cercles en haut, ventre arrondi qui avance dans la ruelle, grandes volutes, barres courbes en panier en bas ;
+- **la lanterne posée sur sa potence** : barre, platine, console à volutes (une grande près du mur puis de plus en plus petites), pied, bague, corps évasé à montants, chapeau large, couronne ;
+- **le col de cygne** du mur droit : tube, crosse, boîtier, câble tendu jusqu'à sa fixation.
 
 ## Régénérer
 ```

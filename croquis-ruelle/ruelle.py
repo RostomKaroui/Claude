@@ -177,51 +177,56 @@ def fond(dz):
     for e in (0, 0.08):                                                           # descente d'eau et colliers
         dz.L(pr(XR, 0.1, 11.42 + e), pr(XR, 4.3, 11.42 + e))
     for yy in (0.8, 1.9, 3.0, 4.0): dz.L(pr(XR, yy, 11.38), pr(XR, yy, 11.54))
-    a, b = pr(XR, 4.3, 11.46), pr(XR - 0.45, 4.55, 11.7)                          # la lampe en col de cygne
-    dz.courbe([a, (a[0] + 0.4, b[1] - 1.6), (a[0] - 0.3, b[1] - 0.2), b], 0.28)
-    dz.poly([(b[0] - 0.9, b[1]), (b[0] + 0.9, b[1]), (b[0] + 0.5, b[1] + 1.1), (b[0] - 0.5, b[1] + 1.1)], "fin")
-    c2 = pr(XR - 0.05, 3.0, 12.9)
-    dz.courbe([(b[0], b[1] + 1.1), ((b[0] + c2[0]) / 2, (b[1] + c2[1]) / 2 + 3), c2], 0.16, 0.6)   # le câble
+    zc = 11.46
+    crosse = [pr(XR, 4.3, zc), pr(XR, 4.5, zc), pr(XR - 0.05, 4.62, zc), pr(XR - 0.14, 4.64, zc), pr(XR - 0.2, 4.56, zc), pr(XR - 0.21, 4.45, zc)]
+    dz.courbe(lisse_ouverte(crosse), 0.3)                                          # la crosse en col de cygne
+    dz.poly([pr(XR - 0.25, 4.45, zc), pr(XR - 0.17, 4.45, zc), pr(XR - 0.17, 4.36, zc), pr(XR - 0.25, 4.36, zc)], "fin")  # le boîtier
+    dz.L(pr(XR - 0.21, 4.36, zc), pr(XR - 0.02, 3.15, 13.6))                       # le câble, tendu droit
+    dz.poly([pr(XR, 3.2, 13.55), pr(XR, 3.2, 13.68), pr(XR, 3.1, 13.68), pr(XR, 3.1, 13.55)], "fin")   # sa fixation
     # le mur gauche de la ruelle
     dz.poly(rect_x(XL, Z_RUE, Z_FOND, 0, H_RUE_G), "moyen")
     dz.L(pr(XL, 0.2, Z_RUE), pr(XL, 0.2, Z_FOND))
-    # le moucharabieh en fer forgé : un ventre arrondi, des barreaux, des volutes
-    z1 = 16.6; kz = k(z1)
-    h, b, v = pr(XL, 6.1, z1), pr(XL + 0.55, 6.1, z1), pr(XL + 0.55, 5.3, z1)
-    bas = pr(XL, 4.7, z1)
-    ventre = [h, b, v] + [(v[0] + (bas[0] - v[0]) * (1 - math.cos(t)), v[1] + (bas[1] - v[1]) * math.sin(t)) for t in np.linspace(0, math.pi/2, 10)]
-    dz.courbe(ventre, 0.3, ferme=True, fond=FOND)
-    dz.L((h[0], h[1] + 0.5), (b[0], b[1] + 0.5))
-    for i in range(1, 6):
-        x = h[0] + (b[0] - h[0]) * i / 6
-        t = math.acos(max(-1, min(1, 1 - (x - v[0]) / (bas[0] - v[0] - 1e-9)))) if x < v[0] else 0
-        yb = v[1] + (bas[1] - v[1]) * math.sin(t)
-        dz.L((x, h[1] + 0.5), (x, yb - 0.2))
-    rr = (b[0] - h[0]) / 6
-    for i, (cx, cy) in enumerate(((h[0] + rr*1.5, h[1] + rr*3), (h[0] + rr*4.4, h[1] + rr*3), (h[0] + rr*3, h[1] + rr*6.5),
-                                  (h[0] + rr*1.5, h[1] + rr*10), (h[0] + rr*4.4, h[1] + rr*10))):
-        dz.spirale(cx, cy, rr*1.1, 1.4, 1 if i % 2 else -1, 0.18)
-    dz.courbe([pr(XL, 4.75, z1 - 0.1), pr(XL + 0.25, 4.95, z1), pr(XL + 0.15, 4.4, z1)], 0.2)   # la console
-    # la lanterne sur sa potence
-    zl = 15.5; kz = k(zl)
-    a, b = pr(XL, 3.55, zl), pr(XL + 1.25, 3.55, zl)
-    dz.L(a, b, "moyen"); dz.L((a[0], a[1] - 0.3*kz), (a[0], a[1] + 0.25*kz), "moyen")
-    for i in range(3):                                                            # les volutes sous la potence
-        cx = a[0] + (i + 0.6) * (b[0] - a[0]) / 3.6
-        dz.spirale(cx, a[1] + 0.13*kz, 0.11*kz, 1.3, 1 if i % 2 else -1, -1.5, 0.18)
-    dz.courbe([(a[0], a[1] + 0.25*kz), (a[0] + 0.5*(b[0] - a[0]), a[1] + 0.05*kz), b], 0.18)
-    lx, ly = b[0], b[1]; s = 0.1 * kz                                             # s : 10 cm
-    dz.L((lx, ly), (lx, ly + 0.4*s))
-    dz.courbe([(lx - 2.2*s, ly + 1.2*s), (lx, ly + 0.4*s), (lx + 2.2*s, ly + 1.2*s)], 0.22)        # le chapeau
-    dz.poly([(lx - 2.2*s, ly + 1.2*s), (lx + 2.2*s, ly + 1.2*s), (lx + 1.6*s, ly + 1.5*s), (lx - 1.6*s, ly + 1.5*s)], "fin")
-    corps = [(lx - 1.6*s, ly + 1.5*s), (lx + 1.6*s, ly + 1.5*s), (lx + 1.0*s, ly + 4.3*s), (lx - 1.0*s, ly + 4.3*s)]
+    # la grille ventrue en fer forgé, en haut du mur gauche de la ruelle (vue de profil)
+    zg = 16.6; kg = k(zg)
+    G = lambda dx, y: pr(XL + dx, y, zg)
+    dz.poly([G(0, 6.2), G(0.12, 6.2), G(0.12, 5.55), G(0, 5.55)], "fin")          # la partie plate, en haut
+    for y in (6.12, 5.63): dz.L(G(0, y), G(0.12, y))
+    for y in (6.0, 5.87, 5.74):                                                    # ses petits cercles et ses barreaux
+        u, v = G(0.06, y); dz.rond(u, v, 0.045 * kg, 0.15)
+    dz.L(G(0.06, 6.12), G(0.06, 5.63), "fin", op=0.5)
+    ventre = [G(0.12, 5.55), G(0.25, 5.45), G(0.36, 5.25), G(0.42, 5.0), G(0.4, 4.78), G(0.3, 4.6), G(0.15, 4.52), G(0, 4.5)]
+    dz.courbe(lisse_ouverte(ventre) + [G(0, 5.55)], 0.3, ferme=True, fond=FOND)    # le ventre qui avance dans la ruelle
+    dz.L(G(0, 5.55), G(0, 4.5), "fin")
+    for i, (dx, y, rr) in enumerate(((0.16, 5.32, 0.1), (0.12, 5.06, 0.1), (0.31, 5.06, 0.09), (0.2, 5.2, 0.05))):
+        u, v = G(dx, y); dz.spirale(u, v, rr * kg, 1.7, 1 if i % 2 else -1, 0.6 * i, 0.2)   # les grandes volutes
+    for t in (0.25, 0.5, 0.75):                                                    # les barres courbes du bas, en panier
+        pts = [G(0.4 * t * math.sin(a) + 0.02, 4.5 + 0.36 * t + (0.42 - 0.36 * t) * (1 - math.cos(a)) * 0.35) for a in np.linspace(0, math.pi * 0.62, 10)]
+        dz.courbe(pts, 0.18, 0.75)
+    for dx in (0.1, 0.22, 0.32):                                                   # les barreaux verticaux
+        dz.L(G(dx, 4.52 + 0.06 * dx), G(dx, 4.8 - 0.25 * dx), "fin", op=0.7)
+    # la lanterne, POSÉE sur sa potence à volutes
+    zl = 15.5; kl = k(zl)
+    Lp = lambda dx, y: pr(XL + dx, y, zl)
+    yb = 3.55; lg = 0.95
+    dz.L(Lp(0, yb), Lp(lg, yb), "moyen")                                          # la barre
+    dz.L(Lp(0.02, yb + 0.06), Lp(0.02, yb - 0.34), "moyen")                       # la platine contre le mur
+    bras = [Lp(0.02, yb - 0.3), Lp(0.18, yb - 0.29), Lp(0.36, yb - 0.22), Lp(0.52, yb - 0.12), Lp(0.66, yb - 0.02)]
+    dz.courbe(lisse_ouverte(bras), 0.24)                                           # le bras de la console
+    for i, (dx, dy, rr, sens) in enumerate(((0.12, -0.17, 0.085, 1), (0.31, -0.13, 0.055, -1), (0.45, -0.08, 0.045, 1), (0.58, -0.05, 0.035, -1), (0.76, -0.04, 0.03, 1))):
+        u, v = Lp(dx, yb + dy); dz.spirale(u, v, rr * kl, 1.6, sens, 1.2 * i, 0.18)
+    s1 = lambda dx, y: Lp(lg - 0.03 + dx, yb + y)                                  # la lanterne, au bout de la barre
+    dz.poly([s1(-0.03, 0.0), s1(0.03, 0.0), s1(0.05, 0.1), s1(-0.05, 0.1)], "fin")  # le pied
+    dz.poly([s1(-0.12, 0.1), s1(0.12, 0.1), s1(0.12, 0.13), s1(-0.12, 0.13)], "fin")   # la bague du bas
+    corps = [s1(-0.1, 0.13), s1(0.1, 0.13), s1(0.15, 0.45), s1(-0.15, 0.45)]
     dz.poly(corps, "fin")
-    for t in (-0.45, 0.45): dz.L((lx + t*1.6*s, ly + 1.5*s), (lx + t*1.0*s, ly + 4.3*s))
-    dz.poly([(lx - 1.0*s, ly + 4.3*s), (lx + 1.0*s, ly + 4.3*s), (lx, ly + 5.3*s)], "fin")
-    dz.L((lx, ly + 5.3*s), (lx, ly + 5.8*s))
+    for dx0, dx1 in ((-0.04, -0.06), (0.04, 0.06)): dz.L(s1(dx0, 0.13), s1(dx1, 0.45))   # les montants
+    dz.poly([s1(-0.15, 0.45), s1(0.15, 0.45), s1(0.2, 0.5), s1(-0.2, 0.5)], "fin")    # le chapeau, large
+    dz.courbe([s1(-0.2, 0.5), s1(-0.12, 0.58), s1(0, 0.6), s1(0.12, 0.58), s1(0.2, 0.5)], 0.22)
+    dz.poly([s1(-0.07, 0.6), s1(0.07, 0.6), s1(0.07, 0.66), s1(-0.07, 0.66)], "fin")  # la couronne
+    for dx in (-0.06, 0, 0.06): dz.L(s1(dx, 0.66), s1(dx, 0.71))
+    u, v = s1(0, 0.74); dz.rond(u, v, 0.02 * kl, 0.15)
 
 
-# ---------------------------------------------------------------- à gauche : le mur à l'arc et le pilier
 def gauche(dz):
     X = XL_PLACE
     f = rect_x(X, 2, Z_RUE, 0, 14)
@@ -298,15 +303,18 @@ def gauche(dz):
 def portail(dz):
     z = Z_RUE; kz = k(z); x1, x2 = 2.4, 4.2
     dz.poly(rect_z(z, x1 - 0.06, x2 + 0.06, 0.12, 2.78), "moyen")
-    dz.poly(rect_z(z, x1, x2, 2.22, 2.72), "moyen")                               # la grille en fer forgé
-    n = 6; w = (x2 - x1) / n
+    dz.poly(rect_z(z, x1, x2, 2.22, 2.72), "moyen")                               # l'imposte en fer forgé
+    dz.poly(rect_z(z, x1, x2, 2.6, 2.72), "fin")                                  # la bande pleine du haut
+    ya, yh = 2.25, 2.6; n = 12; w = (x2 - x1) / n
+    dz.L(pr(x1, ya, z), pr(x2, ya, z))
     for i in range(n):
-        a = x1 + i * w
-        if i: dz.L(pr(a, 2.22, z), pr(a, 2.72, z))
-        cx, cy = pr(a + w/2, 2.47, z); r = 0.1 * kz
-        dz.spirale(cx - r*0.55, cy, r*0.6, 1.3, 1, 0, 0.18)                       # deux volutes en C, dos à dos
-        dz.spirale(cx + r*0.55, cy, r*0.6, 1.3, -1, math.pi, 0.18)
-        dz.rond(cx, cy - r*1.0, r*0.22, 0.16); dz.rond(cx, cy + r*1.0, r*0.22, 0.16)
+        a = x1 + i * w; M = lambda u_, v_: pr(a + u_ * w, ya + v_ * (yh - ya), z)
+        if i: dz.L(M(0, 0), M(0, 1))                                               # barreaux de module
+        dz.L(M(0.5, 0.02), M(0.5, 0.78), "fin")                                    # le barreau central
+        dz.L(M(0.5, 0.02), M(0.06, 0.8), "fin"); dz.L(M(0.5, 0.02), M(0.94, 0.8), "fin")   # le V
+        for v_, rr in ((0.87, 0.2), (0.53, 0.19), (0.3, 0.17)):                    # 3 rangées de volutes en paires
+            for u_, sens in ((0.27, 1), (0.73, -1)):
+                cx, cy = M(u_, v_); dz.spirale(cx, cy, rr * w * kz, 1.5, sens, 0 if sens > 0 else math.pi, 0.15)
     dz.poly(rect_z(z, x1, x2, 0.12, 2.2), "fort")                                 # les deux battants en tôle
     xm = (x1 + x2) / 2 + 0.1
     dz.L(pr(xm, 0.12, z), pr(xm, 2.2, z), "moyen")
@@ -342,7 +350,7 @@ def droite(dz):
         dz.courbe([(t[0] - 1.2, t[1] + 2.2), (t[0] - 0.4, t[1] + 3.4), (t[0] + 0.2, (t[1] + a[1]) / 2 + 1)], 0.15, 0.6)  # un pli
 
 
-# ---------------------------------------------------------------- premier plan : fil, treille, passants
+# ---------------------------------------------------------------- premier plan : fil, passants
 def passant(dz, x, z, sens):
     """une personne debout de 1,75 m : comme on est assis (yeux à 1,20 m), la LH lui passe à la poitrine"""
     P = lambda dx, y: pr(x + dx * sens, y, z)
@@ -370,11 +378,14 @@ def lisse(pts, n=4):
     return out
 
 
-def feuille(dz, x, y, s, a):
-    pts = [(0, -s), (0.38*s, -0.62*s), (0.5*s, -0.1*s), (0.3*s, 0.25*s), (0, 0.12*s), (-0.3*s, 0.25*s), (-0.5*s, -0.1*s), (-0.38*s, -0.62*s)]
-    rot = lambda p: (x + p[0]*math.cos(a) - p[1]*math.sin(a), y + p[0]*math.sin(a) + p[1]*math.cos(a))
-    dz.courbe(lisse([rot(p) for p in pts]), 0.22, 0.8, ferme=True, fond=FOND)
-    dz.courbe([rot((0, 0.12*s)), rot((0.05*s, -0.4*s)), rot((0, -0.85*s))], 0.15, 0.6)
+def lisse_ouverte(pts, n=5):
+    """courbe ouverte lissée passant par les points (Catmull-Rom)"""
+    P = [pts[0]] + list(pts) + [pts[-1]]; out = []
+    for i in range(1, len(P) - 2):
+        p0, p1, p2, p3 = (np.array(P[i + j]) for j in (-1, 0, 1, 2))
+        for t in np.linspace(0, 1, n, endpoint=False):
+            out.append(tuple(0.5 * ((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t*t + (-p0 + 3*p1 - 3*p2 + p3)*t**3)))
+    return out + [tuple(pts[-1])]
 
 
 def premier_plan(dz):
@@ -383,16 +394,6 @@ def premier_plan(dz):
     a, b = pr(XL, 8.5, Z_RUE), pr(4.3, 5.1, 10.9)
     m = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 5)
     dz.courbe([((1-t)**2*a[0] + 2*(1-t)*t*m[0] + t*t*b[0], (1-t)**2*a[1] + 2*(1-t)*t*m[1] + t*t*b[1]) for t in np.linspace(0, 1, 24)], 0.22)
-    # la treille qui pend en haut à droite : branches et grappes de feuilles
-    for branche in ([(6.5, 6.75), (5.0, 6.45), (3.6, 6.3), (2.5, 6.35), (1.7, 6.15)], [(5.6, 6.05), (4.6, 5.85), (3.7, 5.72), (2.8, 5.68)]):
-        pts = [pr(x, y, 9) for x, y in branche]
-        dz.courbe(pts, 0.45); dz.courbe([(x, y + 0.6) for x, y in pts], 0.25, 0.7)
-        for (x0, y0), (x1, y1) in zip(pts[:-1], pts[1:]):
-            for t in np.linspace(0.05, 0.95, 8):
-                px, py = x0 + (x1 - x0)*t, y0 + (y1 - y0)*t
-                fx, fy = px + r.uniform(-4, 4), py + r.uniform(-4, 8)
-                dz.L((px, py), (fx, fy), "fin", op=0.6)
-                feuille(dz, fx, fy, r.uniform(3.2, 4.6), r.uniform(-1.0, 1.0) + (math.pi if fy > py else 0))
     for x, z, sens in sorted(PASSANTS, key=lambda p: -p[1]):
         passant(dz, x, z, sens)
 
