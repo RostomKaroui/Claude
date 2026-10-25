@@ -94,3 +94,10 @@ La première version calculait bien des yeux à 1,20 m, mais elle ne se lisait p
 ### Retouche : « pas de plantes, plus de détails dans le fer forgé, fidèle à la vraie vie »
 - **La treille est retirée.**
 - **Les fers forgés sont redessinés d'après la photo**, élément par élément : l'imposte du portail (bande pleine, modules à barreau central, V et trois rangées de volutes), la grille ventrue du mur gauche de la ruelle (partie plate, ventre arrondi, grandes volutes, barres en panier), la lanterne **posée** sur sa potence (elle était suspendue par erreur) avec sa console à volutes, et le col de cygne avec son câble tendu.
+
+### Retouche : « l'arc est faux […] re-analyse toute la photo, détails fidèles à la vraie vie »
+Nouvelle analyse de la photo, zone par zone (zooms dans `croquis-ruelle/`), et dessin reconstruit à partir de ces relevés :
+- **l'arc** n'est pas en pierres taillées : c'est une ouverture en plein cintre dans le mur blanc, épaisseur brute, **murée de briques**, qui commence à 1,90 m (le mur blanc continue en dessous) ;
+- la **potence en fer forgé** en haut à gauche est bien **dans** le champ de vision assis (elle était à tort « hors cadre ») ; le fil part de son crochet ;
+- corrigés ou ajoutés : gaine fine à côté de la descente d'eau, sabot, tige noire, planche, panneau en creux du pilier, plaque presque carrée, anneau d'angle, gargouille, porte du fond **à planches** (pas de clous), fenêtre sans grille, compteur et numéro à leur place, 6 ouvertures et une porte de profil sur le mur droit, col de cygne plus bas, portail en tôle lisse avec loquet, marche et linteau, haut du mur au portail en pente, pilier d'angle et pitons, mur du fond enduit avec quelques moellons, dalles dans la ruelle ;
+- **retirés** : les passants (ils ne sont pas sur la photo) et les plantes.

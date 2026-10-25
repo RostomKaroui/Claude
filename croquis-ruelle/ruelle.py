@@ -1,14 +1,16 @@
 """Croquis au trait de la ruelle à la porte bleue, vue d'une personne ASSISE, en perspective frontale.
 
-Ce n'est pas un calque de la photo du téléphone (prise debout, en zoom) : la scène est reconstruite
-en 3D d'après la photo, puis dessinée depuis la place de l'élève : assis (yeux à 1,20 m), regard droit
+La scène est reconstruite en 3D à partir de relevés faits sur la photo (photos/ruelle-photo-telephone.jpg),
+élément par élément, puis dessinée depuis la place de l'élève : assis (yeux à 1,20 m), regard droit
 devant, face à la porte du fond, un tout petit peu à droite, à 20 m d'elle.
 
-Dessin au trait seulement : ni hachures ni remplissages, des détails (pierres taillées de l'arc,
-panneaux et clous de la porte, fer forgé, lanterne, pavés...). Format A3 portrait.
+Échelles relevées sur la photo : la porte du fond (2,40 m) donne l'échelle du mur du fond ; les murs de
+la ruelle sont placés en profondeur par la projection centrale (z = f·X / (u − u_PF)) ; chaque élément
+est mesuré dans le plan de son mur. Seul ce qui est sur la photo est dessiné (pas de plantes, pas de passants).
 
+Dessin au trait seulement : ni hachures ni remplissages. Format A3 portrait.
 Repère : x vers la droite, y vers le haut, z en profondeur depuis l'œil (en m).
-Sorties : croquis-A3.html (A3 portrait) et croquis-2xA4.html (les deux moitiés de l'A3, haut et bas,
+Sorties : croquis-A3.html (A3 portrait) et croquis-2xA4.html (moitié haute et moitié basse de l'A3,
 à l'échelle 1, sur 2 A4 paysage), à rendre en PDF avec rendu.js.
 """
 import math, random, sys, os
@@ -37,13 +39,13 @@ def k(z):                                  # mm par m à la distance z
 
 
 # ---------------------------------------------------------------- la scène (relevée sur la photo, en m)
-XL_PLACE = -1.9        # façade à l'arc, à gauche de la placette
-XL, XR = -1.0, 1.3     # murs de la ruelle
+XA = -1.6              # mur à l'arc (et à la potence), à gauche de la placette
+XL, XR = -0.9, 0.79    # murs de la ruelle (1,70 m de large)
 Z_RUE, Z_FOND = 11, 20 # entrée de la ruelle, mur du fond (la porte bleue est à 20 m)
-PORTE = (-0.85, 0.15, 0, 2.5)          # x1, x2, y1, y2 : on est un peu à droite de la porte
-FENETRE = (0.55, 0.87, 1.55, 2.35)
-H_FOND, H_RUE_D, H_RUE_G = 4.9, 6.0, 11
-PASSANTS = [(0.95, 6.5, 1), (3.6, 9.5, -1), (0.55, 14.5, 1)]   # des gens DEBOUT (1,75 m) : x, z, sens
+PORTE = (-0.78, 0.18, 0, 2.4)          # 0,96 x 2,40 m ; on est un tout petit peu à droite de son milieu
+X_PIL = (-1.6, -0.9)                   # le pilier au panneau, à l'entrée de la ruelle
+Z_PIL = 10.85
+GATE = (1.96, 3.51)                    # le portail (1,55 m de large)
 
 
 class Dessin:
@@ -56,15 +58,15 @@ class Dessin:
     def poly(self, pts, poids="fin", depasse=False):
         self.c.poly(pts, poids, depasse=depasse)
 
-    def clip(self, pts, contenu):
+    def id_clip(self, pts):
         self.n += 1; pid = f"c{self.n}"
         self.defs.append(f'<clipPath id="{pid}"><polygon points="{" ".join(f"{x:.2f},{y:.2f}" for x, y in pts)}"/></clipPath>')
-        self.c.out.append(f'<g clip-path="url(#{pid})">{contenu}</g>')
+        return pid
 
     def courbe(self, pts, lw=0.22, op=0.85, ferme=False, fond=None):
-        """trait courbe tremblé (arc, volute, feuille, pavé)"""
+        """trait courbe tremblé"""
         r = self.r
-        q = [(x + r.uniform(-0.05, 0.05), y + r.uniform(-0.05, 0.05)) for x, y in pts]
+        q = [(x + r.uniform(-0.04, 0.04), y + r.uniform(-0.04, 0.04)) for x, y in pts]
         if ferme: q = q + q[:1]
         d = " ".join(f"{x:.2f},{y:.2f}" for x, y in q)
         f = f'fill="{fond}"' if fond else 'fill="none"'
@@ -78,8 +80,18 @@ class Dessin:
                 cy + r * (1 - i / n * 0.85) * math.sin(a0 + sens * 2 * math.pi * tours * i / n)) for i in range(n + 1)]
         self.courbe(pts, lw)
 
-    def rond(self, cx, cy, r, lw=0.2, op=0.85):
-        self.courbe([(cx + r*math.cos(t), cy + r*math.sin(t)) for t in np.linspace(0, 2*math.pi, 14)[:-1]], lw, op, ferme=True)
+    def rond(self, cx, cy, r, lw=0.2, op=0.85, fond=None):
+        self.courbe([(cx + r*math.cos(t), cy + r*math.sin(t)) for t in np.linspace(0, 2*math.pi, 14)[:-1]], lw, op, ferme=True, fond=fond)
+
+
+def lisse(pts, n=5):
+    """courbe ouverte lissée passant par les points (Catmull-Rom)"""
+    P = [pts[0]] + list(pts) + [pts[-1]]; out = []
+    for i in range(1, len(P) - 2):
+        p0, p1, p2, p3 = (np.array(P[i + j]) for j in (-1, 0, 1, 2))
+        for t in np.linspace(0, 1, n, endpoint=False):
+            out.append(tuple(0.5 * ((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t*t + (-p0 + 3*p1 - 3*p2 + p3)*t**3)))
+    return out + [tuple(pts[-1])]
 
 
 def rect_x(x, z1, z2, y1, y2):              # rectangle sur un mur parallèle à la ruelle (plan x = cte)
@@ -90,312 +102,268 @@ def rect_z(z, x1, x2, y1, y2):              # rectangle de face (plan z = cte) :
     return [pr(x1, y2, z), pr(x2, y2, z), pr(x2, y1, z), pr(x1, y1, z)]
 
 
-# ---------------------------------------------------------------- le sol
+# ---------------------------------------------------------------- le sol : pavés de la placette, dalles de la ruelle
 def sol(dz):
-    """pavés : des rangées de pierres arrondies, de plus en plus petites et serrées vers le PF"""
     r = dz.r
     z = ZT - 0.3
-    while z < Z_FOND:
+    while z < Z_RUE:
         pas_z = 0.24 + 0.02 * z
-        xg = XL_PLACE if z < Z_RUE else XL
-        xd = 7 if z < Z_RUE else XR
-        x = xg + r.uniform(0, 0.3)
-        while x < xd - 0.1:
-            w = r.uniform(0.16, 0.38); p = r.uniform(0.1, 0.2); zz = z + r.uniform(-0.04, 0.04)
-            if z > 15 and r.random() < 0.5: x += w + 0.06; continue
+        x = XA + r.uniform(0, 0.3)
+        while x < 7:
+            w = r.uniform(0.18, 0.4); p = r.uniform(0.1, 0.18); zz = z + r.uniform(-0.04, 0.04)
             ph = r.uniform(0, 6.3); pts = []
             for i in range(12):
                 a = 2 * math.pi * i / 12; e = 1 + 0.12 * math.sin(3*a + ph)
                 pts.append(pr(x + w/2 + e*w/2 * math.copysign(abs(math.cos(a))**0.7, math.cos(a)), 0,
                               zz + e*p/2 * math.copysign(abs(math.sin(a))**0.7, math.sin(a))))
-            if FX0 - 5 < pts[0][0] < FX1 + 5:
+            if FX0 - 5 < pts[0][0] < FX1 + 5 and zz + p/2 < Z_RUE - 0.05:
                 dz.courbe(pts, 0.2 if z < 9 else 0.15, 0.45 if z < 9 else 0.35, ferme=True)
             x += w + r.uniform(0.04, 0.1)
         z += pas_z
-    # la planche posée contre le mur à l'arc
-    dz.poly([pr(-1.88, 0.03, 4.7), pr(-0.7, 0.03, 4.5), pr(-0.7, 0.03, 4.68), pr(-1.88, 0.03, 4.88)], "fin")
-    dz.L(pr(-0.7, 0.0, 4.5), pr(-0.7, 0.03, 4.5)); dz.L(pr(-1.88, 0, 4.7), pr(-0.7, 0, 4.5), "fin")
+    dz.L(pr(XL, 0, Z_RUE), pr(XR, 0, Z_RUE), "fin")                              # le seuil de la ruelle
+    z = Z_RUE                                                                     # les dalles de la ruelle
+    while z < Z_FOND - 0.2:
+        h = r.uniform(0.5, 0.8)
+        dz.L(pr(XL, 0, min(z + h, Z_FOND)), pr(XR, 0, min(z + h, Z_FOND)), "fin", op=0.5)
+        x = XL + r.uniform(0.35, 0.8)
+        while x < XR - 0.2:
+            dz.L(pr(x, 0, z), pr(x, 0, min(z + h, Z_FOND)), "fin", op=0.5); x += r.uniform(0.5, 0.9)
+        z += h
+    # la planche couchée contre le pied du mur à l'arc
+    dz.poly([pr(XA + 0.01, 0.12, 5.1), pr(XA + 0.01, 0.05, 6.7), pr(XA + 0.1, 0, 6.7), pr(XA + 0.15, 0, 5.1)], "fin")
+    dz.L(pr(XA + 0.08, 0.06, 5.1), pr(XA + 0.06, 0.03, 6.7), "fin", op=0.6)
 
 
 # ---------------------------------------------------------------- le fond de la ruelle
 def porte_bleue(dz):
     x1, x2, y1, y2 = PORTE; z = Z_FOND; kz = k(z)
-    dz.poly(rect_z(z, x1 - 0.12, x2 + 0.12, 0, y2 + 0.14), "fin")                 # le chambranle
-    dz.poly(rect_z(z, x1 - 0.2, x2 + 0.2, -0.02, 0.08), "fin")                    # la marche de seuil
+    dz.poly(rect_z(z, x1 - 0.04, x2 + 0.04, 0.08, y2 + 0.04), "fin")              # le cadre
+    dz.poly(rect_z(z, x1 - 0.08, x2 + 0.08, 0, 0.08), "fin")                      # la marche du seuil
     dz.poly(rect_z(z, x1, x2, 0.08, y2), "fort")
-    xm = (x1 + x2) / 2
-    dz.L(pr(xm, 0.08, z), pr(xm, y2, z), "moyen")
-    for a, b in ((x1, xm), (xm, x2)):                                             # 2 battants, 2 panneaux chacun
-        for ya, yb in ((0.3, 1.2), (1.4, 2.3)):
-            dz.poly(rect_z(z, a + 0.08, b - 0.08, ya, yb), "fin")
-            for t in np.linspace(0, 1, 6):                                        # les clous, autour du panneau
-                for (px, py) in ((a + 0.08 + t*(b - a - 0.16), yb + 0.05), (a + 0.08 + t*(b - a - 0.16), ya - 0.05)):
-                    u, v = pr(px, py, z); dz.rond(u, v, 0.012*kz, 0.15, 0.7)
-    u, v = pr(xm + 0.12, 1.3, z); dz.rond(u, v, 0.05*kz, 0.18)                    # le heurtoir
-    u, v = pr(xm - 0.12, 1.3, z); dz.rond(u, v, 0.05*kz, 0.18)
+    for y in (2.28, 2.11, 1.9):                                                   # les traverses du haut
+        dz.L(pr(x1, y, z), pr(x2, y, z), "fin")
+    for off in (0.24, 0.40, 0.50, 0.68, 0.80):                                    # les planches verticales
+        dz.L(pr(x1 + off, 0.08, z), pr(x1 + off, 1.9, z), "fin", op=0.6)
+    u, v = pr(x1 + 0.56, 1.05, z); dz.rond(u, v, 0.025 * kz, 0.18)               # la poignée
+    dz.L((u, v), (u, v + 0.08 * kz))
 
 
 def fond(dz):
     r = dz.r
-    # le mur de pierre derrière, qui dépasse au-dessus du mur du fond : des moellons
-    dz.poly(rect_z(24, -3, 3, 0, 6.6), "fin")
-    y = 4.7
-    while y < 6.6:
-        h = r.uniform(0.22, 0.32); x = -3 + r.uniform(0, 0.3)
-        while x < 3:
-            w = r.uniform(0.3, 0.6)
-            pts = [pr(x + 0.03, min(6.58, y + h - 0.03), 24), pr(x + w - 0.03, min(6.58, y + h - 0.02), 24),
-                   pr(x + w - 0.04, y + 0.03, 24), pr(x + 0.02, y + 0.02, 24)]
-            dz.courbe(pts, 0.16, 0.55, ferme=True); x += w
-        y += h
-    cx, cy = pr(0.9, 6.6, 24); rr = 0.35 * k(24)                                  # l'antenne
+    # le vieux mur derrière, enduit, avec des pierres visibles par endroits, et l'antenne sur le dessus
+    dz.poly(rect_z(24, -2.2, 2.2, 0, 6.0), "fin")
+    for (cx0, cy0, w, h) in ((0.55, 5.82, 0.2, 0.13), (0.72, 5.8, 0.14, 0.15), (0.6, 5.62, 0.24, 0.12), (0.76, 5.6, 0.1, 0.12),
+                             (0.18, 5.18, 0.18, 0.12), (0.34, 5.15, 0.12, 0.1), (0.24, 5.02, 0.2, 0.1)):
+        pts = [pr(cx0 + w/2 * math.cos(t) * r.uniform(0.8, 1.1), cy0 + h/2 * math.sin(t) * r.uniform(0.8, 1.1), 24) for t in np.linspace(0, 2*math.pi, 7)[:-1]]
+        dz.courbe(pts, 0.16, 0.6, ferme=True)                                     # des moellons, là où l'enduit est tombé
+    cx, cy = pr(0.6, 6.0, 24); rr = 0.18 * k(24)
     dz.courbe([(cx + rr*math.cos(t), cy - rr*math.sin(t)) for t in np.linspace(0, math.pi, 14)], 0.22, ferme=True, fond=FOND)
-    dz.L((cx, cy - rr*0.4), (cx + rr*0.9, cy - rr*1.1)); dz.L((cx, cy), (cx, cy + 0.4))
-    # le mur du fond, de face
-    dz.poly(rect_z(Z_FOND, XL - 0.5, XR + 0.5, 0, H_FOND), "moyen")
-    dz.L(pr(XL - 0.5, 0.2, Z_FOND), pr(XR + 0.5, 0.2, Z_FOND))                    # le soubassement
-    dz.L(pr(XL - 0.5, H_FOND - 0.15, Z_FOND), pr(XR + 0.5, H_FOND - 0.15, Z_FOND))  # la couvertine
+    # le mur du fond, de face : son haut s'arrondit un peu à gauche
+    haut = [pr(x, y, Z_FOND) for x, y in ((XL - 0.3, 4.9), (-0.6, 4.86), (-0.3, 4.76), (0.2, 4.7), (XR + 0.3, 4.7))]
+    dz.courbe(lisse(haut) + [pr(XR + 0.3, 0, Z_FOND), pr(XL - 0.3, 0, Z_FOND)], 0.3, ferme=True, fond=FOND)
     porte_bleue(dz)
-    a, b, ya, yb = FENETRE
-    dz.poly(rect_z(Z_FOND, a - 0.05, b + 0.05, ya - 0.05, yb + 0.05), "fin")
-    dz.poly(rect_z(Z_FOND, a, b, ya, yb), "moyen")
-    for xx in np.linspace(a, b, 4)[1:-1]: dz.L(pr(xx, ya, Z_FOND), pr(xx, yb, Z_FOND))   # la grille
-    dz.L(pr(a, (ya + yb)/2, Z_FOND), pr(b, (ya + yb)/2, Z_FOND))
-    dz.poly(rect_z(Z_FOND, a - 0.08, b + 0.08, ya - 0.1, ya - 0.05), "fin")       # l'appui
-    dz.poly(rect_z(Z_FOND, 0.6, 0.85, 0.6, 0.95), "fin"); dz.poly(rect_z(Z_FOND, 0.64, 0.81, 0.66, 0.89), "fin")  # compteur
-    u, v = pr(0.36, 2.62, Z_FOND); dz.rond(u, v, 0.07 * k(Z_FOND), 0.18)          # le numéro
-    # le mur droit de la ruelle (il fuit vers le PF)
-    dz.poly(rect_x(XR, Z_RUE, Z_FOND, 0, H_RUE_D), "moyen")
-    dz.L(pr(XR, 0.2, Z_RUE), pr(XR, 0.2, Z_FOND)); dz.L(pr(XR, H_RUE_D - 0.15, Z_RUE), pr(XR, H_RUE_D - 0.15, Z_FOND))
-    for z1, z2, y1, y2 in ((11.5, 11.8, 3.7, 5.1), (13.2, 13.45, 3.5, 4.6), (12.6, 12.75, 1.7, 2.5)):
-        dz.poly(rect_x(XR, z1 - 0.04, z2 + 0.04, y1 - 0.05, y2 + 0.05), "fin")
-        dz.poly(rect_x(XR, z1, z2, y1, y2), "moyen")
-        dz.L(pr(XR, y1, (z1 + z2)/2), pr(XR, y2, (z1 + z2)/2))
-        for yy in np.linspace(y1, y2, 4)[1:-1]: dz.L(pr(XR, yy, z1), pr(XR, yy, z2))
-    dz.poly(rect_x(XR, 15.5, 15.65, 1.9, 2.15), "fin")                            # l'aération
-    dz.poly(rect_x(XR, 12.2, 12.5, 0.3, 0.75), "fin"); dz.poly(rect_x(XR, 12.24, 12.46, 0.36, 0.69), "fin")
-    for e in (0, 0.08):                                                           # descente d'eau et colliers
-        dz.L(pr(XR, 0.1, 11.42 + e), pr(XR, 4.3, 11.42 + e))
-    for yy in (0.8, 1.9, 3.0, 4.0): dz.L(pr(XR, yy, 11.38), pr(XR, yy, 11.54))
-    zc = 11.46
-    crosse = [pr(XR, 4.3, zc), pr(XR, 4.5, zc), pr(XR - 0.05, 4.62, zc), pr(XR - 0.14, 4.64, zc), pr(XR - 0.2, 4.56, zc), pr(XR - 0.21, 4.45, zc)]
-    dz.courbe(lisse_ouverte(crosse), 0.3)                                          # la crosse en col de cygne
-    dz.poly([pr(XR - 0.25, 4.45, zc), pr(XR - 0.17, 4.45, zc), pr(XR - 0.17, 4.36, zc), pr(XR - 0.25, 4.36, zc)], "fin")  # le boîtier
-    dz.L(pr(XR - 0.21, 4.36, zc), pr(XR - 0.02, 3.15, 13.6))                       # le câble, tendu droit
-    dz.poly([pr(XR, 3.2, 13.55), pr(XR, 3.2, 13.68), pr(XR, 3.1, 13.68), pr(XR, 3.1, 13.55)], "fin")   # sa fixation
+    x2 = PORTE[1]
+    dz.poly(rect_z(Z_FOND, x2 + 0.28, x2 + 0.59, 1.41, 2.22), "moyen")            # la fenêtre (simple cadre)
+    dz.poly(rect_z(Z_FOND, x2 + 0.31, x2 + 0.56, 1.44, 2.19), "fin")
+    dz.poly(rect_z(Z_FOND, x2 + 0.08, x2 + 0.22, 2.15, 2.26), "fin")              # la plaque du numéro
+    dz.poly(rect_z(Z_FOND, x2 + 0.11, x2 + 0.50, 0.37, 0.69), "fin")              # le compteur
+    dz.L(pr(x2 + 0.13, 0.41, Z_FOND), pr(x2 + 0.48, 0.41, Z_FOND))
+    u, v = pr(x2 + 0.15, 0.53, Z_FOND); dz.rond(u, v, 0.015 * k(Z_FOND), 0.15)
+    # le mur droit de la ruelle (il fuit vers le PF) : son haut monte vers le fond
+    dz.poly([pr(XR, 4.9, Z_RUE), pr(XR, 6.2, Z_FOND), pr(XR, 0, Z_FOND), pr(XR, 0, Z_RUE)], "moyen")
+    dz.L(pr(XR, 3.3, 13.2), pr(XR, 4.9 + 1.3 * 2.2 / 9, 13.2), "fin", op=0.6)    # le joint vertical
+    for z1, z2, y1, y2 in ((12.17, 12.8, 3.75, 4.49), (15.5, 16.5, 4.17, 4.93), (15.06, 15.66, 2.37, 2.96),
+                           (12.3, 12.7, 1.31, 1.85), (16.55, 17.27, 1.94, 2.14), (12.7, 13.1, 0.37, 0.63)):
+        dz.poly(rect_x(XR, z1, z2, y1, y2), "fin")
+    dz.poly(rect_x(XR, 18.0, 19.6, 0, 2.15), "moyen")                             # la porte au bout, vue de profil
+    dz.poly(rect_x(XR, 18.15, 19.5, 0.05, 2.08), "fin")
+    zc = 12.2                                                                     # le col de cygne et son câble
+    dz.L(pr(XR, 0.3, zc), pr(XR, 3.0, zc)); dz.L(pr(XR, 0.3, zc + 0.05), pr(XR, 3.0, zc + 0.05))
+    crosse = [pr(XR, 3.0, zc), pr(XR, 3.14, zc), pr(XR - 0.04, 3.22, zc), pr(XR - 0.12, 3.24, zc), pr(XR - 0.18, 3.17, zc), pr(XR - 0.19, 3.08, zc)]
+    dz.courbe(lisse(crosse), 0.3)
+    dz.poly([pr(XR - 0.23, 3.08, zc), pr(XR - 0.15, 3.08, zc), pr(XR - 0.15, 3.0, zc), pr(XR - 0.23, 3.0, zc)], "fin")
+    bout = pr(XR - 0.05, 3.5, 19.6)
+    dz.L(pr(XR - 0.19, 3.0, zc), bout)
+    dz.poly([(bout[0] - 0.4, bout[1]), (bout[0] + 0.4, bout[1]), (bout[0] + 0.2, bout[1] + 0.7), (bout[0] - 0.2, bout[1] + 0.7)], "fin")
     # le mur gauche de la ruelle
-    dz.poly(rect_x(XL, Z_RUE, Z_FOND, 0, H_RUE_G), "moyen")
-    dz.L(pr(XL, 0.2, Z_RUE), pr(XL, 0.2, Z_FOND))
-    # la grille ventrue en fer forgé, en haut du mur gauche de la ruelle (vue de profil)
+    dz.poly(rect_x(XL, Z_RUE, Z_FOND, 0, 11), "moyen")
+    # la grille ventrue en fer forgé, en haut du mur gauche (vue de profil)
     zg = 16.6; kg = k(zg)
     G = lambda dx, y: pr(XL + dx, y, zg)
-    dz.poly([G(0, 6.2), G(0.12, 6.2), G(0.12, 5.55), G(0, 5.55)], "fin")          # la partie plate, en haut
-    for y in (6.12, 5.63): dz.L(G(0, y), G(0.12, y))
-    for y in (6.0, 5.87, 5.74):                                                    # ses petits cercles et ses barreaux
-        u, v = G(0.06, y); dz.rond(u, v, 0.045 * kg, 0.15)
-    dz.L(G(0.06, 6.12), G(0.06, 5.63), "fin", op=0.5)
-    ventre = [G(0.12, 5.55), G(0.25, 5.45), G(0.36, 5.25), G(0.42, 5.0), G(0.4, 4.78), G(0.3, 4.6), G(0.15, 4.52), G(0, 4.5)]
-    dz.courbe(lisse_ouverte(ventre) + [G(0, 5.55)], 0.3, ferme=True, fond=FOND)    # le ventre qui avance dans la ruelle
-    dz.L(G(0, 5.55), G(0, 4.5), "fin")
-    for i, (dx, y, rr) in enumerate(((0.16, 5.32, 0.1), (0.12, 5.06, 0.1), (0.31, 5.06, 0.09), (0.2, 5.2, 0.05))):
-        u, v = G(dx, y); dz.spirale(u, v, rr * kg, 1.7, 1 if i % 2 else -1, 0.6 * i, 0.2)   # les grandes volutes
-    for t in (0.25, 0.5, 0.75):                                                    # les barres courbes du bas, en panier
-        pts = [G(0.4 * t * math.sin(a) + 0.02, 4.5 + 0.36 * t + (0.42 - 0.36 * t) * (1 - math.cos(a)) * 0.35) for a in np.linspace(0, math.pi * 0.62, 10)]
-        dz.courbe(pts, 0.18, 0.75)
-    for dx in (0.1, 0.22, 0.32):                                                   # les barreaux verticaux
-        dz.L(G(dx, 4.52 + 0.06 * dx), G(dx, 4.8 - 0.25 * dx), "fin", op=0.7)
-    # la lanterne, POSÉE sur sa potence à volutes
+    dz.poly([G(0, 5.5), G(0.12, 5.5), G(0.12, 4.95), G(0, 4.95)], "fin")          # la partie plate, en haut
+    for y in (5.43, 5.02): dz.L(G(0, y), G(0.12, y))
+    for y in (5.33, 5.22, 5.11):
+        u, v = G(0.06, y); dz.rond(u, v, 0.04 * kg, 0.15)
+    ventre = [G(0.12, 4.95), G(0.25, 4.88), G(0.35, 4.72), G(0.4, 4.52), G(0.38, 4.36), G(0.28, 4.24), G(0.14, 4.2), G(0, 4.2)]
+    dz.courbe(lisse(ventre) + [G(0, 4.95)], 0.3, ferme=True, fond=FOND)
+    for i, (dx, y, rr) in enumerate(((0.15, 4.77, 0.08), (0.11, 4.55, 0.08), (0.28, 4.55, 0.075), (0.2, 4.68, 0.04))):
+        u, v = G(dx, y); dz.spirale(u, v, rr * kg, 1.7, 1 if i % 2 else -1, 0.6 * i, 0.2)
+    for t in (0.3, 0.55, 0.8):                                                    # les barres courbes du bas
+        dz.courbe([G(0.38 * t * math.sin(a) + 0.02, 4.2 + 0.25 * t + (0.4 - 0.3 * t) * (1 - math.cos(a)) * 0.3) for a in np.linspace(0, math.pi * 0.62, 10)], 0.18, 0.75)
+    # la lanterne, posée au bout de sa potence à volutes
     zl = 15.5; kl = k(zl)
     Lp = lambda dx, y: pr(XL + dx, y, zl)
-    yb = 3.55; lg = 0.95
-    dz.L(Lp(0, yb), Lp(lg, yb), "moyen")                                          # la barre
-    dz.L(Lp(0.02, yb + 0.06), Lp(0.02, yb - 0.34), "moyen")                       # la platine contre le mur
-    bras = [Lp(0.02, yb - 0.3), Lp(0.18, yb - 0.29), Lp(0.36, yb - 0.22), Lp(0.52, yb - 0.12), Lp(0.66, yb - 0.02)]
-    dz.courbe(lisse_ouverte(bras), 0.24)                                           # le bras de la console
-    for i, (dx, dy, rr, sens) in enumerate(((0.12, -0.17, 0.085, 1), (0.31, -0.13, 0.055, -1), (0.45, -0.08, 0.045, 1), (0.58, -0.05, 0.035, -1), (0.76, -0.04, 0.03, 1))):
+    yb = 3.35; lg = 1.1
+    dz.L(Lp(0, yb), Lp(lg, yb), "moyen")
+    dz.L(Lp(0.02, yb + 0.06), Lp(0.02, yb - 0.34), "moyen")                       # la platine
+    bras = [Lp(0.02, yb - 0.3), Lp(0.2, yb - 0.29), Lp(0.42, yb - 0.22), Lp(0.6, yb - 0.12), Lp(0.76, yb - 0.02)]
+    dz.courbe(lisse(bras), 0.24)
+    for i, (dx, dy, rr, sens) in enumerate(((0.13, -0.17, 0.085, 1), (0.35, -0.13, 0.055, -1), (0.51, -0.08, 0.045, 1),
+                                            (0.66, -0.05, 0.035, -1), (0.86, -0.04, 0.03, 1))):
         u, v = Lp(dx, yb + dy); dz.spirale(u, v, rr * kl, 1.6, sens, 1.2 * i, 0.18)
-    s1 = lambda dx, y: Lp(lg - 0.03 + dx, yb + y)                                  # la lanterne, au bout de la barre
-    dz.poly([s1(-0.03, 0.0), s1(0.03, 0.0), s1(0.05, 0.1), s1(-0.05, 0.1)], "fin")  # le pied
-    dz.poly([s1(-0.12, 0.1), s1(0.12, 0.1), s1(0.12, 0.13), s1(-0.12, 0.13)], "fin")   # la bague du bas
-    corps = [s1(-0.1, 0.13), s1(0.1, 0.13), s1(0.15, 0.45), s1(-0.15, 0.45)]
-    dz.poly(corps, "fin")
-    for dx0, dx1 in ((-0.04, -0.06), (0.04, 0.06)): dz.L(s1(dx0, 0.13), s1(dx1, 0.45))   # les montants
-    dz.poly([s1(-0.15, 0.45), s1(0.15, 0.45), s1(0.2, 0.5), s1(-0.2, 0.5)], "fin")    # le chapeau, large
+    s1 = lambda dx, y: Lp(lg - 0.03 + dx, yb + y)
+    dz.poly([s1(-0.03, 0.0), s1(0.03, 0.0), s1(0.05, 0.1), s1(-0.05, 0.1)], "fin")
+    dz.poly([s1(-0.12, 0.1), s1(0.12, 0.1), s1(0.12, 0.13), s1(-0.12, 0.13)], "fin")
+    dz.poly([s1(-0.1, 0.13), s1(0.1, 0.13), s1(0.15, 0.45), s1(-0.15, 0.45)], "fin")
+    for dx0, dx1 in ((-0.04, -0.06), (0.04, 0.06)): dz.L(s1(dx0, 0.13), s1(dx1, 0.45))
+    dz.poly([s1(-0.15, 0.45), s1(0.15, 0.45), s1(0.2, 0.5), s1(-0.2, 0.5)], "fin")
     dz.courbe([s1(-0.2, 0.5), s1(-0.12, 0.58), s1(0, 0.6), s1(0.12, 0.58), s1(0.2, 0.5)], 0.22)
-    dz.poly([s1(-0.07, 0.6), s1(0.07, 0.6), s1(0.07, 0.66), s1(-0.07, 0.66)], "fin")  # la couronne
-    for dx in (-0.06, 0, 0.06): dz.L(s1(dx, 0.66), s1(dx, 0.71))
-    u, v = s1(0, 0.74); dz.rond(u, v, 0.02 * kl, 0.15)
+    dz.poly([s1(-0.07, 0.6), s1(0.07, 0.6), s1(0.07, 0.65), s1(-0.07, 0.65)], "fin")
+    for dx in (-0.06, 0, 0.06): dz.L(s1(dx, 0.65), s1(dx, 0.69))
+
+
+# ---------------------------------------------------------------- à gauche : le mur à l'arc, la potence, le pilier
+def potence(dz):
+    """le grand support en fer forgé (relevé sur la photo) : barre, platine, bras, volutes, crochet du fil"""
+    z = 6.0; kz = k(z); yb = 4.66
+    P = lambda s, t: pr(XA + s, yb - t, z)                                        # s : depuis le mur, t : sous la barre
+    dz.L(P(0, -0.03), P(1.27, -0.03), "moyen"); dz.L(P(0, 0.0), P(1.25, 0.0), "moyen")   # la barre
+    u, v = P(1.27, -0.015); dz.rond(u, v, 0.03 * kz, 0.25, fond=FOND)             # le bout arrondi
+    dz.L(P(0, -0.05), P(0, 0.34), "moyen"); u, v = P(0, 0.36); dz.rond(u, v, 0.02 * kz, 0.2)   # la platine
+    bras = [P(0.01, 0.3), P(0.15, 0.31), P(0.4, 0.28), P(0.65, 0.2), P(0.9, 0.1), P(1.05, 0.03), P(1.1, 0.0)]
+    dz.courbe(lisse(bras), 0.3)
+    for s, t, rr, sens, a0 in ((0.21, 0.13, 0.11, 1, 2.6), (0.53, 0.08, 0.07, -1, 0.3), (0.77, 0.1, 0.045, 1, 3.0), (0.93, 0.13, 0.055, -1, 0.0)):
+        u, v = P(s, t); dz.spirale(u, v, rr * kz, 1.8, sens, a0, 0.24)
+    dz.courbe(lisse([P(0.36, 0.02), P(0.42, 0.06), P(0.47, 0.1)]), 0.2)          # les petites attaches
+    u, v = P(0.33, 0.25); dz.rond(u, v, 0.015 * kz, 0.18)
+    crochet = P(0.91, 0.2)
+    dz.L(P(0.91, 0.16), crochet, "fin")
+    return crochet
 
 
 def gauche(dz):
-    X = XL_PLACE
-    f = rect_x(X, 2, Z_RUE, 0, 14)
-    dz.poly(f, "fort")
-    dz.L(pr(X, 0.25, 2), pr(X, 0.25, Z_RUE))                                      # le soubassement
-    # l'arc en plein cintre : piédroits et claveaux en pierre taillée, fond en briques
-    za, zb, ys, R0, R1 = 8.7, 10.5, 2.6, 0.9, 1.22
-    zc = (za + zb) / 2
-    def contour(x, ray):
-        return ([pr(x, 0, zc - ray), pr(x, ys, zc - ray)] +
-                [pr(x, ys + ray * math.sin(t), zc - ray * math.cos(t)) for t in np.linspace(0, math.pi, 30)] +
-                [pr(x, ys, zc + ray), pr(x, 0, zc + ray)])
-    ouv = contour(X, R0)
-    # par l'ouverture, on voit en biais l'épaisseur du mur (côté fond) : un plan de face, en briques
-    ep = 0.45
-    tab = Crayon(41)
-    tab.trait(pr(X - ep, 0, zb), pr(X - ep, ys + R0, zb), "fin", op=0.8, depasse=False)
-    yb, rang = 0.0, 0
-    while yb < ys + R0:
-        tab.trait(pr(X, yb, zb), pr(X - ep, yb, zb), "fin", op=0.5, depasse=False)
-        xj = X - (0.15 if rang % 2 else 0.3)
-        tab.trait(pr(xj, yb, zb), pr(xj, yb + 0.2, zb), "fin", op=0.5, depasse=False)
-        yb += 0.2; rang += 1
-    dz.clip(ouv, "".join(tab.out))
+    X = XA
+    dz.poly(rect_x(X, 2, Z_RUE, 0, 14), "fort")
+    # l'ouverture en arc : mur blanc enduit, épaisseur brute, fond muré en briques
+    za, zb, ya, ys, R = 8.7, 10.6, 1.9, 2.85, 0.95
+    zc = (za + zb) / 2; ep = 0.15
+    def contour(x):
+        return ([pr(x, ya, za), pr(x, ys, za)] +
+                [pr(x, ys + R * math.sin(t), zc - R * math.cos(t)) for t in np.linspace(0, math.pi, 30)] +
+                [pr(x, ys, zb), pr(x, ya, zb)])
+    ouv, fondb = contour(X), contour(X - ep)
+    c1, c2 = dz.id_clip(ouv), dz.id_clip(fondb)
+    br = Crayon(41); y = ya + 0.065
+    while y < ys + R:
+        demi = R * math.sqrt(max(0, 1 - ((y - ys) / R) ** 2)) if y > ys else R
+        br.trait(pr(X - ep, y, zc - demi), pr(X - ep, y, zc + demi), "fin", op=0.4, depasse=False)
+        y += 0.065
+    bord_fond = Crayon(42); bord_fond.out.append(
+        f'<polyline points="{" ".join(f"{u:.2f},{v:.2f}" for u, v in fondb)}" fill="none" stroke="{GRIS}" stroke-width="0.22" stroke-opacity="0.8"/>')
+    dz.c.out.append(f'<g clip-path="url(#{c1})"><g clip-path="url(#{c2})">{"".join(br.out)}</g>{"".join(bord_fond.out)}</g>')
     dz.courbe(ouv, 0.32)
-    dz.courbe([pr(X, ys + R1 * math.sin(t), zc - R1 * math.cos(t)) for t in np.linspace(0, math.pi, 30)], 0.3)
-    for i in range(1, 13):                                                        # les claveaux : joints rayonnants
-        t = math.pi * i / 13
-        ext = R1 + (0.12 if i in (6, 7) else 0)                                   # la clé dépasse un peu
-        dz.L(pr(X, ys + R0 * math.sin(t), zc - R0 * math.cos(t)), pr(X, ys + ext * math.sin(t), zc - ext * math.cos(t)))
-    t6, t7 = math.pi * 6 / 13, math.pi * 7 / 13
-    dz.L(pr(X, ys + (R1 + 0.12) * math.sin(t6), zc - (R1 + 0.12) * math.cos(t6)),
-         pr(X, ys + (R1 + 0.12) * math.sin(t7), zc - (R1 + 0.12) * math.cos(t7)))
-    for cote in (-1, 1):                                                          # les piédroits : pierres alternées
-        y = 0; j = 0
-        while y < ys - 0.05:
-            h = 0.32; w = 0.38 if j % 2 else 0.24
-            z0 = zc + cote * R0
-            dz.poly(rect_x(X, min(z0, z0 + cote * w), max(z0, z0 + cote * w), y, min(ys, y + h)), "fin")
-            y += h; j += 1
-        dz.L(pr(X, ys, zc + cote * R0), pr(X, ys, zc + cote * R1))                # l'imposte
-    # la fenêtre haute et étroite, à deux volets à panneaux
-    z1, z2, y1, y2 = 9.7, 10.3, 4.4, 6.9
-    dz.poly(rect_x(X, z1 - 0.06, z2 + 0.06, y1 - 0.06, y2 + 0.06), "fin")
+    # la fenêtre haute et étroite, au-dessus, à deux battants vitrés
+    z1, z2, y1, y2 = 10.13, 10.8, 4.34, 6.44
     dz.poly(rect_x(X, z1, z2, y1, y2), "moyen")
-    zm = (z1 + z2) / 2; dz.L(pr(X, y1, zm), pr(X, y2, zm))
-    for a, b in ((z1, zm), (zm, z2)):
-        for ya, yb in ((y1 + 0.12, y1 + 1.15), (y1 + 1.3, y2 - 0.12)):
-            dz.poly(rect_x(X, a + 0.05, b - 0.05, ya, yb), "fin")
-    dz.poly(rect_x(X, z1 - 0.12, z2 + 0.12, y1 - 0.14, y1 - 0.06), "fin")          # l'appui
-    # la descente d'eau : tuyau, colliers, dauphin en bas
-    for e in (0, 0.12):
-        dz.L(pr(X, 0.35, 7.4 + e), pr(X, 14, 7.4 + e))
-    for y in (1.2, 2.9, 4.6, 6.3):
-        dz.L(pr(X, y, 7.34), pr(X, y, 7.58)); dz.L(pr(X, y + 0.08, 7.34), pr(X, y + 0.08, 7.58))
-    dz.courbe([pr(X, 0.35, 7.4), pr(X, 0.15, 7.32), pr(X, 0.08, 7.2)], 0.22)
-    dz.courbe([pr(X, 0.35, 7.52), pr(X, 0.12, 7.48), pr(X, 0.05, 7.3)], 0.22)
-    # le mur de face à l'entrée de la ruelle, et le pilier au panneau « rue du Tribunal »
+    dz.poly(rect_x(X, z1 + 0.05, z2 - 0.05, y1 + 0.05, y2 - 0.05), "fin")
+    zm = (z1 + z2) / 2; dz.L(pr(X, y1 + 0.05, zm), pr(X, y2 - 0.05, zm))
+    for yy in (y1 + (y2 - y1) / 3, y1 + 2 * (y2 - y1) / 3):
+        dz.L(pr(X, yy, z1 + 0.05), pr(X, yy, z2 - 0.05))
+    # la descente d'eau (gros tuyau, colliers, sabot) et la gaine fine à côté
+    xp = X + 0.1
+    for e in (0, 0.12): dz.L(pr(xp, 0.35, 8.5 + e), pr(xp, 14, 8.5 + e))
+    for y in (1.2, 2.6, 4.0, 5.4):
+        dz.L(pr(xp, y, 8.47), pr(xp, y, 8.65)); dz.L(pr(xp, y + 0.06, 8.47), pr(xp, y + 0.06, 8.65))
+    dz.poly([pr(xp, 0.35, 8.46), pr(xp, 0.35, 8.66), pr(xp, 0, 8.66), pr(xp, 0, 8.46)], "fin")
+    for e in (0, 0.03): dz.L(pr(X + 0.03, 0, 8.36 + e), pr(X + 0.03, 14, 8.36 + e), "fin", op=0.7)
+    # la petite tige noire et ses attaches, en bas du mur
+    dz.courbe([pr(X, 0.33, 5.25), pr(X, 0.5, 5.27), pr(X, 0.65, 5.26)], 0.35)
+    for y in (0.38, 0.5, 0.6): dz.L(pr(X, y, 5.22), pr(X, y, 5.32))
+    # la tour (de face) à l'entrée de la ruelle, avec son anneau d'angle et sa gargouille
     dz.poly(rect_z(Z_RUE, X, XL, 0, 14), "fort")
-    dz.poly(rect_z(10.7, -1.55, XL, 0, 3.4), "moyen")
-    dz.poly([pr(XL, 3.4, 10.7), pr(XL, 3.4, Z_RUE), pr(XL, 0, Z_RUE), pr(XL, 0, 10.7)], "fin")
-    for y in (3.25, 3.15): dz.L(pr(-1.55, y, 10.7), pr(XL, y, 10.7))              # la corniche du pilier
-    dz.L(pr(-1.55, 0.25, 10.7), pr(XL, 0.25, 10.7)); dz.L(pr(XL, 0.25, 10.7), pr(XL, 0.25, Z_RUE))
-    zp = 10.68; kz = k(zp)
-    dz.poly(rect_z(zp, -1.5, -1.12, 2.45, 2.75), "moyen")
-    dz.poly(rect_z(zp, -1.48, -1.14, 2.47, 2.73), "fin")
-    u, v = pr(-1.31, 2.66, zp); dz.c.texte(u, v + 0.4, "نهج التريبونال", 0.09 * kz, GRIS, "middle", halo=False)
-    u, v = pr(-1.31, 2.52, zp); dz.c.texte(u, v + 0.3, "Rue du Tribunal", 0.055 * kz, GRIS, "middle", halo=False)
-    dz.poly(rect_z(zp, -1.52, -1.1, 1.95, 2.02), "fin")                           # la tablette de marbre
-    dz.poly([pr(-1.52, 1.95, zp), pr(-1.1, 1.95, zp), pr(-1.1, 1.95, 10.5), pr(-1.52, 1.95, 10.5)], "fin")
+    a = pr(XL, 4.2, Z_RUE); b = pr(XL, 3.9, Z_RUE)
+    dz.courbe([a] + [((a[0] + b[0]) / 2 + 0.09 * k(Z_RUE) * math.sin(t), a[1] + (b[1] - a[1]) * (1 - math.cos(t)) / 2) for t in np.linspace(0, math.pi, 10)] + [b], 0.28)
+    for e in (0, 0.1): dz.L(pr(XL, 6.1 + e, 11.3), pr(-0.4, 6.1 + e, 11.3))
+    u, v = pr(-0.4, 6.15, 11.3); dz.courbe([(u + 0.25*math.cos(t), v + 0.5*math.sin(t)) for t in np.linspace(0, 2*math.pi, 12)], 0.2, ferme=True)
+    # le pilier : panneau en creux en bas, tablette de marbre, plaque « Rue du Tribunal »
+    x1, x2 = X_PIL; zp = Z_PIL; kp = k(zp)
+    dz.poly(rect_z(zp, x1, x2, 0, 3.7), "moyen")
+    dz.poly([pr(x2, 3.7, zp), pr(x2, 3.7, Z_RUE), pr(x2, 0, Z_RUE), pr(x2, 0, zp)], "fin")
+    dz.L(pr(x1, 0.1, zp), pr(x2, 0.1, zp)); dz.L(pr(x2, 0.1, zp), pr(x2, 0.1, Z_RUE))
+    dz.poly(rect_z(zp, x1 + 0.07, x1 + 0.45, 0.12, 1.7), "fin")
+    dz.poly(rect_z(zp - 0.12, x1 + 0.09, x1 + 0.5, 1.79, 1.85), "fin")
+    dz.poly([pr(x1 + 0.09, 1.79, zp - 0.12), pr(x1 + 0.5, 1.79, zp - 0.12), pr(x1 + 0.5, 1.79, zp), pr(x1 + 0.09, 1.79, zp)], "fin")
+    dz.poly(rect_z(zp, x1 + 0.09, x1 + 0.40, 2.04, 2.34), "moyen")
+    dz.poly(rect_z(zp, x1 + 0.11, x1 + 0.38, 2.06, 2.32), "fin")
+    u, v = pr(x1 + 0.245, 2.24, zp); dz.c.texte(u, v + 0.4, "نهج التريبونال", 0.075 * kp, GRIS, "middle", halo=False)
+    u, v = pr(x1 + 0.245, 2.12, zp); dz.c.texte(u, v + 0.3, "Rue Du Tribunal", 0.05 * kp, GRIS, "middle", halo=False)
+    # la potence en fer forgé (plus près que la tour : dessinée après), en haut à gauche, et le fil qui part de son crochet
+    crochet = potence(dz)
+    fin_fil = pr(2.46, 4.49, Z_RUE)
+    m = ((crochet[0] + fin_fil[0]) / 2, (crochet[1] + fin_fil[1]) / 2 + 4)
+    dz.courbe([((1-t)**2*crochet[0] + 2*(1-t)*t*m[0] + t*t*fin_fil[0], (1-t)**2*crochet[1] + 2*(1-t)*t*m[1] + t*t*fin_fil[1]) for t in np.linspace(0, 1, 30)], 0.2)
 
 
 # ---------------------------------------------------------------- à droite : le mur au portail
 def portail(dz):
-    z = Z_RUE; kz = k(z); x1, x2 = 2.4, 4.2
-    dz.poly(rect_z(z, x1 - 0.06, x2 + 0.06, 0.12, 2.78), "moyen")
-    dz.poly(rect_z(z, x1, x2, 2.22, 2.72), "moyen")                               # l'imposte en fer forgé
-    dz.poly(rect_z(z, x1, x2, 2.6, 2.72), "fin")                                  # la bande pleine du haut
-    ya, yh = 2.25, 2.6; n = 12; w = (x2 - x1) / n
-    dz.L(pr(x1, ya, z), pr(x2, ya, z))
+    z = Z_RUE; kz = k(z); x1, x2 = GATE
+    dz.poly(rect_z(z, x1 - 0.05, x2 + 0.05, 0, 0.16), "fin")                      # la marche blanche
+    dz.poly(rect_z(z, x1 - 0.03, x2 + 0.03, 2.47, 2.53), "fin")                   # le linteau
+    dz.poly(rect_z(z, x1, x2, 0.16, 2.47), "fort")
+    dz.L(pr(x1, 2.0, z), pr(x2, 2.0, z), "moyen")                                 # l'imposte en fer forgé
+    dz.L(pr(x1, 2.36, z), pr(x2, 2.36, z))                                        # sa bande pleine du haut
+    ya, yh = 2.02, 2.36; n = 11; w = (x2 - x1) / n
     for i in range(n):
         a = x1 + i * w; M = lambda u_, v_: pr(a + u_ * w, ya + v_ * (yh - ya), z)
-        if i: dz.L(M(0, 0), M(0, 1))                                               # barreaux de module
-        dz.L(M(0.5, 0.02), M(0.5, 0.78), "fin")                                    # le barreau central
-        dz.L(M(0.5, 0.02), M(0.06, 0.8), "fin"); dz.L(M(0.5, 0.02), M(0.94, 0.8), "fin")   # le V
-        for v_, rr in ((0.87, 0.2), (0.53, 0.19), (0.3, 0.17)):                    # 3 rangées de volutes en paires
+        if i: dz.L(M(0, 0), M(0, 1))
+        dz.L(M(0.5, 0.02), M(0.5, 0.78), "fin")
+        dz.L(M(0.5, 0.02), M(0.06, 0.8), "fin"); dz.L(M(0.5, 0.02), M(0.94, 0.8), "fin")
+        for v_, rr in ((0.87, 0.2), (0.53, 0.19), (0.3, 0.17)):
             for u_, sens in ((0.27, 1), (0.73, -1)):
                 cx, cy = M(u_, v_); dz.spirale(cx, cy, rr * w * kz, 1.5, sens, 0 if sens > 0 else math.pi, 0.15)
-    dz.poly(rect_z(z, x1, x2, 0.12, 2.2), "fort")                                 # les deux battants en tôle
-    xm = (x1 + x2) / 2 + 0.1
-    dz.L(pr(xm, 0.12, z), pr(xm, 2.2, z), "moyen")
-    for a, b in ((x1, xm), (xm, x2)):
-        dz.poly(rect_z(z, a + 0.06, b - 0.06, 0.2, 2.12), "fin")
-        dz.L(pr(a + 0.06, 1.15, z), pr(b - 0.06, 1.15, z))
-    dz.poly(rect_z(z, xm - 0.14, xm - 0.02, 1.0, 1.25), "fin")                    # la serrure
-    u, v = pr(xm - 0.08, 1.07, z); dz.rond(u, v, 0.02 * kz, 0.15)
-    dz.L(pr(xm + 0.03, 1.12, z), pr(xm + 0.15, 1.12, z))                          # la poignée
-    dz.poly(rect_z(z, x2 - 0.55, x2 - 0.45, 1.9, 1.98), "fin")                    # le petit verrou
-    # le cœur tagué « M + D », juste au trait
-    cx, cy = pr(2.95, 1.35, z); s = 0.32 * kz
+    xm = (x1 + x2) / 2
+    dz.L(pr(xm, 0.16, z), pr(xm, 2.0, z), "moyen")                                # deux battants en tôle lisse
+    dz.L(pr(x1 + 0.06, 0.16, z), pr(x1 + 0.06, 2.0, z), "fin", op=0.6)
+    dz.poly(rect_z(z, xm - 0.06, xm + 0.02, 1.3, 1.36), "fin")                    # le loquet
+    # le tag : « M+D » (le D plus bas) et le cœur, au trait
+    T = lambda dx, y: pr(x1 + dx, y, z)
+    dz.courbe([T(0.28, 1.45), T(0.29, 1.62), T(0.36, 1.5), T(0.43, 1.62), T(0.45, 1.46)], 0.28, 0.75)
+    dz.L(T(0.5, 1.5), T(0.56, 1.5)); dz.L(T(0.53, 1.45), T(0.53, 1.55))
+    dz.courbe([T(0.6, 1.3), T(0.6, 1.53), T(0.7, 1.5), T(0.73, 1.41), T(0.69, 1.32), T(0.6, 1.3)], 0.28, 0.75)
+    cx, cy = T(0.45, 1.13); s = 0.17 * kz
     dz.courbe([(cx + s*0.95*math.sin(t)**3, cy - s*(0.8*math.cos(t) - 0.3*math.cos(2*t) - 0.12*math.cos(3*t) - 0.05*math.cos(4*t)))
-               for t in np.linspace(0, 2*math.pi, 40)], 0.25, 0.7)
-    dz.c.texte(cx - s*0.1, cy - s*1.15, "M+D", 0.3 * kz, GRIS, "middle", halo=False)
+               for t in np.linspace(0, 2*math.pi, 40)], 0.28, 0.75)
+
+
+def sac(dz, x, w, h, z, noeud=True, rond=False):
+    a, b, t = pr(x, 0, z), pr(x + w, 0, z), pr(x + w/2, h, z)
+    if rond:
+        pts = [a, pr(x, h * 0.75, z), pr(x + w * 0.2, h * 0.98, z), t, pr(x + w * 0.8, h * 0.98, z), pr(x + w, h * 0.75, z), b]
+    else:
+        pts = [a, pr(x - 0.02, h * 0.5, z), pr(x + w * 0.25, h * 0.9, z), t, pr(x + w * 0.75, h * 0.85, z), pr(x + w + 0.02, h * 0.45, z), b]
+    dz.courbe(lisse(pts), 0.25, ferme=True, fond=FOND)
+    if noeud:
+        dz.L(t, pr(x + w/2 - 0.02, h + 0.06, z)); dz.L(t, pr(x + w/2 + 0.03, h + 0.05, z))
+    dz.courbe([pr(x + w * 0.3, h * 0.7, z), pr(x + w * 0.45, h * 0.4, z), pr(x + w * 0.4, h * 0.15, z)], 0.15, 0.6)
 
 
 def droite(dz):
     z = Z_RUE
-    haut = [(XR, 5.8), (4.5, 5.15), (9, 5.15)]
-    dz.poly([pr(x, y, z) for x, y in haut] + [pr(9, 0, z), pr(XR, 0, z)], "fort")
-    dz.c.trait(pr(XR, 5.8, z), pr(XR, 0, z), "fort", double=True, depasse=False)   # l'arête du coin
-    dz.courbe([pr(XR, 5.65, z), pr(4.5, 5.0, z), pr(9, 5.0, z)], 0.2, 0.7)        # la couvertine
-    dz.L(pr(XR, 0.18, z), pr(9, 0.18, z))                                         # le soubassement
-    dz.L(pr(XR, 2.6, z), pr(XR + 0.35, 2.6, z)); dz.L(pr(XR + 0.35, 2.6, z), pr(XR + 0.35, 2.75, z))   # le petit rebord
+    pente = lambda x: 4.9 - 0.205 * (x - XR)                                      # le haut du mur descend vers la droite
+    dz.poly([pr(XR, pente(XR), z), pr(7, pente(7), z), pr(7, 0, z), pr(XR, 0, z)], "fort")
+    dz.c.trait(pr(XR, pente(XR), z), pr(XR, 0, z), "fort", double=True, depasse=False)   # l'arête du coin
+    dz.L(pr(1.08, pente(1.08), z), pr(1.08, 2.24, z))                             # le pilier en saillie de l'angle
+    dz.L(pr(XR, 2.24, z), pr(1.08, 2.24, z)); dz.L(pr(XR, 2.2, z), pr(1.08, 2.2, z))
+    for x, y in ((1.0, 4.65), (1.03, 3.03)):                                      # les deux pitons
+        dz.poly(rect_z(z, x - 0.025, x + 0.025, y - 0.015, y + 0.015), "fin")
     portail(dz)
-    for x, w, h in ((1.75, 0.35, 0.32), (2.05, 0.4, 0.42), (2.3, 0.3, 0.26)):    # les sacs posés au pied du mur
-        a, b, t = pr(x, 0, 10.75), pr(x + w, 0, 10.75), pr(x + w/2, h, 10.75)
-        pts = [a] + [((1-s)**2*a[0] + 2*(1-s)*s*a[0] + s*s*t[0], (1-s)**2*a[1] + 2*(1-s)*s*t[1] + s*s*t[1]) for s in np.linspace(0, 1, 8)] \
-              + [((1-s)**2*t[0] + 2*(1-s)*s*b[0] + s*s*b[0], (1-s)**2*t[1] + 2*(1-s)*s*t[1] + s*s*b[1]) for s in np.linspace(0, 1, 8)]
-        dz.courbe(pts, 0.25, ferme=True, fond=FOND)
-        dz.L((t[0] - 0.6, t[1] + 0.4), (t[0] + 0.6, t[1] + 0.4))                  # le nœud
-        dz.courbe([(t[0] - 1.2, t[1] + 2.2), (t[0] - 0.4, t[1] + 3.4), (t[0] + 0.2, (t[1] + a[1]) / 2 + 1)], 0.15, 0.6)  # un pli
-
-
-# ---------------------------------------------------------------- premier plan : fil, passants
-def passant(dz, x, z, sens):
-    """une personne debout de 1,75 m : comme on est assis (yeux à 1,20 m), la LH lui passe à la poitrine"""
-    P = lambda dx, y: pr(x + dx * sens, y, z)
-    pd = "moyen" if z < 10 else "fin"
-    for j, (a, b) in enumerate(((-0.13, -0.02), (0.02, 0.13))):                  # jambes, l'une devant l'autre
-        d = -0.13 if j == 0 else 0.1
-        dz.c.poly([P(a, 0.92), P(b, 0.92), P(b + d*0.9 + 0.01, 0.05), P(a + d - 0.01, 0.03)], pd, depasse=False)
-        dz.L(P(a + d - 0.03, 0.02), P(b + d*0.9 + 0.06, 0.02), pd)
-    dz.c.poly([P(-0.06, 1.53), P(0.06, 1.53), P(0.19, 1.47), P(0.21, 1.36), P(0.15, 0.9), P(-0.15, 0.9), P(-0.21, 1.36), P(-0.19, 1.47)], pd, depasse=False)
-    dz.L(P(-0.05, 1.52), P(0, 1.42)); dz.L(P(0.05, 1.52), P(0, 1.42))             # le col
-    dz.L(P(-0.15, 0.98), P(0.15, 0.98))                                           # la ceinture
-    dz.L(P(-0.19, 1.42), P(-0.25, 0.9), pd); dz.L(P(0.19, 1.42), P(0.27, 0.92), pd)
-    t = pr(x, 1.645, z); rx, ry = 0.085 * k(z), 0.11 * k(z)
-    dz.courbe([(t[0] + rx*math.cos(a), t[1] + ry*math.sin(a)) for a in np.linspace(0, 2*math.pi, 18)[:-1]], 0.3, ferme=True, fond=FOND)
-    dz.courbe([(t[0] - rx*0.95, t[1] - ry*0.1), (t[0] - rx*0.4, t[1] - ry*0.9), (t[0] + rx*0.5, t[1] - ry*0.85), (t[0] + rx*0.95, t[1] - ry*0.1)], 0.2, 0.7)
-
-
-def lisse(pts, n=4):
-    """courbe fermée lissée passant par les points (Catmull-Rom)"""
-    out = []; m = len(pts)
-    for i in range(m):
-        p0, p1, p2, p3 = (np.array(pts[(i + j) % m]) for j in (-1, 0, 1, 2))
-        for t in np.linspace(0, 1, n, endpoint=False):
-            out.append(tuple(0.5 * ((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t*t + (-p0 + 3*p1 - 3*p2 + p3)*t**3)))
-    return out
-
-
-def lisse_ouverte(pts, n=5):
-    """courbe ouverte lissée passant par les points (Catmull-Rom)"""
-    P = [pts[0]] + list(pts) + [pts[-1]]; out = []
-    for i in range(1, len(P) - 2):
-        p0, p1, p2, p3 = (np.array(P[i + j]) for j in (-1, 0, 1, 2))
-        for t in np.linspace(0, 1, n, endpoint=False):
-            out.append(tuple(0.5 * ((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t*t + (-p0 + 3*p1 - 3*p2 + p3)*t**3)))
-    return out + [tuple(pts[-1])]
-
-
-def premier_plan(dz):
-    r = dz.r
-    # le fil tendu au-dessus de la placette
-    a, b = pr(XL, 8.5, Z_RUE), pr(4.3, 5.1, 10.9)
-    m = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 5)
-    dz.courbe([((1-t)**2*a[0] + 2*(1-t)*t*m[0] + t*t*b[0], (1-t)**2*a[1] + 2*(1-t)*t*m[1] + t*t*b[1]) for t in np.linspace(0, 1, 24)], 0.22)
-    for x, z, sens in sorted(PASSANTS, key=lambda p: -p[1]):
-        passant(dz, x, z, sens)
+    zs = 10.9                                                                     # au pied du mur : sacs et boîtes
+    sac(dz, 1.40, 0.24, 0.42, zs, noeud=False, rond=True)
+    sac(dz, 1.12, 0.3, 0.28, zs - 0.05)
+    sac(dz, 1.62, 0.32, 0.34, zs - 0.03)
+    dz.poly(rect_z(zs - 0.25, 1.30, 1.45, 0, 0.18), "fin"); dz.L(pr(1.30, 0.14, zs - 0.25), pr(1.45, 0.14, zs - 0.25))
+    dz.poly(rect_z(zs - 0.3, 1.66, 1.88, 0, 0.06), "fin")
+    dz.courbe([pr(3.25, 0.16, 10.95), pr(3.3, 0.24, 10.95), pr(3.38, 0.2, 10.95), pr(3.42, 0.16, 10.95)], 0.2, ferme=True, fond=FOND)
 
 
 # ---------------------------------------------------------------- la construction, en bleu
@@ -416,8 +384,8 @@ def construction():
     for j in range(-6, 6):
         y = LHY + 30*j
         if FY0 < y < FY1 and j: c.trait((FX0, y), (FX1, y), "construction", CON, 0.22, depasse=False)
-    fuy = [pr(XL_PLACE, 0, 5), pr(XL_PLACE, 2.6, 5), pr(XL, 0, Z_RUE), pr(XR, 0, Z_RUE), pr(XR, H_RUE_D, Z_RUE),
-           pr(XR, 3.7, 11.5), pr(XR, 5.1, 11.5), pr(XL_PLACE, 6.9, 9.7), pr(XL_PLACE, 4.4, 9.7)]
+    fuy = [pr(XA, 0, 5), pr(XA, 1.9, 5), pr(XL, 0, Z_RUE), pr(XR, 0, Z_RUE), pr(XA, 6.44, 9), pr(XA, 4.34, 9),
+           pr(XR, 4.49, 12.17), pr(XR, 3.75, 12.17)]
     for p in fuy:
         c.trait(bord(p), PF, "construction", CON, 0.8, depasse=False, tirets="2 1.4")
     c.trait((0, LHY), (PAGE_W, LHY), "moyen", CON, 0.9, depasse=False, tirets="4 1.4 0.7 1.4")
@@ -435,31 +403,24 @@ def construction():
         c.trait((xc, y), (xc + 0.8, y + s*1.6), "moyen", CON, 0.95, depasse=False)
     c.texte(xc - 1.6, (FY1 + LHY)/2 + 18, "1,20 m", 3.6, CON, "end")
     c.texte(xc - 1.6, (FY1 + LHY)/2 + 22.4, "yeux, assis", 3.0, CON, "end")
-    # annotations
     c.texte(FX0 + 3, LHY + 4.4, "LH : à hauteur des yeux, ASSIS (1,20 m)", 2.9, CON)
     c.texte(FX0 + 3, LHY + 8, "plus bas que la photo, prise debout", 2.9, CON)
     p = pr(PORTE[0], PORTE[3], Z_FOND)
-    c.texte(p[0] - 1.5, p[1] - 8.5, "la porte bleue, à 20 m :", 2.8, CON, "end")
-    c.texte(p[0] - 1.5, p[1] - 5.2, "petite, coupée par la LH", 2.8, CON, "end")
-    c.trait((p[0] - 1.2, p[1] - 5.6), (p[0] + 0.4, p[1] + 0.6), "construction", CON, 0.9, depasse=False)
-    q = pr(XR, 4.4, 11.6)
-    c.texte(q[0] + 3, q[1] - 1, "les murs de la ruelle", 2.8, CON)
-    c.texte(q[0] + 3, q[1] + 2.4, "fuient vers le PF", 2.8, CON)
-    c.texte(FX1 - 3, 132, "mur de face : vraie forme,", 2.8, CON, "end")
-    c.texte(FX1 - 3, 135.4, "horizontales horizontales", 2.8, CON, "end")
-    q = pr(XL_PLACE, 0.6, 5.2)
+    q = pr(PORTE[0], 0.3, Z_FOND)
+    c.texte(FX0 + 3, LHY + 15, "la porte bleue, à 20 m : petite, coupée en deux par la LH", 2.9, CON)
+    c.trait((FX0 + 80, LHY + 15.6), (q[0] - 0.6, q[1]), "construction", CON, 0.9, depasse=False)
+    c.texte(184, 150, "les murs de la ruelle", 2.8, CON)
+    c.texte(184, 153.4, "fuient vers le PF", 2.8, CON)
+    c.texte(FX1 - 3, 168, "mur de face : vraie forme,", 2.8, CON, "end")
+    c.texte(FX1 - 3, 171.4, "horizontales horizontales", 2.8, CON, "end")
+    q = pr(XA, 0.6, 5.2)
     c.texte(q[0] + 3, q[1] - 3, "mur à l'arc : il fuit vers le PF", 2.8, CON, rot=math.degrees(math.atan2(LHY - q[1], CX - q[0])))
-    t = pr(PASSANTS[0][0], 1.75, PASSANTS[0][1])
-    c.trait((t[0] - 1, 165.5), (t[0] - 0.5, t[1] - 1.2), "construction", CON, 0.9, depasse=False)
-    for i, l in enumerate(["les passants DEBOUT (1,75 m) :", "leur tête dépasse la LH, qui leur",
-                           "passe à la poitrine → tu es assis"]):
-        c.texte(t[0] - 3, 154 + i*3.6, l, 2.9, CON)
     return "".join(c.out)
 
 
 def dessin():
     dz = Dessin(31)
-    sol(dz); fond(dz); droite(dz); gauche(dz); premier_plan(dz)
+    sol(dz); fond(dz); droite(dz); gauche(dz)
     cadre = Crayon(3)
     coins = [(FX0, FY0), (FX1, FY0), (FX1, FY1), (FX0, FY1)]
     for i in range(4):
@@ -476,14 +437,14 @@ def textes():
               "2  la porte bleue et le mur du fond : de face, petits, coupés par la LH",
               "3  les murs de la ruelle : pieds et hauts sur des fuyantes vers le PF",
               "4  le mur au portail (de face) et le mur à l'arc (il fuit vers le PF)",
-              "5  les détails : pierres de l'arc, porte, fer forgé, lanterne, pavés",
-              "6  les passants debout : la LH leur passe à la poitrine"]
+              "5  les détails : arc muré de briques, fers forgés, lanterne, portail",
+              "6  le sol : pavés dans la placette, dalles dans la ruelle"]
     for i, e in enumerate(etapes):
         t.texte(FX0 + (i // 3) * 134, 28.5 + (i % 3) * 3.9, e, 2.9, CON)
     for i, l in enumerate(["en bleu : la construction (LH, LT, PF, fuyantes) · au crayon : le croquis, au trait, sans hachures",
                            "carreaux bleus de 3 cm, partant du PF, pour reporter le dessin",
                            "dessiné depuis ta place, pas depuis le téléphone : yeux à 1,20 m, regard droit devant",
-                           "le support en fer forgé de la photo est au-dessus du regard : hors cadre"]):
+                           "chaque élément est relevé sur la photo (place, nombre, forme) : rien d'ajouté"]):
         t.texte(FX0, 391 + i*5, l, 3.0, "#666", halo=False)
     return "".join(t.out)
 
