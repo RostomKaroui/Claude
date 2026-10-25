@@ -12,9 +12,11 @@ Imprimer en **taille réelle (100 %)**.
 
 ## Le point de vue (ce n'est pas un calque de la photo)
 - assis, **yeux à 1,20 m** du sol → la LH est à 1,20 m (la photo, prise debout, la met plus haut) ;
+- regard droit devant → la **LH au milieu du cadre**, le PF au centre ;
+- des **passants debout** (1,75 m) : leur tête dépasse la LH, qui leur passe à la poitrine — c'est ce qui montre qu'on est assis ;
 - face à la porte bleue du fond, **un tout petit peu à droite**, à **20 m** d'elle ;
 - champ de vision naturel de l'œil (~55° en largeur), pas le zoom du téléphone ;
-- les verticales restent verticales ; ce qui est au-dessus du regard (le support en fer forgé, la treille) sort du cadre.
+- les verticales restent verticales ; ce qui est au-dessus du regard (le haut des murs, le fil, le support en fer forgé, la treille) est coupé ou sort du cadre.
 
 ## Régénérer
 ```

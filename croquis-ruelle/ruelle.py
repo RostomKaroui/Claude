@@ -20,7 +20,7 @@ PAGE_W, PAGE_H = 420, 297
 FX0, FY0, FX1, FY1 = 15, 34, 405, 272      # le cadre (39 x 24 cm)
 OEIL = 1.20                                # assis : les yeux à 1,20 m du sol
 F = 375                                    # distance principale (mm) : 55° de champ sur 39 cm
-CX, LHY = 210, 194                         # le PF : au milieu du cadre, LH à 16 cm du haut
+CX, LHY = 210, (FY0 + FY1) / 2             # regard droit devant : PF au centre du cadre, LH au milieu
 PF = (CX, LHY)
 ZT = F * OEIL / (FY1 - LHY)                # le tableau : son pied (la LT) est le bas du cadre
 
@@ -247,12 +247,31 @@ def droite(dz):
                      f'fill="#8f9399" fill-opacity="0.55" stroke="{GRIS}" stroke-width="0.25" stroke-opacity="0.8"/>')
 
 
+PASSANTS = [(0.95, 6.5, 1), (3.6, 9.5, -1), (0.55, 14.5, 1)]   # (x, z, sens de la marche) : des gens DEBOUT, 1,75 m
+
+
+def passant(dz, x, z, sens):
+    """une personne debout de 1,75 m : comme on est assis (yeux à 1,20 m), la LH lui passe à la poitrine"""
+    c = dz.c
+    P = lambda dx, y: pr(x + dx * sens, y, z)
+    pd = "moyen" if z < 10 else "fin"
+    pas = 0.13
+    for j, (a, b) in enumerate(((-0.13, -0.02), (0.02, 0.13))):               # jambes, l'une devant l'autre
+        d = -pas if j == 0 else pas * 0.8
+        jambe = [P(a, 0.92), P(b, 0.92), P(b + d * 0.9 + 0.01, 0.05), P(a + d - 0.01, 0.03)]
+        c.poly(jambe, pd, fond="#c9ccd1", depasse=False)
+        c.trait(P(a + d - 0.03, 0.02), P(b + d * 0.9 + 0.06, 0.02), pd, depasse=False)   # chaussure
+    buste = [P(-0.06, 1.53), P(0.06, 1.53), P(0.19, 1.47), P(0.21, 1.36), P(0.15, 0.9), P(-0.15, 0.9), P(-0.21, 1.36), P(-0.19, 1.47)]
+    c.poly(buste, pd, depasse=False)
+    c.trait(P(-0.19, 1.42), P(-0.25, 0.9), pd, depasse=False)                  # bras qui balancent
+    c.trait(P(0.19, 1.42), P(0.22 + 0.05, 0.92), pd, depasse=False)
+    t = pr(x, 1.645, z); rx, ry = F * 0.085 / z, F * 0.11 / z
+    c.out.append(f'<ellipse cx="{t[0]:.2f}" cy="{t[1]:.2f}" rx="{rx:.2f}" ry="{ry:.2f}" fill="{FOND}" stroke="{GRIS}" stroke-width="0.3" stroke-opacity="0.9"/>')
+
+
 def premier_plan(dz):
-    c = dz.c; r = dz.r
-    # le fil tendu au-dessus de la placette
-    a, b = pr(XL, 5.75, Z_RUE), pr(4.3, 5.05, 10.9)
-    m = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 3)
-    c.out.append(f'<path d="M{a[0]:.2f},{a[1]:.2f} Q{m[0]:.2f},{m[1]:.2f} {b[0]:.2f},{b[1]:.2f}" fill="none" stroke="{GRIS}" stroke-width="0.25" stroke-opacity="0.8"/>')
+    for x, z, sens in sorted(PASSANTS, key=lambda p: -p[1]):
+        passant(dz, x, z, sens)
 
 
 def bord(p):
@@ -297,9 +316,15 @@ def construction():
     k.texte(p[0] - 2, p[1] - 9.5, "la porte bleue, à 20 m :", 3.0, CON, "end")
     k.texte(p[0] - 2, p[1] - 6, "petite, juste sous la LH", 3.0, CON, "end")
     k.trait((p[0] - 1.6, p[1] - 6.6), (p[0] + 0.5, p[1] + 0.5), "construction", CON, 0.9, depasse=False)
-    q = pr(XR, 2.0, 15)
-    k.texte(q[0] + 2.5, q[1] - 3, "les murs de la ruelle", 3.0, CON)
-    k.texte(q[0] + 2.5, q[1] + 0.6, "fuient vers le PF", 3.0, CON)
+    x, z, _ = PASSANTS[0]
+    t = pr(x, 1.75, z)
+    k.trait((t[0] + 2.2, t[1] - 1.2), (300, 66), "construction", CON, 0.9, depasse=False)
+    for i, l in enumerate(["les passants DEBOUT (1,75 m) : leur tête dépasse la LH,",
+                           "la LH leur passe à la poitrine → c'est la preuve que tu es assis"]):
+        k.texte(301, 60 + i*3.8, l, 3.1, CON)
+    q = pr(XR, 4.4, 11.6)
+    k.texte(q[0] + 3, q[1] - 3, "les murs de la ruelle", 3.0, CON)
+    k.texte(q[0] + 3, q[1] + 0.6, "fuient vers le PF", 3.0, CON)
     q = pr(4.2, 2.9, Z_RUE)
     k.texte(q[0] + 2, q[1] - 2, "mur de face : vraie forme,", 3.0, CON)
     k.texte(q[0] + 2, q[1] + 1.6, "horizontales horizontales", 3.0, CON)
@@ -323,18 +348,18 @@ def textes():
     t = Crayon(4)
     t.texte(FX0, 14, "La ruelle à la porte bleue · vue assise", 7.2, "#1f1f1f")
     t.texte(FX0, 22.5, "perspective frontale · 1 point de fuite · assis face à la porte, un peu à droite, à 20 m", 4.0, "#555")
-    etapes = ["1  le cadre, la LH à 16 cm du haut (1,20 m : les yeux, assis), le PF au milieu",
+    etapes = ["1  le cadre, la LH au milieu (regard droit devant), le PF au centre, yeux à 1,20 m",
               "2  la porte bleue et le mur du fond : de face, petits, juste sous la LH",
               "3  les murs de la ruelle : pieds et hauts sur des fuyantes vers le PF",
               "4  le mur au portail (de face) et le mur à l'arc (il fuit vers le PF)",
-              "5  les détails : arc, fenêtres, lanterne, panneau, portail, sacs",
+              "5  les détails, puis les passants debout : la LH leur passe à la poitrine",
               "6  les pavés : des rangées de plus en plus petites vers le PF"]
     for i, e in enumerate(etapes):
         t.texte(FX1, 7.6 + i*3.9, e, 3.2, CON, "end")
     t.texte(FX0, 281, "en bleu : la construction (LH, LT, PF, fuyantes) · en gris : le croquis", 3.2, "#666", halo=False)
     t.texte(FX0, 286.5, "carreaux bleus de 3 cm, partant du PF, pour reporter le dessin", 3.2, "#666", halo=False)
     t.texte(FX1, 281, "dessiné depuis ta place, pas depuis le téléphone : champ de vision de l'œil (~55°)", 3.2, "#666", "end", halo=False)
-    t.texte(FX1, 286.5, "le support en fer forgé et la treille de la photo sont au-dessus du regard : hors cadre", 3.2, "#666", "end", halo=False)
+    t.texte(FX1, 286.5, "au-dessus du regard : le haut des murs est coupé, le fil, le fer forgé et la treille sortent du cadre", 3.2, "#666", "end", halo=False)
     return "".join(t.out)
 
 
