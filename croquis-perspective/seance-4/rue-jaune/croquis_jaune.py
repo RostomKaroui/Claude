@@ -26,8 +26,37 @@ sur = k4.sur
 
 
 def base(x):
-    """pied de la façade (le sol contre le mur)"""
-    return sur(37, 817, x)
+    """pied de la façade (le sol contre le mur, au nu de la façade)"""
+    return sur(206, 813, x)
+
+
+PF2 = (-300, 706)       # point de fuite des lignes perpendiculaires à la façade (embrasures, saillies) : hors du cadre, à gauche
+
+
+def vers(p, t):
+    """le point p enfoncé dans le mur (vers PF2) de la fraction t"""
+    return (p[0] + t * (PF2[0] - p[0]), p[1] + t * (PF2[1] - p[1]))
+
+
+def devant(p, t):
+    """le point p avancé vers la rue (à l'opposé de PF2) ; inverse de vers()"""
+    return ((p[0] - t * PF2[0]) / (1 - t), (p[1] - t * PF2[1]) / (1 - t))
+
+
+def embrasure(c, xbL, xbR, xfR, ytb, ybb, xfL=None):
+    """porte au fond d'une embrasure : la porte (le fond) va de xbL à xbR, le nu de la façade est en xfR à droite.
+    On voit le tableau de droite (éclairé) et le dessous du linteau ; le tableau de gauche est caché.
+    Renvoie la profondeur t."""
+    t = (xfR - xbR) / (xfR - PF2[0])
+    BRt, BRb = (xbR, sur(xbL, ytb, xbR)), (xbR, sur(xbL, ybb, xbR))
+    FRt, FRb = devant(BRt, t), devant(BRb, t)
+    xfL = xbL if xfL is None else xfL
+    ytf = lambda x: sur(*FRt, x)
+    fuyante(c, xfL, ytf(xfL), FRt[0], "fort")                                      # arête du linteau
+    L_(c, xfL, ytf(xfL), xfL, sur(*FRb, xfL), "fort")                              # tableau gauche (vu par la tranche)
+    L_(c, *FRt, *FRb, "fort", double=True)                                         # arête du tableau droit
+    L_(c, *FRt, *BRt, "moyen"); L_(c, *FRb, *BRb, "moyen")                         # profondeur du tableau droit
+    return t
 
 
 def paves(c, poly, y_fond, graine, pas=1.55e-4, larg=(0.075, 0.13)):
@@ -107,8 +136,9 @@ def clous(c, hi, boites, seuil=22):
     return len(pts)
 
 
-def moucharabieh(c, x1, x2, yt, yb, n=4, sorte="leger"):
-    """grille en bois tourné : cadre + petits losanges, les rangs suivent les fuyantes"""
+def moucharabieh(c, x1, x2, yt, yb, n=4, sorte="leger", saillie=0.013):
+    """moucharabieh : un caisson en bois qui avance sur la rue. La face avant (x1..x2, yt..yb) porte la grille en losanges ;
+    on voit aussi son côté gauche et son dessous, jusqu'au mur (vers PF2)."""
     quad_mur(c, x1, x2, yt, yb, "moyen")
     quad_mur(c, x1 + 2.5, x2 - 2.5, yt + 3, yb - 3, "fin", depasse=False)
     pas = (x2 - x1 - 5) / n; y = yt + 3 + pas * 0.6
@@ -117,6 +147,33 @@ def moucharabieh(c, x1, x2, yt, yb, n=4, sorte="leger"):
             cx = x1 + 2.5 + pas * (i + 0.5); cy = sur(x1, y, cx); d = pas * 0.38
             c.brisee([(cx, cy - d), (cx + d, cy), (cx, cy + d), (cx - d, cy)], sorte, ferme=True)
         y += pas * 0.95
+    TL, BL, BR = (x1, yt), (x1, yb), (x2, sur(x1, yb, x2))                        # le caisson jusqu'au mur
+    mTL, mBL, mBR = vers(TL, saillie), vers(BL, saillie), vers(BR, saillie)
+    L_(c, *TL, *mTL, "fin"); L_(c, *BL, *mBL, "moyen"); L_(c, *BR, *mBR, "fin")
+    L_(c, *mTL, *mBL, "fin"); L_(c, *mBL, *mBR, "fin")
+
+
+def fenetre(c, x1, x2, yt, yb, prof=0.012):
+    """fenêtre haute à barreaux : grille au nu du mur, vitrage au fond (tableau droit et linteau visibles), appui en saillie"""
+    quad_mur(c, x1, x2, yt, yb, "moyen")
+    for x in np.linspace(x1 + 4, x2 - 4, 3): L_(c, x, sur(x1, yt, x) + 3, x, sur(x1, yb, x) - 3, "fin", depasse=False)
+    for y in (yt + 46, yt + 96): fuyante(c, x1 + 1, y, x2 - 1, "leger", depasse=False)
+    TR, BR = (x2, sur(x1, yt, x2)), (x2, sur(x1, yb, x2))
+    bTR, bBR = vers(TR, prof), vers(BR, prof)
+    L_(c, *TR, *bTR, "fin"); L_(c, *bTR, *bBR, "leger"); L_(c, *BR, *bBR, "fin")
+    fuyante(c, x1, sur(*bTR, x1), bTR[0], "leger", depasse=False)
+    a1, a2 = (x1 - 4, sur(x1, yb, x1 - 4) + 4), (x2 + 4, sur(x1, yb, x2 + 4) + 4)  # appui : dalle qui avance
+    f1, f2 = devant(a1, 0.02), devant(a2, 0.02)
+    L_(c, *a1, *a2, "fin"); L_(c, *f1, *f2, "moyen"); L_(c, f1[0], f1[1] + 4, f2[0], f2[1] + 4, "fin")
+    L_(c, *a1, *f1, "fin"); L_(c, *f1, f1[0], f1[1] + 4, "fin"); L_(c, *f2, f2[0], f2[1] + 4, "fin")
+
+
+def seuil(c, x1, x2, s=0.025, h=5):
+    """marche de seuil en pierre devant une porte : elle avance sur la rue"""
+    b1, b2 = (x1, base(x1)), (x2, base(x2))
+    f1, f2 = devant(b1, s), devant(b2, s)
+    L_(c, *f1, *f2, "moyen"); L_(c, f1[0], f1[1] + h, f2[0], f2[1] + h, "fin")
+    L_(c, *b1, *f1, "fin"); L_(c, *f1, f1[0], f1[1] + h, "fin"); L_(c, *f2, f2[0], f2[1] + h, "fin")
 
 
 def jaune():
@@ -124,73 +181,97 @@ def jaune():
     c = Crayon(61)
     A = (497, 540); B = (497, base(497)); XP = 41
 
-    # --- la façade (fuit doucement vers la droite)
+    # --- la façade (fuit doucement vers la droite) et son soubassement
     fuyante(c, 0, base(0), 646, "fort", double=True)                               # pied de la façade
     L_(c, 646, 0, 646, base(646), "fort", double=True)                             # bout de la façade, sur le ciel
-    L_(c, 0, base(0) - 30, 37, base(37) - 30, "leger", depasse=False)              # soubassement
+    for x1, x2 in ((0, 37), (206, 269), (373, 408), (485, 500), (556, 575), (624, 646)):
+        fuyante(c, x1, base(x1) - 14, x2, "leger", depasse=False)
 
-    # porte 1 (grande porte cloutée, à deux battants)
-    quad_mur(c, 37, 170, 470, 817, "fort")
+    # porte 1 : grande porte cloutée à deux battants, au fond d'une embrasure profonde
+    embrasure(c, 37, 170, 206, 470, 817)
+    quad_mur(c, 37, 170, 470, 817, "moyen")
     quad_mur(c, 41, 166, 476, 811, "fin", depasse=False)
     L_(c, 86, sur(37, 476, 86), 86, sur(37, 811, 86), "moyen")                     # battants
     L_(c, 107, sur(37, 476, 107), 107, sur(37, 811, 107), "moyen")
     L_(c, 160, sur(37, 476, 160), 160, sur(37, 811, 160), "fin")
     for y in (556, 700): fuyante(c, 41, y, 86, "leger", depasse=False); fuyante(c, 107, y, 160, "leger", depasse=False)
-    fuyante(c, 30, 820, 178, "moyen"); L_(c, 30, 820, 30, 828, "fin"); fuyante(c, 30, 828, 178, "fin")   # seuil
+    fuyante(c, 37, 817, 170, "moyen")                                              # le bas de la porte, au fond
     rangees(c, 41, 86, 476, 811, (44, 83), (480, 556, 700, 806))
     rangees(c, 107, 166, 476, 811, (110, 157), (480, 556, 700, 806))
     n1 = clous(c, hi, [(115, 720, 152, 800)])
+    seuil(c, 30, 206)
 
-    # porte 2 (cloutée, étoile de clous, applique)
-    quad_mur(c, 269, 336, 533, base(269), "fort")
-    quad_mur(c, 273, 332, 538, base(273) - 4, "fin", depasse=False)
-    L_(c, 287, sur(269, 538, 287), 287, sur(269, base(269) - 4, 287), "leger", depasse=False)
+    # porte 2 : cloutée, étoile de clous, applique ; embrasure moins profonde
+    embrasure(c, 269, 336, 373, 533, 797)
+    quad_mur(c, 269, 336, 533, 797, "moyen")
+    quad_mur(c, 273, 332, 538, 793, "fin", depasse=False)
+    L_(c, 287, sur(269, 538, 287), 287, sur(269, 793, 287), "leger", depasse=False)
     fuyante(c, 273, 572, 332, "fin", depasse=False); fuyante(c, 273, 712, 332, "fin", depasse=False)
     c.cercle(311, 579, 6, "fin"); L_(c, 311, 566, 311, 573, "fin", depasse=False)       # anneau / applique
     c.courbe([(305, 586), (311, 592), (317, 586)], "leger")
-    fuyante(c, 262, base(262) + 2, 345, "moyen"); fuyante(c, 262, base(262) + 9, 345, "fin")   # seuil
-    rangees(c, 273, 332, 538, base(273) - 4, (276, 287, 329), (541, 572, 712, base(273) - 7))
+    rangees(c, 273, 332, 538, 793, (276, 287, 329), (541, 572, 712, 790))
     etoile(c, 309, sur(269, 650, 309), 13, 36)
-    n2 = clous(c, hi, [(292, 720, 326, base(300) - 10)])
+    n2 = clous(c, hi, [(292, 720, 326, 785)])
+    seuil(c, 262, 373)
 
-    # le renfoncement, la porte 3 et le linteau
-    L_(c, 435, 520, 435, base(435), "moyen")                                       # pilier du renfoncement
-    L_(c, A[0], A[1], A[0], B[1], "fort", double=True)                             # l'arête AB (tableau de la porte 3)
+    # le porche profond : linteau, plafond, mur de droite éclairé (avec l'interphone), porte jaune au fond
+    tp = (485 - 451) / (485 - PF2[0])
+    FRt, FRb = (485, 506), (485, base(485))
+    BRt, BRb = vers(FRt, tp), vers(FRb, tp)
+    fuyante(c, 408, sur(*FRt, 408), 485, "fort")                                    # arête du linteau
+    L_(c, 408, sur(*FRt, 408), 408, base(408), "fort", double=True)                # tableau gauche
+    L_(c, *FRt, *FRb, "fort", double=True)
+    L_(c, *FRt, *BRt, "moyen"); L_(c, *FRb, *BRb, "moyen"); L_(c, *BRt, *BRb, "moyen")
+    fuyante(c, 408, sur(*BRt, 408), BRt[0], "fin")                                 # le fond du plafond
+    fuyante(c, 408, sur(*BRb, 408), BRb[0], "fin")                                 # le fond du sol
+    quad_mur(c, 440, 454, sur(*BRt, 440) + 4, sur(*BRb, 440), "moyen")            # porte jaune du fond
+    rangees(c, 440, 454, sur(*BRt, 440) + 4, sur(*BRb, 440), (442, 452), (600, 680))
+    m = [(461, 605), (471, 609), (471, 626), (461, 622)]                          # interphone, sur le mur du porche
+    c.brisee(m, "fin", ferme=True)
+
+    # porte 3 : jaune et cloutée, sous un linteau en saillie ; le pilier entre le porche et la porte 3 porte l'arête AB
+    L_(c, A[0], A[1], A[0], B[1], "fort", double=True)                             # l'arête AB
     quad_mur(c, 497, 556, 538, 553, "moyen")                                       # linteau
-    quad_mur(c, 500, 526, 556, base(500) - 12, "fort")                             # porte 3 (jaune, cloutée)
-    L_(c, 513, sur(500, 556, 513), 513, sur(500, base(500) - 12, 513), "leger", depasse=False)
-    rangees(c, 500, 526, 556, base(500) - 12, (503, 523), (559, 650, base(500) - 15))
+    l1, l2 = vers((497, 553), 0.02), vers((556, sur(497, 553, 556)), 0.02)
+    L_(c, 497, 553, *l1, "fin"); L_(c, *l1, *l2, "leger", depasse=False)
+    embrasure(c, 500, 526, 556, 556, 765, xfL=500)
+    quad_mur(c, 500, 526, 556, 765, "moyen")
+    L_(c, 513, sur(500, 556, 513), 513, sur(500, 765, 513), "leger", depasse=False)
+    rangees(c, 500, 526, 556, 765, (503, 523), (559, 650, 762))
     etoile(c, 513, sur(500, 650, 513), 7, 30); n3 = 0
-    L_(c, 553, sur(497, 553, 553), 553, base(553), "moyen")
-    rect(c, 447, 574, 459, 586, "fin")                                             # boîte aux lettres
-    # porte 4 (ouverte) sous le second moucharabieh
-    L_(c, 575, sur(575, 560, 575), 575, base(575), "moyen"); L_(c, 624, sur(575, 560, 624), 624, base(624), "moyen")
-    quad_mur(c, 572, 627, 556, 565, "moyen")
-    L_(c, 582, sur(575, 568, 582), 582, base(582) - 4, "leger", depasse=False)
 
-    # moucharabiehs et fenêtres à grille
+    # porte 4 (ouverte, l'intérieur dans l'ombre) sous le second moucharabieh
+    quad_mur(c, 572, 627, 556, 565, "moyen")
+    L_(c, 575, 565, 575, base(575), "fort"); L_(c, 624, sur(575, 565, 624), 624, base(624), "fort")
+    q1, q2 = vers((624, sur(575, 565, 624)), 0.03), vers((624, base(624)), 0.03)
+    L_(c, 624, sur(575, 565, 624), *q1, "moyen"); L_(c, 624, base(624), *q2, "moyen"); L_(c, *q1, *q2, "fin")
+    fuyante(c, 575, sur(*q1, 575), q1[0], "fin")
+
+    # moucharabiehs (caissons en saillie) et fenêtres hautes à barreaux (en retrait)
     moucharabieh(c, 496, 559, 464, 518, 6)
     moucharabieh(c, 579, 626, 480, 533, 5)
     moucharabieh(c, 586, 621, 252, 392, 4)
     moucharabieh(c, 592, 624, 25, 108, 4)
-    for x1, x2 in ((415, 434), (458, 478)):                                         # fenêtres hautes à barreaux
-        quad_mur(c, x1, x2, 254, 398, "moyen")
-        for x in np.linspace(x1 + 4, x2 - 4, 3): L_(c, x, sur(x1, 254, x) + 3, x, sur(x1, 398, x) - 3, "fin", depasse=False)
-        for y in (300, 350): fuyante(c, x1 + 1, y, x2 - 1, "leger", depasse=False)
-        fuyante(c, x1 - 4, 404, x2 + 4, "fin")                                      # appui
-
     moucharabieh(c, 516, 548, 256, 296, 4)
     moucharabieh(c, 462, 492, 17, 47, 3)
-    L_(c, 368, 270, 368, base(368), "moyen")                                       # avant-corps éclairé
+    fenetre(c, 415, 434, 254, 398); fenetre(c, 458, 478, 256, 398)
     L_(c, 441, 0, 441, 120, "fin")                                                 # retrait de la façade, en haut
 
-    # la lanterne sur sa potence
-    L_(c, 575, 240, 587, 240, "moyen"); L_(c, 575, 240, 581, 233, "fin"); L_(c, 587, 240, 581, 233, "fin")
-    L_(c, 563, 250, 599, 250, "moyen"); L_(c, 575, 240, 563, 250, "fin"); L_(c, 587, 240, 599, 250, "fin")
-    L_(c, 563, 250, 570, 292, "moyen"); L_(c, 599, 250, 592, 292, "moyen"); L_(c, 570, 292, 592, 292, "moyen")
-    L_(c, 581, 250, 581, 292, "leger", depasse=False); L_(c, 566, 270, 596, 270, "leger", depasse=False)
-    L_(c, 581, 292, 581, 330, "fin"); c.courbe([(581, 305), (592, 314), (598, 330)], "fin")
-    L_(c, 576, 330, 600, 334, "fin")
+    # la lanterne : une lanterne carrée (face avant + côté gauche), toit en pointe, sur sa potence
+    fa = [(566, 250), (591, 252)]                                                  # haut de la face avant
+    ga = vers(fa[0], 0.006)                                                        # coin arrière gauche
+    fb = [(571, 292), (587, 293)]; gb = vers(fb[0], 0.005)
+    sommet = (575, 230)
+    sil = [sommet, fa[1], fb[1], fb[0], gb, ga]                                    # la lanterne cache la grille derrière
+    c.out.append('<polygon points="' + " ".join(f"{P(*p)[0]:.2f},{P(*p)[1]:.2f}" for p in sil) + '" fill="#fdfcf8"/>')
+    L_(c, *fa[0], *fa[1], "moyen"); L_(c, *fa[0], *ga, "moyen")
+    L_(c, *fa[0], *fb[0], "moyen"); L_(c, *fa[1], *fb[1], "moyen"); L_(c, *ga, *gb, "moyen")
+    L_(c, *fb[0], *fb[1], "moyen"); L_(c, *fb[0], *gb, "moyen")
+    L_(c, (fa[0][0] + fb[0][0]) / 2, 271, (fa[1][0] + fb[1][0]) / 2, 272, "leger", depasse=False)
+    for p in (fa[0], fa[1], ga): L_(c, *sommet, *p, "fin")
+    L_(c, 575, 230, 575, 225, "fin", depasse=False)
+    L_(c, 579, 293, 579, 330, "fin"); c.courbe([(579, 305), (590, 314), (596, 330)], "fin")   # potence
+    L_(c, 572, 330, 600, 334, "fin"); L_(c, 572, 330, *vers((572, 330), 0.03), "fin")
 
     # les câbles tendus en travers
     c.courbe([(668, 152), (560, 168), (430, 186), (290, 205)], "fin")
@@ -201,12 +282,12 @@ def jaune():
     # au fond, entre la façade et le mur de droite
     L_(c, 646, 386, 668, 384, "leger"); L_(c, 646, 450, 668, 448, "leger")
 
-    # --- le mur de droite, tout proche, et sa porte jaune
+    # --- le mur de droite, tout proche : son nu, l'encadrement jaune en saillie (avec son épaisseur) et les gonds
     L_(c, 668, 0, 668, H, "fort", double=True)
-    L_(c, 699, 228, 699, H, "fort"); L_(c, 718, 222, 718, H, "moyen")
-    L_(c, 699, 228, 718, 222, "moyen")
+    L_(c, 692, 232, 692, H, "fin"); L_(c, 699, 228, 699, H, "fort"); L_(c, 718, 222, 718, H, "moyen")
+    L_(c, 692, 232, 699, 228, "fin"); L_(c, 699, 228, 718, 222, "moyen")
     for ya, yb in ((231, 262), (536, 555), (705, 720), (795, 825)):                  # gonds
-        rect(c, 696, ya, 711, yb, "fin")
+        rect(c, 699, ya, 711, yb, "fin"); L_(c, 699, ya, 695, ya + 2, "leger", depasse=False); L_(c, 699, yb, 695, yb + 2, "leger", depasse=False)
     for x in (674, 681, 688): c.courbe([(x, 0), (x + 3, 90), (x - 2, 180), (x + 2, 260)], "leger")   # câbles sur le mur
 
     # --- le sol en pavés
