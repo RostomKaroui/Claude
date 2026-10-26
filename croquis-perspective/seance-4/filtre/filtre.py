@@ -1,7 +1,7 @@
 """Filtre croquis (crayon) appliqué à la photo d'origine, sans rien changer d'autre.
 Méthode classique du « dessin au crayon » : niveaux de gris, négatif flouté, fusion en « densité couleur - »
 (color dodge), un léger renfort des contours (différence de gaussiennes) pour le trait,\net une estompe des valeurs sombres de la photo.
-Lancer : python3 filtre.py <photo> -> croquis-filtre.png"""
+Lancer : python3 filtre.py <photo> [sortie.png] -> croquis-filtre.png par défaut"""
 import sys
 import cv2
 import numpy as np
@@ -24,5 +24,6 @@ ombre = 0.8 + 0.2 * (cv2.GaussianBlur(g, (0, 0), 1.5) / 255) ** 0.8
 
 out = crayon * trait * ombre
 out = 255 * (out / 255) ** 1.3                              # un peu plus de mine, sans noircir
-cv2.imwrite("croquis-filtre.png", np.clip(out, 0, 255).astype(np.uint8))
-print("croquis-filtre.png écrit", out.shape)
+sortie = sys.argv[2] if len(sys.argv) > 2 else "croquis-filtre.png"
+cv2.imwrite(sortie, np.clip(out, 0, 255).astype(np.uint8))
+print(sortie, "écrit", out.shape)
