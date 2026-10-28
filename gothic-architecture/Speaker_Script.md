@@ -1,24 +1,24 @@
 # Gothic Architecture: speaker script (15 minutes)
 
-The same notes are inside the PowerPoint file (View > Notes, or Presenter View). Sentences in [square brackets] are stage directions, not words to say. Lines starting with NEXT are your bridge to the following slide. Replace [your name] with your name.
+The same notes are inside the PowerPoint file (View > Notes, or Presenter View). Sentences in [square brackets] are stage directions, not words to say. Lines starting with NEXT are your bridge to the following slide. Replace [your name] with your name. Every slide uses the same smooth fade, so there is nothing to time.
 
-| # | Slide | Time | Transition |
-|---|-------|------|------------|
-| 1 | Gothic Architecture | 0:40 | Curtains |
-| 2 | Why does it still give us chills? | 0:45 | Fly Through |
-| 3 | Four centuries in four chapters | 1:05 | Pan (right) |
-| 4 | Built for God: a heaven made of stone | 1:15 | Ripple |
-| 5 | From fortress-church to lantern | 0:50 | Flip |
-| 6 | Three ideas that changed everything | 1:20 | Doors (vertical) |
-| 7 | Follow the force | 1:20 | Warp |
-| 8 | Walls made of light | 1:10 | Fracture (breaking glass) |
-| 9 | Reading a cathedral | 1:10 | Prism |
-| 10 | Built by generations, not by one genius | 1:10 | Conveyor |
-| 11 | The race to the sky | 1:05 | Ferris Wheel |
-| 12 | Spread, decline and rebirth | 1:10 | Page Curl |
-| 13 | What Gothic teaches an architect | 0:50 | Curtains |
+| # | Slide | Time |
+|---|-------|------|
+| 1 | Gothic Architecture | 0:40 |
+| 2 | Why does it still give us chills? | 0:45 |
+| 3 | Four centuries in four chapters | 1:05 |
+| 4 | Built for God: a heaven made of stone | 1:15 |
+| 5 | From fortress-church to lantern | 0:50 |
+| 6 | Three ideas that changed everything | 1:20 |
+| 7 | Follow the force | 1:20 |
+| 8 | Walls made of light | 1:10 |
+| 9 | Reading a cathedral | 1:10 |
+| 10 | Built by generations, not by one genius | 1:10 |
+| 11 | The race to the sky | 1:05 |
+| 12 | Spread, decline and rebirth | 1:10 |
+| 13 | What Gothic teaches an architect | 0:50 |
 
-Total speaking time: about 14 minutes at a calm pace, so you finish inside 15 minutes even with pauses for the transitions.
+Total speaking time: about 14 minutes at a calm pace, so you finish inside 15 minutes.
 
 Pronunciation help: Chartres = "SHAR-truh", Suger = "soo-ZHAY", clerestory = "CLEAR-story", Viollet-le-Duc = "vee-oh-LAY luh DUKE".
 
@@ -26,11 +26,11 @@ Pronunciation help: Chartres = "SHAR-truh", Suger = "soo-ZHAY", clerestory = "CL
 
 ## Slide 1: Gothic Architecture
 
-**Aim for 0:40** · Transition: Curtains. Press play, wait for the curtains to open, then speak.
+**Aim for 0:40**
 
 Good morning everyone, my name is [your name]. Today I will take you on a 15-minute journey through one of the most powerful ideas in architecture: Gothic architecture.
 
-Imagine you are a farmer in the year 1200. You live in a small, dark house with one tiny window. One Sunday you walk into a cathedral. The walls seem to disappear. Coloured light falls on the floor. The ceiling is thirty metres above your head. For you, it feels like walking into heaven. That is exactly what the builders wanted.
+[Point to the picture: Cologne Cathedral at dusk.] Imagine you are a farmer in the year 1200. You live in a small, dark house with one tiny window. One Sunday you walk into a cathedral. The walls seem to disappear. Coloured light falls on the floor. The ceiling is thirty metres above your head. For you, it feels like walking into heaven. That is exactly what the builders wanted.
 
 I will answer four questions: where does Gothic come from, why was it built, how does it stand up, and what did it leave us?
 
@@ -38,7 +38,7 @@ I will answer four questions: where does Gothic come from, why was it built, how
 
 ## Slide 2: Why does it still give us chills?
 
-**Aim for 0:45** · Transition: Fly Through. Like flying into the cathedral.
+**Aim for 0:45**
 
 Before the details, four numbers. [Point to each card.]
 
@@ -58,7 +58,7 @@ NEXT: So, when did all this happen?
 
 ## Slide 3: Four centuries in four chapters
 
-**Aim for 1:05** · Transition: Pan (right). A slide through time, left to right.
+**Aim for 1:05**
 
 Gothic was not invented in one day. Historians divide it into four chapters. [Move your hand from left to right.]
 
@@ -78,7 +78,7 @@ NEXT: But why spend so much money on these buildings?
 
 ## Slide 4: Built for God: a heaven made of stone
 
-**Aim for 1:15** · Transition: Ripple. Light spreading from the centre. Pause one second.
+**Aim for 1:15**
 
 To understand Gothic, we must understand medieval faith. In the 12th century, Christianity organised everything. Three ideas.
 
@@ -96,7 +96,7 @@ NEXT: Faith explains why. What made it possible?
 
 ## Slide 5: From fortress-church to lantern
 
-**Aim for 0:50** · Transition: Flip. Turning the page from old to new.
+**Aim for 0:50**
 
 Go quickly, row by row.
 
@@ -112,7 +112,7 @@ NEXT: This skeleton is made of three inventions.
 
 ## Slide 6: Three ideas that changed everything
 
-**Aim for 1:20** · Transition: Doors (vertical). Cathedral doors opening.
+**Aim for 1:20**
 
 Three inventions. [Point to each card.]
 
@@ -130,7 +130,7 @@ NEXT: Let's see them working together.
 
 ## Slide 7: Follow the force
 
-**Aim for 1:20** · Transition: Warp. Zooming into the structure.
+**Aim for 1:20**
 
 This is the technical heart of the talk, so slow down.
 
@@ -156,7 +156,7 @@ NEXT: And what does this structure give us? Light.
 
 ## Slide 8: Walls made of light
 
-**Aim for 1:10** · Transition: Fracture (breaking glass). Looks like stained glass breaking, then the light appears.
+**Aim for 1:10**
 
 Remember Suger: light is divine. All this structure exists to give us this: walls made of light.
 
@@ -176,7 +176,7 @@ NEXT: Now let's walk inside and learn to read a cathedral.
 
 ## Slide 9: Reading a cathedral
 
-**Aim for 1:10** · Transition: Prism. A 3D turn: now we walk inside.
+**Aim for 1:10**
 
 Use your hand to "walk" on the plan.
 
@@ -192,7 +192,7 @@ NEXT: Good. But who built all this, and how?
 
 ## Slide 10: Built by generations, not by one genius
 
-**Aim for 1:10** · Transition: Conveyor. Like stones carried to the site.
+**Aim for 1:10**
 
 How do you build this with no computer, no engine and no calculation of forces? Five steps.
 
@@ -204,7 +204,7 @@ Three, carving. Masons cut each stone on the ground and marked it with a persona
 
 Four, lifting. Treadwheel cranes, like giant hamster wheels with workers walking inside. Arches and vaults were built on wooden frames, called centering, removed once the keystone was in place.
 
-Five, time. Notre-Dame took about 180 years. Cologne took 632. A mason who started a cathedral knew he would never see it finished. Gothic is architecture as a collective act, across generations.
+Five, time. Notre-Dame took about 180 years. Cologne, the cathedral you see on the right, took 632. A mason who started a cathedral knew he would never see it finished. Gothic is architecture as a collective act, across generations.
 
 NEXT: And sometimes the ambition went too far.
 
@@ -212,7 +212,7 @@ NEXT: And sometimes the ambition went too far.
 
 ## Slide 11: The race to the sky
 
-**Aim for 1:05** · Transition: Ferris Wheel. A wheel, like a rose window turning.
+**Aim for 1:05**
 
 Here is the race to the sky. The chart shows the height of the main vault above the floor. Notre-Dame: 33 metres. Chartres: 37. Reims: 38. Amiens: 42. Beauvais: 48. In about 60 years, the height grew by almost half. Bishops wanted to beat each other.
 
@@ -228,9 +228,9 @@ NEXT: What happened to Gothic after the Middle Ages?
 
 ## Slide 12: Spread, decline and rebirth
 
-**Aim for 1:10** · Transition: Page Curl. History pages turning.
+**Aim for 1:10**
 
-The story has three acts: spread, decline and rebirth.
+The story has three acts: spread, decline and rebirth. [Point to the three pictures: Cologne, a Renaissance dome, and the clock tower of the Houses of Parliament.]
 
 Spread. From France, Gothic travels across Europe, and each country adds its own accent. England: Salisbury and Westminster Abbey. Germany: Cologne, with its huge twin towers. Italy: the Duomo of Milan, in white marble. Spain: Seville, the largest Gothic cathedral in the world.
 
@@ -244,7 +244,7 @@ NEXT: So what do we keep from Gothic?
 
 ## Slide 13: What Gothic teaches an architect
 
-**Aim for 0:50** · Transition: Curtains. The curtains close, like the opening. Let it settle before you speak.
+**Aim for 0:50**
 
 Slow and confident.
 
