@@ -14,7 +14,8 @@ const { chromium } = require('playwright'); const path = require('path');
   await p.goto(url); await p.waitForTimeout(2500);
   await p.screenshot({ path: path.join(out, 'apercu-page.png'), fullPage: true });
   await (await p.$('#scene')).screenshot({ path: path.join(out, 'apercu-3d.png') });
-  for (const n of [2, 4, 7]) { await p.evaluate(n => allerEtape(n), n); await p.waitForTimeout(1200); await (await p.$('.atelier')).screenshot({ path: path.join(out, `apercu-etape-${n}.png`) }); }
+  await p.click('#v-coupe'); await p.waitForTimeout(1500); await (await p.$('#scene')).screenshot({ path: path.join(out, 'apercu-coupe.png') }); await p.click('#v-3d'); await p.waitForTimeout(800);
+  for (const n of [1, 2, 4, 7]) { await p.evaluate(n => allerEtape(n), n); await p.waitForTimeout(1200); await (await p.$('.atelier')).screenshot({ path: path.join(out, `apercu-etape-${n}.png`) }); }
   const q = await ctx.newPage();
   await q.goto(url + '#gabarit'); await q.waitForTimeout(800);
   await q.pdf({ path: path.resolve(__dirname, 'gabarits-1-1.pdf'), width: '210mm', height: '297mm', printBackground: true, margin: { top: 0, bottom: 0, left: 0, right: 0 } });

@@ -128,6 +128,7 @@ body.imprimer #impression { display: block; }
         <button id="v-sud" type="button">Façade 2 (sud)</button>
         <button id="v-est" type="button">Façade 1 (porche)</button>
         <button id="v-dessus" type="button">Plan</button>
+        <button id="v-coupe" type="button">Coupe AA</button>
         <span class="sep"></span>
         <button id="menuis" type="button" aria-pressed="true">Menuiseries</button>
         <button id="toit" type="button" aria-pressed="true">Dalle de toit</button>
@@ -167,6 +168,7 @@ body.imprimer #impression { display: block; }
       <div><b>Un carré et son quart</b>La grande pièce est un carré A × A. Le porche fait a = A/4 de large, sur toute la profondeur : c'est la note « 4a = A » de ton plan. Le mur fait l'épaisseur e.</div>
       <div><b>Presque un cube</b>Les murs de la grande pièce sont aussi hauts que le pavillon est profond (A + 2e) : la façade 3 est un carré. Le porche est un peu plus bas, d'où le décroché des façades 2 et 4.</div>
       <div><b>Poteaux et poutres</b>Sur le plan, les angles sont des poteaux en L ; entre eux, les traits fins sont des vitrages. Dans la coupe, des poutres portent la dalle. La maquette fait des murs pleins, mais les grandes baies montrent cette ossature.</div>
+      <div><b>Une marche au sol</b>Dans la coupe AA, le sol fait une marche au nu extérieur des murs : le pavillon est posé sur une dalle surélevée, au-dessus du sol de la rue. Les deux niveaux ont l'épaisseur d'un mur.</div>
       <div><b>Un toit en creux</b>Dans la coupe AA, le haut des murs dépasse la dalle : c'est l'acrotère, un petit muret qui fait le tour du toit. La dalle, en double épaisseur comme les murs, est posée entre les murs, et son dessus arrive au niveau du haut du porche.</div>
       <div><b>Un porche à ciel ouvert</b>La coupe AA ne montre pas de dalle au-dessus du porche : on y entre par l'arc de la façade 1, à l'air libre, avant de passer la porte double de la grande pièce.</div>
     </div>
@@ -184,7 +186,8 @@ const R5 = v => Math.round(v * 2) / 2;
 const f = v => (Math.round(v * 20) / 200).toLocaleString("fr-FR");   // mm -> texte en cm (au demi-mm)
 const fx = v => (Math.round(v * 100) / 100).toLocaleString("fr-FR");
 function geometrie(A, t) {
-  const e = 2 * t, m = 10;                          // mur = 2 couches de carton ; le socle déborde de 1 cm
+  const e = 2 * t;                                  // mur = 2 couches de carton
+  const m = R5(0.27 * A);                           // le socle (sol extérieur) déborde de la dalle, comme dans la coupe AA
   const a = R5(A / 4), Hm = A + 2 * e;
   const p = R5(0.11 * A);                          // acrotère : le haut des murs dépasse la dalle de toit (coupe AA)
   const Ha = Hm - p;                                 // le porche s'arrête au niveau du dessus de la dalle
@@ -202,9 +205,9 @@ function geometrie(A, t) {
   const ouvCloison = [rect(A / 2, porte, 0, hp), rect(A / 2 - porte / 2 - e - imposte / 2, imposte, 0, hp), rect(A / 2 + porte / 2 + e + imposte / 2, imposte, 0, hp)];
   const longue = [[0, 0], [L, 0], [L, Ha], [Lm, Ha], [Lm, Hm], [0, Hm]];
   const pieces = [
-    { id: "socle", num: "", nom: "Socle", role: "couche basse du sol, déborde de 1 cm tout autour", w: L + 2 * m, h: D + 2 * m, plat: true, nb: 1,
+    { id: "socle", num: "", nom: "Socle", role: "couche basse du sol (le sol de la rue), déborde tout autour : 2 couches", w: L + 2 * m, h: D + 2 * m, plat: true, nb: 2,
       contour: [[0, 0], [L + 2 * m, 0], [L + 2 * m, D + 2 * m], [0, D + 2 * m]], trous: [], sens: ["ouest", "est"] },
-    { id: "plancher", num: "", nom: "Dalle de sol", role: "couche haute du sol, les murs se collent dessus", w: L, h: D, plat: true, nb: 1,
+    { id: "plancher", num: "", nom: "Dalle de sol", role: "couche haute du sol, sous le pavillon : 2 couches, la marche", w: L, h: D, plat: true, nb: 2,
       contour: [[0, 0], [L, 0], [L, D], [0, D]], trous: [], sens: ["ouest", "est"] },
     { id: "sud", num: "2", nom: "Façade sud", nb: 2, role: "grande baie en arc + fente du porche", w: L, h: Hm,
       contour: longue, trous: [fenS, fente], sens: ["ouest", "est"] },
@@ -269,10 +272,13 @@ const ETAPES = [
     astuce: "Pour un arc : coupe-le en plusieurs petits traits courbes, sans forcer. Repasse 2 ou 3 fois plutôt qu'un seul coup.",
     cotes: g => `A = ${f(g.A)} cm · a = A/4 = ${f(g.a)} cm · carton ${f(g.t)} cm · mur = 2 couches = ${f(g.e)} cm` },
   { titre: "Le sol en double épaisseur", pieces: ["socle", "plancher"],
-    texte: g => `<p>Le sol a <b>2 couches</b>, comme dans la coupe AA. En bas, le <b>socle</b> : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm. Dessus, la <b>dalle de sol</b> : ${f(g.L)} × ${f(g.D)} cm, collée au centre, avec ${f(g.m)} cm de socle visible tout autour. Tous les murs sont collés <b>sur la dalle</b>, au ras de ses bords.</p>
+    texte: g => `<p>Dans la coupe AA, le sol fait <b>une marche</b> : le pavillon est posé sur une dalle surélevée, plus haute que le sol de la rue. La marche tombe pile au nu extérieur des murs, et chaque niveau est aussi épais qu'un mur (2 couches de carton).</p>
+      <ul><li>En bas, le <b>socle</b> (le sol de la rue) : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm, en <b>2 couches</b>.</li>
+      <li>Dessus, la <b>dalle de sol</b> : ${f(g.L)} × ${f(g.D)} cm, en <b>2 couches</b>, collée au centre du socle, avec ${f(g.m)} cm de socle visible tout autour. Elle fait la marche de ${f(g.e)} cm.</li>
+      <li>Tous les murs sont collés <b>sur la dalle</b>, au ras de ses bords : leur face extérieure tombe juste au bord de la marche.</li></ul>
       <ul><li>Au crayon, trace dessus l'emplacement des murs : une bande de ${f(g.e)} cm le long de chaque bord, et la cloison à ${f(g.e + g.A)} cm du bord ouest.</li></ul>`,
     astuce: "Ces traits au crayon te servent de repère pour poser chaque mur bien droit.",
-    cotes: g => `Socle : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm · dalle de sol : ${f(g.L)} × ${f(g.D)} cm · sol total : ${f(2 * g.t)} cm d'épaisseur` },
+    cotes: g => `Socle : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm × 2 couches · dalle de sol : ${f(g.L)} × ${f(g.D)} cm × 2 couches · marche : ${f(g.e)} cm · sol total : ${f(2 * g.e)} cm` },
   { titre: "La façade sud (façade 2)", pieces: ["sud"],
     texte: g => `<p>Colle ses 2 couches l'une sur l'autre, bien alignées. Puis colle la façade sud <b>debout sur le bord sud</b> de la dalle de sol, sa face extérieure au ras du bord. La grande baie en arc est côté <b>ouest</b>, la fente et la partie basse côté <b>est</b> (le porche).</p>`,
     astuce: "Pour coller 2 couches : colle en fine couche, aligne les ouvertures, et laisse sécher sous un livre avant de les découper au propre. Tiens ensuite le mur avec une équerre ou un cube de gomme pendant 2 minutes, le temps que la colle prenne.",
@@ -306,7 +312,7 @@ const ETAPES = [
       <li>Glisse la dalle par le haut jusqu'au trait et colle-la sur ses 4 bords.</li>
       <li>Le dessus de la dalle arrive au niveau du haut des murs du porche. Le porche reste <b>à ciel ouvert</b>.</li></ul>`,
     astuce: "Pour la tenir au bon niveau pendant le séchage, colle d'abord sous le trait 4 petites cales de carton, une par mur.",
-    cotes: g => `Dalle ${f(g.A)} × ${f(g.A)} cm × 2 couches · dessous à ${f(g.zb)} cm du bas des murs · acrotère ${f(g.p)} cm · dessus à ${f(g.e + g.Hm - g.p)} cm de la table`,
+    cotes: g => `Dalle ${f(g.A)} × ${f(g.A)} cm × 2 couches · dessous à ${f(g.zb)} cm du bas des murs · acrotère ${f(g.p)} cm · dessus à ${f(2 * g.e + g.Hm - g.p)} cm de la table`,
     colle: g => { const z = g.e + g.zb, e = g.e, A = g.A; return [[[e, e, z], [e + A, e, z]], [[e, e + A, z], [e + A, e + A, z]], [[e, e, z], [e, e + A, z]], [[e + A, e, z], [e + A, e + A, z]]]; } },
   { titre: "Les menuiseries", pieces: ["menuis"],
     texte: g => `<p>Ajoute les menuiseries des baies : la croix des arcs, les meneaux de la grande baie sud, les 3 barreaux de la fenêtre nord, la séparation de la porte double.</p>
@@ -317,7 +323,7 @@ const ETAPES = [
   { titre: "Le pavillon terminé", pieces: [],
     texte: g => `<p>On entre par l'arc de la façade 1 dans le porche, à ciel ouvert. La porte double mène à la grande pièce carrée, éclairée par trois baies : l'arc ouest, la grande baie sud et la fenêtre nord.</p>
       <ul><li>Compare ta maquette au plan, aux 4 façades et à la coupe : chaque ouverture doit tomber au même endroit.</li></ul>`,
-    cotes: g => `Socle ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm · pavillon ${f(g.L)} × ${f(g.D)} cm · hauteur ${f(g.e + g.Hm + g.t)} cm (grande pièce), ${f(g.e + g.Ha)} cm (porche) · murs ${f(g.e)} cm` },
+    cotes: g => `Socle ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm · pavillon ${f(g.L)} × ${f(g.D)} cm · hauteur ${f(2 * g.e + g.Hm)} cm (grande pièce), ${f(2 * g.e + g.Ha)} cm (porche), socle compris · murs ${f(g.e)} cm` },
 ];
 
 // ---------------------------------------------------------------- gabarits SVG
@@ -343,7 +349,7 @@ function svgPiece(p, g, opts = {}) {
   for (const m of g.menuis[p.id] || []) s.push(`<line class="g-menui" x1="${X(m[0])}" y1="${Y(m[1])}" x2="${X(m[2])}" y2="${Y(m[3])}"/>`);
   if (p.id === "socle") {
     s.push(`<rect class="g-menui" x="${X(g.m)}" y="${Y(g.m + g.D)}" width="${g.L}" height="${g.D}"/>`);
-    s.push(`<text class="g-sens" x="${X(g.m + g.L / 2)}" y="${Y(g.m + g.D / 2)}" text-anchor="middle">place de la dalle de sol</text>`);
+    s.push(`<text class="g-sens" x="${X(g.m + g.L / 2)}" y="${Y(g.m + g.D / 2)}" text-anchor="middle">place de la dalle de sol (la marche)</text>`);
   }
   // repères du plancher : emplacement des murs
   if (p.id === "plancher") {
@@ -432,7 +438,7 @@ function demarrer3D() {
   const canvas = $("scene");
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.localClippingEnabled = true; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 4 / 3, 0.1, 300);
   const controls = new THREE.OrbitControls(camera, canvas);
@@ -454,6 +460,9 @@ function demarrer3D() {
   const matCarton = new THREE.MeshStandardMaterial({ color: 0xb9b2a4, roughness: 0.93, side: THREE.DoubleSide });
   const matActif = new THREE.MeshStandardMaterial({ color: 0xd7c49a, roughness: 0.9, side: THREE.DoubleSide, emissive: 0x2a2010 });
   const matMenui = new THREE.MeshStandardMaterial({ color: 0xf4f1ea, roughness: 0.8 });
+  const matArete = new THREE.LineBasicMaterial({ color: 0x2a2620, transparent: true, opacity: 0.45 });
+  // coupe AA : on garde la moitié nord (le plan de coupe passe par l'axe, à travers la porte double)
+  const planCoupe = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
   const matColle = new THREE.MeshBasicMaterial({ color: 0x2346a8, transparent: true, opacity: 0.9, depthTest: false });
   const racine = new THREE.Group(); scene.add(racine);
   const groupeColle = new THREE.Group(); scene.add(groupeColle);
@@ -467,7 +476,7 @@ function demarrer3D() {
     for (const t of trous) sh.holes.push(new THREE.Path(t.map(([u, v]) => new THREE.Vector2(u / 10, v / 10))));
     const geo = new THREE.ExtrudeGeometry(sh, { depth: p.ep / 10, bevelEnabled: false, curveSegments: 24 });
     const m = new THREE.Mesh(geo, matCarton); m.castShadow = m.receiveShadow = true;
-    m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), new THREE.LineBasicMaterial({ color: 0x2a2620, transparent: true, opacity: 0.45 })));
+    m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), matArete));
     return m;
   }
   // place une plaque : u le long de 'du', v le long de 'dv', épaisseur vers 'dn' (vecteurs mm), origine o (mm)
@@ -485,8 +494,8 @@ function demarrer3D() {
         const gr = new THREE.Group(); gr.add(m); const m2 = plaque(p); m2.position.z = p.ep / 10; gr.add(m2); m = gr;
       }
       switch (p.id) {
-        case "socle": poser(m, [-g.m, -g.m, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
-        case "plancher": poser(m, [0, 0, g.t], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "socle": poser(m, [-g.m, -g.m, -e], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "plancher": poser(m, [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
         case "toit": poser(m, [e, e, e + g.zb], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
         case "sud": poser(m, [0, e, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
         case "nord": poser(m, [0, g.D, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
@@ -509,6 +518,7 @@ function demarrer3D() {
         barre(surMur[id](o.cx + (r - .5) * Math.cos(t0), sp + (r - .5) * Math.sin(t0)), surMur[id](o.cx + (r - .5) * Math.cos(t1), sp + (r - .5) * Math.sin(t1))); }
     }
     racine.add(menuis); objets.menuis = { m: menuis, t: 1, cible: 1 };
+    sol.position.y = -g.e / 10; grille.position.y = -g.e / 10 + 0.002;
     numeros();
     appliquer(true);
   }
@@ -524,7 +534,7 @@ function demarrer3D() {
   function numeros() {
     etiquettes.clear();
     for (const [t, x, y] of [["1", g.L + 14, g.D / 2], ["2", g.Lm / 2, -14], ["3", -14, g.D / 2], ["4", g.Lm / 2, g.D + 14], ["N", g.L + 14, g.D + 14]]) {
-      const s = pastille(t); s.position.copy(V(x, y, 0.3)); etiquettes.add(s);
+      const s = pastille(t); s.position.copy(V(x, y, 0.3 - g.e)); etiquettes.add(s);
     }
   }
   // étapes : pièces posées / à venir / en cours
@@ -555,6 +565,7 @@ function demarrer3D() {
     "v-sud": () => ({ p: new THREE.Vector3(0, 2.8, 24), c: new THREE.Vector3(0, 2.8, 0) }),
     "v-est": () => ({ p: new THREE.Vector3(24, 2.6, 0), c: new THREE.Vector3(0, 2.6, 0) }),
     "v-dessus": () => ({ p: new THREE.Vector3(0, 26, 0.01), c: new THREE.Vector3(0, 0, 0) }),
+    "v-coupe": () => ({ p: new THREE.Vector3(0, 2.6, 22), c: new THREE.Vector3(0, 2.4, 0) }),
   };
   let vue = "v-3d", anim = null;
   function allerVers(id, instant) {
@@ -564,7 +575,8 @@ function demarrer3D() {
   }
   const BOUTONS = Object.keys(VUES);
   const marquer = () => BOUTONS.forEach(id => $(id).setAttribute("aria-pressed", id === vue));
-  for (const id of BOUTONS) $(id).addEventListener("click", () => { vue = id; marquer(); allerVers(id); });
+  function couper(oui) { for (const mt of [matCarton, matActif, matMenui, matArete]) { mt.clippingPlanes = oui ? [planCoupe] : []; mt.clipShadows = oui; mt.needsUpdate = true; } }
+  for (const id of BOUTONS) $(id).addEventListener("click", () => { vue = id; marquer(); couper(id === "v-coupe"); allerVers(id); });
   controls.addEventListener("start", () => { vue = null; marquer(); });
   for (const k of ["menuis", "toit"]) $(k).addEventListener("click", () => { AFF[k] = !AFF[k]; $(k).setAttribute("aria-pressed", AFF[k]); appliquer(); });
   construire(); allerVers("v-3d", true); marquer();
