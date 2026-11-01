@@ -625,9 +625,51 @@ function pagesImpression() {
   $("impression").innerHTML = `<div class="page">${tete(1)}${ligne(["sud", "nord"])}${ligne(["ouest", "cloison"])}</div><div class="page">${tete(2)}${ligne(["est", "toit"])}${ligne(["plancher"])}</div><div class="page">${tete(3)}${ligne(["socle"])}</div>`;
 }
 
+// ---------------------------------------------------------------- planche A4 : toutes les pièces sur une feuille, à taille réelle
+// Chaque pièce une fois (« × 2 » = à découper 2 fois), vue de l'extérieur. Pas de cotes autour : on calque le contour.
+function plancheA4() {
+  const g = G, P = id => g.pieces.find(p => p.id === id), gap = 5, x0 = 10;
+  const rangs = [["sud", "nord", "ouest"], ["cloison", "est", "toit"], ["socle", "plancher"]];
+  const out = [];
+  const T = (x, y, txt, taille, opts = "") => out.push(`<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-family="Archivo, Arial, sans-serif" font-size="${taille}" fill="#111" ${opts}>${txt}</text>`);
+  // en-tête + règle de contrôle
+  T(x0, 12, "Le Pavillon au porche · toutes les pièces à taille réelle", 5.2, 'font-weight="700"');
+  T(x0, 18, `Carton ${f(g.t)} cm · « × 2 » = découpe la pièce 2 fois (2 couches collées) · pièces vues de l'extérieur · imprime à 100 %, la règle doit faire 5 cm`, 2.6);
+  out.push(`<g stroke="#111" stroke-width=".3"><line x1="${x0}" y1="23" x2="${x0 + 50}" y2="23"/>${[0, 10, 20, 30, 40, 50].map(k => `<line x1="${x0 + k}" y1="21.5" x2="${x0 + k}" y2="24.5"/>`).join("")}</g>`);
+  T(x0 + 52, 24, "5 cm", 2.6);
+  let y = 30;
+  for (const rang of rangs) {
+    let x = x0, hmax = 0;
+    for (const id of rang) {
+      const p = P(id), { contour, trous } = formes(p);
+      const X = u => x + (p.miroir ? p.w - u : u), Y = v => y + p.h - v;
+      const d = [contour, ...trous].map(l => "M" + l.map(([u, v]) => `${X(u).toFixed(2)} ${Y(v).toFixed(2)}`).join("L") + "Z").join("");
+      out.push(`<path d="${d}" fill="#ecebe6" fill-rule="evenodd" stroke="#111" stroke-width=".3"/>`);
+      for (const m of g.menuis[id] || []) out.push(`<line x1="${X(m[0])}" y1="${Y(m[1])}" x2="${X(m[2])}" y2="${Y(m[3])}" stroke="#777" stroke-width=".2" stroke-dasharray="1 .8"/>`);
+      for (const o of p.trous.filter(o => o.type === "arc")) out.push(`<circle cx="${X(o.cx)}" cy="${Y(o.top - o.w / 2)}" r=".6" fill="#2346a8"/>`);
+      const rep = { sud: [g.e, g.Lm - g.e], nord: [g.e, g.Lm - g.e], ouest: [0, g.A], cloison: [0, g.A] }[id];
+      if (rep) out.push(`<line x1="${X(rep[0])}" y1="${Y(g.zb)}" x2="${X(rep[1])}" y2="${Y(g.zb)}" stroke="#2346a8" stroke-width=".3" stroke-dasharray="2 1"/>`);
+      if (id === "socle") out.push(`<rect x="${X(g.m)}" y="${Y(g.m + g.D)}" width="${g.L}" height="${g.D}" fill="none" stroke="#777" stroke-width=".2" stroke-dasharray="1.5 1"/>`);
+      if (id === "plancher") out.push(`<line x1="${X(g.Lm - g.e)}" y1="${Y(g.e)}" x2="${X(g.Lm - g.e)}" y2="${Y(g.D - g.e)}" stroke="#777" stroke-width=".2" stroke-dasharray="1.5 1"/><line x1="${X(g.Lm)}" y1="${Y(g.e)}" x2="${X(g.Lm)}" y2="${Y(g.D - g.e)}" stroke="#777" stroke-width=".2" stroke-dasharray="1.5 1"/>`);
+      // étiquette dans la bande pleine du haut (murs) ou au centre (plaques)
+      const nom = `${p.nom}${p.num ? " (" + p.num + ")" : ""}${p.nb === 2 ? " · × 2" : ""}`, dims = `${f(p.w)} × ${f(p.h)} cm`;
+      const haut = p.plat ? y + p.h / 2 - 1 : y + 4.2, cx = x + p.w / 2;
+      T(cx, haut, nom, 3, 'font-weight="700" text-anchor="middle"');
+      T(cx, haut + 3.4, dims, 2.4, 'text-anchor="middle"');
+      if (!p.plat) T(cx, y + p.h + 3.2, `← ${p.miroir ? p.sens[1] : p.sens[0]} · bas · ${p.miroir ? p.sens[0] : p.sens[1]} →`, 2.1, 'text-anchor="middle" fill="#555"');
+      x += p.w + gap; hmax = Math.max(hmax, p.h);
+    }
+    y += hmax + gap + 4;
+  }
+  T(x0, 290, "Pointillés : menuiseries (crayon) · trait bleu : dessous de la dalle de toit, face intérieure · point bleu : pointe du compas · sur la dalle de sol : place de la cloison", 2.3, 'fill="#555"');
+  $("impression").innerHTML = `<div class="page" style="padding:0"><svg width="210mm" height="297mm" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">${out.join("")}</svg></div>`;
+  return y;
+}
+
 // ---------------------------------------------------------------- lancement
 lire(); remplirTables(); afficherFiche();
 if (location.hash === "#gabarit") { document.body.classList.add("imprimer"); pagesImpression(); }
+else if (location.hash === "#planche") { document.body.classList.add("imprimer"); plancheA4(); }
 else {
   try { scene3d = demarrer3D(); scene3d.etape(etape); }
   catch (err) { $("scene").replaceWith(Object.assign(document.createElement("div"), { className: "erreur", textContent: "La vue 3D n'a pas pu démarrer : " + err.message })); }
