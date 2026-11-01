@@ -88,6 +88,7 @@ footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
 .g-nom { fill: var(--encre); font-family: var(--f-titre); font-size: 3.4px; font-weight: 700; }
 .g-sens { fill: var(--encre-2); font-family: var(--f-tech); font-size: 2.3px; }
 .g-compas { fill: var(--trait); }
+.g-repere { stroke: var(--trait); stroke-width: .3; stroke-dasharray: 2 1; }
 @media (max-width: 860px) {
   .atelier { grid-template-columns: 1fr; }
   .vue { border-right: 0; border-bottom: 1.5px solid var(--encre); }
@@ -166,6 +167,7 @@ body.imprimer #impression { display: block; }
       <div><b>Un carré et son quart</b>La grande pièce est un carré A × A. Le porche fait a = A/4 de large, sur toute la profondeur : c'est la note « 4a = A » de ton plan. Le mur fait l'épaisseur e.</div>
       <div><b>Presque un cube</b>Les murs de la grande pièce sont aussi hauts que le pavillon est profond (A + 2e) : la façade 3 est un carré. Le porche est un peu plus bas, d'où le décroché des façades 2 et 4.</div>
       <div><b>Poteaux et poutres</b>Sur le plan, les angles sont des poteaux en L ; entre eux, les traits fins sont des vitrages. Dans la coupe, des poutres portent la dalle. La maquette fait des murs pleins, mais les grandes baies montrent cette ossature.</div>
+      <div><b>Un toit en creux</b>Dans la coupe AA, le haut des murs dépasse la dalle : c'est l'acrotère, un petit muret qui fait le tour du toit. La dalle, en double épaisseur comme les murs, est posée entre les murs, et son dessus arrive au niveau du haut du porche.</div>
       <div><b>Un porche à ciel ouvert</b>La coupe AA ne montre pas de dalle au-dessus du porche : on y entre par l'arc de la façade 1, à l'air libre, avant de passer la porte double de la grande pièce.</div>
     </div>
   </section>
@@ -183,7 +185,10 @@ const f = v => (Math.round(v * 20) / 200).toLocaleString("fr-FR");   // mm -> te
 const fx = v => (Math.round(v * 100) / 100).toLocaleString("fr-FR");
 function geometrie(A, t) {
   const e = 2 * t, m = 10;                          // mur = 2 couches de carton ; le socle déborde de 1 cm
-  const a = R5(A / 4), Hm = A + 2 * e, Ha = R5(Hm - 0.08 * A);
+  const a = R5(A / 4), Hm = A + 2 * e;
+  const p = R5(0.11 * A);                          // acrotère : le haut des murs dépasse la dalle de toit (coupe AA)
+  const Ha = Hm - p;                                 // le porche s'arrête au niveau du dessus de la dalle
+  const zb = Hm - p - 2 * t;                         // dessous de la dalle, mesuré depuis le bas des murs
   const Lm = 2 * e + A, L = 3 * e + A + a, D = 2 * e + A;
   const xa = R5((Lm + L - e) / 2);                  // milieu du porche (arrondi au demi-mm)
   const arc = (cx, w, v0, top) => ({ type: "arc", cx, w: R5(w), v0: R5(v0), top: R5(top) });
@@ -211,8 +216,8 @@ function geometrie(A, t) {
       contour: [[0, 0], [A, 0], [A, Ha], [0, Ha]], trous: [passage], sens: ["sud", "nord"] },
     { id: "nord", num: "4", nom: "Façade nord", nb: 2, role: "fenêtre à barreaux + fente du porche", w: L, h: Hm,
       contour: longue, trous: [fenN, fente], sens: ["ouest", "est"], miroir: true },
-    { id: "toit", num: "", nom: "Dalle de toit", nb: 1, role: "couvre la grande pièce seulement", w: Lm, h: D, plat: true,
-      contour: [[0, 0], [Lm, 0], [Lm, D], [0, D]], trous: [], sens: ["ouest", "est"] },
+    { id: "toit", num: "", nom: "Dalle de toit", nb: 2, role: "en 2 couches, posée entre les murs, plus bas que leur sommet", w: A, h: A, plat: true,
+      contour: [[0, 0], [A, 0], [A, A], [0, A]], trous: [], sens: ["ouest", "est"] },
   ];
   // menuiseries (segments dans le repère de la pièce)
   const menuis = { sud: [], ouest: [], nord: [], cloison: [] };
@@ -222,7 +227,7 @@ function geometrie(A, t) {
   { const o = fenN, x0 = o.cx - o.w / 2; for (const k of [1, 2, 3]) menuis.nord.push([x0 + o.w * k / 4, o.v0, x0 + o.w * k / 4, o.v1]); }
   menuis.cloison.push([A / 2, 0, A / 2, hp]);
   for (const p of pieces) p.ep = t;
-  return { A, t, e, m, a, Hm, Ha, Lm, L, D, pieces, menuis, hp, porte, imposte };
+  return { A, t, e, m, p, zb, a, Hm, Ha, Lm, L, D, pieces, menuis, hp, porte, imposte };
 }
 // contour d'une pièce avec ses ouvertures (les ouvertures posées en bas entaillent le contour)
 function arcPts(o, n = 28) {
@@ -296,11 +301,13 @@ const ETAPES = [
     cotes: g => `${f(g.L)} cm de long · fenêtre ${f(R5(0.4 * g.A))} × ${f(R5(0.74 * g.A) - R5(0.36 * g.A))} cm`,
     colle: g => [[[0, g.D - g.e, g.e], [g.L, g.D - g.e, g.e]], [[g.e, g.D - g.e, g.e], [g.e, g.D - g.e, g.e + g.Hm]], [[g.e + g.A + g.e, g.D - g.e, g.e], [g.e + g.A + g.e, g.D - g.e, g.e + g.Hm]], [[g.L - g.e, g.D - g.e, g.e], [g.L - g.e, g.D - g.e, g.e + g.Ha]]] },
   { titre: "La dalle de toit", pieces: ["toit"],
-    texte: g => `<p>Pose la dalle de toit sur la <b>grande pièce seulement</b> : elle couvre de la façade ouest jusqu'à la cloison, au ras des faces extérieures.</p>
-      <ul><li>Le porche reste <b>à ciel ouvert</b>, comme dans la coupe AA.</li></ul>`,
-    astuce: "Mets un peu de colle sur le haut des 4 murs, pose la dalle, puis un livre léger dessus pendant le séchage.",
-    cotes: g => `${f(g.Lm)} × ${f(g.D)} cm, une seule couche · dessus du toit à ${f(g.e + g.Hm + g.t)} cm de la table`,
-    colle: g => { const z = g.e + g.Hm; return [[[0, g.e / 2, z], [g.Lm, g.e / 2, z]], [[0, g.D - g.e / 2, z], [g.Lm, g.D - g.e / 2, z]], [[g.e / 2, 0, z], [g.e / 2, g.D, z]], [[g.Lm - g.e / 2, 0, z], [g.Lm - g.e / 2, g.D, z]]]; } },
+    texte: g => `<p>La dalle de toit est en <b>double épaisseur</b> (2 couches de ${f(g.A)} × ${f(g.A)} cm) et elle est posée <b>à l'intérieur</b> de la grande pièce, entre les 4 murs, <b>plus bas que leur sommet</b> : les murs dépassent de ${f(g.p)} cm tout autour, comme un petit muret (l'acrotère). C'est ce que montre la coupe AA.</p>
+      <ul><li>Sur la face intérieure des 4 murs de la grande pièce, trace un trait à <b>${f(g.zb)} cm</b> du bas du mur (il est sur les gabarits) : c'est le dessous de la dalle.</li>
+      <li>Glisse la dalle par le haut jusqu'au trait et colle-la sur ses 4 bords.</li>
+      <li>Le dessus de la dalle arrive au niveau du haut des murs du porche. Le porche reste <b>à ciel ouvert</b>.</li></ul>`,
+    astuce: "Pour la tenir au bon niveau pendant le séchage, colle d'abord sous le trait 4 petites cales de carton, une par mur.",
+    cotes: g => `Dalle ${f(g.A)} × ${f(g.A)} cm × 2 couches · dessous à ${f(g.zb)} cm du bas des murs · acrotère ${f(g.p)} cm · dessus à ${f(g.e + g.Hm - g.p)} cm de la table`,
+    colle: g => { const z = g.e + g.zb, e = g.e, A = g.A; return [[[e, e, z], [e + A, e, z]], [[e, e + A, z], [e + A, e + A, z]], [[e, e, z], [e, e + A, z]], [[e + A, e, z], [e + A, e + A, z]]]; } },
   { titre: "Les menuiseries", pieces: ["menuis"],
     texte: g => `<p>Ajoute les menuiseries des baies : la croix des arcs, les meneaux de la grande baie sud, les 3 barreaux de la fenêtre nord, la séparation de la porte double.</p>
       <ul><li>Simple : trace-les au crayon fin sur un rhodoid (ou un calque) collé derrière l'ouverture.</li>
@@ -327,6 +334,11 @@ function svgPiece(p, g, opts = {}) {
     // contour + trous en un seul chemin (trous en evenodd)
     const d = [contour, ...trous].map(l => "M" + l.map(([u, v]) => `${X(u).toFixed(2)} ${Y(v).toFixed(2)}`).join("L") + "Z").join("");
     s.push(`<path class="g-carton" fill-rule="evenodd" d="${d}"/>`);
+  }
+  const rep = { sud: [g.e, g.Lm - g.e], nord: [g.e, g.Lm - g.e], ouest: [0, g.A], cloison: [0, g.A] }[p.id];
+  if (rep) {
+    s.push(`<line class="g-repere" x1="${X(rep[0])}" y1="${Y(g.zb)}" x2="${X(rep[1])}" y2="${Y(g.zb)}"/>`);
+    s.push(`<text class="g-sens" x="${(X(rep[0]) + X(rep[1])) / 2}" y="${Y(g.zb) + 2.6}" text-anchor="middle">dessous dalle de toit · ${f(g.zb)}</text>`);
   }
   for (const m of g.menuis[p.id] || []) s.push(`<line class="g-menui" x1="${X(m[0])}" y1="${Y(m[1])}" x2="${X(m[2])}" y2="${Y(m[3])}"/>`);
   if (p.id === "socle") {
@@ -399,7 +411,7 @@ function remplirTables() {
   const lignes = G.pieces.map(p => `<tr><td><b>${p.nom}</b>${p.num ? ` <span class="tech">(façade ${p.num})</span>` : ""}</td><td>${f(p.w)} × ${f(p.h)}</td><td>${p.nb}${p.nb === 2 ? " (2 couches)" : ""}</td><td>${p.role}</td></tr>`).join("");
   $("tab-pieces").innerHTML = `<thead><tr><th>Pièce</th><th>Taille (cm)</th><th>Nombre</th><th>Ouvertures / rôle</th></tr></thead><tbody>${lignes}</tbody>`;
   $("gabarits").innerHTML = G.pieces.map(p => `<figure><figcaption><b>${p.nom}${p.num ? " · façade " + p.num : ""}</b>${f(p.w)} × ${f(p.h)} cm · ${p.nb === 2 ? "à découper 2 fois · " : ""}${p.role}</figcaption>${svgPiece(p, G)}</figure>`).join("");
-  $("pied").textContent = `Proportions relevées sur le plan, les 4 façades et la coupe AA de la fiche : grande pièce A × A, porche A/4, murs de la grande pièce A + 2e de haut, porche ${f(0.08 * G.A)} cm plus bas. Murs et sol en double épaisseur de carton (${f(G.t)} cm × 2).`;
+  $("pied").textContent = `Proportions relevées sur le plan, les 4 façades et la coupe AA de la fiche : grande pièce A × A, porche A/4, murs de la grande pièce A + 2e de haut, porche ${f(G.p)} cm plus bas, au niveau du dessus de la dalle de toit (posée entre les murs, sous l'acrotère). Murs et sol en double épaisseur de carton (${f(G.t)} cm × 2).`;
 }
 function afficherFiche() {
   const E = ETAPES[etape];
@@ -475,7 +487,7 @@ function demarrer3D() {
       switch (p.id) {
         case "socle": poser(m, [-g.m, -g.m, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
         case "plancher": poser(m, [0, 0, g.t], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
-        case "toit": poser(m, [0, 0, e + g.Hm], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "toit": poser(m, [e, e, e + g.zb], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
         case "sud": poser(m, [0, e, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
         case "nord": poser(m, [0, g.D, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
         case "ouest": poser(m, [e, g.D - e, e], [0, -1, 0], [0, 0, 1], [-1, 0, 0]); break;
