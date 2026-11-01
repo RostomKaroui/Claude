@@ -97,7 +97,8 @@ footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
 }
 /* mode impression 1:1 (#gabarit) : uniquement les pièces, à la taille réelle */
 #impression { display: none; }
-body.imprimer { padding: 0; background: #fff; color: #000; }
+html:has(body.imprimer), body.imprimer { margin: 0; padding: 0; background: #fff; color: #000; }
+@page { size: 210mm 297mm; margin: 0; }
 body.imprimer .planche { display: none; }
 body.imprimer #impression { display: block; }
 .page { width: 210mm; height: 297mm; padding: 10mm 8mm; position: relative; overflow: hidden; page-break-after: always; background: #fff; }

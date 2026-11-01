@@ -18,7 +18,7 @@ const { chromium } = require('playwright'); const path = require('path');
   for (const n of [1, 2, 4, 7]) { await p.evaluate(n => allerEtape(n), n); await p.waitForTimeout(1200); await (await p.$('.atelier')).screenshot({ path: path.join(out, `apercu-etape-${n}.png`) }); }
   const q = await ctx.newPage();
   await q.goto(url + '#gabarit'); await q.waitForTimeout(800);
-  await q.pdf({ path: path.resolve(__dirname, 'gabarits-1-1.pdf'), width: '210mm', height: '297mm', printBackground: true, margin: { top: 0, bottom: 0, left: 0, right: 0 } });
+  await q.pdf({ path: path.resolve(__dirname, 'gabarits-1-1.pdf'), width: '210mm', height: '297mm', printBackground: true, margin: { top: 0, bottom: 0, left: 0, right: 0 }, preferCSSPageSize: true, scale: 1 });
   await q.setViewportSize({ width: 794, height: 1123 }); await q.screenshot({ path: path.join(out, 'apercu-gabarit.png'), fullPage: true });
   await b.close();
 })();
