@@ -1,5 +1,7 @@
-﻿# Physique du bâtiment
+# Physique du bâtiment
 
 - Séance 2 : poids, densité, poids volumique, travail, énergie, puissance.
-- `Fiche_revision_physique_batiment_seance2.pdf` : fiche de révision (2 pages A4).
-- `photos-cours/` : photos des diapositives du cours.
+- Séance 3 : force, somme de forces (résultante, somme vectorielle, polygone de Varignon), moment de force, leviers (inter-appui, inter-résistant).
+- `Fiche_revision_physique_batiment_seance2.pdf` : fiche de révision séance 2 (2 pages A4).
+- `Fiche_revision_physique_batiment_seance3.pdf` : fiche de révision séance 3 (2 pages A4).
+- `photos-cours/` : photos des diapositives du cours (séance 2 : 05/10, séance 3 : 12/10).
