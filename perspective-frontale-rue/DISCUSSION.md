@@ -110,3 +110,6 @@ La photo est redressée par le calcul (points de fuite de la ruelle et des verti
 > rend moi cette image en croquis, ne modifie rien, juste applique un filtre en croquis et donne-moi directement sur l'image la ligne d'horizon, la ligne de terre et les points de fuite
 
 Dossier [`../croquis-photo-arcs/`](../croquis-photo-arcs/) : la photo (non modifiée) passée au filtre crayon, avec LH (y = 1430, à hauteur des yeux), LT (bas de la photo), PF1 (≈ x 1650, à droite, hors photo) et ses fuyantes. PF2 fuit à gauche, très loin, hors feuille : indiqué par une flèche.
+
+## 8 · La porte jaune : filtre crayon + LH, LT, PF (2 novembre)
+Dossier [`../croquis-porte-jaune/`](../croquis-porte-jaune/). Photo de face (façade parallèle au tableau) : un seul point de fuite (PF) sur la LH, au milieu de la porte ; l'autre direction (PF2) est à l'infini. Cette fois la focale vient de l'EXIF (24 mm éq. 35 mm), donc la LH est calculée avec les verticales qui convergent (appareil penché de ~9,5° vers le haut).
