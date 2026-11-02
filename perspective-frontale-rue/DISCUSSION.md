@@ -105,3 +105,8 @@ Nouvelle analyse de la photo, zone par zone (zooms dans `croquis-ruelle/`), et d
 ## 6 · La 2e ruelle : les portes bleues (photo suivante)
 Dossier [`../croquis-ruelle-2/`](../croquis-ruelle-2/). Même règles : vue assise, au trait, sans hachures ni plantes, A3 portrait + 2 × A4.
 La photo est redressée par le calcul (points de fuite de la ruelle et des verticales) puis tout est relevé dessus : le cadre de faïence et sa porte en retrait, l'auvent à tuiles rondes, la fenêtre à grille en spirales, le col de cygne, les barres et panneaux bleus, la petite fenêtre à barreaux, la porte à arc en pierre, les balcons et la lanterne, le pilier de marbre cannelé, les marches, le banc et sa couverture, la plaque d'égout. Vérification de l'échelle : avec les yeux à 1,20 m, la plaque d'égout mesure 61 cm.
+
+## 7 · Photo des arcs : filtre crayon + LH, LT, PF (2 novembre)
+> rend moi cette image en croquis, ne modifie rien, juste applique un filtre en croquis et donne-moi directement sur l'image la ligne d'horizon, la ligne de terre et les points de fuite
+
+Dossier [`../croquis-photo-arcs/`](../croquis-photo-arcs/) : la photo (non modifiée) passée au filtre crayon, avec LH (y = 1430, à hauteur des yeux), LT (bas de la photo), PF1 (≈ x 1650, à droite, hors photo) et ses fuyantes. PF2 fuit à gauche, très loin, hors feuille : indiqué par une flèche.
