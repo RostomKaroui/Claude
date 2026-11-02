@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Sociologie · le comportement de l'individu</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root { --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --c: #8C1C13; --clair: #f8eeec; --bleu: #1F5F8B; --vert: #2E7D4F; --ocre: #B7791F; --violet: #5B3E8F; }
+  @page { size: A4; margin: 11mm 13mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.2pt; line-height: 1.38; color: var(--encre); }
+  b { font-weight: 800; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.07em; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.4pt; letter-spacing: .14em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 24pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 70mm; line-height: 1.3; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; color: var(--c); margin: 6px 0 5px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; background: var(--c); width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  section { margin-bottom: 6px; }
+  .def { background: var(--clair); border-left: 4px solid var(--c); padding: 5px 9px; break-inside: avoid; }
+  .def .mot { display: block; font-weight: 800; font-size: 7.4pt; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+  .cote { display: grid; gap: 10px; align-items: center; }
+  .grille { display: grid; gap: 7px; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: 1fr 1fr 1fr; }
+  .carte { border: 1px solid var(--filet); border-top: 3px solid var(--c); border-radius: 6px; padding: 5px 8px 6px; break-inside: avoid; }
+  .carte h3 { font-size: 9.8pt; font-weight: 800; color: var(--c); margin-bottom: 2px; }
+  ul { list-style: none; }
+  li { position: relative; padding-left: 11px; margin-bottom: 2px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .55em; width: 5px; height: 5px; border-radius: 1px; background: var(--c); }
+  .ex { color: #4b5560; font-size: 8.7pt; }
+  .ex b { color: var(--ocre); }
+  svg { display: block; margin: 0 auto; }
+
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.8pt; break-inside: avoid; }
+  table.t th { background: var(--c); color: #fff; text-align: left; padding: 3px 7px; font-size: 7.6pt; letter-spacing: .08em; }
+  table.t td { padding: 3px 7px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.t td:first-child { font-weight: 800; white-space: nowrap; width: 17%; }
+  table.t tr:nth-child(even) td { background: #fbf6f5; }
+  .d1 { color: var(--bleu); } .d2 { color: var(--vert); } .d3 { color: var(--violet); } .d4 { color: var(--ocre); }
+
+  .essentiel { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 11px 4px; background: #f7f8f9; break-inside: avoid; margin-top: 6px; }
+  .essentiel h4 { font-size: 8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .essentiel li { margin-bottom: 2px; } .essentiel li::before { background: var(--encre); }
+  .source { font-size: 7.4pt; color: #8a929b; margin-top: 4px; }
+  .saut { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker" style="letter-spacing:.1em">SOCIOLOGIE · LE COMPORTEMENT · 1RE ANNÉE ARCHI · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">Le comportement de l'individu : un objet, plusieurs sciences</div>
+</div>
+
+<!-- 1 -->
+<section>
+  <h2><span class="num">1</span>Qu'est-ce qu'un comportement ?</h2>
+  <div class="cote" style="grid-template-columns: 1fr 1.25fr;">
+    <div>
+      <div class="def"><span class="mot">Définition</span>Un <b>comportement</b> est l'<b>ensemble des réactions et des actions d'un individu face à une situation donnée</b>.</div>
+      <ul style="margin-top:5px">
+        <li>L'être humain n'est <b>pas passif</b> dans son environnement : il est <b>actif</b> et agit dessus.</li>
+        <li>Il se distingue de la plante (immobile) et de l'animal (comportement <b>immédiat, guidé par l'instinct</b>) : il <b>réfléchit</b>, il a une <b>unité de pensée et d'action</b>.</li>
+        <li><b>Tout comportement se déroule dans un espace</b>, et chaque espace a ses propres critères.</li>
+      </ul>
+    </div>
+    <div><svg id="fig-schema" width="400" height="170" viewBox="0 0 400 170"></svg></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <h2><span class="num">2</span>Un même objet étudié sous des angles différents</h2>
+  <table class="t">
+    <tr><th>SCIENCE</th><th>ELLE ÉTUDIE…</th><th>MOTS-CLÉS</th></tr>
+    <tr><td class="d1">Sociologie</td><td>les <b>manières de penser, de sentir et d'agir</b> dans la société (la <b>conscience collective</b>)</td><td>Durkheim · normes · déviance · anomie</td></tr>
+    <tr><td class="d2">Anthropologie</td><td>la <b>culture</b> (valeurs, coutumes, normes) et ce qui <b>distingue une société d'une autre</b></td><td>culture · identité · corps · éducation</td></tr>
+    <tr><td class="d3">Psychologie</td><td>les <b>faits de conscience</b> : l'<b>appareil psychique</b> de chaque individu, par l'introspection</td><td>caractère · ça, moi, surmoi · apprentissage</td></tr>
+    <tr><td class="d4">Psychologie sociale</td><td>les comportements des <b>individus dans le groupe et dans l'espace</b></td><td>groupe · interaction · espace</td></tr>
+  </table>
+  <p class="ex" style="margin-top:3px">La prof insiste sur la <b>cohérence</b> entre ces sciences : il y a peu de différence entre sociologie et anthropologie culturelle, car les comportements sont <b>fortement conditionnés par la culture</b>. Toute recherche (mémoire, thèse…) a besoin d'un <b>cadre théorique</b> : pas de pratique (enquêtes, entretiens) sans théorie.</p>
+</section>
+
+<!-- 3 -->
+<section>
+  <h2><span class="num">3</span>La sociologie : individu et société</h2>
+  <div class="grille g3">
+    <div class="carte">
+      <h3>Conscience collective / individuelle</h3>
+      <p><b>Durkheim</b> distingue deux consciences :</p>
+      <ul>
+        <li><b>collective</b> : ce que la société partage (sentiments, pensées, règles) ;</li>
+        <li><b>individuelle</b> : ce qui nous est propre : <b>caractère, attitude, personnalité</b> (introverti, extraverti, autoritaire, flexible…).</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>Déviance et anomie</h3>
+      <p>Chacun accepte ou non les règles selon son caractère (ex. : l'<b>adolescent</b> qui les refuse).</p>
+      <ul>
+        <li><b>Déviance</b> : comportement différent de celui des autres membres de la société.</li>
+        <li><b>Anomie</b> : comportement <b>contraire aux mœurs, habitudes et traditions</b>.</li>
+        <li>Risque : être <b>marginalisé</b>, voire <b>exclu</b>.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>L'être sociable</h3>
+      <p><b>Aristote</b> : l'individu est <b>sociable par nature</b>.</p>
+      <ul>
+        <li>La sociabilité est un <b>instinct</b> : il doit être <b>satisfait</b>, sinon on se sent <b>déséquilibré</b>.</li>
+        <li>Besoin de <b>reconnaissance</b> : la satisfaction (études, métier) pousse à mieux travailler.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4</span>Inné ou acquis ?</h2>
+  <div class="cote" style="grid-template-columns: 1fr 1fr 1.1fr; align-items: stretch; gap: 7px;">
+    <div class="carte"><h3>L'inné</h3><p>Le comportement s'explique par des <b>facteurs innés</b> : « ce qu'on a en naissant ».</p></div>
+    <div class="carte"><h3>L'acquis</h3><p>Il s'explique par le <b>milieu</b>, la culture, l'éducation (courant <b>comportementaliste / constructiviste</b>).</p></div>
+    <div class="def" style="display:flex;align-items:center"><div>La prof ne tranche pas : en architecture, on étudie le comportement <b>dans la société et dans l'espace</b>. Ex. : la timidité et le <b>public speaking</b> ne sont <b>pas innés, ils s'apprennent par essais et erreurs</b>.</div></div>
+  </div>
+</section>
+
+<!-- PAGE 2 -->
+<section class="saut">
+  <h2><span class="num">5</span>L'anthropologie : la culture dans la personne</h2>
+  <div class="grille g3">
+    <div class="carte">
+      <h3>La culture s'apprend</h3>
+      <ul>
+        <li>Au fil des <b>stades de développement</b>, on apprend à l'enfant les <b>bonnes manières</b> : manger, s'habiller, parler aux autres, se tenir, bouger.</li>
+        <li>La culture <b>s'imprime</b> dans la personnalité psychique, comme une tache sur une feuille : <b>difficile à effacer</b>.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>L'identité</h3>
+      <ul>
+        <li>L'<b>identité culturelle et sociale</b> est de nature sociale : on ne peut pas nous la « prendre ».</li>
+        <li>Face à la <b>mondialisation</b>, on protège le <b>patrimoine</b> : un monument a une <b>valeur symbolique</b>.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>Le corps</h3>
+      <ul>
+        <li>Le corps est le moyen de <b>s'inscrire dans l'espace</b> : <b>exister dans l'espace, c'est exister par son corps</b>.</li>
+        <li>Il réagit selon <b>ce qu'il a appris</b> (culture).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">6</span>La psychologie : l'individu</h2>
+  <div class="grille g3">
+    <div class="carte">
+      <h3>L'appareil psychique</h3>
+      <p>Trois composantes (<b>Freud</b>) :</p>
+      <ul>
+        <li><b>le ça</b> : pulsions, besoins ;</li>
+        <li><b>le moi</b> : ce qui s'adapte et agit ;</li>
+        <li><b>le surmoi</b> : distingue le <b>bien du mal</b>, appris de la culture.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>Trois méthodes d'éducation</h3>
+      <ul>
+        <li><b>autoritaire</b> ;</li>
+        <li><b>permissive</b> : tout est permis à l'enfant ;</li>
+        <li><b>fermeté dans l'affection</b> : « je t'aime, mais quand c'est non, c'est non ».</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>Apprendre et s'observer</h3>
+      <ul>
+        <li>On apprend par <b>essais et erreurs</b>.</li>
+        <li><b>Introspection</b> : s'observer soi-même ; limite : elle est <b>subjective</b> (notion de relativité).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">7</span>Comportement et espace (psychologie sociale)</h2>
+  <div class="grille g2">
+    <div class="carte">
+      <h3>L'espace agit sur nous</h3>
+      <ul>
+        <li>Chaque espace a ses <b>critères</b> (personnels, socioculturels, subjectifs) : le même espace <b>plaît à l'un, pas à l'autre</b> (<b>perception subjective</b>).</li>
+        <li>L'espace a son <b>humeur</b> : son <b>ambiance socioculturelle</b>.</li>
+        <li>L'espace <b>« parle »</b> : sa configuration exprime des <b>valeurs et une identité</b> (un langage silencieux) ; on l'<b>humanise</b> (« espace accueillant »).</li>
+        <li><b>Relation dialectique</b> : l'individu influence son cadre de vie, et le cadre de vie l'influence.</li>
+      </ul>
+    </div>
+    <div class="carte">
+      <h3>Dans le groupe</h3>
+      <ul>
+        <li>Le comportement <b>diffère</b> même dans un même espace, entouré d'autres personnes.</li>
+        <li><b>Goffman</b> : la vie sociale est une <b>scène</b> (backstage, rôles) : à connaître pour <b>concevoir l'espace</b>.</li>
+        <li>Face à une gêne : <b>s'isoler</b>, limiter les interactions, ou <b>s'exprimer</b> (idéal : bien articuler, sans se perdre en colère).</li>
+        <li>Lire l'émotion d'autrui : <b>visage, regard, expression</b>, pour <b>agir, aider, soutenir</b>.</li>
+        <li><b>Face à une provocation, on discute de la réaction, pas du mot.</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="def" style="margin-top:6px"><span class="mot">Le stress et le temps</span><b>Stress</b> : l'organisme n'arrive pas à répondre à tout ce qu'on exige de lui. Le <b>temps</b> exerce une <b>pression</b> (temps scolaire, de loisir, professionnel…) : la solution est de <b>s'organiser dans le temps et dans l'espace</b>.</div>
+</section>
+
+<div class="essentiel">
+  <h4>L'essentiel à savoir par cœur</h4>
+  <ul>
+    <li><b>Comportement</b> = ensemble des réactions et actions d'un individu face à une situation donnée, toujours <b>dans un espace</b>.</li>
+    <li><b>Sociologie</b> : conscience collective / individuelle (Durkheim) · <b>Anthropologie</b> : culture, identité, corps · <b>Psychologie</b> : appareil psychique, faits de conscience · <b>Psychologie sociale</b> : individu dans le groupe et l'espace.</li>
+    <li><b>Déviance</b> = comportement différent ; <b>anomie</b> = contraire aux mœurs ; sociabilité = instinct (<b>Aristote</b>).</li>
+    <li>Le comportement est <b>appris</b> (culture, éducation, essais et erreurs) autant qu'inné ; l'espace <b>influence</b> le comportement et inversement.</li>
+  </ul>
+</div>
+<p class="source">Fiche rédigée d'après l'enregistrement du cours (transcription automatique). À compléter avec tes notes : noms propres et dates à vérifier.</p>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const C = "#8C1C13", BLEU = "#1F5F8B", VERT = "#2E7D4F", VIO = "#5B3E8F", OCRE = "#B7791F", ENCRE = "#1f2328";
+function el(p, n, a = {}, t) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t !== undefined) e.textContent = t; p.appendChild(e); return e; }
+const txt = (g, x, y, t, a = {}) => el(g, "text", { x, y, "font-family": "Inter", "font-size": 9.5, fill: ENCRE, "text-anchor": "middle", ...a }, t);
+function fl(g, x1, y1, x2, y2, c = ENCRE) { el(g, "line", { x1, y1, x2: x2 - 6, y2, stroke: c, "stroke-width": 2 }); el(g, "polygon", { points: `${x2},${y2} ${x2 - 8},${y2 - 5} ${x2 - 8},${y2 + 5}`, fill: c }); }
+(() => {
+  const g = document.getElementById("fig-schema");
+  el(g, "rect", { x: 2, y: 2, width: 396, height: 166, rx: 10, fill: "#faf7f6", stroke: C, "stroke-width": 1.3, "stroke-dasharray": "5 4" });
+  txt(g, 200, 18, "DANS UN ESPACE (avec ses critères et son humeur)", { "font-weight": 800, "font-size": 8.2, fill: C, "letter-spacing": 1 });
+  // situation
+  el(g, "rect", { x: 12, y: 54, width: 82, height: 64, rx: 8, fill: "#fff", stroke: ENCRE, "stroke-width": 1.4 });
+  txt(g, 53, 82, "SITUATION", { "font-weight": 800, "font-size": 10 }); txt(g, 53, 98, "donnée", { "font-size": 9, fill: "#6b737c" });
+  fl(g, 96, 86, 128, 86);
+  // individu
+  el(g, "rect", { x: 130, y: 30, width: 140, height: 124, rx: 8, fill: "#fff", stroke: BLEU, "stroke-width": 1.6 });
+  txt(g, 200, 47, "L'INDIVIDU", { "font-weight": 800, "font-size": 10, fill: BLEU });
+  ["caractère, tempérament", "humeur", "culture, éducation", "appareil psychique", "conscience individuelle"].forEach((t, i) => txt(g, 200, 66 + i * 17, t, { "font-size": 9 }));
+  fl(g, 272, 86, 304, 86);
+  // comportement
+  el(g, "rect", { x: 306, y: 54, width: 84, height: 64, rx: 8, fill: C });
+  txt(g, 348, 80, "COMPORTE-", { "font-weight": 800, "font-size": 9.5, fill: "#fff" }); txt(g, 348, 93, "MENT", { "font-weight": 800, "font-size": 9.5, fill: "#fff" });
+  txt(g, 348, 108, "action / réaction", { "font-size": 8.2, fill: "#f3d9d6" });
+  // retour de l'espace
+  el(g, "path", { d: "M348 120 Q348 160 200 160 Q70 160 53 120", fill: "none", stroke: OCRE, "stroke-width": 1.6, "stroke-dasharray": "5 3" });
+  el(g, "polygon", { points: "53,120 47,131 59,130", fill: OCRE });
+  txt(g, 200, 150, "il agit en retour sur l'espace", { "font-size": 8.2, fill: OCRE, "font-weight": 600 });
+})();
+</script>
+</body>
+</html>
