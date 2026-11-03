@@ -112,7 +112,7 @@ body.imprimer #impression { display: block; }
     <div>
       <div class="surtitre">Atelier · Exercice court n°1 · manipulation volumétrique · carton gris</div>
       <h1>Le Pavillon au porche</h1>
-      <p>Une grande pièce carrée et un porche d'un quart de sa largeur, ouvert sur le ciel. Murs et dalle de toit en double épaisseur de carton gris (2 couches) ; le socle et la dalle de sol en une seule couche. Toutes les cotes sont en cm et partent des 4 mesures prises sur ton plan.</p>
+      <p>Une grande pièce carrée et un porche d'un quart de sa largeur, ouvert sur le ciel. Tout en double épaisseur de carton gris (2 couches) : le socle, la dalle de sol, les quatre façades, la cloison et la dalle de toit. Toutes les cotes sont en cm et partent des 4 mesures prises sur ton plan.</p>
     </div>
     <div class="reglages">
       <label for="cote-l">Longueur (cm)</label>
@@ -175,7 +175,7 @@ body.imprimer #impression { display: block; }
       <div><b>Un carré et son quart</b>La grande pièce est un carré. Le porche fait environ le quart de sa largeur, sur toute la profondeur : c'est la note « 4a = A » de ton plan.</div>
       <div><b>Presque un cube</b>Les murs de la grande pièce sont aussi hauts que le pavillon est profond (A + 2e) : la façade 3 est un carré. Le porche est un peu plus bas, d'où le décroché des façades 2 et 4.</div>
       <div><b>Poteaux et poutres</b>Sur le plan, les angles sont des poteaux en L ; entre eux, les traits fins sont des vitrages. Dans la coupe, des poutres portent la dalle. La maquette fait des murs pleins, mais les grandes baies montrent cette ossature.</div>
-      <div><b>Une marche au sol</b>Dans la coupe AA, le sol fait une marche au nu extérieur des murs : le pavillon est posé sur une dalle surélevée, au-dessus du sol de la rue. Le socle et la dalle de sol font chacun une épaisseur de carton.</div>
+      <div><b>Une marche au sol</b>Dans la coupe AA, le sol fait une marche au nu extérieur des murs : le pavillon est posé sur une dalle surélevée, au-dessus du sol de la rue. Le socle et la dalle de sol sont chacun en 2 couches de carton, comme les murs.</div>
       <div><b>Un toit en creux</b>Dans la coupe AA, le haut des murs dépasse la dalle : c'est l'acrotère, un petit muret qui fait le tour du toit. La dalle, en double épaisseur comme les murs, est posée entre les murs, et son dessus arrive au niveau du haut du porche.</div>
       <div><b>Un porche à ciel ouvert</b>La coupe AA ne montre pas de dalle au-dessus du porche : on y entre par l'arc de la façade 1, à l'air libre, avant de passer la porte double de la grande pièce.</div>
     </div>
@@ -195,11 +195,11 @@ const fx = v => (Math.round(v * 100) / 100).toLocaleString("fr-FR");
 // M = les 4 cotes mesurées sur le plan (mm) : L longueur de la façade 2, D largeur du plan,
 // Hg hauteur de la grande pièce, Hp hauteur du porche (depuis le sol de la rue, marche comprise) ; t = carton
 function geometrie(M, t) {
-  const e = 2 * t;                                  // mur = 2 couches de carton ; la marche (dalle de sol) = 1 couche
+  const e = 2 * t;                                  // mur = 2 couches de carton ; socle et dalle de sol aussi (2 couches chacun)
   const L = M.L, D = M.D;
   const A = D - 2 * e;                              // grande pièce : carré intérieur A × A
   const a = L - 3 * e - A;                          // largeur intérieure du porche
-  const Hm = M.Hg - t, Ha = M.Hp - t;               // hauteur des murs, posés sur la marche (dalle de sol, 1 couche)
+  const Hm = M.Hg - e, Ha = M.Hp - e;               // hauteur des murs, posés sur la marche (dalle de sol, 2 couches)
   const p = M.Hg - M.Hp;                            // acrotère : le haut des murs dépasse la dalle de toit (coupe AA)
   const zb = Hm - p - e;                            // dessous de la dalle de toit (2 couches), depuis le bas des murs
   const Ar = D * 50 / 54;                           // taille de référence : les ouvertures gardent les proportions du dessin
@@ -218,9 +218,9 @@ function geometrie(M, t) {
   const ouvCloison = [rect(A / 2, porte, 0, hp), rect(A / 2 - porte / 2 - poteau - imposte / 2, imposte, 0, hp), rect(A / 2 + porte / 2 + poteau + imposte / 2, imposte, 0, hp)];
   const longue = [[0, 0], [L, 0], [L, Ha], [Lm, Ha], [Lm, Hm], [0, Hm]];
   const pieces = [
-    { id: "socle", num: "", nom: "Socle", role: "le sol de la rue, déborde tout autour : 1 couche", w: L + 2 * m, h: D + 2 * m, plat: true, nb: 1,
+    { id: "socle", num: "", nom: "Socle", role: "le sol de la rue, déborde tout autour : 2 couches", w: L + 2 * m, h: D + 2 * m, plat: true, nb: 2,
       contour: [[0, 0], [L + 2 * m, 0], [L + 2 * m, D + 2 * m], [0, D + 2 * m]], trous: [], sens: ["ouest", "est"] },
-    { id: "plancher", num: "", nom: "Dalle de sol", role: "sous le pavillon, fait la marche : 1 couche", w: L, h: D, plat: true, nb: 1,
+    { id: "plancher", num: "", nom: "Dalle de sol", role: "sous le pavillon, fait la marche : 2 couches", w: L, h: D, plat: true, nb: 2,
       contour: [[0, 0], [L, 0], [L, D], [0, D]], trous: [], sens: ["ouest", "est"] },
     { id: "sud", num: "2", nom: "Façade sud", nb: 2, role: "grande baie en arc + fente du porche", w: L, h: Hm,
       contour: longue, trous: [fenS, fente], sens: ["ouest", "est"] },
@@ -278,20 +278,20 @@ function formes(p) {
 const ETAPES = [
   { titre: "Avant de couper", pieces: [],
     texte: g => `<p>Toutes les cotes partent de <b>tes 4 mesures</b> (en haut de la page) : la longueur de la façade 2, la largeur du plan, la hauteur de la grande pièce et celle du porche. Si ton carton n'a pas ${f(g.t)} cm d'épaisseur, change-le aussi : tout se recalcule.</p>
-      <ul><li><b>Double épaisseur</b> : chaque mur et la dalle de toit sont faits de <b>2 couches identiques</b> de carton collées l'une sur l'autre. Le socle et la dalle de sol restent en <b>1 seule couche</b>. Découpe la 1re couche, puis trace la 2e en suivant son contour et ses ouvertures.</li>
+      <ul><li><b>Double épaisseur</b> : chaque pièce (murs, socle, dalle de sol, dalle de toit) est faite de <b>2 couches identiques</b> de carton collées l'une sur l'autre. Découpe la 1re couche, puis trace la 2e en suivant son contour et ses ouvertures.</li>
       <li>Outils : cutter neuf, règle métallique, équerre, compas, crayon HB, colle vinylique (colle blanche).</li>
       <li>Trace chaque pièce <b>à la règle et à l'équerre</b>, puis les ouvertures, puis les arcs au compas.</li>
       <li>Coupe d'abord les ouvertures, ensuite le contour : la pièce reste rigide plus longtemps.</li></ul>`,
     astuce: "Pour un arc : coupe-le en plusieurs petits traits courbes, sans forcer. Repasse 2 ou 3 fois plutôt qu'un seul coup.",
     cotes: g => `Tes mesures : ${f(g.L)} × ${f(g.D)} cm, hauteurs ${f(g.M.Hg)} et ${f(g.M.Hp)} cm · carton ${f(g.t)} cm · mur = 2 couches = ${f(g.e)} cm · grande pièce ${f(g.A)} × ${f(g.A)} cm · porche ${f(g.a)} cm de large` },
-  { titre: "Le socle et la dalle de sol", pieces: ["socle", "plancher"],
-    texte: g => `<p>Dans la coupe AA, le sol fait <b>une marche</b> : le pavillon est posé sur une dalle surélevée, plus haute que le sol de la rue. La marche tombe pile au nu extérieur des murs. Le socle et la dalle de sol sont chacun en <b>1 couche</b> de carton.</p>
-      <ul><li>En bas, le <b>socle</b> (le sol de la rue) : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm, en <b>1 couche</b>.</li>
-      <li>Dessus, la <b>dalle de sol</b> : ${f(g.L)} × ${f(g.D)} cm, en <b>1 couche</b>, collée au centre du socle, avec ${f(g.m)} cm de socle visible tout autour. Elle fait la marche de ${f(g.t)} cm.</li>
+  { titre: "Le sol en double épaisseur", pieces: ["socle", "plancher"],
+    texte: g => `<p>Dans la coupe AA, le sol fait <b>une marche</b> : le pavillon est posé sur une dalle surélevée, plus haute que le sol de la rue. La marche tombe pile au nu extérieur des murs. Le socle et la dalle de sol sont chacun en <b>2 couches</b> de carton, comme les murs.</p>
+      <ul><li>En bas, le <b>socle</b> (le sol de la rue) : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm, en <b>2 couches</b>.</li>
+      <li>Dessus, la <b>dalle de sol</b> : ${f(g.L)} × ${f(g.D)} cm, en <b>2 couches</b>, collée au centre du socle, avec ${f(g.m)} cm de socle visible tout autour. Elle fait la marche de ${f(g.e)} cm.</li>
       <li>Tous les murs sont collés <b>sur la dalle</b>, au ras de ses bords : leur face extérieure tombe juste au bord de la marche.</li></ul>
       <ul><li>Au crayon, trace dessus l'emplacement des murs : une bande de ${f(g.e)} cm le long de chaque bord, et la cloison à ${f(g.e + g.A)} cm du bord ouest.</li></ul>`,
     astuce: "Ces traits au crayon te servent de repère pour poser chaque mur bien droit.",
-    cotes: g => `Socle : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm × 1 couche · dalle de sol : ${f(g.L)} × ${f(g.D)} cm × 1 couche · marche : ${f(g.t)} cm · sol total : ${f(2 * g.t)} cm` },
+    cotes: g => `Socle : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm × 2 couches · dalle de sol : ${f(g.L)} × ${f(g.D)} cm × 2 couches · marche : ${f(g.e)} cm · sol total : ${f(2 * g.e)} cm` },
   { titre: "La façade sud (façade 2)", pieces: ["sud"],
     texte: g => `<p>Colle ses 2 couches l'une sur l'autre, bien alignées. Puis colle la façade sud <b>debout sur le bord sud</b> de la dalle de sol, sa face extérieure au ras du bord. La grande baie en arc est côté <b>ouest</b>, la fente et la partie basse côté <b>est</b> (le porche).</p>`,
     astuce: "Pour coller 2 couches : colle en fine couche, aligne les ouvertures, et laisse sécher sous un livre avant de les découper au propre. Tiens ensuite le mur avec une équerre ou un cube de gomme pendant 2 minutes, le temps que la colle prenne.",
@@ -325,7 +325,7 @@ const ETAPES = [
       <li>Glisse la dalle par le haut jusqu'au trait et colle-la sur ses 4 bords.</li>
       <li>Le dessus de la dalle arrive au niveau du haut des murs du porche. Le porche reste <b>à ciel ouvert</b>.</li></ul>`,
     astuce: "Pour la tenir au bon niveau pendant le séchage, colle d'abord sous le trait 4 petites cales de carton, une par mur.",
-    cotes: g => `Dalle ${f(g.A)} × ${f(g.A)} cm × 2 couches · dessous à ${f(g.zb)} cm du bas des murs · acrotère ${f(g.p)} cm · dessus à ${f(2 * g.t + g.Hm - g.p)} cm de la table`,
+    cotes: g => `Dalle ${f(g.A)} × ${f(g.A)} cm × 2 couches · dessous à ${f(g.zb)} cm du bas des murs · acrotère ${f(g.p)} cm · dessus à ${f(2 * g.e + g.Hm - g.p)} cm de la table`,
     colle: g => { const z = g.e + g.zb, e = g.e, A = g.A; return [[[e, e, z], [e + A, e, z]], [[e, e + A, z], [e + A, e + A, z]], [[e, e, z], [e, e + A, z]], [[e + A, e, z], [e + A, e + A, z]]]; } },
   { titre: "Les menuiseries", pieces: ["menuis"],
     texte: g => `<p>Ajoute les menuiseries des baies : la croix des arcs, les meneaux de la grande baie sud, les 3 barreaux de la fenêtre nord, la séparation de la porte double.</p>
@@ -336,7 +336,7 @@ const ETAPES = [
   { titre: "Le pavillon terminé", pieces: [],
     texte: g => `<p>On entre par l'arc de la façade 1 dans le porche, à ciel ouvert. La porte double mène à la grande pièce carrée, éclairée par trois baies : l'arc ouest, la grande baie sud et la fenêtre nord.</p>
       <ul><li>Compare ta maquette au plan, aux 4 façades et à la coupe : chaque ouverture doit tomber au même endroit.</li></ul>`,
-    cotes: g => `Socle ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm · pavillon ${f(g.L)} × ${f(g.D)} cm · hauteur ${f(2 * g.t + g.Hm)} cm (grande pièce), ${f(2 * g.t + g.Ha)} cm (porche), socle compris · murs ${f(g.e)} cm` },
+    cotes: g => `Socle ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm · pavillon ${f(g.L)} × ${f(g.D)} cm · hauteur ${f(2 * g.e + g.Hm)} cm (grande pièce), ${f(2 * g.e + g.Ha)} cm (porche), socle compris · murs ${f(g.e)} cm` },
 ];
 
 // ---------------------------------------------------------------- gabarits SVG
@@ -429,7 +429,7 @@ function lire() {
 }
 function remplirTables() {
   const k = G.Ar / 50;
-  $("regle-echelle").innerHTML = `Cotes en cm, calculées à partir de tes mesures : façade 2 de ${f(G.L)} cm, plan de ${f(G.D)} cm de large, ${f(G.M.Hg)} cm de haut pour la grande pièce et ${f(G.M.Hp)} cm pour le porche (depuis le sol de la rue). Carton de ${f(G.t)} cm : les 5 murs et la dalle de toit sont en 2 couches (${f(G.e)} cm) ; le socle et la dalle de sol en 1 couche (${f(G.t)} cm).`;
+  $("regle-echelle").innerHTML = `Cotes en cm, calculées à partir de tes mesures : façade 2 de ${f(G.L)} cm, plan de ${f(G.D)} cm de large, ${f(G.M.Hg)} cm de haut pour la grande pièce et ${f(G.M.Hp)} cm pour le porche (depuis le sol de la rue). Carton de ${f(G.t)} cm : toutes les pièces (5 murs, socle, dalle de sol, dalle de toit) sont en 2 couches (${f(G.e)} cm).`;
   const lignes = G.pieces.map(p => `<tr><td><b>${p.nom}</b>${p.num ? ` <span class="tech">(façade ${p.num})</span>` : ""}</td><td>${f(p.w)} × ${f(p.h)}</td><td>${p.nb}${p.nb === 2 ? " (2 couches)" : ""}</td><td>${p.role}</td></tr>`).join("");
   $("tab-pieces").innerHTML = `<thead><tr><th>Pièce</th><th>Taille (cm)</th><th>Nombre</th><th>Ouvertures / rôle</th></tr></thead><tbody>${lignes}</tbody>`;
   $("gabarits").innerHTML = G.pieces.map(p => `<figure><figcaption><b>${p.nom}${p.num ? " · façade " + p.num : ""}</b>${f(p.w)} × ${f(p.h)} cm · ${p.nb === 2 ? "à découper 2 fois · " : ""}${p.role}</figcaption>${svgPiece(p, G)}</figure>`).join("");
@@ -510,8 +510,8 @@ function demarrer3D() {
         const gr = new THREE.Group(); gr.add(m); const m2 = plaque(p); m2.position.z = p.ep / 10; gr.add(m2); m = gr;
       }
       switch (p.id) {
-        case "socle": poser(m, [-g.m, -g.m, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
-        case "plancher": poser(m, [0, 0, g.t], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "socle": poser(m, [-g.m, -g.m, -e], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "plancher": poser(m, [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
         case "toit": poser(m, [e, e, e + g.zb], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
         case "sud": poser(m, [0, e, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
         case "nord": poser(m, [0, g.D, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
@@ -534,7 +534,7 @@ function demarrer3D() {
         barre(surMur[id](o.cx + (r - .5) * Math.cos(t0), sp + (r - .5) * Math.sin(t0)), surMur[id](o.cx + (r - .5) * Math.cos(t1), sp + (r - .5) * Math.sin(t1))); }
     }
     racine.add(menuis); objets.menuis = { m: menuis, t: 1, cible: 1 };
-    sol.position.y = 0; grille.position.y = 0.002;
+    sol.position.y = -g.e / 10; grille.position.y = -g.e / 10 + 0.002;
     numeros();
     appliquer(true);
   }
@@ -550,7 +550,7 @@ function demarrer3D() {
   function numeros() {
     etiquettes.clear();
     for (const [t, x, y] of [["1", g.L + 14, g.D / 2], ["2", g.Lm / 2, -14], ["3", -14, g.D / 2], ["4", g.Lm / 2, g.D + 14], ["N", g.L + 14, g.D + 14]]) {
-      const s = pastille(t); s.position.copy(V(x, y, 0.3)); etiquettes.add(s);
+      const s = pastille(t); s.position.copy(V(x, y, 0.3 - g.e)); etiquettes.add(s);
     }
   }
   // étapes : pièces posées / à venir / en cours
@@ -621,7 +621,7 @@ function demarrer3D() {
 function pagesImpression() {
   const P = id => G.pieces.find(p => p.id === id);
   const regle = `<svg width="60mm" height="7mm" viewBox="0 0 60 7"><line x1="0" y1="5" x2="50" y2="5" stroke="#000" stroke-width=".3"/>${[0, 10, 20, 30, 40, 50].map(x => `<line x1="${x}" y1="3" x2="${x}" y2="6" stroke="#000" stroke-width=".3"/>`).join("")}<text x="52" y="6" font-size="2.6" font-family="monospace">5 cm</text></svg>`;
-  const tete = n => `<h3>Le Pavillon au porche · gabarits à taille réelle (${n}/3)</h3><p>${f(G.L)} × ${f(G.D)} cm · hauteurs ${f(G.M.Hg)} et ${f(G.M.Hp)} cm · carton ${f(G.t)} cm · murs et dalle de toit : découpe chaque pièce 2 fois (2 couches) · socle et dalle de sol : 1 fois · imprime à 100 % (sans « ajuster à la page ») et vérifie : la règle doit mesurer 5 cm.</p>${regle}`;
+  const tete = n => `<h3>Le Pavillon au porche · gabarits à taille réelle (${n}/3)</h3><p>${f(G.L)} × ${f(G.D)} cm · hauteurs ${f(G.M.Hg)} et ${f(G.M.Hp)} cm · carton ${f(G.t)} cm · toutes les pièces : découpe-les 2 fois (2 couches) · imprime à 100 % (sans « ajuster à la page ») et vérifie : la règle doit mesurer 5 cm.</p>${regle}`;
   const ligne = ids => `<div style="display:flex;gap:4mm;align-items:flex-end;margin-top:4mm">${ids.map(id => `<div><p style="margin:0 0 0 14mm;font-family:var(--f-titre);font-weight:700;font-size:9pt;color:#000">${P(id).nom}${P(id).num ? " · façade " + P(id).num : ""} — ${f(P(id).w)} × ${f(P(id).h)} cm${P(id).nb === 2 ? " · × 2" : ""}</p>${svgPiece(P(id), G, { mm: true })}</div>`).join("")}</div>`;
   $("impression").innerHTML = `<div class="page">${tete(1)}${ligne(["sud", "nord"])}${ligne(["ouest", "cloison"])}</div><div class="page">${tete(2)}${ligne(["est", "toit"])}${ligne(["plancher"])}</div><div class="page">${tete(3)}${ligne(["socle"])}</div>`;
 }
@@ -655,8 +655,9 @@ function plancheA4() {
       // étiquette dans la bande pleine du haut (murs) ou au centre (plaques)
       const nom = `${p.nom}${p.num ? " (" + p.num + ")" : ""}${p.nb === 2 ? " · × 2" : ""}`, dims = `${f(p.w)} × ${f(p.h)} cm`;
       const haut = p.plat ? y + p.h / 2 - 1 : y + 4.2, cx = x + p.w / 2;
-      T(cx, haut, nom, 3, 'font-weight="700" text-anchor="middle"');
-      T(cx, haut + 3.4, dims, 2.4, 'text-anchor="middle"');
+      const bande = p.plat ? 99 : p.h - Math.max(0, ...p.trous.map(o => o.type === "arc" ? o.top : o.v1));
+      if (bande < 9) T(cx, haut, `${nom} · ${dims}`, 2.6, 'font-weight="700" text-anchor="middle"');   // bande pleine trop étroite : une seule ligne
+      else { T(cx, haut, nom, 3, 'font-weight="700" text-anchor="middle"'); T(cx, haut + 3.4, dims, 2.4, 'text-anchor="middle"'); }
       if (!p.plat) T(cx, y + p.h + 3.2, `← ${p.miroir ? p.sens[1] : p.sens[0]} · bas · ${p.miroir ? p.sens[0] : p.sens[1]} →`, 2.1, 'text-anchor="middle" fill="#555"');
       x += p.w + gap; hmax = Math.max(hmax, p.h);
     }
