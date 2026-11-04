@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Environnement · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   l'homme et la planète */
+    --c2: #B4501E;  /* II  les défis */
+    --c3: #3C7A3E;  /* III les solutions */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.8pt; line-height: 1.3; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 78mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.4pt; font-weight: 800; margin-bottom: 2px; }
+  .s1 .carte h3 { color: var(--c1); } .s2 .carte h3 { color: var(--c2); } .s3 .carte h3 { color: var(--c3); }
+  .carte p, .carte li { font-size: 8.1pt; line-height: 1.28; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .alerte { color: var(--rouge); font-weight: 800; }
+  .chiffre { display: inline-block; font-weight: 800; color: #fff; border-radius: 3px; padding: 0 4px; font-size: 7.9pt; }
+  .s2 .chiffre { background: var(--c2); } .s3 .chiffre { background: var(--c3); }
+
+  /* frise population */
+  .fil { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; font-size: 8pt; line-height: 1.25; margin-bottom: 5px; }
+  .fil .e { color: #fff; padding: 4px 4px 5px 13px; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e:last-child { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 9px 50%); padding-right: 6px; }
+  .fil .e .t { display: block; font-weight: 800; font-size: 8.2pt; }
+  .fil .e .n { display: block; font-family: "Playfair", serif; font-weight: 700; font-size: 11pt; line-height: 1.15; }
+
+  /* frise des conférences */
+  .dates { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 6px; }
+  .dates > div { border-top: 4px solid var(--c3); background: var(--fond); border-radius: 0 0 5px 5px; padding: 3px 6px 4px; font-size: 7.8pt; line-height: 1.27; break-inside: avoid; }
+  .dates .an { font-family: "Playfair", serif; font-weight: 700; font-size: 13pt; color: var(--c3); line-height: 1.1; display: block; }
+  .dates .t { display: block; font-weight: 800; font-size: 8pt; }
+
+  table.ch { width: 100%; border-collapse: collapse; font-size: 8pt; }
+  table.ch td { padding: 1.5px 5px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.ch td:first-child { font-weight: 800; color: var(--c3); white-space: nowrap; }
+  table.ch tr:nth-child(even) td { background: #f3f8f3; }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.4pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  .exemple { border: 2px solid var(--c3); border-radius: 8px; padding: 3px 10px; margin-top: 5px; display: flex; gap: 10px; align-items: center; break-inside: avoid; background: #f3f8f3; }
+  .exemple .etiquette { font-size: 7.6pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c3); flex: none; }
+  .exemple p { font-size: 8.6pt; }
+
+  .retenir { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8px; margin-top: 6px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 3px; }
+  .retenir dl { font-size: 8pt; line-height: 1.26; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 1.5px; }
+  .notes { margin-top: 6px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 15px; border-bottom: 1px dotted #c4cad1; }
+</style>
+</head>
+<body>
+
+<!-- ===================== EN-TÊTE ===================== -->
+<div class="entete">
+  <div>
+    <div class="kicker">ENVIRONNEMENT · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous">L'homme et l'environnement : les défis actuels et les solutions</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>I · L'homme et la planète</b>population, histoire, responsabilité</div>
+  <div class="p2"><b>II · Les défis</b>villes, énergie, agriculture, eau, forêts, pollution</div>
+  <div class="p3"><b>III · Les solutions</b>accords, parcs, renouvelables, agriculture, recyclage, forêts</div>
+</div>
+
+<!-- ===================== I ===================== -->
+<section class="partie s1">
+  <h2><span class="num">I</span>L'homme, premier responsable</h2>
+
+  <div class="fil">
+    <div class="e" style="background:#4d6b7d"><span class="t">Paléolithique</span><span class="n">5 à 10 M</span>chasseurs-cueilleurs, impact limité</div>
+    <div class="e" style="background:#3f5d70"><span class="t">Néolithique</span><span class="n">30 M</span>agriculture et élevage, surexploitation du sol</div>
+    <div class="e" style="background:#335062"><span class="t">Antiquité</span><span class="n">200 M</span>urbanisation intense, fortes répercussions</div>
+    <div class="e" style="background:#2a4455"><span class="t">Moyen âge</span><span class="n">500 M</span>agriculture : rotation des cultures</div>
+    <div class="e" style="background:#1c303d"><span class="t">Aujourd'hui</span><span class="n">8,3 milliards</span>les défis persistent</div>
+  </div>
+
+  <div class="g2">
+    <div class="def" style="margin-bottom:0">L'<b>homme est le premier responsable</b> des changements de l'environnement : ses <b>activités s'intensifient</b> et son <b>mode de vie évolue</b>, surtout avec l'<b>expansion démographique</b>.</div>
+    <div class="def" style="margin-bottom:0">Depuis la <b>révolution industrielle</b> et l'explosion démographique, les causes de destruction de l'environnement sont <b>principalement dues à l'activité humaine</b>.<br><i class="gris">Question du cours : quels sont les défis actuels de l'interaction homme–environnement ?</i></div>
+  </div>
+</section>
+
+<!-- ===================== II ===================== -->
+<section class="partie s2">
+  <h2><span class="num">II</span>Les défis actuels</h2>
+
+  <div class="g3">
+    <div class="carte">
+      <h3>1 · L'urbanisation</h3>
+      <p><i>« Phénomène démographique se traduisant par une tendance à la concentration de la population dans les villes. »</i> (Larousse)</p>
+      <ul>
+        <li>Processus <b>continu</b>, amorcé à la 1<sup>re</sup> industrialisation : la population urbaine augmente, les villes s'étendent.</li>
+        <li>Près de <b>5 milliards</b> d'hommes en ville : régions <b>surpeuplées</b>, pollutions, nuisances.</li>
+        <li><b>Exode rural</b> → villes étalées → <b>moins d'espaces naturels et agricoles</b>.</li>
+        <li>Impacts : <b>écosystèmes détruits</b>, effondrement de la <b>biodiversité</b>, baisse des <b>terres arables</b>, plus de <b>mobilité</b>.</li>
+      </ul>
+    </div>
+
+    <div class="carte">
+      <h3>2 · Le défi énergétique</h3>
+      <p><b>Énergies non renouvelables</b> : <b>pétrole, charbon, gaz naturel, nucléaire</b> (repose sur l'uranium).</p>
+      <div class="def" style="margin:3px 0"><b>La surexploitation des ressources.</b></div>
+      <ul>
+        <li><b>Avant</b> : cuisiner, se chauffer. <b>Aujourd'hui</b> : électricité, transports, moteurs à combustion, chauffage et climatisation.</li>
+        <li>L'humanité dépend <b>totalement</b> de l'énergie : notre civilisation <b>thermo-industrielle</b> repose sur l'<b>extraction</b> de ressources.</li>
+        <li>Pétrole + charbon + gaz = <span class="chiffre">80 %</span> de l'énergie utilisée dans le monde.</li>
+      </ul>
+    </div>
+
+    <div class="carte">
+      <h3>3 · L'agriculture intensive</h3>
+      <ul>
+        <li>Au <b>XX<sup>e</sup> siècle</b>, elle remplace la traditionnelle (meilleur <b>rendement</b>, <b>sécurité alimentaire</b>) : agriculture <b>chimique</b> et <b>mégaprojets</b> remplacent les exploitations familiales.</li>
+        <li><b>Pollution</b> des sols et des eaux : <b>nitrates, phosphates, pesticides</b> → chute de la biodiversité, <b>érosion</b>, algues invasives.</li>
+        <li><b>Monoculture</b> → parcelles agrandies, <b>déforestation</b>, assèchement des <b>zones humides</b>.</li>
+        <li>Selon le <b>WWF</b> : <span class="chiffre">80 %</span> de la déforestation, <span class="chiffre">70 %</span> de l'eau douce utilisée, <span class="chiffre">70 %</span> de la perte de biodiversité terrestre.</li>
+        <li>FAO : nourrir <b>9 milliards</b> d'individus en <b>2050</b> en préservant les écosystèmes.</li>
+      </ul>
+    </div>
+
+    <div class="carte">
+      <h3>4 · La demande en eau</h3>
+      <div style="display:grid; grid-template-columns: 84px 1fr; gap:6px; align-items:center;">
+        <svg viewBox="0 0 36 36" width="84" role="img" aria-label="Utilisation de l'eau dans le monde : 70 % irrigation, 22 % industrie, 8 % domestique">
+          <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#2F7DB5" stroke-width="6" stroke-dasharray="70 30" transform="rotate(-90 18 18)"/>
+          <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#e0735a" stroke-width="6" stroke-dasharray="22 78" stroke-dashoffset="-70" transform="rotate(-90 18 18)"/>
+          <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#8a5fa8" stroke-width="6" stroke-dasharray="8 92" stroke-dashoffset="-92" transform="rotate(-90 18 18)"/>
+          <text x="18" y="17" font-size="3.6" font-weight="800" text-anchor="middle" fill="#1f2328">Eau</text>
+          <text x="18" y="21.4" font-size="3" text-anchor="middle" fill="#5f6670">dans le monde</text>
+        </svg>
+        <ul style="font-size:8.3pt">
+          <li style="color:#2F7DB5"><b>70 %</b> <span style="color:var(--encre)">irrigation</span></li>
+          <li style="color:#e0735a"><b>22 %</b> <span style="color:var(--encre)">industrie</span></li>
+          <li style="color:#8a5fa8"><b>8 %</b> <span style="color:var(--encre)">usage domestique</span></li>
+        </ul>
+      </div>
+      <p style="margin-top:2px"><b>Causes</b> : croissance démographique (≈ <b>9,7 milliards</b> d'ici 2050), agriculture, industrialisation, urbanisation rapide.</p>
+      <p style="margin-top:2px"><b>Solutions</b> : gestion durable de l'eau, nouvelles techniques d'irrigation, technologies de purification, sensibilisation.</p>
+    </div>
+
+    <div class="carte">
+      <h3>5 · La déforestation</h3>
+      <p><b>Destruction ou dégradation des forêts</b>, souvent à cause d'activités humaines : <b>agriculture, exploitation forestière, urbanisation, exploitation minière</b>.</p>
+      <ul style="margin-top:2px">
+        <li><b>Perte de biodiversité</b>, perturbation des écosystèmes.</li>
+        <li><b>Climat</b> : libère le <b>CO<sub>2</sub></b> stocké dans les arbres.</li>
+        <li>Impacts <b>environnementaux, sociaux et économiques</b> : communautés locales et santé de la planète.</li>
+        <li><b>Afrique</b> : jusqu'à <span class="chiffre">4 M d'hectares</span> de forêt perdus par an (FAO et AUDA-NEPAD, étude du 29/09/2021).</li>
+      </ul>
+    </div>
+
+    <div class="carte">
+      <h3>6 · La pollution</h3>
+      <div class="def" style="margin-bottom:3px"><b>Contamination</b> de l'environnement par des <b>substances ou agents nuisibles</b> qui altèrent la qualité de l'<b>air</b>, de l'<b>eau</b> et du <b>sol</b>.</div>
+      <p><b>Sources</b> : industries, transports, agriculture, déchets.</p>
+      <p style="margin-top:2px"><b>Effets</b> : santé humaine, biodiversité, écosystèmes → <b>changement climatique</b>, maladies, <b>dégradation des ressources naturelles</b>.</p>
+    </div>
+  </div>
+  <div class="notes">
+    <h4>Mes notes</h4>
+    <div class="ligne"></div><div class="ligne"></div><div class="ligne"></div>
+  </div>
+</section>
+
+<!-- ===================== III ===================== -->
+<section class="partie s3">
+  <div style="break-inside:avoid">
+  <h2><span class="num">III</span>Les solutions</h2>
+
+  <div class="def"><b>1 · Prise de conscience internationale</b> : la prise de conscience mondiale des enjeux a conduit à une série d'initiatives. Ces <b>jalons</b> montrent une <b>gouvernance mondiale de plus en plus proactive</b> face aux défis écologiques.</div>
+
+  <div class="dates">
+    <div><span class="an">1972</span><span class="t">Stockholm</span>Conférence de l'ONU sur l'Environnement Humain (<b>CNUEH</b>) : pollution, ressources, <b>coopération internationale</b>.</div>
+    <div><span class="an">1987</span><span class="t">Rapport Brundtland</span>apparition du concept de <b>développement durable</b>.</div>
+    <div><span class="an">1992</span><span class="t">Rio</span>1<sup>er</sup> <b>Sommet de la Terre</b> : Convention-cadre sur les changements climatiques, <b>Agenda 21</b>.</div>
+    <div><span class="an">1997</span><span class="t">Protocole de Kyoto</span>limiter les émissions de <b>gaz à effet de serre</b>.</div>
+    <div><span class="an">2007</span><span class="t">Grenelle de l'environnement</span>(France) : réunit divers acteurs pour protéger l'environnement.</div>
+    <div><span class="an">2015</span><span class="t">Accord de Paris</span>adopté par <b>195 pays</b> : engagement collectif contre le changement climatique.</div>
+  </div>
+  </div>
+
+  <div class="g3">
+    <div class="carte">
+      <h3>2 · Parcs nationaux et réserves protégées</h3>
+      <p>Stratégie essentielle pour la <b>conservation de la biodiversité</b> et la protection des <b>écosystèmes menacés</b> : ils sauvent des espèces en danger et restaurent des habitats dégradés.</p>
+      <p style="margin-top:2px"><b>Ils permettent :</b></p>
+      <ul>
+        <li>la <b>recherche scientifique</b> (biologistes, écologistes) ;</li>
+        <li>la <b>sensibilisation du public</b> : éducation à l'environnement ;</li>
+        <li>des <b>revenus</b> du <b>tourisme durable</b> pour les communautés locales (alternative à l'exploitation des ressources).</li>
+      </ul>
+      <p style="margin-top:2px"><b>Collaboration</b> : gouvernements + <b>ONG</b> + <b>communautés locales</b> (approche <b>participative</b>) : un <b>pilier</b> pour les générations futures.</p>
+    </div>
+
+    <div class="carte">
+      <h3>3 · Les énergies renouvelables</h3>
+      <p>Sources <b>naturelles</b>, d'énergie thermique et électrique, <b>non épuisables et non polluantes</b>, qui <b>se renouvellent</b> en continu. Alternative aux fossiles (polluantes, épuisables, objet de <b>tensions géopolitiques</b>). <b>Cinq grands types :</b></p>
+      <table class="ch" style="margin-top:3px">
+        <tr><td>Solaire</td><td>rayonnement du soleil : <b>photovoltaïque</b> (direct) ou <b>thermique</b> (chaleur)</td></tr>
+        <tr><td>Éolienne</td><td><b>force du vent</b> : éoliennes → électricité</td></tr>
+        <tr><td>Hydraulique</td><td><b>force de l'eau</b> (chutes, barrages) : turbines → électricité</td></tr>
+        <tr><td>Géothermie</td><td><b>chaleur stockée sous la Terre</b> : électricité et chaleur</td></tr>
+        <tr><td>Biomasse</td><td><b>combustion de matière organique</b> (plantes, arbres, déchets) : chaleur ou électricité</td></tr>
+      </table>
+    </div>
+
+    <div class="carte">
+      <h3>4 · L'agriculture durable</h3>
+      <p><i>« Application à l'agriculture des principes du développement durable : produire nourriture, bois et fibres en respectant les limites <b>écologiques, économiques et sociales</b>. »</i> <span class="gris">(Dictionnaire de l'environnement)</span></p>
+      <p style="margin-top:2px"><b>Pratiques :</b></p>
+      <ul>
+        <li><b>Réduire les engrais</b>, stopper l'épandage de <b>pesticides</b> ;</li>
+        <li>mieux gérer l'<b>eau</b> : réutiliser l'eau de pluie, éviter de pomper les <b>nappes phréatiques</b> ;</li>
+        <li>conserver les <b>ressources génétiques</b> (semences) ;</li>
+        <li>limiter les <b>gaz à effet de serre</b> et les <b>déchets</b> ;</li>
+        <li>préserver la <b>biodiversité</b> (pâturages naturels) ;</li>
+        <li>lutter contre la <b>désertification</b>, l'<b>érosion</b> et la dégradation des sols.</li>
+      </ul>
+    </div>
+
+    <div class="carte">
+      <h3>5 · Le recyclage des déchets</h3>
+      <div style="display:grid; grid-template-columns: 1fr 78px; gap:6px; align-items:start;">
+        <p>Seuls <span class="chiffre">13,5 %</span> des déchets sont recyclés dans le monde. On <b>transforme</b> les matériaux usagés en <b>nouveaux produits</b>.</p>
+        <svg viewBox="0 0 84 70" width="78" role="img" aria-label="Quatre bacs : papier, plastique, verre, compost">
+          <g stroke="none">
+            <rect x="2" y="18" width="16" height="30" rx="2" fill="#1f4fa0"/><rect x="22" y="18" width="16" height="30" rx="2" fill="#e9a825"/>
+            <rect x="42" y="18" width="16" height="30" rx="2" fill="#2e8b3e"/><rect x="62" y="18" width="16" height="30" rx="2" fill="#7a3a2a"/>
+            <rect x="0" y="14" width="20" height="5" rx="1.5" fill="#173d7c"/><rect x="20" y="14" width="20" height="5" rx="1.5" fill="#c58a12"/>
+            <rect x="40" y="14" width="20" height="5" rx="1.5" fill="#236c30"/><rect x="60" y="14" width="20" height="5" rx="1.5" fill="#5e2c1f"/>
+          </g>
+          <g font-size="3.7" font-weight="800" text-anchor="middle" fill="#1f2328">
+            <text x="10" y="57">Papier</text><text x="30" y="57">Plastique</text><text x="50" y="57">Verre</text><text x="70" y="57">Compost</text>
+          </g>
+          <g fill="#fff" font-size="9" font-weight="800" text-anchor="middle"><text x="10" y="36">♻</text><text x="30" y="36">♻</text><text x="50" y="36">♻</text><text x="70" y="36">♻</text></g>
+        </svg>
+      </div>
+      <ul style="margin-top:2px">
+        <li>Moins de déchets en <b>décharge</b>, <b>ressources naturelles conservées</b>, moins de <b>gaz à effet de serre</b>.</li>
+        <li>Papier, verre, plastique, métaux → <b>réduction de la pollution</b> et <b>économie circulaire</b>.</li>
+        <li>Efficace si : <b>infrastructures de collecte</b>, <b>éducation</b>, <b>sensibilisation</b>.</li>
+      </ul>
+    </div>
+
+    <div class="carte" style="grid-column: span 2;">
+      <h3>6 · La reforestation et la protection des forêts</h3>
+      <div class="g2" style="gap:10px">
+        <div>
+          <p><b>Reforestation</b> : replanter des arbres dans les zones dégradées pour <b>restaurer les écosystèmes</b>, <b>améliorer la qualité du sol</b> et promouvoir la <b>biodiversité</b>.</p>
+        </div>
+        <div>
+          <p><b>Protection des forêts existantes</b>, tout aussi vitale : <b>politiques de gestion durable</b>, <b>sensibilisation</b> des communautés locales, <b>engagement collectif</b> contre l'exploitation illégale.</p>
+        </div>
+      </div>
+      <p style="margin-top:3px">But : maintenir l'<b>équilibre écologique</b>, préserver les ressources naturelles, assurer un <b>avenir durable</b> aux générations à venir. <span class="gris">Exemple de la diapo : <i>La Grande Marche pour la protection des forêts</i>.</span></p>
+    </div>
+  </div>
+
+  <div class="exemple">
+    <div class="etiquette">Exemple<br>cité en cours</div>
+    <p>Noté au tableau par l'enseignant : les <b>éco-quartiers</b>, avec l'exemple du quartier <b>Vauban</b> à <b>Fribourg</b> (<b>Allemagne</b>).</p>
+  </div>
+
+  <div class="retenir">
+    <div>
+      <h4>Chiffres à retenir</h4>
+      <dl>
+        <dt>8,3 milliards :</dt><dd>population mondiale (≈ 9 à 9,7 milliards en 2050).</dd>
+        <dt>80 % :</dt><dd>de l'énergie mondiale vient du pétrole, du charbon et du gaz.</dd>
+        <dt>70 / 22 / 8 % :</dt><dd>eau pour l'irrigation / l'industrie / l'usage domestique.</dd>
+        <dt>80 / 70 / 70 % :</dt><dd>part de l'agriculture dans la déforestation / l'eau douce / la perte de biodiversité (WWF).</dd>
+        <dt>4 M d'ha :</dt><dd>forêt perdue par an en Afrique.</dd>
+        <dt>13,5 % :</dt><dd>des déchets recyclés dans le monde.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Surexploitation :</dt><dd>prélever les ressources plus vite qu'elles ne se renouvellent.</dd>
+        <dt>Monoculture :</dt><dd>une seule culture sur de grandes parcelles.</dd>
+        <dt>Économie circulaire :</dt><dd>réutiliser les matériaux plutôt que les jeter.</dd>
+        <dt>Biomasse :</dt><dd>matière organique brûlée pour produire chaleur ou électricité.</dd>
+        <dt>Développement durable :</dt><dd>concept né du rapport Brundtland (1987).</dd>
+      </dl>
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>
