@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Construction générale · les fondations</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   démarche du projet */
+    --c2: #B4501E;  /* II  le terrain */
+    --c3: #8C1C13;  /* III l'édifice */
+    --c4: #3C7A3E;  /* IV  charges et fondations */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.6pt; line-height: 1.34; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.05em; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.6pt; font-weight: 800; margin-bottom: 2px; }
+  .s1 .carte h3 { color: var(--c1); } .s2 .carte h3 { color: var(--c2); } .s3 .carte h3 { color: var(--c3); } .s4 .carte h3 { color: var(--c4); }
+  .carte p, .carte li { font-size: 8.7pt; line-height: 1.32; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .alerte { color: var(--rouge); font-weight: 800; }
+
+  /* étapes du projet */
+  .etapes { display: grid; grid-template-columns: 1fr 12px 1fr 12px 1fr 12px 1fr; align-items: stretch; gap: 2px; margin-bottom: 5px; }
+  .etapes .e { background: var(--c1); color: #fff; border-radius: 5px; padding: 3px 6px; font-size: 8.3pt; line-height: 1.27; }
+  .etapes .e b { display: block; font-size: 8.4pt; }
+  .etapes .f { display: grid; place-items: center; font-weight: 800; color: var(--c1); }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.8pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  /* tableau charges */
+  table.ch { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
+  table.ch th { background: var(--c4); color: #fff; text-align: left; padding: 2px 6px; font-size: 7.7pt; letter-spacing: .05em; }
+  table.ch td { padding: 2px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.ch td:first-child { font-weight: 800; color: var(--c4); white-space: nowrap; }
+  table.ch tr:nth-child(even) td { background: #f3f8f3; }
+
+  /* chaîne de charges */
+  .synthese { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 10px 7px; margin-top: 7px; break-inside: avoid; }
+  .synthese h4, .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .fil { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; font-size: 8.4pt; line-height: 1.25; }
+  .fil .e { color: #fff; padding: 4px 4px 4px 12px; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e b { display: block; }
+  .lecon { margin-top: 5px; font-family: "Playfair", serif; font-style: italic; font-size: 11pt; text-align: center; }
+
+  .retenir { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 7px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir dl { font-size: 8.6pt; line-height: 1.3; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 2px; }
+  .notes { margin-top: 7px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 17px; border-bottom: 1px dotted #c4cad1; }
+</style>
+
+<style>
+  .c1 { --t: var(--c1); } .c2 { --t: var(--c2); } .c3 { --t: var(--c3); } .c4 { --t: var(--c4); }
+  .partie { margin-bottom: 5px; }
+  h2 { font-size: 12.5pt; margin: 1px 0 3px; }
+  h2 .num { width: 21px; height: 21px; font-size: 8.6pt; }
+  .def { padding: 2px 7px; margin-bottom: 4px; font-size: 8.4pt; }
+  .carte { padding: 3px 7px 4px; }
+  .carte h3 { font-size: 9pt; margin-bottom: 1px; }
+  .carte p, .carte li { font-size: 8pt; line-height: 1.27; }
+  .carte svg { display: block; width: 100%; height: auto; max-height: 32mm; margin: 0 auto; }
+  .pg2 { break-before: page; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.2pt; }
+  table.t th { background: var(--t); color: #fff; text-align: left; padding: 1.5px 6px; font-size: 7.4pt; letter-spacing: .05em; }
+  table.t td { padding: 1.5px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.t td:first-child { font-weight: 800; color: var(--t); }
+  table.t tr:nth-child(even) td { background: #f8f8f9; }
+  .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .mini { border: 1px solid var(--filet); border-radius: 5px; padding: 2px 4px 3px; background: #fff; break-inside: avoid; }
+  .mini svg { display: block; width: 100%; height: auto; max-height: 14mm; margin: 0 auto; }
+  .mini b { font-size: 8.2pt; display: block; margin-top: 1px; color: var(--t); }
+  .mini span { font-size: 7.5pt; line-height: 1.22; display: block; color: #3a4047; }
+  .ex { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 4px; }
+  .ex div { border-top: 3px solid var(--c1); background: var(--fond); padding: 1px 6px 2px; font-size: 7.7pt; line-height: 1.22; }
+  .ex b:first-child { display: block; font-size: 8.6pt; color: var(--c1); }
+  .tass { border: 1.5px solid var(--rouge); background: #fdf1ef; border-radius: 6px; padding: 2px 8px; font-size: 8pt; margin-bottom: 4px; break-inside: avoid; }
+  .tass b:first-child { color: var(--rouge); letter-spacing: .06em; font-size: 7.4pt; }
+  .num3 { display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 50%; background: var(--c2); color: #fff; font-weight: 800; font-size: 7.4pt; margin-right: 3px; }
+  .legende { font-size: 7.2pt; margin-top: 0; }
+  .carte .pan svg { max-height: 15mm; }
+  .synthese { margin-top: 5px; padding: 4px 9px 5px; }
+  .fil { font-size: 7.9pt; }
+  .fil .e { padding: 3px 3px 3px 11px; }
+  .lecon { font-size: 10pt; margin-top: 3px; }
+  .retenir { margin-top: 5px; gap: 7px; }
+  .retenir > div { padding: 3px 8px; }
+  .retenir dl { font-size: 7.9pt; line-height: 1.25; }
+  svg text { font-family: "Inter", sans-serif; }
+  svg .l { font-size: 8px; fill: #1f2328; font-weight: 600; }
+  svg .lb { font-size: 8px; fill: #1f2328; font-weight: 800; }
+  svg .lg { font-size: 7px; fill: #5f6670; }
+  svg .ld { stroke: #1f2328; stroke-width: .7; fill: none; }
+  svg .bet { fill: #d9dde3; stroke: #5f6670; stroke-width: .8; }
+  svg .acier { stroke: #8C1C13; stroke-width: 1.5; fill: none; }
+  svg .halo { paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#f4eee1"/><line x1="0" y1="0" x2="0" y2="6" stroke="#bfae8f" stroke-width="1"/></pattern>
+  <pattern id="h2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d9c7a3"/><line x1="0" y1="0" x2="0" y2="6" stroke="#9c8660" stroke-width="1"/></pattern>
+  <marker id="fr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker>
+  <marker id="fv" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#3C7A3E"/></marker>
+  <marker id="fk" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1f2328"/></marker>
+  <marker id="fk2" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 z" fill="#1f2328"/></marker>
+</defs></svg>
+
+<div class="entete">
+  <div>
+    <div class="kicker">CONSTRUCTION GÉNÉRALE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Les fondations</h1>
+  </div>
+  <div class="sous">Rôle, choix et types : comment le bâtiment s'appuie sur le sol</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>01 · Rôle et choix</b>exigences, tassement, type selon le sol</div>
+  <div class="p2"><b>02 · Superficielles</b>semelles, gros béton, longrines, voile</div>
+  <div class="p3"><b>03 · Radier général</b>une dalle sous tout le bâtiment</div>
+  <div class="p4"><b>04 · Profondes</b>les pieux forés et battus</div>
+</div>
+
+<div class="def" style="border-color:var(--c1); font-size:8pt; margin-bottom:4px"><b>Rappel (les fouilles) :</b> <b>rigole</b> étroite (2 m au plus) et peu profonde (1 m environ) · <b>tranchée</b> étroite mais plus profonde que large · <b>puits</b> profond, de plan presque carré · <b>pleine masse</b> excavation large et peu profonde, sur tout le bâtiment.</div>
+
+<!-- ===================== 01 ===================== -->
+<section class="partie s1 c1">
+  <h2><span class="num">01</span>Rôle et choix : qu'est-ce qu'une fondation ?</h2>
+  <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:8px; align-items:start;">
+    <div>
+      <div class="def"><b>Fondation</b> : partie de l'ouvrage qui <b>repose sur le sol</b> et lui <b>transmet toutes les charges</b> du bâtiment.</div>
+      <ul style="font-size:8.2pt">
+        <li><b>Charges permanentes</b> : le poids de la construction.</li>
+        <li><b>Charges variables</b> : les occupants, le mobilier, le vent.</li>
+        <li><b>Descente de charges</b> : le chemin qu'elles suivent <b>jusqu'au sol</b> (plancher → poteau → fondation → sol).</li>
+        <li><b>Infrastructure</b> : tout ce qui est <b>sous le niveau du sol</b> (fondations).</li>
+        <li><b>Superstructure</b> : tout ce qui est <b>au-dessus</b>.</li>
+      </ul>
+    </div>
+    <div class="fig">
+<svg viewBox="0 0 372 196" role="img" aria-label="Éléments de l'infrastructure" style="max-height:54mm">
+  <rect x="6" y="84" width="236" height="110" fill="url(#h)"/><line x1="6" y1="84" x2="242" y2="84" stroke="#1f2328" stroke-width="1"/>
+  <line x1="6" y1="79" x2="248" y2="79" stroke="#1f2328" stroke-width=".8" stroke-dasharray="4 3"/>
+  <text x="8" y="68" class="lb halo" font-style="italic" style="font-size:7px">superstructure</text><text x="8" y="94" class="lb halo" font-style="italic" style="font-size:7px">infrastructure</text>
+  <rect x="22" y="8" width="212" height="9" class="bet"/>
+  <rect x="62" y="17" width="10" height="62" class="bet"/><rect x="150" y="17" width="10" height="62" class="bet"/>
+  <rect x="62" y="82" width="98" height="20" class="bet"/><line x1="64" y1="86" x2="158" y2="86" class="acier" stroke-width=".9"/><line x1="64" y1="98" x2="158" y2="98" class="acier" stroke-width=".9"/>
+  <rect x="166" y="82" width="46" height="6" class="bet"/><rect x="166" y="88" width="46" height="16" fill="#eee9dc" stroke="#5f6670" stroke-width=".8"/>
+  <g fill="#9aa0a8"><circle cx="172" cy="94" r="2.4"/><circle cx="182" cy="98" r="2.2"/><circle cx="192" cy="93" r="2.4"/><circle cx="201" cy="98" r="2.3"/><circle cx="208" cy="93" r="2"/></g>
+  <rect x="62" y="102" width="10" height="48" class="bet"/><rect x="150" y="102" width="10" height="48" class="bet"/>
+  <rect x="44" y="150" width="46" height="11" class="bet"/>
+  <rect x="124" y="150" width="62" height="11" class="bet"/><rect x="116" y="161" width="78" height="20" fill="#e4e6e9" stroke="#5f6670" stroke-width=".8"/>
+  <circle cx="130.2" cy="164.7" r="1.7" fill="#9aa0a8"/><circle cx="137.9" cy="174.9" r="2.2" fill="#9aa0a8"/><circle cx="139.0" cy="165.5" r="1.8" fill="#9aa0a8"/><circle cx="124.2" cy="164.6" r="2.1" fill="#9aa0a8"/><circle cx="158.9" cy="166.0" r="2.0" fill="#9aa0a8"/><circle cx="185.5" cy="171.8" r="2.2" fill="#9aa0a8"/><circle cx="186.2" cy="175.0" r="1.3" fill="#9aa0a8"/><circle cx="149.0" cy="173.6" r="1.8" fill="#9aa0a8"/><circle cx="124.6" cy="176.3" r="2.0" fill="#9aa0a8"/><circle cx="149.5" cy="172.8" r="1.3" fill="#9aa0a8"/><circle cx="144.1" cy="171.1" r="1.3" fill="#9aa0a8"/><circle cx="189.6" cy="176.8" r="1.5" fill="#9aa0a8"/><circle cx="160.6" cy="166.8" r="1.7" fill="#9aa0a8"/><circle cx="173.2" cy="164.1" r="2.0" fill="#9aa0a8"/><circle cx="174.3" cy="170.1" r="2.4" fill="#9aa0a8"/><circle cx="148.4" cy="176.7" r="2.0" fill="#9aa0a8"/><circle cx="157.6" cy="169.4" r="1.7" fill="#9aa0a8"/>
+  <rect x="210" y="88" width="10" height="62" class="bet"/><rect x="194" y="150" width="42" height="10" class="bet"/>
+  <g class="ld">
+    <line x1="256" y1="12" x2="226" y2="12"/><line x1="256" y1="36" x2="162" y2="42"/><line x1="256" y1="58" x2="228" y2="18"/>
+    <line x1="256" y1="80" x2="205" y2="85"/><line x1="256" y1="102" x2="140" y2="94"/><line x1="256" y1="124" x2="162" y2="126"/>
+    <line x1="256" y1="146" x2="222" y2="130"/><line x1="256" y1="168" x2="190" y2="154"/><line x1="256" y1="188" x2="190" y2="172"/>
+  </g>
+  <g class="l"><text x="260" y="15">Plancher</text><text x="260" y="39">Poteau</text><text x="260" y="61">Porte-à-faux</text><text x="260" y="79">Chape armée</text><text x="260" y="87">sur hérisson</text><text x="260" y="105">Longrine</text><text x="260" y="127">Pré-poteau</text><text x="260" y="149">Voile en soubassement</text><text x="260" y="171">Semelle</text><text x="260" y="191">Gros béton</text></g>
+</svg><div class="legende">Les éléments de l'infrastructure (coupe)</div></div>
+  </div>
+
+  <div class="ex" style="margin-top:4px">
+    <div><b>Stabilité</b>l'ouvrage ne <b>glisse</b> pas et ne <b>bascule</b> pas sous le vent ou la poussée des terres</div>
+    <div><b>Résistance</b>ni la fondation ni le sol ne doivent <b>se rompre</b></div>
+    <div><b>Durabilité</b>elle résiste pendant <b>toute la vie</b> du bâtiment</div>
+    <div><b>Économie</b>la solution <b>la moins coûteuse</b> permise par le sol et le terrain</div>
+  </div>
+  <div class="tass"><b>LE DANGER PRINCIPAL : LE TASSEMENT</b> &nbsp;Enfoncement du sol sous la charge. Égal partout, le bâtiment <b>descend d'un bloc</b> ; <b>différent d'un appui à l'autre</b> (tassement différentiel), la <b>structure se fissure</b>.</div>
+
+  <div style="display:grid; grid-template-columns: 1.55fr 1fr; gap:7px; align-items:start;">
+    <table class="t">
+      <tr><th>CE QUE DIT L'ÉTUDE DU SOL</th><th>FONDATION CHOISIE</th></tr>
+      <tr><td>Bon sol proche de la surface</td><td><b>Semelles</b> : la plus économique</td></tr>
+      <tr><td>Bon sol un peu plus profond</td><td><b>Gros béton</b> ou puits sous les semelles</td></tr>
+      <tr><td>Sol médiocre mais homogène, charges fortes, terrain inondable</td><td><b>Radier général</b></td></tr>
+      <tr><td>Bon sol très profond, ou bâtiment très lourd</td><td><b>Pieux</b></td></tr>
+    </table>
+    <div class="carte" style="margin:0"><h3>Qui décide ?</h3><p>Le <b>laboratoire</b> étudie le sol ; l'<b>ingénieur conseil en structure</b> choisit et dimensionne les fondations ; l'<b>architecte</b> les intègre à son projet <b>dès l'esquisse</b>.</p></div>
+  </div>
+</section>
+
+<!-- ===================== 02 ===================== -->
+<section class="partie s2 c2">
+  <h2><span class="num">02</span>Les fondations superficielles</h2>
+  <div class="def"><b>Semelle</b> : socle en <b>béton armé</b>, <b>peu profond</b>, plus large que ce qu'il porte ; ce débord s'appelle l'<b>empattement</b>.</div>
+  <div class="g5">
+    <div class="mini"><svg viewBox="0 0 78 54" role="img" aria-hidden="true"><rect x="22" y="8" width="34" height="34" class="bet"/><rect x="35" y="21" width="8" height="8" fill="#555c66"/></svg><b>Isolée</b><span>sous un poteau : un socle par poteau</span></div>
+    <div class="mini"><svg viewBox="0 0 78 54" role="img" aria-hidden="true"><rect x="6" y="14" width="66" height="26" class="bet"/><rect x="18" y="23" width="8" height="8" fill="#555c66"/><rect x="52" y="23" width="8" height="8" fill="#555c66"/></svg><b>Continue</b><span>sous 2 poteaux ou plus, rapprochés</span></div>
+    <div class="mini"><svg viewBox="0 0 78 54" role="img" aria-hidden="true"><rect x="6" y="12" width="66" height="30" class="bet"/><rect x="6" y="21" width="66" height="12" fill="#e7a9a2" stroke="#c0392b" stroke-width=".6"/></svg><b>Filante</b><span>socle continu sous un mur ou un voile</span></div>
+    <div class="mini"><svg viewBox="0 0 78 54" role="img" aria-hidden="true"><rect x="30" y="8" width="38" height="34" class="bet"/><rect x="31" y="21" width="8" height="8" fill="#555c66"/><line x1="30" y1="2" x2="30" y2="48" stroke="#1f2328" stroke-width="1" stroke-dasharray="3 2"/><text x="26" y="52" class="lg" text-anchor="end">limite</text></svg><b>Excentrée</b><span>en limite : empattement d'un seul côté</span></div>
+    <div class="mini"><svg viewBox="0 0 78 54" role="img" aria-hidden="true"><rect x="22" y="8" width="34" height="34" class="bet"/><rect x="32" y="18" width="14" height="14" fill="#c9cfd6" stroke="#555c66" stroke-width=".8"/><line x1="39" y1="18" x2="39" y2="32" stroke="#555c66"/><line x1="32" y1="25" x2="46" y2="25" stroke="#555c66"/><g fill="#555c66"><circle cx="27" cy="13" r="1.5"/><circle cx="51" cy="13" r="1.5"/><circle cx="27" cy="37" r="1.5"/><circle cx="51" cy="37" r="1.5"/></g></svg><b>Charpente métallique</b><span>socle où est scellée la <b>platine</b> (plaque d'acier soudée au pied du poteau, fixée par tiges d'ancrage)</span></div>
+  </div>
+  <div class="g2" style="margin-top:5px">
+    <div class="carte c2"><h3>La semelle isolée : coupe</h3>
+<svg viewBox="0 0 250 120" role="img" aria-label="Semelle isolée : coupe">
+  <rect x="0" y="34" width="150" height="86" fill="url(#h)"/><line x1="0" y1="34" x2="150" y2="34" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="30" y="76" width="112" height="22" class="bet"/><rect x="26" y="98" width="120" height="4" fill="#aab0b8"/>
+  <rect x="78" y="4" width="16" height="72" class="bet"/>
+  <line x1="82" y1="4" x2="82" y2="92" class="acier" stroke-width="1.2"/><line x1="90" y1="4" x2="90" y2="92" class="acier" stroke-width="1.2"/><path d="M82,92 H64 M90,92 H108" class="acier" stroke-width="1.2"/>
+  <line x1="36" y1="92" x2="136" y2="92" class="acier" stroke-width="2"/>
+  <g fill="#8C1C13"><circle cx="40" cy="86" r="1.7"/><circle cx="54" cy="86" r="1.7"/><circle cx="68" cy="86" r="1.7"/><circle cx="102" cy="86" r="1.7"/><circle cx="116" cy="86" r="1.7"/><circle cx="130" cy="86" r="1.7"/></g>
+  <line x1="16" y1="76" x2="16" y2="98" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="12" y="90" class="lg" text-anchor="end">h</text>
+  <line x1="30" y1="112" x2="142" y2="112" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="86" y="119" class="lg" text-anchor="middle">largeur de la semelle</text>
+  <g class="ld"><line x1="156" y1="12" x2="96" y2="14"/><line x1="156" y1="48" x2="120" y2="50"/><line x1="156" y1="72" x2="138" y2="80"/><line x1="156" y1="94" x2="136" y2="92"/><line x1="156" y1="112" x2="146" y2="100"/></g>
+  <g class="l"><text x="159" y="11">Poteau :</text><text x="159" y="20">aciers en attente</text><text x="159" y="51">Remblai</text><text x="159" y="72">Semelle en</text><text x="159" y="81">béton armé</text><text x="159" y="94">Nappe d'aciers en bas,</text><text x="159" y="103">dans les deux sens</text><text x="159" y="116">Béton de propreté</text></g>
+</svg><p>Largeur × longueur, <b>carrée ou rectangulaire</b> : <b>nappe d'aciers en bas, dans les deux sens</b>, sur un <b>béton de propreté</b>.</p></div>
+    <div class="carte c2"><h3>La semelle filante sous un mur ou un voile</h3>
+<svg viewBox="0 0 250 120" role="img" aria-label="Semelle filante : coupe">
+  <g stroke="#c0392b" stroke-width="1.3" marker-end="url(#fr)"><line x1="70" y1="0" x2="70" y2="14"/><line x1="78" y1="0" x2="78" y2="14"/><line x1="86" y1="0" x2="86" y2="14"/><line x1="94" y1="0" x2="94" y2="14"/><line x1="102" y1="0" x2="102" y2="14"/></g>
+  <rect x="0" y="34" width="150" height="86" fill="url(#h)"/><line x1="0" y1="34" x2="150" y2="34" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="68" y="14" width="40" height="64" class="bet"/><line x1="73" y1="14" x2="73" y2="92" class="acier" stroke-width="1.2"/><line x1="103" y1="14" x2="103" y2="92" class="acier" stroke-width="1.2"/>
+  <rect x="24" y="76" width="128" height="22" class="bet"/><rect x="20" y="98" width="136" height="4" fill="#aab0b8"/>
+  <path d="M30,86 V93 H146 V86" class="acier" stroke-width="2"/>
+  <g fill="#8C1C13"><circle cx="40" cy="88" r="1.6"/><circle cx="54" cy="88" r="1.6"/><circle cx="68" cy="88" r="1.6"/><circle cx="110" cy="88" r="1.6"/><circle cx="124" cy="88" r="1.6"/><circle cx="138" cy="88" r="1.6"/></g>
+  <line x1="24" y1="112" x2="152" y2="112" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="88" y="119" class="lg" text-anchor="middle">largeur de la semelle</text>
+  <g class="ld"><line x1="160" y1="44" x2="108" y2="44"/><line x1="160" y1="70" x2="146" y2="91"/><line x1="160" y1="92" x2="124" y2="88"/><line x1="160" y1="108" x2="140" y2="100"/></g>
+  <g class="l"><text x="163" y="8">Charge du mur,</text><text x="163" y="17">répartie</text><text x="163" y="42">Mur ou voile,</text><text x="163" y="51">avec ses aciers</text><text x="163" y="70">Aciers principaux,</text><text x="163" y="79">en travers, en bas</text><text x="163" y="93">Aciers de répartition</text><text x="163" y="102">(en points)</text><text x="163" y="113">Béton de propreté</text></g>
+</svg><p>Socle continu en béton armé qui porte un mur ou un voile : il <b>répartit la charge du mur</b> sur le sol.</p></div>
+  </div>
+</section>
+
+<div class="pg2">
+<section class="partie s2 c2">
+  <h2><span class="num">02</span>Fondations superficielles (suite)</h2>
+  <div class="g2">
+    <div class="carte c2"><h3>Le gros béton : descendre jusqu'au bon sol</h3>
+<svg viewBox="0 0 250 108" role="img" aria-label="Gros béton">
+  <rect x="0" y="14" width="250" height="56" fill="#efe4cc"/><rect x="0" y="70" width="250" height="38" fill="url(#h2)"/>
+  <line x1="0" y1="14" x2="250" y2="14" stroke="#1f2328" stroke-width="1.2"/>
+  <text x="3" y="26" class="lg">mauvais sol</text><text x="3" y="82" class="lg halo">bon sol</text>
+  <rect x="44" y="0" width="12" height="44" class="bet"/><rect x="30" y="44" width="40" height="10" class="bet"/>
+  <rect x="34" y="54" width="32" height="34" fill="#e4e6e9" stroke="#5f6670" stroke-width=".8"/><circle cx="57.0" cy="78.4" r="1.4" fill="#9aa0a8"/><circle cx="58.8" cy="62.4" r="2.3" fill="#9aa0a8"/><circle cx="52.1" cy="66.1" r="2.2" fill="#9aa0a8"/><circle cx="61.1" cy="68.8" r="2.0" fill="#9aa0a8"/><circle cx="40.2" cy="73.1" r="1.8" fill="#9aa0a8"/><circle cx="49.3" cy="62.2" r="2.0" fill="#9aa0a8"/><circle cx="48.4" cy="59.7" r="2.3" fill="#9aa0a8"/><circle cx="53.8" cy="63.5" r="1.6" fill="#9aa0a8"/><circle cx="60.1" cy="59.2" r="1.9" fill="#9aa0a8"/><circle cx="43.2" cy="61.4" r="2.3" fill="#9aa0a8"/><circle cx="56.4" cy="72.5" r="1.5" fill="#9aa0a8"/><circle cx="59.2" cy="80.4" r="1.3" fill="#9aa0a8"/>
+  <text x="50" y="104" class="lb halo" text-anchor="middle" style="font-size:7px">en puits : sous un poteau</text>
+  <rect x="136" y="0" width="12" height="44" class="bet"/><rect x="180" y="0" width="12" height="44" class="bet"/>
+  <rect x="124" y="44" width="36" height="10" class="bet"/><rect x="168" y="44" width="36" height="10" class="bet"/>
+  <rect x="122" y="54" width="84" height="34" fill="#e4e6e9" stroke="#5f6670" stroke-width=".8"/><circle cx="175.4" cy="80.6" r="1.4" fill="#9aa0a8"/><circle cx="128.5" cy="83.7" r="2.0" fill="#9aa0a8"/><circle cx="180.7" cy="84.0" r="2.3" fill="#9aa0a8"/><circle cx="196.7" cy="61.2" r="1.6" fill="#9aa0a8"/><circle cx="143.0" cy="84.2" r="1.4" fill="#9aa0a8"/><circle cx="158.8" cy="68.0" r="1.4" fill="#9aa0a8"/><circle cx="139.8" cy="82.7" r="1.9" fill="#9aa0a8"/><circle cx="183.4" cy="65.0" r="1.5" fill="#9aa0a8"/><circle cx="192.5" cy="78.1" r="2.0" fill="#9aa0a8"/><circle cx="189.0" cy="63.9" r="1.6" fill="#9aa0a8"/><circle cx="134.3" cy="66.1" r="1.4" fill="#9aa0a8"/><circle cx="136.7" cy="70.4" r="2.3" fill="#9aa0a8"/><circle cx="164.8" cy="64.3" r="1.6" fill="#9aa0a8"/><circle cx="176.8" cy="60.4" r="2.1" fill="#9aa0a8"/><circle cx="189.6" cy="78.9" r="1.9" fill="#9aa0a8"/><circle cx="127.5" cy="62.6" r="1.7" fill="#9aa0a8"/><circle cx="153.9" cy="71.2" r="1.6" fill="#9aa0a8"/><circle cx="180.3" cy="84.1" r="1.3" fill="#9aa0a8"/><circle cx="137.3" cy="70.8" r="2.0" fill="#9aa0a8"/><circle cx="157.7" cy="60.2" r="1.7" fill="#9aa0a8"/><circle cx="171.1" cy="66.2" r="1.9" fill="#9aa0a8"/><circle cx="158.0" cy="72.9" r="1.5" fill="#9aa0a8"/><circle cx="190.1" cy="62.3" r="2.1" fill="#9aa0a8"/><circle cx="179.6" cy="83.8" r="1.6" fill="#9aa0a8"/><circle cx="162.3" cy="63.6" r="2.2" fill="#9aa0a8"/><circle cx="183.1" cy="70.7" r="1.2" fill="#9aa0a8"/><circle cx="192.3" cy="83.3" r="2.3" fill="#9aa0a8"/><circle cx="157.1" cy="63.1" r="1.9" fill="#9aa0a8"/><circle cx="132.4" cy="80.7" r="2.1" fill="#9aa0a8"/><circle cx="139.3" cy="74.0" r="1.8" fill="#9aa0a8"/><circle cx="198.7" cy="61.7" r="2.3" fill="#9aa0a8"/>
+  <text x="170" y="104" class="lb halo" text-anchor="middle" style="font-size:7px">2 semelles, un même gros béton</text>
+  <g class="ld"><line x1="226" y1="40" x2="162" y2="50"/><line x1="226" y1="66" x2="196" y2="70"/></g>
+  <g class="l"><text x="206" y="34" style="font-size:7.6px">Semelle</text><text x="212" y="76" style="font-size:7.6px">Gros béton</text></g>
+</svg>
+      <p><b>Béton non armé</b>, riche en grosses pierres, coulé au fond de la fouille jusqu'au bon sol : il <b>remplace le mauvais sol</b> et porte la semelle (en <b>puits</b> sous un poteau, en <b>tranchée</b> sous un mur).</p></div>
+    <div class="carte c2"><h3>La semelle excentrée, en limite de propriété</h3>
+<svg viewBox="0 0 250 108" role="img" aria-label="Semelle excentrée : problème et solution">
+  <rect x="0" y="10" width="14" height="32" fill="#e7a9a2" stroke="#c0392b" stroke-width=".7"/><text x="7" y="28" class="lg" text-anchor="middle" transform="rotate(-90 7 28)">voisin</text>
+  <rect x="0" y="42" width="116" height="52" fill="url(#h)"/><line x1="0" y1="42" x2="116" y2="42" stroke="#1f2328" stroke-width="1.2"/>
+  <line x1="15" y1="0" x2="15" y2="94" stroke="#1f2328" stroke-width=".9" stroke-dasharray="4 2"/>
+  <rect x="16" y="14" width="12" height="46" class="bet"/><rect x="16" y="60" width="58" height="9" class="bet"/>
+  <line x1="22" y1="0" x2="22" y2="14" stroke="#c0392b" stroke-width="1.5" marker-end="url(#fr)"/><text x="26" y="8" class="lg">charge</text>
+  <line x1="46" y1="92" x2="46" y2="71" stroke="#3C7A3E" stroke-width="1.5" marker-end="url(#fv)"/><text x="50" y="88" class="lg">réaction du sol</text>
+  <path d="M82,56 Q92,66 82,78" fill="none" stroke="#c0392b" stroke-width="1.3" marker-end="url(#fr)"/><text x="94" y="62" class="lb" style="font-size:6.6px">la semelle</text><text x="94" y="70" class="lb" style="font-size:6.6px">tourne</text>
+  <text x="58" y="105" class="lb" text-anchor="middle" style="fill:#c0392b">Le problème</text>
+  <rect x="128" y="42" width="122" height="52" fill="url(#h)"/><line x1="128" y1="42" x2="250" y2="42" stroke="#1f2328" stroke-width="1.2"/>
+  <line x1="128" y1="0" x2="128" y2="94" stroke="#1f2328" stroke-width=".9" stroke-dasharray="4 2"/>
+  <rect x="129" y="14" width="12" height="46" class="bet"/><rect x="129" y="60" width="50" height="9" class="bet"/>
+  <rect x="226" y="14" width="12" height="46" class="bet"/><rect x="204" y="60" width="46" height="9" class="bet"/>
+  <rect x="141" y="43" width="85" height="14" fill="#cfd4da" stroke="#555c66" stroke-width=".8"/><line x1="143" y1="46" x2="224" y2="46" class="acier" stroke-width=".9"/><line x1="143" y1="54" x2="224" y2="54" class="acier" stroke-width=".9"/>
+  <text x="183" y="34" class="lb halo" text-anchor="middle" style="font-size:7px">longrine de redressement</text><line x1="183" y1="37" x2="183" y2="46" class="ld"/>
+  <g stroke="#c0392b" stroke-width="1.3" marker-end="url(#fr)"><line x1="135" y1="0" x2="135" y2="14"/><line x1="232" y1="0" x2="232" y2="14"/></g>
+  <text x="190" y="105" class="lb" text-anchor="middle" style="fill:#3C7A3E">La solution</text>
+</svg>
+      <p>La charge du poteau et la réaction du sol ne sont <b>pas alignées</b> : la semelle tourne. Une <b>poutre rigide</b> relie la semelle excentrée à une semelle intérieure et <b>l'empêche de tourner</b>.</p></div>
+    <div class="carte c2"><h3>Sur un terrain en pente : les redans</h3>
+<svg viewBox="0 0 250 112" role="img" aria-label="Fondations en redans sur terrain en pente">
+  <polygon points="0,6 250,72 250,108 0,108" fill="url(#h)"/><line x1="0" y1="6" x2="250" y2="72" stroke="#1f2328" stroke-width="1.3"/>
+  <path d="M14,44 H72 V62 H132 V80 H238" fill="none" stroke="#9aa0a8" stroke-width="9" stroke-linejoin="miter"/>
+  <path d="M14,44 H72 V62 H132 V80 H238" fill="none" stroke="#d9dde3" stroke-width="7" stroke-linejoin="miter"/>
+  <path d="M14,44 H72 V62 H132 V80 H238" class="acier" stroke-width="1.1"/>
+  <text x="62" y="22" class="lg">terrain naturel en pente</text>
+  <text x="3" y="98" class="l halo" style="font-size:7.4px">Paliers horizontaux : on ne fonde</text><text x="3" y="107" class="l halo" style="font-size:7.4px">jamais sur un fond incliné</text>
+  <text x="246" y="76" class="l halo" text-anchor="end" style="font-size:7.4px">aciers continus qui</text><text x="246" y="85" class="l halo" text-anchor="end" style="font-size:7.4px">suivent les marches</text>
+</svg>
+      <p><b>Redan</b> : décrochement en forme de <b>marche d'escalier</b>. Les paliers sont <b>horizontaux</b> et les aciers <b>continus</b>.</p></div>
+    <div class="carte c2"><h3>Pré-poteau et longrine</h3>
+<svg viewBox="0 0 250 108" role="img" aria-label="Pré-poteau et longrine">
+  <rect x="0" y="48" width="250" height="60" fill="url(#h)"/><line x1="0" y1="48" x2="250" y2="48" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="36" y="8" width="178" height="30" fill="#f1c5c0" stroke="#c0392b" stroke-width=".7"/><text x="125" y="26" class="lb halo" text-anchor="middle">Mur du rez-de-chaussée</text>
+  <rect x="22" y="2" width="12" height="46" class="bet"/><rect x="216" y="2" width="12" height="46" class="bet"/>
+  <rect x="34" y="38" width="182" height="16" class="bet"/><line x1="36" y1="42" x2="214" y2="42" class="acier" stroke-width=".9"/><line x1="36" y1="50" x2="214" y2="50" class="acier" stroke-width=".9"/>
+  <rect x="22" y="48" width="12" height="40" class="bet"/><rect x="216" y="48" width="12" height="40" class="bet"/>
+  <line x1="25" y1="2" x2="25" y2="84" class="acier" stroke-width="1"/><line x1="31" y1="2" x2="31" y2="84" class="acier" stroke-width="1"/>
+  <rect x="6" y="88" width="44" height="10" class="bet"/><rect x="200" y="88" width="44" height="10" class="bet"/>
+  <g class="ld"><line x1="150" y1="62" x2="150" y2="53"/><line x1="40" y1="66" x2="36" y2="62"/><line x1="170" y1="86" x2="150" y2="94"/></g>
+  <g class="lb"><text x="150" y="72" text-anchor="middle">Longrine</text><text x="40" y="70">Pré-poteau</text><text x="172" y="84">Semelle</text></g>
+  <text x="238" y="8" class="lg" text-anchor="end">poteau</text>
+</svg>
+      <p><b>Pré-poteau</b> : départ de poteau en BA entre semelle et longrines (<b>rattrape la différence de niveau</b>). <b>Longrine</b> : poutre enterrée : <span class="num3">1</span>relier les semelles <span class="num3">2</span>porter les murs du RDC <span class="num3">3</span>redresser les semelles excentrées.</p></div>
+    <div class="carte c2"><h3>Le voile en soubassement</h3>
+<svg viewBox="0 0 250 108" role="img" aria-label="Voile en soubassement">
+  <rect x="10" y="10" width="62" height="8" class="bet"/><text x="14" y="8" class="lg">plancher</text>
+  <rect x="72" y="14" width="178" height="94" fill="url(#h)"/><line x1="72" y1="14" x2="250" y2="14" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="10" y="84" width="52" height="7" class="bet"/>
+  <rect x="62" y="18" width="10" height="68" class="bet"/><line x1="65" y1="18" x2="65" y2="86" class="acier" stroke-width=".9"/><line x1="69" y1="18" x2="69" y2="86" class="acier" stroke-width=".9"/>
+  <rect x="48" y="86" width="40" height="10" class="bet"/>
+  <text x="14" y="52" class="lb">sous-sol</text><text x="3" y="104" class="lb" style="font-size:7px">voile en béton armé</text><line x1="62" y1="100" x2="64" y2="88" class="ld"/>
+  <polygon points="72,22 72,80 150,80" fill="#c0392b" fill-opacity=".14" stroke="#c0392b" stroke-width=".8"/>
+  <g stroke="#c0392b" stroke-width="1.2" marker-end="url(#fr)"><line x1="92" y1="34" x2="74" y2="34"/><line x1="102" y1="46" x2="74" y2="46"/><line x1="114" y1="58" x2="74" y2="58"/><line x1="126" y1="70" x2="74" y2="70"/></g>
+  <text x="158" y="40" class="lb" style="fill:#8C1C13">Poussée des terres :</text><text x="158" y="49" class="l">elle augmente avec</text><text x="158" y="58" class="l">la profondeur</text>
+  <text x="96" y="102" class="l">semelle filante</text>
+</svg>
+      <p><b>Voile</b> : mur plein en béton armé, coulé sur place. Il <b>retient le remblai</b> sous un bâtiment surélevé ou les terres d'un sous-sol et repose sur une <b>semelle filante</b>.</p></div>
+    <div class="carte c2"><h3>Lire un plan de fondation</h3>
+<svg viewBox="0 0 236 124" role="img" aria-label="Plan de fondation">
+  <g stroke="#9aa0a8" stroke-width="4">
+    <line x1="22" y1="26" x2="82" y2="26"/><line x1="82" y1="26" x2="132" y2="26"/><line x1="148" y1="26" x2="212" y2="26"/>
+    <line x1="22" y1="64" x2="212" y2="64"/><line x1="22" y1="102" x2="132" y2="102"/><line x1="148" y1="102" x2="212" y2="102"/>
+    <line x1="22" y1="26" x2="22" y2="102"/><line x1="82" y1="26" x2="82" y2="102"/><line x1="132" y1="26" x2="132" y2="102"/><line x1="148" y1="26" x2="148" y2="102"/><line x1="212" y1="26" x2="212" y2="102"/>
+  </g>
+  <g fill="none" stroke="#8a9099" stroke-width=".8" stroke-dasharray="3 2">
+    <rect x="9" y="12" width="26" height="28"/><rect x="69" y="12" width="26" height="28"/><rect x="199" y="12" width="26" height="28"/>
+    <rect x="9" y="50" width="26" height="28"/><rect x="66" y="48" width="32" height="32"/><rect x="199" y="50" width="26" height="28"/>
+    <rect x="9" y="88" width="26" height="28"/><rect x="69" y="88" width="26" height="28"/><rect x="199" y="88" width="26" height="28"/>
+    <rect x="119" y="12" width="26" height="28"/><rect x="119" y="50" width="26" height="28"/><rect x="119" y="88" width="26" height="28"/>
+    <rect x="135" y="12" width="26" height="28" opacity="0"/>
+  </g>
+  <line x1="140" y1="4" x2="140" y2="122" stroke="#1f2328" stroke-width=".9" stroke-dasharray="5 3"/>
+  <g fill="#3a3f47"><rect x="18" y="22" width="8" height="8"/><rect x="78" y="22" width="8" height="8"/><rect x="128" y="22" width="8" height="8"/><rect x="144" y="22" width="8" height="8"/><rect x="208" y="22" width="8" height="8"/>
+    <rect x="18" y="60" width="8" height="8"/><rect x="78" y="60" width="8" height="8"/><rect x="128" y="60" width="8" height="8"/><rect x="144" y="60" width="8" height="8"/><rect x="208" y="60" width="8" height="8"/>
+    <rect x="18" y="98" width="8" height="8"/><rect x="78" y="98" width="8" height="8"/><rect x="128" y="98" width="8" height="8"/><rect x="144" y="98" width="8" height="8"/><rect x="208" y="98" width="8" height="8"/></g>
+  <g class="lg" style="font-size:6.6px"><text x="30" y="40">S1</text><text x="90" y="40">S1</text><text x="204" y="40">S1</text><text x="30" y="78">S1</text><text x="72" y="78" style="font-weight:700">S2</text><text x="204" y="78">S1</text><text x="30" y="116">S1</text><text x="90" y="116">S1</text><text x="204" y="116">S1</text><text x="124" y="40">SC</text><text x="124" y="78">SC</text><text x="124" y="116">SC</text><text x="50" y="22" class="lb" style="font-size:6.6px;fill:#1f2328">L1 (22×50)</text><text x="8" y="86" transform="rotate(-90 8 86)" style="font-size:6.6px;fill:#1f2328;font-weight:700" opacity="0">.</text><text x="15" y="84" style="font-size:6.4px;fill:#1f2328;font-weight:700" text-anchor="middle" transform="rotate(-90 15 84)">L2 (22×45)</text></g>
+  <g fill="#fff" stroke="#1f2328" stroke-width=".8"><circle cx="22" cy="6" r="5.5"/><circle cx="82" cy="6" r="5.5"/><circle cx="132" cy="6" r="5.5"/><circle cx="152" cy="6" r="5.5"/><circle cx="212" cy="6" r="5.5"/><circle cx="4" cy="26" r="0" /></g>
+  <g font-size="6.6" font-weight="800" fill="#1f2328" text-anchor="middle"><text x="22" y="8.4">A</text><text x="82" y="8.4">B</text><text x="132" y="8.4">C</text><text x="212" y="8.4">E</text><text x="152" y="8.4">D</text></g>
+  <text x="3" y="29" font-size="6.6" font-weight="800">1</text><text x="3" y="67" font-size="6.6" font-weight="800">2</text><text x="3" y="105" font-size="6.6" font-weight="800">3</text>
+</svg>
+      <p><b>Axes</b> A–E, 1–3 : implantation. <b>Carrés noirs</b> : poteaux. <b>S1, S2</b> : semelles isolées (en pointillé, cachées sous les longrines). <b>L1 (22 × 50)</b> : longrine de 22 cm de large, 50 cm de haut. <b>Joint de dilatation</b> : une semelle continue (SC) porte les 2 poteaux voisins.</p></div>
+  </div>
+</section>
+
+<div class="g2">
+<section class="partie s3 c3" style="margin:0">
+  <h2><span class="num">03</span>Le radier général</h2>
+  <div class="def"><b>Radier général</b> : <b>épaisse dalle de béton armé</b> coulée sur le sol, <b>sous toute la surface</b> du bâtiment (quand les semelles se touchent presque).</div>
+  <ul style="font-size:8pt"><li>Sol <b>médiocre mais homogène</b> ; bon sol trop profond, charges fortes ; terrain <b>inondable</b>, sous-sol.</li>
+  <li><b>Avantages</b> : moins de tassements différentiels ; une <b>base rigide</b> pour tout le bâtiment.</li></ul>
+  
+<svg viewBox="0 0 270 66" role="img" aria-label="Un plancher et un radier" style="display:block;max-height:28mm;margin:0 auto;width:100%">
+  <g stroke="#c0392b" stroke-width="1.1" marker-end="url(#fr)"><line x1="12" y1="0" x2="12" y2="14"/><line x1="28" y1="0" x2="28" y2="14"/><line x1="44" y1="0" x2="44" y2="14"/><line x1="60" y1="0" x2="60" y2="14"/><line x1="76" y1="0" x2="76" y2="14"/><line x1="92" y1="0" x2="92" y2="14"/><line x1="108" y1="0" x2="108" y2="14"/></g>
+  <rect x="4" y="16" width="116" height="10" class="bet"/><rect x="6" y="26" width="9" height="32" class="bet"/><rect x="109" y="26" width="9" height="32" class="bet"/>
+  <text x="62" y="46" class="lb" text-anchor="middle">un plancher</text><text x="62" y="64" class="lg" text-anchor="middle">charges sur la dalle, poteaux porteurs</text>
+  <rect x="140" y="32" width="128" height="34" fill="url(#h)"/><line x1="140" y1="32" x2="268" y2="32" stroke="#1f2328" stroke-width="1.2"/>
+  <g stroke="#c0392b" stroke-width="1.3" marker-end="url(#fr)"><line x1="160" y1="0" x2="160" y2="12"/><line x1="204" y1="0" x2="204" y2="12"/><line x1="248" y1="0" x2="248" y2="12"/></g>
+  <rect x="156" y="12" width="8" height="10" class="bet"/><rect x="200" y="12" width="8" height="10" class="bet"/><rect x="244" y="12" width="8" height="10" class="bet"/>
+  <rect x="144" y="22" width="120" height="10" class="bet"/>
+  <g stroke="#3C7A3E" stroke-width="1.2" marker-end="url(#fv)"><line x1="152" y1="62" x2="152" y2="36"/><line x1="170" y1="62" x2="170" y2="36"/><line x1="188" y1="62" x2="188" y2="36"/><line x1="206" y1="62" x2="206" y2="36"/><line x1="224" y1="62" x2="224" y2="36"/><line x1="242" y1="62" x2="242" y2="36"/><line x1="258" y1="62" x2="258" y2="36"/></g>
+  <text x="204" y="52" class="lb halo" text-anchor="middle" style="fill:#3C7A3E">réaction du sol</text>
+</svg>
+  <p style="font-size:8pt"><b>À retenir :</b> un radier est un <b>plancher très chargé, retourné</b> : ses appuis sont les poteaux et les murs, sa charge est la <b>réaction du sol</b>.</p>
+</section>
+
+<section class="partie s4 c4" style="margin:0">
+  <h2><span class="num">04</span>Les fondations profondes : les pieux</h2>
+  <div class="def"><b>Pieu</b> : long poteau de <b>béton armé, d'acier ou de bois</b>, enfoncé ou coulé dans le sol <b>jusqu'à une couche résistante</b> (bon sol très profond, bâtiments très lourds, terrains très peu porteurs).</div>
+  
+<svg viewBox="0 0 250 112" role="img" aria-label="Les parties d'un pieu" style="display:block;max-height:37mm;margin:0 auto;width:100%">
+  <rect x="0" y="12" width="130" height="50" fill="url(#h)"/><rect x="0" y="62" width="130" height="50" fill="url(#h2)"/>
+  <line x1="0" y1="12" x2="130" y2="12" stroke="#1f2328" stroke-width="1.2"/><line x1="0" y1="62" x2="130" y2="62" stroke="#1f2328" stroke-width=".9" stroke-dasharray="4 3"/>
+  <text x="3" y="24" class="lg halo">sol médiocre</text><text x="3" y="108" class="lb halo" style="font-size:7px">couche d'ancrage</text>
+  <rect x="50" y="2" width="14" height="94" class="bet"/><polygon points="50,96 64,96 57,106" fill="#9aa0a8" stroke="#5f6670" stroke-width=".8"/>
+  <line x1="54" y1="2" x2="54" y2="92" class="acier" stroke-width="1"/><line x1="60" y1="2" x2="60" y2="92" class="acier" stroke-width="1"/>
+  <line x1="92" y1="14" x2="92" y2="104" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="96" y="34" class="lb" style="font-size:7px">D : longueur</text>
+  <line x1="112" y1="64" x2="112" y2="104" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="108" y="84" class="lb halo" text-anchor="end" style="font-size:7px">h : ancrage</text>
+  <g class="ld"><line x1="136" y1="10" x2="64" y2="10"/><line x1="136" y1="44" x2="64" y2="44"/><line x1="136" y1="94" x2="62" y2="102"/></g>
+  <g class="l"><text x="139" y="8" class="lb">Tête</text><text x="139" y="17">reçoit l'ouvrage,</text><text x="139" y="26">aciers en attente</text><text x="139" y="42" class="lb">Fût</text><text x="139" y="51">le corps du pieu</text><text x="139" y="92" class="lb">Pointe</text><text x="139" y="101">appuyée sur la couche</text><text x="139" y="110">d'ancrage</text></g>
+</svg>
+  <p style="font-size:8pt; margin-top:1px"><b>Comment un pieu porte :</b> par sa <b>pointe</b>, appuyée sur la couche résistante, et par le <b>frottement</b> du sol sur toute sa surface latérale.</p>
+</section>
+</div>
+
+<section class="partie s4 c4" style="margin-top:5px">
+  <div class="g2">
+    <div class="carte c4"><h3>Pieu foré : sans refouler le sol</h3>
+      <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:3px"><div class="pan"><svg viewBox="0 0 52 60" role="img" aria-hidden="true"><rect x="0" y="10" width="52" height="50" fill="url(#h)"/><rect x="19" y="10" width="14" height="46" fill="#fff" stroke="#1f2328"/><line x1="26" y1="0" x2="26" y2="46" stroke="#1f2328" stroke-width="1.4"/><path d="M20,30 L32,34 L20,38 L32,42 L20,46 L32,50" fill="none" stroke="#1f2328" stroke-width="1"/><line x1="0" y1="10" x2="52" y2="10" stroke="#1f2328" stroke-width="1.2"/><circle cx="8" cy="52" r="6" fill="#3C7A3E"/><text x="8" y="55" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">1</text></svg></div><div class="pan"><svg viewBox="0 0 52 60" role="img" aria-hidden="true"><rect x="0" y="10" width="52" height="50" fill="url(#h)"/><rect x="19" y="10" width="14" height="46" fill="#fff" stroke="#1f2328"/><line x1="22" y1="2" x2="22" y2="54" class="acier" stroke-width="1.3"/><line x1="30" y1="2" x2="30" y2="54" class="acier" stroke-width="1.3"/><path d="M22,22 H30 M22,34 H30 M22,46 H30" class="acier" stroke-width="1"/><line x1="0" y1="10" x2="52" y2="10" stroke="#1f2328" stroke-width="1.2"/><circle cx="8" cy="52" r="6" fill="#3C7A3E"/><text x="8" y="55" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">2</text></svg></div><div class="pan"><svg viewBox="0 0 52 60" role="img" aria-hidden="true"><rect x="0" y="10" width="52" height="50" fill="url(#h)"/><rect x="19" y="10" width="14" height="46" class="bet"/><g fill="#8e949c"><circle cx="24" cy="22" r=".9"/><circle cx="29" cy="32" r=".9"/><circle cx="25" cy="44" r=".9"/></g><line x1="0" y1="10" x2="52" y2="10" stroke="#1f2328" stroke-width="1.2"/><circle cx="8" cy="52" r="6" fill="#3C7A3E"/><text x="8" y="55" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">3</text></svg></div></div>
+      <p style="font-size:7.6pt">1. On <b>fore</b> : la terre est extraite. 2. On descend la <b>cage d'aciers</b>. 3. On <b>bétonne de bas en haut</b>.</p></div>
+    <div class="carte c4"><h3>Pieu battu : en refoulant le sol</h3>
+      <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:3px"><div class="pan"><svg viewBox="0 0 52 60" role="img" aria-hidden="true"><rect x="0" y="10" width="52" height="50" fill="url(#h)"/><rect x="14" y="0" width="24" height="7" fill="#555c66"/><line x1="44" y1="2" x2="44" y2="12" stroke="#1f2328" stroke-width="1.2" marker-end="url(#fk)"/><rect x="21" y="7" width="10" height="38" fill="#c9cfd6" stroke="#1f2328"/><line x1="0" y1="10" x2="52" y2="10" stroke="#1f2328" stroke-width="1.2"/><circle cx="8" cy="52" r="6" fill="#3C7A3E"/><text x="8" y="55" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">1</text></svg></div><div class="pan"><svg viewBox="0 0 52 60" role="img" aria-hidden="true"><rect x="0" y="10" width="52" height="50" fill="url(#h)"/><rect x="21" y="2" width="10" height="46" fill="#c9cfd6" stroke="#1f2328"/><rect x="23" y="20" width="6" height="26" class="bet"/><line x1="0" y1="10" x2="52" y2="10" stroke="#1f2328" stroke-width="1.2"/><circle cx="8" cy="52" r="6" fill="#3C7A3E"/><text x="8" y="55" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">2</text></svg></div><div class="pan"><svg viewBox="0 0 52 60" role="img" aria-hidden="true"><rect x="0" y="10" width="52" height="50" fill="url(#h)"/><line x1="26" y1="10" x2="26" y2="0" stroke="#1f2328" stroke-width="1.3" marker-end="url(#fk)" transform="translate(0,6)"/><rect x="22" y="14" width="8" height="34" class="bet"/><line x1="0" y1="10" x2="52" y2="10" stroke="#1f2328" stroke-width="1.2"/><circle cx="8" cy="52" r="6" fill="#3C7A3E"/><text x="8" y="55" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">3</text></svg></div></div>
+      <p style="font-size:7.6pt">1. On <b>enfonce un tube fermé</b>. 2. On <b>bétonne dans le tube</b>. 3. On <b>retire le tube</b>.</p></div>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>
