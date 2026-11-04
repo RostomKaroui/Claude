@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Environnement · la pollution · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   définition */
+    --c2: #B4501E;  /* II  causes */
+    --c3: #8C1C13;  /* III effets */
+    --c4: #3C7A3E;  /* IV  les formes de pollution */
+    --air: #2F7DB5; --eau: #1f8a8a; --sol: #8a5a2b; --bruit: #7a4fa0; --lum: #b07d0a;
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.8pt; line-height: 1.3; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 78mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { --acc: var(--c1); border: 1px solid var(--filet); border-top: 3px solid var(--acc); border-radius: 6px; padding: 3px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.4pt; font-weight: 800; margin-bottom: 2px; color: var(--acc); }
+  .s1 .carte { --acc: var(--c1); } .s2 .carte { --acc: var(--c2); } .s3 .carte { --acc: var(--c3); }
+  .carte p, .carte li { font-size: 8.1pt; line-height: 1.28; }
+  .air { --acc: var(--air) !important; } .eau { --acc: var(--eau) !important; } .sol { --acc: var(--sol) !important; }
+  .bruit { --acc: var(--bruit) !important; } .lum { --acc: var(--lum) !important; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .chiffre { display: inline-block; font-weight: 800; color: #fff; border-radius: 3px; padding: 0 4px; font-size: 7.9pt; background: var(--acc, var(--c3)); }
+
+  .effets { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 5px; }
+  .effets div { background: var(--c3); color: #fff; border-radius: 5px; padding: 3px 5px; font-size: 7.8pt; font-weight: 800; line-height: 1.22; text-align: center; display: grid; place-items: center; }
+
+  .hub { display: grid; grid-template-columns: auto repeat(5, 1fr); gap: 4px; align-items: stretch; margin-bottom: 5px; }
+  .hub div { border-radius: 5px; padding: 3px 6px; color: #fff; font-weight: 800; font-size: 8.4pt; display: grid; place-items: center; text-align: center; }
+  .hub .centre { background: var(--encre); padding: 3px 12px; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 2px 0 3px; }
+  .stats > div { background: var(--fond); border-radius: 5px; padding: 2px 4px; text-align: center; font-size: 7.3pt; line-height: 1.2; color: var(--gris); }
+  .stats b { white-space: nowrap; display: block; font-family: "Playfair", serif; font-weight: 700; font-size: 12.5pt; line-height: 1.1; color: var(--acc); }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.3pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  .retenir { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8px; margin-top: 6px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 3px; }
+  .retenir dl { font-size: 8pt; line-height: 1.26; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 1.5px; }
+  .gros .carte p, .gros .carte li { font-size: 8.9pt; line-height: 1.34; }
+  .gros .carte h3 { font-size: 10.4pt; }
+  .gros .stats > div { font-size: 7.8pt; } .gros .stats b { font-size: 13.5pt; }
+  .gros .retenir dl { font-size: 8.9pt; line-height: 1.3; }
+  .gros .gris { font-size: 7.8pt !important; }
+  .notes { margin-top: 6px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 15px; border-bottom: 1px dotted #c4cad1; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">ENVIRONNEMENT · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>La pollution</h1>
+  </div>
+  <div class="sous">Fiche de révision : définir, comprendre les causes et les effets, reconnaître les cinq formes</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>I · Définitions</b>pollution, polluant, ponctuelle ou diffuse</div>
+  <div class="p2"><b>II · Causes</b>naturelles et humaines</div>
+  <div class="p3"><b>III · Effets</b>santé, nature, climat, gaz à effet de serre</div>
+  <div class="p4"><b>IV · Cinq formes</b>air, eau, sol, bruit, lumière</div>
+</div>
+
+<!-- ===================== I ===================== -->
+<section class="partie s1">
+  <h2><span class="num">I</span>Définitions</h2>
+  <div class="g3" style="grid-template-columns: 1.3fr 1.1fr .9fr">
+    <div class="carte">
+      <h3>La pollution</h3>
+      <p><i>« Dégradation de l'environnement par des <b>substances</b> (naturelles, chimiques ou radioactives), des <b>déchets</b> (ménagers ou industriels) ou des <b>nuisances</b> diverses (sonores, lumineuses, thermiques, biologiques). Bien qu'elle puisse avoir une origine entièrement naturelle (éruption volcanique), elle est <b>principalement liée aux activités humaines</b>. »</i> <span class="gris">(Larousse)</span></p>
+    </div>
+    <div class="carte">
+      <h3>Contamination d'un milieu</h3>
+      <p>Un <b>milieu</b> (<b>continental, aquatique ou atmosphérique</b>) est contaminé par des particules chimiques <b>nocives</b>, dangereuses pour la <b>santé</b> et la <b>vie des espèces</b>. C'est une altération de l'environnement par des substances <b>solides, liquides ou gazeuses</b> : les <b>polluants</b>. Elles génèrent des <b>nuisances</b> et risquent le <b>fonctionnement et l'équilibre</b> des écosystèmes.</p>
+    </div>
+    <div class="carte">
+      <h3>Un polluant</h3>
+      <p>Substance <b>liquide, solide ou gazeuse</b>, présente dans un environnement <b>où elle ne devrait pas se trouver</b>, ou en <b>concentration anormalement élevée</b> dans un milieu habituel. Effets nocifs, nuisances, désagréments : elle crée un <b>déséquilibre</b> dans l'écosystème, signe d'une <b>instabilité anormale</b>.</p>
+    </div>
+  </div>
+  <div class="g2" style="margin-top:5px">
+    <div class="def" style="margin:0"><b>Pollution ponctuelle</b> : la source est <b>localisée dans l'espace</b> et les polluants sont <b>rejetés directement</b> dans les milieux.</div>
+    <div class="def" style="margin:0"><b>Pollution diffuse</b> : due à de <b>multiples rejets</b> de polluants <b>dans le temps et dans l'espace</b>.</div>
+  </div>
+</section>
+
+<!-- ===================== II + III ===================== -->
+<div class="g2" style="align-items:start; margin-bottom:7px">
+<section class="s2">
+  <h2><span class="num">II</span>Causes</h2>
+  <div class="carte" style="margin-bottom:5px">
+    <h3>Causes naturelles</h3>
+    <p><b>Tempêtes de sable</b>, <b>feux de forêt</b>, <b>activité volcanique</b> : ils libèrent des particules et des polluants dans l'air.</p>
+  </div>
+  <div class="carte">
+    <h3>Causes humaines : la majorité des émissions</h3>
+    <ul>
+      <li>l'<b>urbanisation</b> ;</li>
+      <li>la <b>production et l'utilisation d'énergie</b> ;</li>
+      <li>les <b>activités industrielles</b> ;</li>
+      <li>l'<b>agriculture</b> ;</li>
+      <li>le <b>plastique</b>…</li>
+    </ul>
+  </div>
+</section>
+
+<section class="s3">
+  <h2><span class="num">III</span>Effets</h2>
+  <div class="effets">
+    <div>Santé</div><div>Environnement naturel</div><div>Agriculture</div><div>Environnement construit</div><div>Climat</div>
+  </div>
+  <div class="carte" style="padding-bottom:3px">
+    <h3>Les gaz à effet de serre (GES)</h3>
+    <svg viewBox="0 0 300 118" width="78%" role="img" aria-label="Effet de serre : les rayons solaires arrivent, la Terre renvoie de l'infrarouge, la couche de gaz en retient une partie">
+      <defs>
+        <marker id="fj" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#d9a400"/></marker>
+        <marker id="fo" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker>
+      </defs>
+      <circle cx="26" cy="16" r="9" fill="#f4c20d"/>
+      <g stroke="#f4c20d" stroke-width="1.5"><line x1="26" y1="2" x2="26" y2="5"/><line x1="12" y1="16" x2="15" y2="16"/><line x1="37" y1="6" x2="35" y2="8"/><line x1="15" y1="6" x2="17" y2="8"/></g>
+      <rect x="0" y="40" width="300" height="20" fill="#e3eef7" stroke="#9fbdd6" stroke-dasharray="3 2"/>
+      <g fill="#5f7f9c" font-size="6.5" font-weight="700"><text x="148" y="53">· · · couche de gaz à effet de serre (GES) · · ·</text></g>
+      <rect x="0" y="100" width="300" height="18" fill="#8a6f4d"/>
+      <g stroke="#d9a400" stroke-width="1.8" fill="none" marker-end="url(#fj)"><line x1="64" y1="22" x2="92" y2="94"/><line x1="100" y1="20" x2="128" y2="94"/><line x1="136" y1="20" x2="164" y2="94"/></g>
+      <g stroke="#c0392b" stroke-width="1.8" fill="none" marker-end="url(#fo)"><line x1="200" y1="96" x2="214" y2="62"/><line x1="236" y1="96" x2="250" y2="62"/><line x1="270" y1="96" x2="284" y2="62"/></g>
+      <g stroke="#c0392b" stroke-width="1.4" stroke-dasharray="3 2" fill="none" marker-end="url(#fo)"><path d="M218,58 Q226,66 222,92"/><path d="M254,58 Q262,66 258,92"/></g>
+      <g font-size="6.8" font-weight="800" text-anchor="start">
+        <text x="68" y="76" fill="#b88a00">rayons solaires</text>
+        <text x="170" y="86" fill="#c0392b">infrarouge</text>
+        <text x="4" y="112" fill="#fff">Terre : ≈ 15 °C (température vitale)</text>
+      </g>
+    </svg>
+    <p>Phénomène <b>naturel</b> : il maintient une température <b>vitale ≈ 15 °C</b>. Grâce aux GES, une part de <b>70 %</b> des rayons solaires reçus est transformée en <b>infrarouge</b> et <b>retenue</b> dans l'atmosphère, ce qui réchauffe la Terre.</p>
+    <p style="margin-top:2px">L'<b>activité humaine</b> (domestique, agricole, industrielle) <b>intensifie</b> ces gaz → plus d'infrarouges retenus → <b>hausse de la température</b> terrestre : <b>changement climatique</b>, événements extrêmes.</p>
+  </div>
+</section>
+</div>
+
+<!-- ===================== IV ===================== -->
+<section class="partie s4">
+  <h2><span class="num">IV</span>Les cinq formes de pollution</h2>
+  <div class="hub">
+    <div class="centre">Pollution</div>
+    <div style="background:var(--air)">Air</div><div style="background:var(--eau)">Eau</div><div style="background:var(--sol)">Sol</div><div style="background:var(--bruit)">Bruit</div><div style="background:var(--lum)">Lumière</div>
+  </div>
+
+  <div class="carte air">
+    <h3>L'air (pollution atmosphérique)</h3>
+    <div class="g3" style="gap:10px">
+      <div>
+        <p><b>Modification de la composition de l'air</b> par des polluants nuisibles à la santé et à l'environnement : <b>gazeux, particulaires et liquides</b>. Agents <b>chimiques, biologiques ou physiques</b> aux conséquences néfastes (santé, êtres vivants, climat, biens matériels).</p>
+        <div class="stats">
+          <div><b>8,1 M</b>décès en 2021</div><div><b>700&nbsp;000</b>enfants de moins de 5 ans</div><div><b>7,8 M</b>décès (dont &gt; 90 % par les PM2,5)</div>
+        </div>
+        <p class="gris" style="font-size:7.2pt">Rapport <i>State of Global Air</i> (5<sup>e</sup> éd.) et UNICEF : 2<sup>e</sup> facteur de risque pour les moins de 5 ans, après la malnutrition.</p>
+      </div>
+      <div>
+        <ul>
+          <li><b>Sources</b> : combustion de combustibles fossiles (voitures, centrales électriques), émissions industrielles, feux de forêt.</li>
+          <li><b>Polluants</b> : particules fines (<b>PM10, PM2,5</b>), dioxyde de soufre (<b>SO<sub>2</sub></b>), oxydes d'azote (<b>NO<sub>x</sub></b>), monoxyde de carbone (<b>CO</b>), ozone (<b>O<sub>3</sub></b>).</li>
+          <li><b>Conséquences</b> : maladies respiratoires, cardiopathies, effets sur le climat (réchauffement, <b>smog</b>).</li>
+        </ul>
+      </div>
+      <div class="fig">
+        <svg viewBox="0 0 150 100" width="100%" role="img" aria-label="Des sources émettent des polluants dans l'air, qui ont des effets sur la santé et le climat">
+          <rect x="0" y="0" width="150" height="100" rx="6" fill="#e9f2f9"/>
+          <g text-anchor="middle" fill="#fff">
+            <rect x="10" y="6" width="130" height="24" rx="4" fill="#2F7DB5"/>
+            <text x="75" y="17" font-size="7.4" font-weight="800">Sources</text><text x="75" y="25.5" font-size="6.3">voitures, centrales, industries, feux</text>
+            <rect x="10" y="38" width="130" height="24" rx="4" fill="#4a90c4"/>
+            <text x="75" y="49" font-size="7.4" font-weight="800">Polluants</text><text x="75" y="57.5" font-size="6.3">PM10, PM2,5, SO₂, NOx, CO, O₃</text>
+            <rect x="10" y="70" width="130" height="24" rx="4" fill="#1f5f8f"/>
+            <text x="75" y="81" font-size="7.4" font-weight="800">Effets</text><text x="75" y="89.5" font-size="6.3">poumons, cœur, climat, smog</text>
+          </g>
+          <g fill="#2F7DB5"><polygon points="70,31 80,31 75,37"/><polygon points="70,63 80,63 75,69"/></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="partie s4 gros">
+  <div class="g3">
+    <div class="carte eau">
+      <h3>L'eau</h3>
+      <p>Avec l'air, l'une des <b>principales causes</b> de pollution environnementale. Présence de <b>micro-organismes</b>, de <b>substances chimiques</b> ou de <b>déchets industriels</b>.</p>
+      <p style="margin-top:2px">Elle concerne les <b>cours d'eau</b>, les <b>nappes</b>, les <b>eaux saumâtres</b>, mais aussi l'<b>eau de pluie</b>, la <b>neige</b> et la <b>glace polaire</b>.</p>
+      <ul style="margin-top:2px">
+        <li>L'eau <b>solubilise et transporte</b> les déchets <b>domestiques, agricoles et industriels</b>.</li>
+        <li><b>Polluants</b> : <b>nitrates, phosphates, pesticides</b>, produits <b>pharmaceutiques</b>, <b>microplastiques</b>, <b>métaux lourds</b>.</li>
+        <li><b>Conséquences</b> : maladies (<b>choléra, typhoïde</b>), <b>eutrophisation</b>, <b>acidification des océans</b>, contamination chimique, détérioration de la vie marine.</li>
+      </ul>
+    </div>
+    <div class="carte sol">
+      <h3>Le sol</h3>
+      <p><b>Accumulation de substances</b> à la surface de la terre : dégradation des terres due à des éléments <b>chimiques et/ou physiques</b>, <b>principalement d'origine humaine</b>. Effet négatif sur la <b>sécurité alimentaire</b>.</p>
+      <ul style="margin-top:2px">
+        <li><b>Principales sources</b> : déchets <b>industriels et domestiques</b> ; déversement sur terrains ouverts, <b>incinération</b>, décharges inadéquates ; combustibles fossiles (usines pétrochimiques, raffineries, centrales) ; transport routier du pétrole.</li>
+        <li><b>Polluants</b> : <b>métaux lourds</b>, <b>hydrocarbures</b>, <b>solvants</b> organiques et inorganiques.</li>
+        <li><b>Conséquences</b> : santé humaine ; processus métaboliques des plantes modifiés → <b>rendements agricoles réduits</b> ; polluants qui <b>entrent dans la chaîne alimentaire</b> par les plantes.</li>
+      </ul>
+    </div>
+
+    <div class="carte bruit">
+      <h3>Le bruit</h3>
+      <p>Nuisance la plus <b>directement ressentie</b> par l'homme : ensemble de sons <b>sans harmonie</b> qu'on souhaiterait ne pas entendre. Notion <b>relative</b> : intensité, fréquence, durée, caractère inattendu, personne, lieu, heure. <b>Nuisance importante en milieu urbain</b>.</p>
+      <svg viewBox="0 0 220 34" width="100%" role="img" aria-label="Échelle du bruit en décibels, gêne à partir de 60 dB" style="margin:3px 0 1px">
+        <defs><linearGradient id="gd" x1="0" x2="1"><stop offset="0" stop-color="#4caf50"/><stop offset=".45" stop-color="#e8c547"/><stop offset=".75" stop-color="#e8883a"/><stop offset="1" stop-color="#c0392b"/></linearGradient></defs>
+        <rect x="6" y="6" width="208" height="10" rx="5" fill="url(#gd)"/>
+        <line x1="104" y1="2" x2="104" y2="20" stroke="#1f2328" stroke-width="1.6"/>
+        <g font-size="6.8" font-weight="800" fill="#1f2328" text-anchor="middle"><text x="6" y="28" text-anchor="start">0 dB</text><text x="104" y="30">60 dB : début de la gêne</text><text x="214" y="28" text-anchor="end">130 dB</text></g>
+      </svg>
+      <ul>
+        <li><b>Gêne psychologique</b> (perturbations, fatigue, troubles nerveux) et <b>fonctionnelle</b> (travail, parole) : le bruit devient un <b>agent de stress</b>.</li>
+        <li>Responsable d'une <b>plus faible biodiversité</b> des zones urbaines ; perturbe le <b>chant</b> des oiseaux et leur <b>recherche de nourriture</b>.</li>
+        <li><b>Bruit urbain</b> : voisinage, chantier, transports.</li>
+      </ul>
+    </div>
+
+    </div>
+
+  <div class="carte lum" style="margin-top:6px">
+      <h3>La lumière (pollution lumineuse)</h3>
+      <div class="g2" style="gap:10px">
+        <div>
+          <p><b>Altération du ciel nocturne</b> causée par un <b>excès</b> ou une <b>mauvaise orientation</b> de la lumière artificielle : elle empêche de profiter de l'<b>obscurité naturelle</b> et modifie l'équilibre <b>lumière / nuit</b>.</p>
+          <div class="stats">
+            <div><b>&gt; 80 %</b>de la population mondiale sous un ciel pollué</div><div><b>99 %</b>en Europe et Amérique du Nord</div><div><b>≈ ⅓</b>de l'humanité ne voit plus la Voie lactée</div>
+          </div>
+          <p class="gris" style="font-size:7.3pt">Étude de Falchi et al., 2016 (60 % de ce tiers sont des Européens).</p>
+        </div>
+        <div>
+          <p><b>Animaux nocturnes</b> : migration, reproduction, orientation, recherche de nourriture, synthèse hormonale touchées, parfois jusqu'à leur <b>survie</b>. Environ <b>30 %</b> des vertébrés et <b>60 %</b> des invertébrés sont nocturnes.</p>
+          <p style="margin-top:2px"><b>Problèmes engendrés :</b></p>
+          <ul>
+            <li><b>Perte du ciel étoilé</b> ;</li>
+            <li><b>perturbations écologiques</b> (insectes, oiseaux, tortues : cycles dérégulés) ;</li>
+            <li><b>troubles humains</b> : sommeil, rythme biologique ;</li>
+            <li><b>gaspillage énergétique</b> : éclairage inutile ou mal dirigé.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="gris" style="margin-top:2px;font-size:7.4pt">Sur le schéma du cours : lumières dirigées vers le ciel (pollution astronomique et écologique), structures illuminées (collisions), lumières vers le sol, halo d'agglomération (perturbe les écosystèmes lointains).</p>
+    </div>
+
+  <div class="retenir">
+    <div>
+      <h4>Chiffres à retenir</h4>
+      <dl>
+        <dt>15 °C :</dt><dd>température vitale maintenue par l'effet de serre naturel.</dd>
+        <dt>8,1 M / 7,8 M :</dt><dd>décès liés à la pollution de l'air (2021).</dd>
+        <dt>700 000 :</dt><dd>décès d'enfants de moins de 5 ans en 2021.</dd>
+        <dt>60 dB :</dt><dd>le bruit commence à gêner.</dd>
+        <dt>&gt; 80 % / 99 % :</dt><dd>population sous un ciel pollué (monde / Europe et Amérique du Nord).</dd>
+        <dt>30 % / 60 % :</dt><dd>vertébrés / invertébrés nocturnes.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Polluant :</dt><dd>substance présente là où elle ne devrait pas être, ou en excès.</dd>
+        <dt>PM2,5 :</dt><dd>particules fines, principale cause de décès liés à l'air.</dd>
+        <dt>Eutrophisation :</dt><dd>excès de nutriments (nitrates, phosphates) dans l'eau.</dd>
+        <dt>Smog :</dt><dd>brouillard de pollution de l'air.</dd>
+        <dt>Métaux lourds :</dt><dd>polluants de l'eau et du sol.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h4>Mes notes</h4>
+    <div class="ligne"></div><div class="ligne"></div><div class="ligne"></div>
+  </div>
+</section>
+
+</body>
+</html>
