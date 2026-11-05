@@ -12,13 +12,23 @@ S = 200                       # px par a dans les dessins
 E = 0.05                      # épaisseur des murs : 1/20 a
 COL = {"a": "#1f5fd1", "t": "#d9342b", "q": "#14965a", "e": "#8a3cc4", "g": "#6b6e70"}
 GRIS, TRAIT = "#3b3d3f", "#6b6e70"
+IMPRESSION = False            # True : marges serrées et cotes courtes (planches A4 pour les calques, calques.py)
+MARGES_A4 = {(4, 1): (0.42, 0.42, 0.5, 0.55), (4, 13 / 8): (0.55, 0.3, 0.45, 0.62), (1, 13 / 8): (0.6, 0.6, 0.45, 0.6)}
+COURT = {"650 = a + 5/8 a": "650", "250 = 5/8 a": "5/8 a", "porte 1/4 a": "1/4 a", "porte 5/8 a": "5/8 a", "40 = 2 e": "2 e",
+         "95 ≈ 1/4 a": "≈ 1/4 a", "escalier 1/5 a = 4 e": "1/5 a = 4 e", "1/2 a = 2 × 1/4 a": "1/2 a", "e = 1/20 a": "e",
+         "1/5 a = 4 e": "1/5 a", "3/8 a, centrés": "3/8 a", "porte 230": "230", "≈ 1/8 a": "1/8 a", "≈ 2/3 a": "2/3 a",
+         "pont 1/3 a": "1/3 a", "sas : 1/3 a × 1/3 a": "1/3 a", "pont = 1/3 a": "1/3 a", "1/3 a − 2e": "1/3 a − 2e",
+         "r = 1/6 a": "r = 1/6 a", "1 carré a × a": "a × a"}
 
 
 class Dessin:
     def __init__(self, w, h, mg=0.55, md=0.55, mh=0.75, mb=0.7):
+        if IMPRESSION: mg, md, mh, mb = MARGES_A4[(w, h)]
         self.w, self.h, self.mg, self.mh = w, h, mg, mh
         self.W, self.H = (w + mg + md) * S, (h + mh + mb) * S
-        self.fond, self.par, self.dessus = [], [], []
+        self.fond, self.par, self.dessus, self.cal = [], [], [], []     # par, dessus, cal : (couleur, svg) ; couleur None = gris
+
+    def _t(self, t): return COURT.get(t, t) if IMPRESSION else t
 
     def X(self, x): return (x + self.mg) * S
     def Y(self, y): return (y + self.mh) * S
@@ -52,18 +62,29 @@ class Dessin:
 
     def texte(self, x, y, t, c=TRAIT, taille=12, ancre="middle", gras=False):
         g = ' font-weight="700"' if gras else ""
-        self.dessus.append(f'<text x="{self.X(x):.1f}" y="{self.Y(y):.1f}" fill="{c}" font-size="{taille}" text-anchor="{ancre}"{g}>{html.escape(t)}</text>')
+        self.dessus.append((None, f'<text x="{self.X(x):.1f}" y="{self.Y(y):.1f}" fill="{c}" font-size="{taille}" text-anchor="{ancre}"{g}>{html.escape(t)}</text>'))
 
     # --- les tracés de proportion (couleurs) ---
     def zone(self, x0, y0, x1, y1, k, op=0.10, dash="6 4", w=1.6):
         c = COL[k]
-        self.par.append(f'<rect x="{self.X(x0):.1f}" y="{self.Y(y0):.1f}" width="{(x1-x0)*S:.1f}" height="{(y1-y0)*S:.1f}" fill="{c}" fill-opacity="{op}" stroke="{c}" stroke-width="{w}" stroke-dasharray="{dash}"/>')
+        self.par.append((k, f'<rect x="{self.X(x0):.1f}" y="{self.Y(y0):.1f}" width="{(x1-x0)*S:.1f}" height="{(y1-y0)*S:.1f}" fill="{c}" fill-opacity="{op}" stroke="{c}" stroke-width="{w}" stroke-dasharray="{dash}"/>'))
+
+    def forme(self, x0, y0, x1, y1, k, op=0.35, w=2.2, dash=""):
+        """forme complète, seulement sur les calques : aplat de couleur + contour plein"""
+        c, d = COL[k], (f' stroke-dasharray="{dash}"' if dash else "")
+        self.cal.append((k, f'<rect x="{self.X(x0):.1f}" y="{self.Y(y0):.1f}" width="{(x1-x0)*S:.1f}" height="{(y1-y0)*S:.1f}" fill="{c}" fill-opacity="{op}" stroke="{c}" stroke-width="{w}"{d}/>'))
+
+    def trait_c(self, x0, y0, x1, y1, k, w=2.2, dash=""):
+        """trait de couleur, seulement sur les calques"""
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        self.cal.append((k, f'<line x1="{self.X(x0):.1f}" y1="{self.Y(y0):.1f}" x2="{self.X(x1):.1f}" y2="{self.Y(y1):.1f}" stroke="{COL[k]}" stroke-width="{w}"{d}/>'))
 
     def axe(self, x0, y0, x1, y1, k, w=1.6, dash="7 4"):
-        self.par.append(f'<line x1="{self.X(x0):.1f}" y1="{self.Y(y0):.1f}" x2="{self.X(x1):.1f}" y2="{self.Y(y1):.1f}" stroke="{COL[k]}" stroke-width="{w}" stroke-dasharray="{dash}"/>')
+        self.par.append((k, f'<line x1="{self.X(x0):.1f}" y1="{self.Y(y0):.1f}" x2="{self.X(x1):.1f}" y2="{self.Y(y1):.1f}" stroke="{COL[k]}" stroke-width="{w}" stroke-dasharray="{dash}"/>'))
 
     def cote_h(self, x0, x1, y, t, k, ext=None, cote="c"):
         """cote horizontale à la hauteur y (unités a), lignes de rappel jusqu'à ext"""
+        t = self._t(t)
         c, X0, X1, Yy = COL[k], self.X(x0), self.X(x1), self.Y(y)
         o = [f'<line x1="{X0:.1f}" y1="{Yy:.1f}" x2="{X1:.1f}" y2="{Yy:.1f}" stroke="{c}" stroke-width="1.6"/>']
         for X in (X0, X1):
@@ -72,9 +93,10 @@ class Dessin:
                 o.append(f'<line x1="{X:.1f}" y1="{Yy:.1f}" x2="{X:.1f}" y2="{self.Y(ext):.1f}" stroke="{c}" stroke-width="0.8" stroke-opacity="0.55"/>')
         tx, anc, ty = ((X0 + X1) / 2, "middle", Yy - 5) if cote == "c" else ((X1 + 8, "start", Yy + 4) if cote == "d" else (X0 - 8, "end", Yy + 4))
         o.append(f'<text x="{tx:.1f}" y="{ty:.1f}" fill="{c}" font-size="12.5" font-weight="700" text-anchor="{anc}" paint-order="stroke" stroke="#fbfbf8" stroke-width="3">{html.escape(t)}</text>')
-        self.dessus += o
+        self.dessus += [(k, x) for x in o]
 
     def cote_v(self, y0, y1, x, t, k, ext=None, cote="g"):
+        t = self._t(t)
         c, Y0, Y1, Xx = COL[k], self.Y(y0), self.Y(y1), self.X(x)
         o = [f'<line x1="{Xx:.1f}" y1="{Y0:.1f}" x2="{Xx:.1f}" y2="{Y1:.1f}" stroke="{c}" stroke-width="1.6"/>']
         for Y in (Y0, Y1):
@@ -85,21 +107,43 @@ class Dessin:
         dx = -6 if cote == "g" else 6
         anc = "end" if cote == "g" else "start"
         o.append(f'<text x="{Xx+dx:.1f}" y="{ym+4:.1f}" fill="{c}" font-size="12.5" font-weight="700" text-anchor="{anc}" paint-order="stroke" stroke="#fbfbf8" stroke-width="3">{html.escape(t)}</text>')
-        self.dessus += o
+        self.dessus += [(k, x) for x in o]
 
     def etiquette(self, x, y, t, k, taille=12.5):
-        self.dessus.append(f'<text x="{self.X(x):.1f}" y="{self.Y(y):.1f}" fill="{COL[k]}" font-size="{taille}" font-weight="700" text-anchor="middle" paint-order="stroke" stroke="#fbfbf8" stroke-width="3">{html.escape(t)}</text>')
+        t = self._t(t)
+        self.dessus.append((k, f'<text x="{self.X(x):.1f}" y="{self.Y(y):.1f}" fill="{COL[k]}" font-size="{taille}" font-weight="700" text-anchor="middle" paint-order="stroke" stroke="#fbfbf8" stroke-width="3">{html.escape(t)}</text>'))
 
-    def svg(self, titre):
+    def svg(self, titre, couche=None, mm=None):
+        """couche None : la page web (tout) ; "base" : le bâtiment seul ; ensemble de couleurs : un calque
+        (le bâtiment en fantôme pâle, puis les formes et les cotes de ces couleurs). mm : mm par px pour l'impression."""
         defs = ('<defs><pattern id="hach" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
                 f'<line x1="0" y1="0" x2="0" y2="7" stroke="{TRAIT}" stroke-width="1.2"/></pattern></defs>')
-        return (f'<svg viewBox="0 0 {self.W:.0f} {self.H:.0f}" role="img" aria-label="{html.escape(titre)}" '
-                f'font-family="IBM Plex Mono, ui-monospace, monospace">{defs}'
-                f'<rect width="100%" height="100%" fill="#fbfbf8"/>{"".join(self.par)}{"".join(self.fond)}{"".join(self.dessus)}</svg>')
+        gris = "".join(x for k, x in self.dessus if k is None)
+        if couche is None:
+            corps = "".join(x for _, x in self.par) + "".join(self.fond) + "".join(x for _, x in self.dessus)
+        elif couche == "base":
+            corps = "".join(self.fond) + gris
+        else:
+            garde = lambda l: "".join(x for k, x in l if k in couche)
+            corps = (f'<g opacity="0.22">{"".join(self.fond)}</g>' + garde(self.cal) + garde(self.par) + garde(self.dessus))
+        taille = f' width="{self.W*mm:.2f}mm" height="{self.H*mm:.2f}mm"' if mm else ""
+        fond = "" if mm else '<rect width="100%" height="100%" fill="#fbfbf8"/>'
+        return (f'<svg viewBox="0 0 {self.W:.0f} {self.H:.0f}"{taille} role="img" aria-label="{html.escape(titre)}" '
+                f'font-family="IBM Plex Mono, ui-monospace, monospace">{defs}{fond}{corps}</svg>')
+
+
+def murs_e(d, w, h):
+    """calque : l'enveloppe des murs, épaisseur e, en violet"""
+    for r in ((0, 0, w, E), (0, h - E, w, h), (0, 0, E, h), (w - E, 0, w, h)):
+        d.forme(*r, "e", op=0.6, w=0)
 
 
 def carres_et_tiers(d, y_bleu=-0.14, y_rouge=-0.36, y_tiers_g=-0.18):
     """les 4 carrés a (bleu) et les 3 parts de 4/3 a (rouge), communs aux 3 plans"""
+    for i in range(4): d.forme(i, 0, i + 1, 1, "a", op=0.16 if i % 2 else 0.05, w=2.4)
+    for i in range(3): d.forme(i * 4 / 3, 0.02, (i + 1) * 4 / 3, 0.98, "t", op=0, w=2.6, dash="10 5")
+    for y in (1 / 3, 2 / 3): d.trait_c(0, y, 4, y, "t", w=1.6, dash="4 4")
+    murs_e(d, 4, 1)
     for i in range(4):
         d.zone(i, 0, i + 1, 1, "a", op=0.05 if i % 2 else 0.11, dash="2 0", w=0)
         d.cote_h(i, i + 1, y_bleu, "a", "a", ext=0)
@@ -132,7 +176,13 @@ def plan_rdc():
     d.cote_h(0, 0.5, 1.2, "1/2 a = 2 × 1/4 a", "q", ext=1)
     d.cote_v(0.375, 0.625, 4.2, "porte 1/4 a", "q", ext=4, cote="d")
     d.cote_h(0, E, 1.42, "e = 1/20 a", "e", ext=1, cote="d")
-    return d.svg("Plan du rez-de-chaussée"), [
+    d.forme(11 / 3, 1 / 3, 4, 2 / 3, "t", op=0.45)                                        # sas 1/3 × 1/3
+    d.forme(E, E, 0.5, 0.72, "q", op=0.30)                                                 # salle de bain 1/2 a
+    d.trait_c(0.25, E, 0.25, 0.72, "q", w=1.6, dash="4 4")                                 # = 2 quarts
+    d.forme(4 - E, 0.375, 4, 0.625, "q", op=0.8, w=0)                                      # porte 1/4 a
+    for x in (4 / 3, 8 / 3): d.forme(x - E / 2, E, x + E / 2, 0.42, "e", op=0.6, w=0)     # murs du patio, e
+    d.forme(0.5 - E / 2, E, 0.5 + E / 2, 0.72, "e", op=0.6, w=0)
+    return d, "Plan du rez-de-chaussée", [
         ("a", "Le grand rectangle fait <b>4 carrés</b> de côté <b>a</b>. On mesure <b>a d'une face extérieure à l'autre</b> (épaisseur des murs de façade comprise), en largeur comme en longueur."),
         ("t", "Plié en trois, il donne <b>3 parts égales de 4/3 a, soit 1 carré + 1/3 de carré</b> : cuisine et salle de bain, patio, séjour. Les plis à 4/3 a et 8/3 a (mesurés depuis la face extérieure) tombent <b>sur l'axe des murs du patio</b>."),
         ("t", "La largeur se plie aussi en trois : les pointillés de la passerelle (au-dessus du patio) sont à <b>1/3 a et 2/3 a</b>. Le sas d'entrée est un petit carré de <b>1/3 a × 1/3 a</b> (aux axes de ses murs)."),
@@ -166,7 +216,15 @@ def plan_etage():
     d.cote_v(0.375, 0.625, 4.2, "1/4 a", "q", ext=4, cote="d")
     d.cote_h(3.8, 4, 1.2, "1/5 a = 4 e", "e", ext=1)
     d.cote_h(0, E, 1.42, "e = 1/20 a", "e", ext=1, cote="d")
-    return d.svg("Plan de l'étage"), [
+    d.forme(4 / 3, 1 / 3, 8 / 3, 2 / 3, "t", op=0.40)                                     # pont 1/3 a
+    for x, sw in ((4 / 3, 0), (8 / 3, 1)):
+        r = 1 / 6
+        d.cal.append(("t", f'<path d="M{d.X(x):.1f} {d.Y(0.5-r):.1f} A {r*S:.1f} {r*S:.1f} 0 0 {sw} {d.X(x):.1f} {d.Y(0.5+r):.1f} Z" fill="{COL["t"]}" fill-opacity="0.25" stroke="{COL["t"]}" stroke-width="2.2"/>'))
+    d.forme(4 / 3, 1 / 3, 8 / 3, 1 / 3 + E, "e", op=0.7, w=0); d.forme(4 / 3, 2 / 3 - E, 8 / 3, 2 / 3, "e", op=0.7, w=0)
+    d.forme(3.8, 0.375, 4, 0.625, "q", op=0.35)                                           # douche 1/4 a
+    d.forme(3.8, 0.33, 4, 0.67, "e", op=0, w=2.2, dash="5 3")                              # profondeur 1/5 a = 4 e
+    for i in range(1, 4): d.trait_c(4 - i * E, 0.33, 4 - i * E, 0.67, "e", w=1.2, dash="2 2")
+    return d, "Plan de l'étage", [
         ("a", "Même rectangle : <b>4 carrés a</b>, mesurés aux faces extérieures."),
         ("t", "Mêmes trois parts de <b>a + 1/3 a</b> : chambre, vide du patio avec le pont, chambre. Les façades vitrées sur le patio sont sur les plis à 4/3 a et 8/3 a."),
         ("t", "Le pont occupe <b>le tiers du milieu de la largeur</b> (de 1/3 a à 2/3 a, faces extérieures de ses garde-corps). Ses bouts arrondis sont des demi-cercles de rayon <b>1/6 a = moitié de 1/3 a</b>."),
@@ -194,7 +252,10 @@ def plan_toit():
     d.cote_v(0.375, 0.625, 4.2, "1/4 a", "q", ext=4, cote="d")
     d.cote_h(0, E, 1.2, "e = 1/20 a", "e", ext=1, cote="d")
     d.cote_h(3.8, 4, 1.2, "1/5 a", "e", ext=1)
-    return d.svg("Plan de toiture"), [
+    d.forme(3.8, E, 4 - E, 1 / 3, "t", op=0.35); d.forme(3.8, 2 / 3, 4 - E, 1 - E, "t", op=0.35)
+    d.forme(3.8, 0.375, 4 - E, 0.625, "q", op=0.40)
+    d.forme(3.8, 0, 4, 1, "e", op=0, w=2.2, dash="5 3")
+    return d, "Plan de toiture", [
         ("a", "Toujours <b>4 carrés a</b>. Le double trait du bord est l'acrotère (le muret du toit) : son épaisseur est <b>e</b>."),
         ("t", "Les trois parts de <b>a + 1/3 a</b> : toiture, patio ouvert (on voit le pont et l'escalier d'en haut), toiture."),
         ("t", "La colonne de lanterneaux à droite reprend <b>les tiers de la largeur</b> : deux cases de 1/3 a (rouge) de part et d'autre."),
@@ -235,7 +296,16 @@ def coupe_longue():
     d.cote_h(11 / 3, 4, H + 0.25, "1/3 a", "t", ext=H)
     d.cote_h(3.8, 4, H + 0.47, "1/5 a = 4 e", "e", ext=H)
     d.cote_h(0, E, H + 0.47, "e", "e", ext=H, cote="d")
-    return d.svg("Coupe longitudinale"), [
+    d.forme(0, 0, 4 / 3, 1, "a", op=0.16, w=2.4)                                          # le carré a
+    for i in range(3): d.forme(i * 4 / 3, 0.02, (i + 1) * 4 / 3, H - 0.02, "t", op=0, w=2.6, dash="10 5")
+    d.forme(11 / 3, 0.945, 4 - E, H - 0.05, "t", op=0.40)                                 # sas 1/3 a
+    d.forme(0, 1, 4, H, "q", op=0.10, w=2.2)                                              # 5/8 a
+    d.forme(0, 0, 4, 0.14, "q", op=0.30, w=0)                                             # acrotère 1/8 a
+    d.forme(E, 0.945, 0.5, H - 0.05, "q", op=0.30)                                        # salle de bain 1/2 a
+    d.forme(1.36, 0.63, 2.36, 0.87, "q", op=0.35)                                         # garde-corps 1/4 a
+    d.forme(0, 0, E, H, "e", op=0.65, w=0); d.forme(4 - E, 0, 4, H, "e", op=0.65, w=0)
+    d.forme(3.8, 0.21, 4, 0.87, "e", op=0, w=2.2, dash="5 3")                              # douche 1/5 a = 4 e
+    return d, "Coupe longitudinale", [
         ("t", "En long, on retrouve <b>les trois parts de a + 1/3 a</b> : le patio du milieu n'a pas de toit, seul le pont le traverse."),
         ("a", "En hauteur, la coupe fait <b>a + 5/8 a</b> (du haut des murs jusqu'au sol). Le carré a (bleu) monte du haut du mur jusqu'au plancher de l'étage, environ."),
         ("q", "Les petites mesures sont des quarts : <b>1/2 a</b> pour la salle de bain, un garde-corps de <b>95 cm ≈ 1/4 a</b> sur le pont, et un acrotère de <b>≈ 1/8 a</b> (la moitié d'un quart)."),
@@ -259,7 +329,13 @@ def coupe_c():
     d.cote_v(0, 0.14, 1.18, "≈ 1/8 a", "q", ext=1, cote="d")
     d.cote_h(0, E, H + 0.3, "e = 1/20 a", "e", ext=H, cote="d")
     d.cote_v(0, H, -0.42, "650 = a + 5/8 a", "a", ext=0)
-    return d.svg("Coupe C"), [
+    d.forme(0, 0, 1, 1, "a", op=0.16, w=2.4)
+    d.forme(0, 0.207, 1, 0.87, "t", op=0, w=2.4, dash="10 5")                               # chambre 2/3 a
+    d.trait_c(0, 0.207 + 0.33, 1, 0.207 + 0.33, "t", w=1.4, dash="4 4")
+    d.forme(0, 1, 1, H, "q", op=0.15, w=2.2)                                              # 5/8 a
+    d.forme(0, 0, 1, 0.14, "q", op=0.30, w=0)                                             # acrotère
+    d.forme(0, 0, E, H, "e", op=0.65, w=0); d.forme(1 - E, 0, 1, H, "e", op=0.65, w=0)
+    return d, "Coupe C", [
         ("a", "La coupe est large de <b>a</b> et haute de <b>a + 5/8 a</b>. Avec la cote de 650 cm, on trouve <b>a = 400 cm</b>."),
         ("q", "Le rez-de-chaussée fait <b>250 cm = 5/8 a</b> sous plafond. C'est la deuxième cote qui donne a = 400 cm."),
         ("t", "La chambre de l'étage fait environ <b>2/3 a</b> de haut (2 tiers)."),
@@ -279,7 +355,10 @@ def facade_b():
     d.cote_v(0, 1, -0.18, "a", "a", ext=0); d.cote_v(1, H, -0.18, "5/8 a", "q", ext=0)
     d.cote_h(0.375, 0.625, H + 0.3, "porte 1/4 a", "q", ext=H)
     d.cote_v(1.0, H, 1.18, "porte 5/8 a", "q", ext=0.625, cote="d")
-    return d.svg("Façade B, sur la rue"), [
+    d.forme(0, 0, 1, 1, "a", op=0.16, w=2.4)
+    d.forme(0.375, 1.0, 0.625, H - 0.035, "q", op=0.40)                                   # porte 1/4 × 5/8
+    for x in (0.25, 0.5, 0.75): d.trait_c(x, 1.0, x, H, "q", w=1.2, dash="4 4")          # les quarts de a
+    return d, "Façade B, sur la rue", [
         ("a", "La façade sur la rue est un rectangle de <b>a</b> par <b>a + 5/8 a</b>. Au-dessus de la porte, le mur est <b>exactement un carré a × a</b>."),
         ("q", "La seule ouverture, la porte, fait <b>1/4 a</b> de large, au milieu (de 3/8 a à 5/8 a). Son haut tombe pile au bas du carré, donc elle fait <b>5/8 a</b> de haut."),
     ]
@@ -305,7 +384,14 @@ def coupe_e():
     d.cote_h(E, 0.25, H + 0.3, "escalier 1/5 a = 4 e", "e", ext=H)
     d.cote_h(1 / 3, 1 / 3 + E, 0.6, "e", "e", cote="g"); d.cote_h(2 / 3 - E, 2 / 3, 0.6, "e", "e", cote="d")
     d.cote_v(1.07, H - 0.05, -0.18, "porte 230", "g", ext=0.42)
-    return d.svg("Coupe E, à travers le patio"), [
+    d.forme(1 / 3, 0.70, 2 / 3, 1.06, "t", op=0.30)                                       # pont 1/3 a
+    for x in (1 / 3, 2 / 3): d.trait_c(x, 0, x, H, "t", w=1.4, dash="4 4")
+    d.forme(1 / 3, 0.70, 2 / 3, 0.95, "q", op=0, w=2.2, dash="6 3")                        # garde-corps 1/4 a
+    d.forme(1 / 3, 0.70, 1 / 3 + E, 0.95, "e", op=0.7, w=0); d.forme(2 / 3 - E, 0.70, 2 / 3, 0.95, "e", op=0.7, w=0)
+    d.forme(E, 0.90, 0.25, H - 0.05, "e", op=0.25)                                        # escalier 1/5 a = 4 e
+    d.forme(E, 0.12, 1 - E, 0.22, "e", op=0.25, w=0)                                      # 40 = 2 e
+    d.forme(0, 0, E, H, "e", op=0.65, w=0); d.forme(1 - E, 0, 1, H, "e", op=0.65, w=0)
+    return d, "Coupe E, à travers le patio", [
         ("t", "Coupé à travers le patio, le pont fait <b>1/3 a</b> de large, pile au milieu (de 1/3 a à 2/3 a), comme sur le plan de l'étage."),
         ("e", "Ses garde-corps ont l'épaisseur <b>e</b> d'un mur."),
         ("q", "Leur hauteur est de <b>95 cm ≈ 1/4 a</b>."),
@@ -327,7 +413,10 @@ def facade_c():
     d.cote_h(0.3125, 0.4375, H + 0.25, "1/8", "q", ext=1.155); d.cote_h(0.4375, 0.5625, H + 0.25, "1/8", "q", ext=1.155); d.cote_h(0.5625, 0.6875, H + 0.25, "1/8", "q", ext=1.155)
     d.cote_h(0.3125, 0.6875, H + 0.45, "3/8 a, centrés", "q")
     d.cote_v(1.03, 1.155, 1.18, "≈ 1/8 a", "q", ext=0.69, cote="d")
-    return d.svg("Façade C, sur le jardin"), [
+    d.forme(0, 0, 1, 1, "a", op=0.16, w=2.4)
+    for x0 in (0.3125, 0.5625): d.forme(x0, 1.03, x0 + 0.125, 1.155, "q", op=0.45)
+    d.forme(0.3125, 1.0, 0.6875, 1.185, "q", op=0, w=1.6, dash="4 3")
+    return d, "Façade C, sur le jardin", [
         ("a", "Même rectangle que la façade B : <b>a</b> par <b>a + 5/8 a</b>, avec <b>un carré a × a</b> au-dessus des ouvertures."),
         ("q", "Les deux petites fenêtres sont des carrés d'environ <b>1/8 a = moitié de 1/4 a</b>, séparés par 1/8 a. À trois, elles font <b>3/8 a</b>, centrés sur la façade. Leur haut est juste sous le carré a."),
     ]
@@ -350,7 +439,7 @@ NOMS = {"a": "a · le carré", "t": "1/3 a · le tiers", "q": "1/4 a · le quart
 def page():
     cartes = []
     for i, (titre, ou, f) in enumerate(VUES):
-        svg, notes = f()
+        d, nom, notes = f(); svg = d.svg(nom)
         large = i < 4
         li = "".join(f'<li><i style="background:{COL[k]}"></i><span>{t}</span></li>' for k, t in notes)
         cartes.append(f'<section class="vue{" large" if large else ""}" id="v{i+1}"><header><span class="n">{i+1}</span><div><h2>{html.escape(titre)}</h2>'
@@ -436,5 +525,6 @@ footer {{ font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); 
 </main>"""
 
 
-open(os.path.join(ICI, "index.html"), "w", encoding="utf-8").write(page())
-print("index.html écrit")
+if __name__ == "__main__":
+    open(os.path.join(ICI, "index.html"), "w", encoding="utf-8").write(page())
+    print("index.html écrit")
