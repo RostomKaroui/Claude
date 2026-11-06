@@ -1,8 +1,8 @@
-"""Planches A4 à calquer : l'Azuma House à l'échelle 1/100 (a = 4 cm), en 3 feuilles x 3 couches.
+"""Planches A4 à calquer : l'Azuma House avec a = 3,7 cm (comme sur la feuille, ≈ 1/108), en 3 feuilles x 3 couches.
 
 Couche « base »   : le bâtiment au trait noir (à calquer en premier).
 Calque 1          : bleu (a, le carré) + rouge (1/3 a, le tiers) : les grandes formes.
-Calque 2          : vert (1/4 a, le quart) + violet (e = 1/21 a, le mur) : les petites formes.
+Calque 2          : vert (1/4 a, le quart) + violet (e = 1/24 a, le mur) : les petites formes.
 Feuille 4         : la trame (modules de 1/3 a) sur les 3 plans, en une seule page.
 Feuille 5         : les 7 plis dessinés sur le plan du rez-de-chaussée (3 pages).
 Sur les calques, le bâtiment reste en gris pâle pour se repérer (à ne pas recopier).
@@ -14,7 +14,7 @@ import build
 from build import COL
 
 build.IMPRESSION = True
-MM = 40 / build.S             # 1/100 : a = 4 m = 40 mm sur la feuille
+MM = 37 / build.S             # a = 4 m = 37 mm sur la feuille (mesuré à la règle), ≈ 1/108
 ICI = os.path.dirname(os.path.abspath(__file__))
 
 FEUILLES = [
@@ -24,8 +24,8 @@ FEUILLES = [
 ]
 COUCHES = [
     ("base", "Base · le bâtiment au trait", "base", []),
-    ("c1", "Calque 1 · le carré et le tiers", {"a", "t"}, [("a", "a · le carré"), ("t", "1/3 a · le tiers, 1/15 a")]),
-    ("c2", "Calque 2 · le quart et le mur", {"q", "e"}, [("q", "1/4 a · le quart, 1/8 a"), ("e", "e = 1/21 a · le mur")]),
+    ("c1", "Calque 1 · le carré et le tiers", {"a", "t"}, [("a", "a · le carré"), ("t", "1/3 a · le tiers, 1/9 a")]),
+    ("c2", "Calque 2 · le quart et le mur", {"q", "e"}, [("q", "1/4 a · le quart, 1/8, 1/16 a"), ("e", "e = 1/24 a · le mur")]),
 ]
 CROIX = [(12, 12), (198, 12), (12, 285), (198, 285)]
 
@@ -61,16 +61,16 @@ def page(nom_f, vues, mise, couche):
         y = 40
         place(*dessins[0], g, y); place(*dessins[1], 2 * g + w1, y)
     entete = (f'<text x="20" y="13.5" font-family="Archivo, Arial, sans-serif" font-size="5" font-weight="800" fill="#111">Azuma House · {html.escape(titre_c)}</text>'
-              f'<text x="20" y="19.5" font-family="IBM Plex Mono, monospace" font-size="2.7" fill="#444">{html.escape(nom_f)} · échelle 1/100 (a = 4 cm) · imprimer à 100 %</text>')
+              f'<text x="20" y="19.5" font-family="IBM Plex Mono, monospace" font-size="2.7" fill="#444">{html.escape(nom_f)} · a = 3,7 cm comme sur la feuille (≈ 1/108) · imprimer à 100 %</text>')
     lx = 20
     for k, t in leg:
         entete += f'<rect x="{lx}" y="22.2" width="3.2" height="3.2" fill="{COL[k]}"/><text x="{lx+4.6}" y="25" font-family="IBM Plex Mono, monospace" font-size="2.8" font-weight="700" fill="{COL[k]}">{html.escape(t)}</text>'
         lx += 52
     if cle not in ("base", "trame", "plis"):
         entete += f'<text x="190" y="25" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="2.4" fill="#777">en gris pâle : repère, à ne pas recopier</text>'
-    regle = ('<g stroke="#111" stroke-width="0.3"><line x1="150" y1="290" x2="190" y2="290"/>'
-             + "".join(f'<line x1="{150 + 10*i}" y1="288.5" x2="{150 + 10*i}" y2="291.5"/>' for i in range(5))
-             + '</g><text x="170" y="295" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="2.4" fill="#111">4 cm = a = 4 m</text>')
+    regle = ('<g stroke="#111" stroke-width="0.3"><line x1="153" y1="290" x2="190" y2="290"/>'
+             + "".join(f'<line x1="{153 + 9.25*i:.2f}" y1="288.5" x2="{153 + 9.25*i:.2f}" y2="291.5"/>' for i in range(5))
+             + '</g><text x="171.5" y="295" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="2.4" fill="#111">3,7 cm = a = 4 m</text>')
     return (f'<div class="page"><svg width="210mm" height="297mm" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">'
             f'{entete}{"".join(out)}{"".join(croix(*c) for c in CROIX)}{regle}</svg></div>')
 
@@ -84,7 +84,7 @@ def document():
     pages.append(page("Feuille 4 · la trame", TRAME, "colonne", ("trame", "La trame · modules de 1/3 a", None, [("a", "a = 3 modules"), ("t", "1/3 a = 1 module")])))
     PLIS = ("plis", "Les plis, étape par étape", None, [("a", "plis du carré"), ("t", "plis du tiers"), ("q", "plis du quart"), ("e", "plis du mur")])
     for i, groupe in enumerate(((1, 2, 3), (4, 5), (6, 7))):
-        vues = [((lambda n=n: build.etape(n)), dict(build.ETAPES)[n] + (" (au 1/20)" if n == 6 else " (au 1/40)" if n == 7 else "")) for n in groupe]
+        vues = [((lambda n=n: build.etape(n)), dict(build.ETAPES)[n] + (" (zoom × 5)" if n == 6 else " (zoom × 2,5)" if n == 7 else "")) for n in groupe]
         pages.append(page(f"Feuille 5 · les plis ({i + 1}/3)", vues, "colonne", PLIS))
     return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Azuma House · calques A4</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;700&display=swap">
