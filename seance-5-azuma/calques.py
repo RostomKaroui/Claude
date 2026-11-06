@@ -4,6 +4,7 @@ Couche « base »   : le bâtiment au trait noir (à calquer en premier).
 Calque 1          : bleu (a, le carré) + rouge (1/3 a, le tiers) : les grandes formes.
 Calque 2          : vert (1/4 a, le quart) + violet (e = 1/21 a, le mur) : les petites formes.
 Feuille 4         : la trame (modules de 1/3 a) sur les 3 plans, en une seule page.
+Feuille 5         : les 7 plis dessinés sur le plan du rez-de-chaussée (3 pages).
 Sur les calques, le bâtiment reste en gris pâle pour se repérer (à ne pas recopier).
 Les 4 croix de calage sont au même endroit sur les 9 pages : on les pose l'une sur l'autre.
 Lancer : python3 calques.py  ->  calques.html, puis rendu-calques.js  ->  calques-a4.pdf
@@ -65,7 +66,7 @@ def page(nom_f, vues, mise, couche):
     for k, t in leg:
         entete += f'<rect x="{lx}" y="22.2" width="3.2" height="3.2" fill="{COL[k]}"/><text x="{lx+4.6}" y="25" font-family="IBM Plex Mono, monospace" font-size="2.8" font-weight="700" fill="{COL[k]}">{html.escape(t)}</text>'
         lx += 52
-    if cle not in ("base", "trame"):
+    if cle not in ("base", "trame", "plis"):
         entete += f'<text x="190" y="25" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="2.4" fill="#777">en gris pâle : repère, à ne pas recopier</text>'
     regle = ('<g stroke="#111" stroke-width="0.3"><line x1="150" y1="290" x2="190" y2="290"/>'
              + "".join(f'<line x1="{150 + 10*i}" y1="288.5" x2="{150 + 10*i}" y2="291.5"/>' for i in range(5))
@@ -81,6 +82,10 @@ TRAME = [(build.trame, "Rez-de-chaussée sur la trame"), (lambda: build.trame(bu
 def document():
     pages = [page(nf, v, m, c) for nf, v, m in FEUILLES for c in COUCHES]
     pages.append(page("Feuille 4 · la trame", TRAME, "colonne", ("trame", "La trame · modules de 1/3 a", None, [("a", "a = 3 modules"), ("t", "1/3 a = 1 module")])))
+    PLIS = ("plis", "Les plis, étape par étape", None, [("a", "plis du carré"), ("t", "plis du tiers"), ("q", "plis du quart"), ("e", "plis du mur")])
+    for i, groupe in enumerate(((1, 2, 3), (4, 5), (6, 7))):
+        vues = [((lambda n=n: build.etape(n)), dict(build.ETAPES)[n] + (" (au 1/20)" if n == 6 else " (au 1/40)" if n == 7 else "")) for n in groupe]
+        pages.append(page(f"Feuille 5 · les plis ({i + 1}/3)", vues, "colonne", PLIS))
     return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Azuma House · calques A4</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;700&display=swap">
 <style>@page {{ size: 210mm 297mm; margin: 0; }} html, body {{ margin: 0; padding: 0; background: #fff; }}

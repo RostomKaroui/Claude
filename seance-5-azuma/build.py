@@ -597,72 +597,189 @@ def regles_svg():
     return _svg(780, 340, "".join(o), "Les trois règles de la trame")
 
 
-def pli_svg(n):
-    """petits schémas des pliages, numérotés comme dans le texte"""
-    A, T, Q, Ev, G = COL["a"], COL["t"], COL["q"], COL["e"], "#1c2120"
-    o = []
-    if n == 1:      # la bande du plan en 2, puis en 2
-        o.append(_r(20, 40, 240, 60, A, 0.06, G, 1.6))
-        o.append(_l(140, 28, 140, 112, A, 3, "7 4")); o.append(_t(140, 22, "pli 1", A, 12))
-        for x in (80, 200): o.append(_l(x, 34, x, 106, A, 2, "4 3"))
-        o.append(_t(80, 128, "pli 2", A, 12)); o.append(_t(200, 128, "pli 2", A, 12))
-        for i in range(4): o.append(_t(50 + 60 * i, 75, "a", A, 14))
-    elif n == 2:    # la bande en 3
-        o.append(_r(20, 40, 240, 60, "none", 1, G, 1.6))
-        for i in range(3):
-            o.append(_r(20 + 80 * i, 40, 80, 60, T, 0.06 + 0.08 * (i % 2), T, 0))
-            o.append(_t(60 + 80 * i, 75, "a + 1/3", T, 12))
-        for x in (100, 180): o.append(_l(x, 28, x, 112, T, 3, "7 4"))
-        for x in (80, 140, 200): o.append(_l(x, 40, x, 100, A, 1, "2 3"))
-        o.append(_t(140, 128, "pli 3 : sur l'axe des murs du patio", T, 11))
-    elif n == 3:    # un carré en 3
-        o.append(_r(90, 20, 100, 100, A, 0.06, A, 2.2))
-        for i in (1, 2):
-            o.append(_l(90 + 100 * i / 3, 12, 90 + 100 * i / 3, 128, T, 2.4, "6 3"))
-            o.append(_l(82, 20 + 100 * i / 3, 198, 20 + 100 * i / 3, T, 1.4, "4 3"))
-        o.append(_r(90 + 100 / 3, 20 + 100 / 3, 100 / 3, 100 / 3, T, 0.35, T, 0))
-        o.append(_t(240, 75, "1/3 a", T, 13)); o.append(_t(240, 92, "= 1 module", T, 11, gras=False))
-    elif n == 4:    # un carré en 2, 4, 8
-        for j, (m, t) in enumerate(((2, "en 2 : 1/2 a"), (4, "en 4 : 1/4 a"), (8, "en 8 : 1/8 a"))):
-            x = 18 + 95 * j
-            o.append(_r(x, 22, 74, 74, A, 0.04, A, 2))
-            o.append(_r(x, 22, 74 / m, 74, Q, 0.3, Q, 0))
-            for i in range(1, m): o.append(_l(x + 74 * i / m, 16, x + 74 * i / m, 102, Q, 1.8, "4 2"))
-            o.append(_t(x + 37, 122, t, Q, 11.5))
-    elif n in (5, 6):   # la règle en biais : le tiers en 7 ou en 5
-        k, c = (7, Ev) if n == 5 else (5, T)
-        x0, x1, y0, y1 = 30, 250, 78, 118          # la bande de 1/3 a (vue de face)
-        o.append(_r(x0, y0, x1 - x0, y1 - y0, "none", 1, T, 2))
-        ax, ay, bx, by = x0, 24, x1, 66           # la règle posée en biais : 0 sur le bord gauche, k sur le bord droit
-        o.append(f'<polygon points="{ax:.1f},{ay-8:.1f} {bx:.1f},{by-8:.1f} {bx:.1f},{by+4:.1f} {ax:.1f},{ay+4:.1f}" fill="#f4e7b5" stroke="#8a7a3a" stroke-width="1"/>')
-        for i in range(k + 1):
-            x, y = ax + (bx - ax) * i / k, ay + (by - ay) * i / k
-            o.append(_l(x, y - 8, x, y + 4, "#5a4a1a", 1.2))
-            o.append(_t(x + (0 if i else 6), y - 11, str(i), "#5a4a1a", 10, gras=False))
-            if 0 < i < k: o.append(_l(x, y + 4, x, y1, c, 1.6, "4 3"))
-        o.append(_r(x0, y0, (x1 - x0) / k, y1 - y0, c, 0.45, c, 0))
-        o.append(_t(x0 + (x1 - x0) / (2 * k), y1 + 16, "e" if n == 5 else "1/15", c, 12))
-        o.append(_t(x1 + 4, y0 + 24, "1/3 a", T, 11, "start"))
-    elif n == 7:    # les combinaisons de e
-        rows = [(3, "3 e = 1/7 a", "écart des fenêtres jardin"), (4, "4 e", "passage de porte, douche"),
-                (5, "5 e = 95 cm", "garde-corps"), (12, "12 e = 4/7 a", "porte 230 cm")]
-        for j, (m, t, u) in enumerate(rows):
-            y = 14 + 30 * j
-            for i in range(m): o.append(_r(20 + 11 * i, y, 11, 16, Ev, 0.25 + 0.3 * (i % 2), Ev, 0.6))
-            o.append(_t(20 + 11 * m + 8, y + 13, t, Ev, 11.5, "start"))
-            o.append(_t(20 + 11 * m + 8, y + 25, u, "#5a615d", 9.5, "start", gras=False))
-    return _svg(300, 140, "".join(o), f"Pliage {n}")
+# ================================================================ les plis, étape par étape, dessinés sur le plan
+TRAIT_PLI = "16 5 3 5"          # trait mixte : la ligne de pli
+
+# les plis de chaque étape (x0, y0, x1, y1, couleur, étiquette, position de l'étiquette)
+PLIS_PLAN = {
+    1: [(2, -0.1, 2, 1.1, "a", "pli 1", (2, -0.08))],
+    2: [(1, -0.1, 1, 1.1, "a", "pli 2", (1, -0.08)), (3, -0.1, 3, 1.1, "a", "pli 2", (3, -0.08))],
+    3: [(4 / 3, -0.1, 4 / 3, 1.1, "t", "pli 3", (4 / 3, -0.08)), (8 / 3, -0.1, 8 / 3, 1.1, "t", "pli 3", (8 / 3, -0.08))],
+    4: [(-0.06, 1 / 3, 4.06, 1 / 3, "t", "pli 4", (-0.2, 1 / 3)), (-0.06, 2 / 3, 4.06, 2 / 3, "t", "pli 4", (-0.2, 2 / 3))],
+    5: [(0.5, -0.1, 0.5, 1.1, "q", "1/2", (0.5, -0.08)), (4 / 3, 0.25, 8 / 3, 0.25, "q", "1/4", (2.85, 0.25)),
+        (3, 0.375, 4.08, 0.375, "q", "3/8", (4.22, 0.375)), (3, 0.625, 4.08, 0.625, "q", "5/8", (4.22, 0.625))],
+}
 
 
-PLIS = [
-    (1, "a", "Pli 1 et pli 2 · le carré", "On plie la bande du plan en 2, puis encore en 2 : on obtient <b>4 parts</b>. On vérifie que chaque part est un carré : son côté est égal à la largeur. C'est <b>a</b>, mesuré aux faces extérieures."),
-    (2, "t", "Pli 3 · le tiers de la longueur", "On replie la même bande en 3, en accordéon (on ajuste jusqu'à ce que les 3 parts se superposent). Chaque part vaut <b>4/3 a = a + 1/3 a</b>. Les deux plis tombent <b>sur l'axe des murs du patio</b> (mesurés à 1,34 a et 2,65 a)."),
-    (3, "t", "Pli 4 · le tiers de a, le module", "On plie un carré a en 3 dans les deux sens : on obtient <b>9 modules de 1/3 a</b>. La largeur du plan fait 3 modules, la longueur 12. Le pont occupe le rang du milieu, le sas est 1 module."),
-    (4, "q", "Pli 5 · les quarts et les huitièmes", "On plie a en 2 (<b>1/2 a</b> : la salle de bain), puis en 4 (<b>1/4 a</b> : la porte, la douche, escalier + mur), puis en 8 (<b>1/8 a</b> : l'acrotère, les fenêtres du jardin)."),
-    (5, "e", "Pli 6 · le tiers en 7 : le mur e", "7 ne se plie pas en deux, alors on utilise <b>la règle en biais</b> : on pose la règle en travers de la bande de 1/3 a, le 0 sur un bord et le 7 cm sur l'autre, on marque chaque cm et on plie aux marques. Une part = <b>e = 1/21 a ≈ 19 cm</b>."),
-    (6, "t", "Pli 7 · le tiers en 5 : la marche", "Même méthode avec 0 et 5 (ou 0 et 10 cm, une marque tous les 2 cm). Une part = <b>1/15 a ≈ 27 cm</b> : une marche de l'escalier, une fente des longs murs. 3 parts = <b>1/5 a</b>."),
-    (7, "e", "Étape 8 · on combine", "Il ne reste qu'à compter les e : <b>3 e = 1/7 a</b>, <b>4 e</b> (passage de porte, douche), <b>5 e = 95 cm</b> (garde-corps), <b>12 e = 4/7 a = 230 cm</b> (porte du patio), et <b>1/4 a − e</b> pour l'escalier."),
+def _tag(d, x, y, t, k):
+    X, Y, w = d.X(x), d.Y(y), 7.3 * len(t) + 14
+    d.dessus.append((k, f'<rect x="{X-w/2:.1f}" y="{Y-10:.1f}" width="{w:.1f}" height="20" rx="10" fill="{COL[k]}"/>'
+                        f'<text x="{X:.1f}" y="{Y+4.5:.1f}" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">{html.escape(t)}</text>'))
+
+
+def _pli(d, x0, y0, x1, y1, k, actif=True, w=None):
+    w = w or (3.2 if actif else 1.4)
+    op = 1 if actif else 0.4
+    d.dessus.append((k, f'<line x1="{d.X(x0):.1f}" y1="{d.Y(y0):.1f}" x2="{d.X(x1):.1f}" y2="{d.Y(y1):.1f}" stroke="{COL[k]}" stroke-width="{w}" '
+                        f'stroke-opacity="{op}" stroke-dasharray="{TRAIT_PLI}" stroke-linecap="round"/>'))
+
+
+def _plis(d, n):
+    """les plis d'avant en pâle, ceux de l'étape n en gras avec leur étiquette"""
+    for m in sorted(PLIS_PLAN):
+        if m > n: break
+        for x0, y0, x1, y1, k, t, at in PLIS_PLAN[m]:
+            _pli(d, x0, y0, x1, y1, k, actif=(m == n))
+            if m == n: _tag(d, *at, t, k)
+
+
+def _rond(d, x, y, k, r=0.07):
+    d.dessus.append((k, f'<circle cx="{d.X(x):.1f}" cy="{d.Y(y):.1f}" r="{r*S:.1f}" fill="none" stroke="{COL[k]}" stroke-width="2.6"/>'))
+
+
+def _bloc(d, x0, y0, x1, y1, k, op=0.3):
+    d.dessus.append((k, f'<rect x="{d.X(x0):.1f}" y="{d.Y(y0):.1f}" width="{(x1-x0)*S:.1f}" height="{(y1-y0)*S:.1f}" fill="{COL[k]}" fill-opacity="{op}"/>'))
+
+
+def _fleche(d, x0, x1, y, h, k):
+    """flèche courbe : le sens du pliage"""
+    X0, X1, Y, C = d.X(x0), d.X(x1), d.Y(y), d.Y(y - h)
+    Xm = (X0 + X1) / 2
+    vx, vy = X1 - Xm, Y - C; n = (vx * vx + vy * vy) ** 0.5; vx, vy = vx / n, vy / n
+    p = [(X1, Y), (X1 - 13 * vx - 6 * vy, Y - 13 * vy + 6 * vx), (X1 - 13 * vx + 6 * vy, Y - 13 * vy - 6 * vx)]
+    d.dessus.append((k, f'<path d="M{X0:.1f} {Y:.1f} Q {Xm:.1f} {C:.1f} {X1:.1f} {Y:.1f}" fill="none" stroke="{COL[k]}" stroke-width="2"/>'
+                        f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in p)}" fill="{COL[k]}"/>'))
+
+
+def _regle_biais(d, xa, ya, xb, yb, n, k, y_proj=None):
+    """la règle posée en biais : 0 sur un bord, n sur l'autre ; on descend chaque graduation (Thalès)"""
+    ep = 14
+    d.dessus.append((k, f'<polygon points="{d.X(xa):.1f},{d.Y(ya)-ep:.1f} {d.X(xb):.1f},{d.Y(yb)-ep:.1f} {d.X(xb):.1f},{d.Y(yb)+3:.1f} {d.X(xa):.1f},{d.Y(ya)+3:.1f}" '
+                        f'fill="#f4e7b5" stroke="#8a7a3a" stroke-width="1"/>'))
+    for i in range(n + 1):
+        x, y = xa + (xb - xa) * i / n, ya + (yb - ya) * i / n
+        X, Y = d.X(x), d.Y(y)
+        d.dessus.append((k, f'<line x1="{X:.1f}" y1="{Y-ep:.1f}" x2="{X:.1f}" y2="{Y+3:.1f}" stroke="#5a4a1a" stroke-width="1.3"/>'
+                            f'<text x="{X + (5 if i == 0 else 0):.1f}" y="{Y-ep-4:.1f}" fill="#5a4a1a" font-size="11" text-anchor="middle">{i}</text>'))
+        if y_proj is not None and 0 < i < n:
+            d.dessus.append((k, f'<line x1="{X:.1f}" y1="{Y+3:.1f}" x2="{X:.1f}" y2="{d.Y(y_proj):.1f}" stroke="{COL[k]}" stroke-width="1.6" stroke-dasharray="5 4"/>'))
+
+
+def _base():
+    d, _, _ = plan_rdc()
+    d.par, d.dessus, d.cal = [], [], []
+    d.fond = ['<g opacity="0.5">'] + d.fond + ['</g>']
+    return d
+
+
+class Zoom:
+    """un morceau du plan agrandi (le plan est redessiné à l'échelle z, puis recadré)"""
+    mg, n = 0, 0
+
+    def __init__(self, W, H, corps, ox, oy):
+        self.W, self.H, self.corps, self.ox, self.oy = W, H, corps, ox, oy
+        Zoom.n += 1; self.id = f"zc{Zoom.n}"           # un clipPath par zoom (les id sont partagés dans la page)
+
+    def svg(self, titre, couche=None, mm=None):
+        return (f'<svg viewBox="0 0 {self.W:.0f} {self.H:.0f}" role="img" aria-label="{html.escape(titre)}" font-family="IBM Plex Mono, ui-monospace, monospace">'
+                f'<rect width="100%" height="100%" fill="#fbfbf8"/><defs><clipPath id="{self.id}"><rect width="{self.W:.0f}" height="{self.H:.0f}"/></clipPath></defs>'
+                f'<g clip-path="url(#{self.id})"><g transform="translate({-self.ox:.1f} {-self.oy:.1f})">{self.corps}</g></g>'
+                f'<rect x="0.75" y="0.75" width="{self.W-1.5:.0f}" height="{self.H-1.5:.0f}" fill="none" stroke="#1c2120" stroke-width="1.5"/></svg>')
+
+
+def _zoomer(dessine, region, z):
+    """redessine le plan à l'échelle z (× S), ajoute les tracés de dessine(d), puis recadre sur region (x0, x1, y0, y1)"""
+    global S
+    s0 = S
+    S = s0 * z
+    try:
+        d = _base()
+        dessine(d)
+        x0, x1, y0, y1 = region
+        ox, oy, W, H = d.X(x0), d.Y(y0), (x1 - x0) * S, (y1 - y0) * S
+        corps = "".join(x for _, x in d.par) + "".join(d.fond) + "".join(x for _, x in d.dessus)
+    finally:
+        S = s0
+    return Zoom(W, H, corps, ox, oy)
+
+
+def _trace_mur(d):
+    """pli 6 : le module 1/3 a (contre le mur du patio) plié en 7 avec la règle en biais"""
+    _pli(d, 1, -0.1, 1, 0.45, "a", actif=False); _pli(d, 4 / 3, -0.1, 4 / 3, 0.45, "t", actif=False)
+    _pli(d, 0.9, 1 / 3, 1.6, 1 / 3, "t", actif=False)
+    for k in range(1, 7):
+        _pli(d, 1 + k / 21, 0, 1 + k / 21, 1 / 3, "e", w=1.8)
+        _pli(d, 1, k / 21, 4 / 3, k / 21, "e", w=1.0)
+    _bloc(d, 1, 0, 4 / 3, E, "e", 0.4)                                 # 1 part sur 7 = le mur de façade
+    _bloc(d, 4 / 3 - E / 2, E, 4 / 3 + E / 2, 1 / 3, "e", 0.35)         # le mur du patio : e, centré sur le pli 3
+    _regle_biais(d, 1, 0.285, 4 / 3, 0.175, 7, "e")
+    d.cote_v(0, E, 0.97, "e", "e", cote="g")
+    d.cote_h(4 / 3 - 2 * E, 4 / 3, 0.11, "2 e", "e", ext=E, cote="g")
+    d.cote_h(4 / 3 - E / 2, 4 / 3 + E / 2, 0.3, "e", "e", cote="d")
+    d.cote_h(1, 4 / 3, 0.36, "1/3 a = 7 e", "t", ext=1 / 3)
+    _tag(d, 1 + 1 / 6, -0.035, "pli 6 : le tiers en 7", "e")
+
+
+def _trace_marches(d):
+    """pli 7 : le tiers en 5 = 1/15 a, reporté depuis le recul de 2 e (fenêtres) et depuis le milieu du patio (marches)"""
+    _plis(d, 6)
+    _pli(d, 2, -0.2, 2, 0.5, "a", w=2.4)                               # le pli 1 = le milieu du patio
+    r0, r1 = 4 / 3 - 2 * E - 5 * F, 4 / 3 - 2 * E
+    _regle_biais(d, r0, 0.36, r1, 0.25, 5, "t", y_proj=0)
+    for x in (G1, G1 + 2 * F): _bloc(d, x, 0, x + F, E, "t", 0.75)
+    for i in range(12):
+        d.dessus.append(("t", f'<line x1="{d.X(M0+i*F):.1f}" y1="{d.Y(-0.03):.1f}" x2="{d.X(M0+i*F):.1f}" y2="{d.Y(0.25):.1f}" stroke="{COL["t"]}" stroke-width="2.4"/>'))
+    for i in range(11): d.etiquette(M0 + (i + 0.5) * F, 0.2, str(i + 1), "t", 11)
+    d.cote_h(M0, M1, -0.1, "11 marches × 1/15 a, centrées sur le pli 1", "t", ext=0)
+    d.cote_h(G1, G1 + 3 * F, -0.1, "3 × 1/15", "t", ext=0)
+    d.cote_h(G1 + 3 * F, 4 / 3, 0.1, "2 e", "e", ext=E, cote="g")
+    _tag(d, (r0 + r1) / 2, 0.43, "pli 7 : le tiers en 5", "t")
+
+
+ETAPES = [
+    (1, "Pli 1 · le plan plié en 2"),
+    (2, "Pli 2 · encore en 2 : 4 carrés a"),
+    (3, "Pli 3 · en 3 : les plis tombent sur les murs du patio"),
+    (4, "Pli 4 · la largeur en 3 : la trame de 1/3 a"),
+    (5, "Pli 5 · a en 2, 4, 8 : salle de bain, escalier, porte"),
+    (6, "Pli 6 · zoom × 5 : le tiers en 7 = le mur e"),
+    (7, "Pli 7 · zoom × 2,5 : le tiers en 5 = 1/15 a, fenêtres et marches"),
 ]
+
+
+def etape(n):
+    titre = dict(ETAPES)[n]
+    if n == 6: return _zoomer(_trace_mur, (0.92, 1.52, -0.065, 0.385), 5), titre, []
+    if n == 7: return _zoomer(_trace_marches, (0.85, 2.45, -0.2, 0.5), 2.5), titre, []
+    d = _base()
+    _plis(d, n)
+    if n == 1:
+        _fleche(d, 3.3, 0.7, -0.12, 0.5, "a")
+        d.cote_h(0, 2, 1.25, "2 a", "a", ext=1); d.cote_h(2, 4, 1.25, "2 a", "a", ext=1)
+    elif n == 2:
+        for i in range(4): d.zone(i, 0, i + 1, 1, "a", op=0.13 if i % 2 == 0 else 0.04, dash="2 0", w=0)
+        for i in range(4): d.cote_h(i, i + 1, 1.25, "a", "a", ext=1)
+        d.cote_v(0, 1, -0.14, "a", "a", ext=0)
+        _pli(d, 3, 0, 4, 1, "a", w=1.6)                                    # contrôle : la diagonale du carré
+        _fleche(d, 1.45, 0.55, -0.12, 0.3, "a"); _fleche(d, 3.45, 2.55, -0.12, 0.3, "a")
+    elif n == 3:
+        for x in (4 / 3, 8 / 3): _rond(d, x, 0.2, "t")
+        for i in range(3): d.cote_h(i * 4 / 3, (i + 1) * 4 / 3, 1.25, "a + 1/3 a", "t", ext=1)
+        _fleche(d, 2.1, 0.55, -0.12, 0.3, "t"); _fleche(d, 2.1, 3.45, -0.12, 0.3, "t")
+    elif n == 4:
+        for i in range(1, 12):
+            if i % 3 and i not in (4, 8):
+                d.dessus.append(("t", f'<line x1="{d.X(i/3):.1f}" y1="{d.Y(0):.1f}" x2="{d.X(i/3):.1f}" y2="{d.Y(1):.1f}" stroke="{COL["t"]}" stroke-width="1" stroke-opacity="0.45"/>'))
+        _bloc(d, 4 / 3, 1 / 3, 8 / 3, 2 / 3, "t", 0.2); _bloc(d, 11 / 3, 1 / 3, 4, 2 / 3, "t", 0.3)
+        for j in range(3): d.cote_v(j / 3, (j + 1) / 3, 4.14, "1/3 a", "t", ext=4, cote="d")
+    elif n == 5:
+        _rond(d, 0.5, 0.62, "q"); _rond(d, M1 - 0.05, 0.25, "q", 0.06)
+        for y in (0.25, 0.5, 0.75): _pli(d, 3, y, 4.06, y, "q", w=1.2)
+        _bloc(d, 4 - E, 0.375, 4, 0.625, "q", 0.6)
+        d.cote_h(0, 0.5, 1.25, "1/2 a", "q", ext=1)
+        d.cote_v(0, 0.25, 2.6, "1/4 a", "q", ext=M1, cote="g")
+    return d, titre, []
+
 
 HYPOTHESES = [
     ("a", "Où mesure-t-on le carré a ?",
@@ -706,8 +823,8 @@ HYPOTHESES = [
 
 def blocs_ajout():
     plis = "".join(
-        f'<li class="pli" style="border-color:{COL[k]}"><b style="color:{COL[k]}">{html.escape(t)}</b>{pli_svg(n)}<span>{txt}</span></li>'
-        for n, k, t, txt in PLIS)
+        f'<figure class="pas"><figcaption><span class="n">{n}</span>{html.escape(t)}</figcaption><div class="dessin{" zoom" if n in (6, 7) else ""}">{etape(n)[0].svg(t)}</div></figure>'
+        for n, t in ETAPES)
     hyps = "".join(
         f'<article class="hyp" style="border-color:{COL[k]}"><h3><span style="color:{COL[k]}">Q{i+1}</span> {html.escape(q)}</h3>'
         f'<dl><dt>Hypothèses</dt><dd>{h}</dd><dt>Test</dt><dd>{test}</dd><dt>Réponse</dt><dd class="rep" style="color:{COL[k]}">{rep}</dd></dl></article>'
@@ -724,15 +841,9 @@ def blocs_ajout():
   </section>
 
   <section class="bloc" aria-labelledby="t-plis">
-    <div class="surtitre">Étape par étape · à refaire devant le jury</div>
-    <h2 id="t-plis">Comment on trouve chaque mesure par le pli</h2>
-    <ol class="plis">{plis}</ol>
-    <div class="jury"><b>À dire au jury, en 5 phrases.</b>
-      <ol><li>Je prends le carré <b>a</b> à l'extérieur des murs : le plan en contient 4, et les cotes 650 = a + 5/8 a et 250 = 5/8 a donnent a = 400 cm.</li>
-      <li>Je plie en 3 : les murs du patio tombent sur les plis, à leur axe. La trame est faite de modules de 1/3 a, 12 × 3.</li>
-      <li>Je plie a en 4 et en 8 pour les ouvertures : porte 1/4 a, douche 1/4 a, fenêtres du jardin 1/8 a.</li>
-      <li>Je plie le tiers en 7 avec la règle en biais : c'est le mur, e = 1/21 a ≈ 19 cm. La preuve : 95 = 5 e et 230 = 12 e tombent juste.</li>
-      <li>Je plie le tiers en 5 : 1/15 a, la marche et la fente. L'escalier + le mur font 1/4 a, donc l'escalier seul fait 1/4 a − e.</li></ol></div>
+    <div class="surtitre">Étape par étape · trait mixte = le pli · en gras : le pli de l'étape, en pâle : les plis d'avant</div>
+    <h2 id="t-plis">Les plis, dessinés sur le plan</h2>
+    <div class="pas-liste">{plis}</div>
   </section>
 
   <section class="bloc" aria-labelledby="t-hyp">
@@ -798,12 +909,11 @@ h1 {{ font-family: var(--f-titre); font-stretch: 125%; font-weight: 800; font-si
 .notes li i {{ margin-top: 5px; }}
 .intro {{ margin: 0; max-width: 80ch; }}
 .regles svg {{ min-width: 560px; }}
-.plis {{ list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }}
-.pli {{ border-top: 4px solid; padding-top: 8px; display: grid; gap: 6px; align-content: start; min-width: 0; font-size: .95rem; }}
-.pli > b {{ font-family: var(--f-titre); font-size: 1.02rem; }}
-.pli svg {{ display: block; width: 100%; height: auto; border: 1px solid var(--ligne); }}
-.jury {{ border: 1px dashed var(--encre-2); padding: 12px 16px; }}
-.jury ol {{ margin: 6px 0 0; padding-left: 1.3em; display: grid; gap: 4px; }}
+.pas-liste {{ display: grid; gap: 18px; }}
+.pas {{ margin: 0; display: grid; gap: 8px; min-width: 0; }}
+.pas figcaption {{ font-family: var(--f-titre); font-weight: 700; font-size: 1.05rem; display: flex; gap: 10px; align-items: baseline; }}
+.pas .n {{ font-stretch: 62%; font-weight: 800; font-size: 1.9rem; line-height: .8; color: var(--c-a); }}
+.dessin.zoom svg {{ max-width: 820px; min-width: 300px; margin-inline: auto; }}
 .hyps {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }}
 .hyp {{ border-left: 4px solid; padding: 2px 0 2px 12px; min-width: 0; }}
 .hyp h3 {{ font-family: var(--f-titre); font-size: 1.05rem; margin: 0 0 6px; line-height: 1.2; }}
