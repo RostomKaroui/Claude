@@ -116,3 +116,6 @@ Dossier [`../croquis-porte-jaune/`](../croquis-porte-jaune/). Photo de face (fa�
 
 ### Retouche (8 novembre) : « en A3 (2 × A4) et règle l'inclinaison, les verticales sont toujours verticales »
 Photo redressée par calcul (`redresse.py`) : plus d'inclinaison vers le haut ni de roulis, verticales verticales, horizon horizontal. Filtre crayon + LH, LT, PF refaits en **A3 portrait** et en **2 × A4 paysage** (`croquis-A3.pdf`, `croquis-2xA4.pdf`). LH à 67 % de la hauteur, PF sur la LH au milieu de la porte.
+
+## 9 · La porte bleue : filtre crayon + LH, LT, PF en A3 / 2 × A4 (8 novembre)
+Dossier [`../croquis-porte-bleue/`](../croquis-porte-bleue/). Même méthode que la porte jaune : redressement de la photo (verticales verticales), filtre crayon, LH, LT et PF, A3 portrait et 2 × A4 paysage. Photo sans EXIF : focale supposée. Presque d'aplomb au départ (0,5°) : LH vers le milieu (51 % de la hauteur).
