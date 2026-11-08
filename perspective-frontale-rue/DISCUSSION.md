@@ -119,3 +119,6 @@ Photo redressée par calcul (`redresse.py`) : plus d'inclinaison vers le haut ni
 
 ## 9 · La porte bleue : filtre crayon + LH, LT, PF en A3 / 2 × A4 (8 novembre)
 Dossier [`../croquis-porte-bleue/`](../croquis-porte-bleue/). Même méthode que la porte jaune : redressement de la photo (verticales verticales), filtre crayon, LH, LT et PF, A3 portrait et 2 × A4 paysage. Photo sans EXIF : focale supposée. Presque d'aplomb au départ (0,5°) : LH vers le milieu (51 % de la hauteur).
+
+## 10 · La place Ramadhan Bey : filtre crayon + LH, LT, PF1, PF2 (8 novembre)
+Dossier [`../croquis-place-ramadhan/`](../croquis-place-ramadhan/). Photo en paysage avec 2 directions : la ruelle sous la voûte (PF1, mesuré) et les façades de la place (PF2, très loin à droite, hors feuille). Redressement par calcul, filtre crayon, A3 paysage et 2 × A4 portrait. Photo sans EXIF : focale supposée ; LH validée par les yeux de l'homme debout.
