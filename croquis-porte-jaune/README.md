@@ -21,3 +21,19 @@ python3 -I croquis_filtre.py photo_1500.jpg croquis.png
 python3 construire.py
 node rendu.js "$PWD"
 ```
+
+## Version A3 / 2 × A4, photo redressée (8 novembre)
+| fichier | à quoi il sert |
+|---|---|
+| `croquis-A3.pdf` | le croquis, 1 page **A3 portrait** (221 × 336 mm de dessin) |
+| `croquis-2xA4.pdf` | le même en 2 pages **A4 paysage** à l'échelle 1 : feuille 1 = moitié haute, feuille 2 = moitié basse (jonction à mi-hauteur) |
+| `photo_redressee.jpg` | la photo redressée (3142 × 4774) : verticales verticales, horizon horizontal |
+
+- `redresse.py` : rotation de l'appareil virtuel (sans déformation inventée) pour effacer l'inclinaison vers le haut (~9,5°) et le roulis (~1°). Écart restant : 0,08° sur les horizontales, 0,10° sur les verticales.
+- `a3.py` + `rendu_a3.js` : filtre crayon, LH (y = 1393 sur 2064, soit 67 % de la hauteur), PF (x = 697, sur la LH), LT (bas de la photo), mise en page A3. Imprimer à 100 %.
+
+```
+python3 -I redresse.py photo.jpg photo_redressee.jpg
+python3 -I a3.py
+node rendu_a3.js "$PWD"
+```

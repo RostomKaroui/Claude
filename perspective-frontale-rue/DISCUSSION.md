@@ -113,3 +113,6 @@ Dossier [`../croquis-photo-arcs/`](../croquis-photo-arcs/) : la photo (non modif
 
 ## 8 · La porte jaune : filtre crayon + LH, LT, PF (2 novembre)
 Dossier [`../croquis-porte-jaune/`](../croquis-porte-jaune/). Photo de face (façade parallèle au tableau) : un seul point de fuite (PF) sur la LH, au milieu de la porte ; l'autre direction (PF2) est à l'infini. Cette fois la focale vient de l'EXIF (24 mm éq. 35 mm), donc la LH est calculée avec les verticales qui convergent (appareil penché de ~9,5° vers le haut).
+
+### Retouche (8 novembre) : « en A3 (2 × A4) et règle l'inclinaison, les verticales sont toujours verticales »
+Photo redressée par calcul (`redresse.py`) : plus d'inclinaison vers le haut ni de roulis, verticales verticales, horizon horizontal. Filtre crayon + LH, LT, PF refaits en **A3 portrait** et en **2 × A4 paysage** (`croquis-A3.pdf`, `croquis-2xA4.pdf`). LH à 67 % de la hauteur, PF sur la LH au milieu de la porte.
