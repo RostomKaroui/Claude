@@ -1,0 +1,83 @@
+"""Textes et étapes de montage des trois propositions (carré de 15 cm : 1 unité = 3,75 cm)."""
+import math
+R = math.sqrt(2); V = R
+A, B, C, D = (-1.5, -0.5), (0.5, -0.5), (1.5, 0.5), (-0.5, 0.5)
+
+TANGRAM = {"titre": "Le tangram en double épaisseur", "piece": None,
+           "texte": "Deux tangrams de 15 cm collés pièce sur pièce : 7 pièces deux fois plus rigides. À chaque étape, une pièce quitte le carré et prend sa place.",
+           "logique": "", "colle": []}
+
+MAQUETTES = {
+ "papillon": {
+  "titre": "Le Papillon", "principe": "Pliage",
+  "intro": "Le carré des deux grands triangles, plié en V le long de leur grand côté, posé sur une colonne ouverte en son milieu. Le pli recueille la pluie, les ailes s'ouvrent à la lumière du nord et du sud, l'ouest reste ouvert sur le couchant.",
+  "arguments": ["Climat : la pluie glisse des deux ailes vers le pli, coule le long du parallélogramme et tombe dans le bassin : l'eau est récupérée.",
+                "Orientation : le pli va d'est en ouest. Les ailes se relèvent vers le nord et le sud et laissent entrer la lumière. À l'ouest, rien ne ferme : les deux ailes cadrent le couchant en V.",
+                "Géométrie : 5,3 cm sous le pli, jusqu'à 9 cm sous les ailes. Le personnage traverse la colonne par le passage du milieu."],
+  "etapes": [
+   {"titre": "Le pilier est", "piece": "C", "texte": "Pose le carré rouge debout, côté haut à 5,3 cm, dans l'axe est–ouest.",
+    "logique": "Il portera le pli du toit. Il est placé à l'est pour laisser le milieu libre : c'est le passage.", "colle": [[(4 - R, 0, 0), (4, 0, 0)]]},
+   {"titre": "Le pignon est", "piece": "M", "texte": "Pose le triangle moyen jaune debout sur son grand côté, perpendiculaire au carré, contre son bord est. Sa pointe arrive à 5,3 cm, au bout du pli.",
+    "logique": "Rotation de 90° par rapport au carré : il contrevente la colonne et ferme seulement l'est, côté vent du matin.", "colle": [[(4, 0, 0), (4, 0, V)]]},
+   {"titre": "Le contrefort ouest", "piece": "Pa", "texte": "Pose le parallélogramme bleu debout sur un petit côté, penché vers l'ouest, son autre petit côté à 5,3 cm sous le pli.",
+    "logique": "Vu depuis l'ouest, ce n'est qu'un trait : le couchant reste dégagé. Il guide aussi l'eau du pli jusqu'au sol.", "colle": [[(0, 0, V), (R, 0, V)]]},
+   {"titre": "L'aile nord", "piece": "G1", "texte": "Colle le grand côté du grand triangle orange sur le haut du carré et du parallélogramme. L'aile se relève de 30° vers le nord.",
+    "logique": "Pliage : c'est la première moitié du carré plié. Relevée vers le nord, elle laisse entrer la lumière douce.", "colle": [[(0, 0, V), (4, 0, V)]]},
+   {"titre": "L'aile sud", "piece": "G2", "texte": "Colle le grand triangle turquoise contre l'aile nord, le long du même grand côté, relevé de 30° vers le sud.",
+    "logique": "Pliage et rotation : c'est l'aile nord tournée d'un demi-tour autour du pli. Les deux ailes forment le carré plié en V.", "colle": [[(0, 0, V), (4, 0, V)]]},
+   {"titre": "Le bassin (1)", "piece": "P1", "texte": "Pose le petit triangle bleu clair à plat, au pied du parallélogramme.",
+    "logique": "L'eau qui descend le long du parallélogramme tombe ici.", "colle": [[(-R, -R / 2, 0), (-R, R / 2, 0)]]},
+   {"titre": "Le bassin (2)", "piece": "P2", "texte": "Pose le petit triangle vert à côté : avec le bleu clair, il forme un carré.",
+    "logique": "Rotation : c'est le premier petit triangle tourné d'un demi-tour. Le carré qu'ils forment est le bassin de récupération de l'eau.", "colle": [[(-2 * R, R / 2, 0), (-R, R / 2, 0)]]},
+  ],
+  "vues": {"perso": [(1.7, -2.4, 0.62), (1.7, 3.0, 0.75)], "ouest": [(-7.5, -1.2, 2.2), (2, 0, 1.0)]},
+ },
+ "sheds": {
+  "titre": "Les Sheds", "principe": "Translation",
+  "intro": "Trois toits inclinés à 45°, le même geste répété vers le nord : grand, grand, puis moyen. Chaque toit tourne le dos au soleil de midi et ouvre une fenêtre vers le nord ; entre eux, des travées ouvertes à l'est et à l'ouest.",
+  "arguments": ["Climat : chaque toit descend vers le sud à 45° : la pluie et la neige glissent, et les travées restent ouvertes à l'air.",
+                "Orientation : les fenêtres hautes regardent le nord : lumière douce, sans soleil direct ni chaleur. Les travées vont d'est en ouest : le soleil du matin et celui du couchant les traversent.",
+                "Géométrie : 4,1 à 5,3 cm de haut dans les travées. Le personnage les parcourt d'est en ouest et ressort face au couchant."],
+  "etapes": [
+   {"titre": "Le pilier", "piece": "C", "texte": "Pose le carré rouge debout au centre, dans l'axe est–ouest, côté haut à 5,3 cm.",
+    "logique": "Il porte le haut du premier toit. De chaque côté, le vide devient la fenêtre nord.", "colle": [[(2 - R / 2, 0, 0), (2 + R / 2, 0, 0)]]},
+   {"titre": "Le premier shed", "piece": "G1", "texte": "Pose le grand côté du grand triangle orange sur le haut du carré. La pointe descend vers le sud à 45° jusqu'au sol.",
+    "logique": "Le toit tourne le dos au soleil de midi ; la pluie glisse vers le sud.", "colle": [[(2 - R / 2, 0, R), (2 + R / 2, 0, R)]]},
+   {"titre": "L'appui ouest", "piece": "P1", "texte": "Pose le petit triangle bleu clair debout sur un petit côté, 5,3 cm plus au nord, à l'extrémité ouest.",
+    "logique": "Il portera le bout ouest du deuxième toit.", "colle": [[(0, R, 0), (R, R, 0)]]},
+   {"titre": "L'appui est", "piece": "P2", "texte": "Pose le petit triangle vert de la même façon, à l'extrémité est.",
+    "logique": "Rotation : c'est l'appui ouest tourné d'un demi-tour. Entre les deux, la fenêtre nord du deuxième toit.", "colle": [[(4 - R, R, 0), (4, R, 0)]]},
+   {"titre": "Le deuxième shed", "piece": "G2", "texte": "Pose le grand triangle turquoise sur les deux appuis, à 5,3 cm. Sa pointe se pose au pied du carré.",
+    "logique": "Translation : c'est le premier toit déplacé de 5,3 cm vers le nord.", "colle": [[(0, R, R), (4, R, R)]]},
+   {"titre": "L'appui nord", "piece": "Pa", "texte": "Pose le parallélogramme bleu debout sur un grand côté, encore 3,75 cm plus au nord. Son haut est à 3,75 cm.",
+    "logique": "Il portera le dernier toit, plus bas.", "colle": [[(R - 1, R + 1, 0), (R + 1, R + 1, 0)]]},
+   {"titre": "Le troisième shed", "piece": "M", "texte": "Pose le grand côté du triangle moyen jaune sur le parallélogramme. Sa pointe descend vers le sud jusqu'au sol.",
+    "logique": "Translation encore, avec un toit plus petit : le rythme diminue vers le nord.", "colle": [[(R, R + 1, 1), (R + 2, R + 1, 1)]]},
+  ],
+  "vues": {"perso": [(4.4, 1.1, 0.62), (-3, 1.1, 0.55)], "ouest": [(-7.5, 0.8, 2.0), (2, 0.6, 0.6)]},
+ },
+ "kiosque": {
+  "titre": "Le Kiosque", "principe": "Rotation",
+  "intro": "Un toit posé sur quatre points, ouvert sur tous les côtés. Chaque pièce a sa jumelle tournée d'un demi-tour autour du centre ; seule la terrasse n'a pas de paire et regarde le couchant.",
+  "arguments": ["Climat : les deux grandes ailes à 45° rejettent la pluie et la neige vers le sud-ouest et le nord-est ; le toit protège le centre.",
+                "Orientation : l'aile sud-ouest coupe le soleil chaud de l'après-midi, l'aile nord-est coupe le vent du nord. Entre elles, le passage est–ouest cadre le soleil levant et le couchant.",
+                "Géométrie : 5,3 cm sous le toit. Le personnage traverse le kiosque d'est en ouest et s'arrête sur la terrasse face au couchant."],
+  "etapes": [
+   {"titre": "Le sol tourné", "piece": "C", "texte": "Pose le carré rouge à plat, tourné de 45° : c'est le centre de la maquette.",
+    "logique": "Centre de la rotation : tourné d'un demi-tour, le carré reste le même.", "colle": [[(1, 0, 0), (0, 1, 0)], [(-1, 0, 0), (0, -1, 0)]]},
+   {"titre": "Le poteau sud-est", "piece": "P1", "texte": "Pose le petit triangle bleu clair debout sur un petit côté, au sud-est du sol. Son autre petit côté monte à 5,3 cm.",
+    "logique": "Un poteau et son contrefort : il portera un coin du toit.", "colle": [[(B[0], B[1], 0), (B[0] + R, B[1], 0)]]},
+   {"titre": "Le poteau nord-ouest", "piece": "P2", "texte": "Pose le petit triangle vert de la même façon, au nord-ouest.",
+    "logique": "Rotation : c'est le poteau sud-est tourné d'un demi-tour autour du centre.", "colle": [[(D[0] - R, D[1], 0), (D[0], D[1], 0)]]},
+   {"titre": "Le toit", "piece": "Pa", "texte": "Pose le parallélogramme bleu à plat, à 5,3 cm, sur le haut des deux poteaux.",
+    "logique": "Tourné d'un demi-tour, le parallélogramme reste le même : c'est la seule forme qui peut couvrir le centre de la rotation.", "colle": [[(B[0], B[1], R - 0.35), (B[0], B[1], R)], [(D[0], D[1], R - 0.35), (D[0], D[1], R)]]},
+   {"titre": "L'aile sud-ouest", "piece": "G1", "texte": "Pose le grand côté du grand triangle orange sur le sol, au sud. Penche-le à 45° : sa pointe vient sous le coin sud-ouest du toit.",
+    "logique": "Elle coupe le soleil chaud de l'après-midi et porte le troisième coin du toit.", "colle": [[(A[0] - 2, A[1] - R, 0), (A[0] + 2, A[1] - R, 0)]]},
+   {"titre": "L'aile nord-est", "piece": "G2", "texte": "Pose le grand triangle turquoise de la même façon, au nord : sa pointe vient sous le coin nord-est du toit.",
+    "logique": "Rotation : c'est l'aile sud-ouest tournée d'un demi-tour. Elle coupe le vent du nord.", "colle": [[(C[0] + 2, C[1] + R, 0), (C[0] - 2, C[1] + R, 0)]]},
+   {"titre": "La terrasse du couchant", "piece": "M", "texte": "Pose le triangle moyen jaune à plat, à l'ouest, pointe vers le couchant.",
+    "logique": "La seule pièce sans jumelle : elle marque la fin du parcours, face au couchant.", "colle": [[(-2, -R, 0), (-2, R, 0)]]},
+  ],
+  "vues": {"perso": [(2.8, 0, 0.62), (-4, 0, 0.6)], "ouest": [(-8, -1.0, 2.2), (0.2, 0, 0.7)]},
+ },
+}

@@ -1,0 +1,118 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Environnement · mini fiche DS</title><style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sources/fonts/playfair-display-latin-400-italic.woff2"); }
+  :root { --encre:#1f2328; --gris:#5f6670; --filet:#dfe3e8; --fond:#f6f7f9; --c1:#2F4858; --c2:#B4501E; --c3:#3C7A3E; --c4:#8C1C13; }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9pt; line-height: 1.3; color: var(--encre); }
+  b { font-weight: 800; } i { font-style: italic; }
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 21pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10pt; color: var(--gris); text-align: right; max-width: 85mm; line-height: 1.25; }
+
+  body { font-size: 8.3pt; line-height: 1.27; }
+  h1 { font-size: 19pt; }
+  .entete { margin-bottom: 6px; padding-bottom: 5px; }
+  h2 { font-family: "Playfair", serif; font-weight: 700; font-size: 11pt; margin: 0 0 3px; }
+  .g { display: grid; gap: 6px; margin-bottom: 6px; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: 1fr 1fr 1fr; }
+  .bloc { border: 1px solid var(--filet); border-top: 3px solid var(--acc, var(--c1)); border-radius: 6px; padding: 3px 7px 4px; }
+  .bloc h2 { color: var(--acc, var(--c1)); }
+  .a { --acc: var(--c1); } .b { --acc: var(--c2); } .c { --acc: var(--c3); } .d { --acc: var(--c4); }
+  ul { list-style: none; } li { padding-left: 9px; position: relative; margin-bottom: .6px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .55em; width: 3.5px; height: 3.5px; border-radius: 50%; background: currentColor; opacity: .5; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 1px 4px; border-bottom: 1px solid var(--filet); vertical-align: top; font-size: 8.1pt; }
+  td:first-child { font-weight: 800; white-space: nowrap; color: var(--acc, var(--c1)); width: 1%; }
+  tr:nth-child(even) td { background: #fafbfc; }
+  .piege { background: #fdf0ee; border: 1px solid #efc3bd; border-radius: 6px; padding: 3px 8px; }
+  .piege h2 { color: #c0392b; }
+  .piege .cols { columns: 2; column-gap: 14px; }
+  .piege li { break-inside: avoid; }
+</style></head><body>
+<div class="entete">
+  <div><div class="kicker">ENVIRONNEMENT · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div><h1>Mini fiche pour le DS</h1></div>
+  <div class="sous">Tout l'essentiel des 3 cours en 1 page : dates, chiffres, listes et pièges du vrai ou faux</div>
+</div>
+
+<div class="g g2">
+  <div class="bloc a"><h2>Dates à connaître</h2>
+    <table>
+      <tr><td>1972</td><td>Stockholm : Conférence de l'ONU sur l'Environnement Humain (CNUEH), coopération internationale</td></tr>
+      <tr><td>1987</td><td>Rapport Brundtland : concept de développement durable</td></tr>
+      <tr><td>1992</td><td>Rio, 1<sup>er</sup> Sommet de la Terre : Convention-cadre sur les changements climatiques, Agenda 21</td></tr>
+      <tr><td>1997</td><td>Protocole de Kyoto : limiter les gaz à effet de serre</td></tr>
+      <tr><td>2007</td><td>Grenelle de l'environnement (France)</td></tr>
+      <tr><td>2015</td><td>Accord de Paris : 195 pays</td></tr>
+    </table>
+  </div>
+  <div class="bloc b"><h2>Population et histoire</h2>
+    <table>
+      <tr><td>Paléolithique</td><td>5 à 10 M · chasseurs-cueilleurs · impact limité</td></tr>
+      <tr><td>Néolithique</td><td>30 M · agriculture, élevage · surexploitation du sol</td></tr>
+      <tr><td>Antiquité</td><td>200 M · urbanisation intense</td></tr>
+      <tr><td>Moyen âge</td><td>500 M · rotation des cultures</td></tr>
+      <tr><td>Aujourd'hui</td><td>8,3 milliards (9 à 9,7 milliards en 2050)</td></tr>
+    </table>
+    <div style="margin-top:2px">L'<b>homme</b> est le <b>premier responsable</b> des changements, surtout depuis la <b>révolution industrielle</b>.</div>
+  </div>
+</div>
+
+<div class="bloc d" style="margin-bottom:6px"><h2>Chiffres clés</h2>
+  <table style="columns:1">
+    <tr><td>80 %</td><td>de l'énergie mondiale = pétrole, charbon, gaz</td><td style="white-space:nowrap">70 / 22 / 8 %</td><td>eau : irrigation / industrie / domestique</td></tr>
+    <tr><td>80 · 70 · 70 %</td><td>agriculture (WWF) : déforestation / eau douce / perte de biodiversité</td><td>4 M d'ha</td><td>forêt perdue par an en Afrique</td></tr>
+    <tr><td>13,5 %</td><td>des déchets recyclés dans le monde</td><td>12 %</td><td>plastique dans les déchets municipaux (100 à 1 000 ans)</td></tr>
+    <tr><td>× 18 · 12,7 kg</td><td>industrie : 18 fois plus de déchets que les ménages, 12,7 kg/jour/habitant</td><td>+ 1,2 °C</td><td>réchauffement entre 1880 et 2020 (≈ 15 °C naturels)</td></tr>
+    <tr><td>8,1 M</td><td>décès liés à l'air en 2021 (700 000 enfants de moins de 5 ans)</td><td>60 dB</td><td>début de la gêne due au bruit</td></tr>
+    <tr><td>&gt; 80 % · 99 %</td><td>ciel pollué par la lumière : monde / Europe et Amérique du Nord</td><td>30 · 60 %</td><td>vertébrés · invertébrés nocturnes</td></tr>
+  </table>
+</div>
+
+<div class="g g3">
+  <div class="bloc a"><h2>6 défis</h2>
+    <ul><li>Urbanisation (exode rural, étalement)</li><li>Énergie (80 % fossiles)</li><li>Agriculture intensive (pesticides, monoculture)</li><li>Eau (demande croissante)</li><li>Déforestation</li><li>Pollution</li></ul>
+  </div>
+  <div class="bloc c"><h2>6 solutions</h2>
+    <ul><li>Prise de conscience internationale</li><li>Parcs nationaux et réserves</li><li>Énergies renouvelables : solaire, éolien, hydraulique, géothermie, biomasse</li><li>Agriculture durable</li><li>Recyclage</li><li>Reforestation et protection des forêts</li></ul>
+  </div>
+  <div class="bloc b"><h2>5 formes de pollution</h2>
+    <ul><li><b>Air</b> : PM10, PM2,5, SO₂, NOx, CO, O₃ ; maladies respiratoires, smog</li><li><b>Eau</b> : nitrates, pesticides, microplastiques ; choléra, eutrophisation</li><li><b>Sol</b> : métaux lourds, hydrocarbures ; chaîne alimentaire</li><li><b>Bruit</b> : gêne, stress, moins de biodiversité urbaine</li><li><b>Lumière</b> : ciel étoilé, faune nocturne, énergie gaspillée</li></ul>
+  </div>
+</div>
+
+<div class="g g3">
+  <div class="bloc d"><h2>Définitions</h2>
+    <ul><li><b>Pollution</b> : dégradation du milieu par des substances, déchets ou nuisances ; surtout humaine, parfois naturelle</li><li><b>Polluant</b> : substance là où elle ne devrait pas être, ou en excès</li><li><b>Ponctuelle</b> : source localisée · <b>Diffuse</b> : multiples rejets</li><li><b>Déchets</b> : ce qu'on jette ou juge inutile</li></ul>
+  </div>
+  <div class="bloc a"><h2>4 types de déchets</h2>
+    <ul><li><b>Ménagers</b> (plastique)</li><li><b>Agricoles</b> : fumier, lisier, résidus</li><li><b>Industriels</b> : dangereux (amiante, médicaux) ou non</li><li><b>Nucléaires</b> : milliers d'années ; stockage géologique profond</li></ul>
+    <div>Cycle : création → collecte → tri → valorisation / décharge-incinération / compostage.</div>
+  </div>
+  <div class="bloc c"><h2>Réchauffement</h2>
+    <ul><li>Hausse générale des températures moyennes</li><li>Gaz à effet de serre : CO₂, méthane (barrière qui garde ≈ 15 °C)</li><li>Causes : énergies fossiles, transports, déforestation, agriculture, élevage</li><li>Effets : écosystèmes bouleversés, événements extrêmes</li></ul>
+  </div>
+</div>
+
+<div class="piege"><h2>Pièges du vrai ou faux</h2>
+  <ul class="cols">
+    <li>Rio = <b>1992</b>, Kyoto = <b>1997</b>, Paris = <b>2015</b>.</li>
+    <li>Agriculture intensive : <b>XX<sup>e</sup></b> siècle.</li>
+    <li>Le nucléaire est <b>non renouvelable</b> (uranium).</li>
+    <li>Eau : <b>70 %</b> = irrigation, pas domestique (8 %).</li>
+    <li>Recyclage : <b>13,5 %</b> seulement.</li>
+    <li>Pollution : <b>pas toujours humaine</b> (volcan).</li>
+    <li>Effet de serre : <b>naturel</b>, l'homme l'intensifie.</li>
+    <li>Air 2021 : <b>8,1 M</b> de décès ; 700 000 = enfants.</li>
+    <li>Enfants : <b>2<sup>e</sup></b> facteur de risque, après la malnutrition.</li>
+    <li>Lumière : <b>80 %</b> monde, <b>99 %</b> Europe et Amérique du Nord.</li>
+    <li>Nocturnes : <b>30 %</b> vertébrés, <b>60 %</b> invertébrés.</li>
+    <li>Industrie : <b>18 fois plus</b> que les ménages.</li>
+  </ul>
+</div>
+</body></html>

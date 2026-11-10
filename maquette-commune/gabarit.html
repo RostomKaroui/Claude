@@ -1,0 +1,392 @@
+<title>Maquette commune</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Mise en page : planche d'atelier. Viewer 3D à gauche, fiche de montage à droite ; se superposent sur téléphone. */
+:root {
+  --papier: #f2f3f0; --feuille: #fbfbf9; --encre: #1d2220; --encre-2: #5b625e;
+  --trait: #2346a8; --ligne: #d5d8d2; --scene: #e9eae6; --sol: #dcdcd5;
+  --f-titre: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-texte: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-tech: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4;
+    --trait: #93acf2; --ligne: #2d332f; --scene: #232825; --sol: #2f3531; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4;
+  --trait: #93acf2; --ligne: #2d332f; --scene: #232825; --sol: #2f3531; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--papier); color: var(--encre); font-family: var(--f-texte); font-size: 1.02rem; line-height: 1.55; padding-inline: 16px; padding-block: 24px 40px; }
+.planche { max-width: 1240px; margin-inline: auto; display: grid; gap: 18px; }
+.tech, .surtitre { font-family: var(--f-tech); font-size: .74rem; letter-spacing: .06em; color: var(--encre-2); }
+.surtitre { text-transform: uppercase; }
+header.cartouche { border: 1.5px solid var(--encre); background: var(--feuille); padding: 18px 22px; display: grid; grid-template-columns: 1fr auto; gap: 14px 28px; align-items: end; }
+h1 { font-family: var(--f-titre); font-stretch: 125%; font-weight: 800; font-size: clamp(1.8rem, 4.6vw, 2.8rem); line-height: 1; margin: 6px 0 0; }
+.cartouche p { margin: 10px 0 0; max-width: 64ch; color: var(--encre-2); }
+.cote { display: grid; gap: 6px; font-family: var(--f-tech); font-size: .78rem; }
+.cote label { color: var(--encre-2); text-transform: uppercase; letter-spacing: .06em; }
+.cote input { width: 7.5em; font: inherit; font-size: 1rem; padding: 6px 8px; border: 1.5px solid var(--encre); background: var(--papier); color: var(--encre); }
+
+.atelier { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); border: 1.5px solid var(--encre); background: var(--feuille); }
+.vue { position: relative; border-right: 1.5px solid var(--encre); min-width: 0; display: grid; grid-template-rows: auto 1fr auto; }
+.barre { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-bottom: 1px solid var(--ligne); }
+.barre .sep { flex: 1; }
+button { font-family: var(--f-tech); font-size: .76rem; letter-spacing: .03em; padding: 6px 10px; border: 1.5px solid var(--encre); background: var(--feuille); color: var(--encre); cursor: pointer; }
+button:hover { background: var(--papier); }
+button[aria-pressed="true"] { background: var(--encre); color: var(--feuille); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--trait); outline-offset: 2px; }
+#scene { width: 100%; height: 100%; min-height: 440px; aspect-ratio: 4 / 3; max-height: 72vh; display: block; touch-action: none; background: var(--scene); }
+.aide { position: absolute; left: 12px; top: 58px; font-family: var(--f-tech); font-size: .7rem; color: var(--encre-2); pointer-events: none; }
+.soleil { display: grid; grid-template-columns: auto 1fr auto 1fr auto; gap: 8px 12px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--ligne); font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); }
+.soleil input[type=range] { width: 100%; accent-color: var(--trait); }
+
+.fiche { padding: 18px 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.nav { display: flex; gap: 8px; align-items: center; }
+.nav .compte { font-family: var(--f-tech); font-size: .8rem; margin-left: auto; color: var(--encre-2); }
+ol.etapes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 5px; }
+ol.etapes button { min-width: 2.4em; padding: 5px 7px; display: inline-flex; align-items: center; gap: 6px; }
+ol.etapes i { width: 10px; height: 10px; display: inline-block; border: 1px solid var(--encre); }
+.etape { display: grid; gap: 10px; }
+.etape h2 { font-family: var(--f-titre); font-stretch: 112%; font-weight: 700; font-size: 1.45rem; line-height: 1.1; margin: 0; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }
+.etape h2 .n { font-stretch: 62%; font-weight: 800; font-size: 2.4rem; color: var(--trait); line-height: .8; }
+.piece { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-tech); font-size: .78rem; border: 1.5px solid var(--encre); padding: 3px 9px; justify-self: start; }
+.piece i { width: 14px; height: 14px; border: 1px solid var(--encre); display: inline-block; }
+.etape ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.etape p { margin: 0; }
+.cotes { font-family: var(--f-tech); font-size: .78rem; border-top: 1px solid var(--ligne); padding-top: 10px; color: var(--encre-2); }
+.astuce { font-family: var(--f-tech); font-size: .78rem; border-left: 3px solid var(--trait); padding: 4px 0 4px 10px; color: var(--encre); }
+.colle { color: var(--trait); font-weight: 600; }
+
+section.lecture { border: 1.5px solid var(--encre); background: var(--feuille); padding: 18px 22px; display: grid; gap: 12px; }
+section.lecture h2 { font-family: var(--f-titre); font-stretch: 112%; font-size: 1.3rem; margin: 0; }
+.espaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.espaces div { border-top: 1.5px solid var(--encre); padding-top: 8px; min-width: 0; }
+.espaces b { font-family: var(--f-titre); font-stretch: 100%; display: block; margin-bottom: 4px; }
+.erreur { padding: 16px; font-family: var(--f-tech); font-size: .8rem; }
+footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
+
+@media (max-width: 860px) {
+  .atelier { grid-template-columns: 1fr; }
+  .vue { border-right: 0; border-bottom: 1.5px solid var(--encre); }
+  #scene { min-height: 320px; aspect-ratio: 1 / 1; }
+  header.cartouche { grid-template-columns: 1fr; }
+  .soleil { grid-template-columns: auto 1fr; }
+}
+.legende { display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); padding: 0 12px 10px; }
+.legende i { width: 11px; height: 11px; display: inline-block; border: 1px solid var(--encre); margin-right: 5px; vertical-align: -1px; }
+</style>
+
+<main class="planche">
+  <header class="cartouche">
+    <div>
+      <div class="surtitre">Atelier · Séance 2 · Maquette de groupe</div>
+      <h1>Un sol commun, trois lumières</h1>
+      <p>Les trois maquettes du groupe, à la même échelle, posées sur un socle commun autour d'une cour. Chacune tourne son ouverture vers la cour, et un chemin les relie : on passe d'une lumière rasante à une lumière basse, puis à une lumière qui tombe par une encoche.</p>
+    </div>
+    <div class="cote">
+      <label for="cote">Côté du carré de départ (cm)</label>
+      <input id="cote" type="number" min="5" max="60" step="0.5" value="15">
+    </div>
+  </header>
+
+  <div class="atelier">
+    <div class="vue">
+      <div class="barre" role="toolbar" aria-label="Vues">
+        <button id="v-3d" type="button">Vue 3D</button>
+        <button id="v-dessus" type="button">Plan</button>
+        <button id="v-entree" type="button">Depuis l'entrée</button>
+        <button id="v-cour" type="button">Depuis la cour</button>
+        <span class="sep"></span>
+        <button id="couleurs" type="button" aria-pressed="false">Couleur par maquette</button>
+      </div>
+      <canvas id="scene" aria-label="Maquette commune en 3D"></canvas>
+      <div class="aide">glisser : tourner · molette / pincer : zoom · clic droit : déplacer</div>
+      <div class="legende" id="legende"></div>
+      <div class="soleil">
+        <span>Soleil</span>
+        <label for="azimut" hidden>Direction du soleil</label>
+        <input id="azimut" type="range" min="0" max="360" value="200" aria-label="Direction du soleil">
+        <label for="hauteur" hidden>Hauteur du soleil</label>
+        <input id="hauteur" type="range" min="5" max="88" value="30" aria-label="Hauteur du soleil">
+        <button id="tourner" type="button" aria-pressed="false">Faire tourner</button>
+      </div>
+    </div>
+
+    <div class="fiche">
+      <div class="nav">
+        <button id="prec" type="button">← Précédent</button>
+        <button id="suiv" type="button">Suivant →</button>
+        <span class="compte" id="compte"></span>
+      </div>
+      <ol class="etapes" id="liste"></ol>
+      <div class="etape" id="etape" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <section class="lecture" aria-labelledby="lec">
+    <div class="surtitre">L'argument</div>
+    <h2 id="lec">Pourquoi réunir les trois maquettes ainsi</h2>
+    <div class="espaces">
+      <div><b>Un même point de départ</b>Les trois maquettes viennent du même carré de tangram. Posées à la même échelle, elles se comparent directement : même matière, mêmes angles de 45° et de 90°, trois espaces différents.</div>
+      <div><b>Une cour qui distribue</b>Toutes les ouvertures regardent la cour. Le vide du centre devient l'espace partagé, comme une place : c'est lui qui relie les trois abris.</div>
+      <div><b>Trois lumières sur un seul parcours</b>Depuis la cour, on choisit : le couloir du Pli, où la lumière glisse au sol ; le passage bas de Shahed, sous la tablette ; la tente de Yassmine, où la lumière tombe par l'encoche.</div>
+    </div>
+  </section>
+
+  <footer>Les trois maquettes gardent exactement leur géométrie (pages 3D de Rostom, Shahed et Yassmine), à la même échelle en supposant le même carré de départ. Placement vérifié par calcul : aucune maquette ne déborde du socle, ne touche la cour ni n'en chevauche une autre.</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const D = {{PIECES}};
+const M = D.maquettes, NOMS = ["pli", "shahed", "yassmine"];
+const u = c => c / 4;   // le côté du carré vaut 4 unités
+
+const ETAPES = [
+  { titre: "Le socle et la cour", m: null,
+    texte: c => `<p>Un socle carré commun. Au centre, une <b>cour ronde</b> laissée vide : c'est elle qui distribue le parcours.</p>
+      <ul><li>Les trois maquettes sont à la même échelle : le carré de départ a le même côté pour tout le monde.</li></ul>`,
+    cotes: c => `Socle : ${f(D.socle * u(c))} × ${f(D.socle * u(c))} cm · cour : ${f(2 * D.cour.rayon * u(c))} cm de diamètre` },
+  { titre: "Le Pli, au nord-ouest", m: "pli",
+    texte: c => `<p>Le Pli tourne son <b>couloir</b> vers la cour. On y entre depuis la cour : entre les deux plans penchés, la <b>lumière rasante</b> glisse sur le sol.</p>`,
+    cotes: c => `Hauteur : ${f(M.pli.hauteur * u(c))} cm · Rostom` },
+  { titre: "La maquette de Shahed, au nord-est", m: "shahed",
+    texte: c => `<p>Shahed tourne vers la cour <b>le dos du mur</b>, là où s'ouvre le passage sous la tablette. La lumière y entre <b>basse</b>, sous la tablette.</p>`,
+    cotes: c => `Hauteur : ${f(M.shahed.hauteur * u(c))} cm · Shahed` },
+  { titre: "La maquette de Yassmine, au sud", m: "yassmine",
+    texte: c => `<p>Plus grande et plus haute, la <b>tente</b> de Yassmine ouvre son arche vers la cour. À l'intérieur, la lumière tombe aussi par l'<b>encoche</b> du grand plan incliné.</p>`,
+    cotes: c => `Hauteur : ${f(M.yassmine.hauteur * u(c))} cm · Yassmine` },
+  { titre: "Le chemin", m: null, chemin: true,
+    texte: c => `<p>Le chemin entre par le <b>coin sud-ouest</b> du socle et rejoint la cour. De là, trois branches mènent aux trois ouvertures.</p>
+      <ul><li>Le chemin peut être tracé au crayon sur le socle, ou découpé dans une bande de carton collée à plat.</li></ul>`,
+    cotes: c => `Largeur du chemin : ${f(0.5 * u(c))} cm` },
+  { titre: "Résultat : un sol commun, trois lumières", m: null, chemin: true,
+    texte: c => `<p>Un même carré au départ, trois façons de faire entrer la lumière, réunies autour d'un vide partagé.</p>
+      <ul><li>« Depuis l'entrée » et « Depuis la cour » placent la vue à hauteur d'œil.</li>
+      <li>Fais tourner le soleil : chaque maquette s'éclaire à un moment différent.</li></ul>`,
+    cotes: c => `Socle : ${f(D.socle * u(c))} cm de côté` },
+];
+const CARTON = 0xb8ab97, SOCLE = 0xd8d2c4;
+function f(x) { return (Math.round(x * 10) / 10).toLocaleString("fr-FR"); }
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+document.getElementById("legende").innerHTML = NOMS.map(k => `<span><i style="background:${M[k].couleur}"></i>${M[k].nom}</span>`).join("");
+
+const canvas = document.getElementById("scene");
+let etape = 0, enCouleurs = false, tourne = false;
+
+function demarrer() {
+  if (!window.THREE || !THREE.OrbitControls) throw new Error("three.js n'a pas pu être chargé.");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 4 / 3, 0.1, 300);
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.maxPolarAngle = Math.PI * 0.495;
+  controls.minDistance = 2; controls.maxDistance = 70;
+
+  const T = p => new THREE.Vector3(p[0], p[2] || 0, -p[1]);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x6f6a5e, 0.6));
+  const soleil = new THREE.DirectionalLight(0xfff1d6, 0.9);
+  soleil.castShadow = true;
+  soleil.shadow.mapSize.set(2048, 2048);
+  const sc = soleil.shadow.camera; sc.left = -16; sc.right = 16; sc.top = 16; sc.bottom = -16; sc.near = 0.5; sc.far = 90;
+  soleil.shadow.bias = -0.0006; soleil.shadow.normalBias = 0.03;
+  scene.add(soleil, soleil.target);
+  const disque = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffc94a }));
+  scene.add(disque);
+
+  const sol = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.MeshStandardMaterial({ roughness: 1 }));
+  sol.rotation.x = -Math.PI / 2; sol.position.y = -0.3; sol.receiveShadow = true; scene.add(sol);
+  function couleursTheme() {
+    const fond = new THREE.Color(cssVar("--scene") || "#e9eae6");
+    scene.background = fond; scene.fog = new THREE.Fog(fond, 40, 90);
+    sol.material.color = new THREE.Color(cssVar("--sol") || "#dcdcd5");
+  }
+  couleursTheme();
+  if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", couleursTheme);
+  new MutationObserver(couleursTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // socle, cour, chemins
+  const S = D.socle;
+  const socle = new THREE.Mesh(new THREE.BoxGeometry(S, 0.3, S), new THREE.MeshStandardMaterial({ color: SOCLE, roughness: 0.95 }));
+  socle.position.y = -0.15; socle.receiveShadow = true; socle.castShadow = true; scene.add(socle);
+  socle.add(new THREE.LineSegments(new THREE.EdgesGeometry(socle.geometry), new THREE.LineBasicMaterial({ color: 0x2a2620, transparent: true, opacity: 0.4 })));
+  const cour = new THREE.Mesh(new THREE.CircleGeometry(D.cour.rayon, 64), new THREE.MeshStandardMaterial({ color: 0xf1ede4, roughness: 1 }));
+  cour.rotation.x = -Math.PI / 2; cour.position.copy(T(D.cour.centre)); cour.position.y = 0.004; cour.receiveShadow = true; scene.add(cour);
+  const bordCour = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 96 }, (_, i) => {
+    const a = i / 96 * Math.PI * 2; return new THREE.Vector3(Math.cos(a) * D.cour.rayon, 0, Math.sin(a) * D.cour.rayon);
+  })), new THREE.LineBasicMaterial({ color: 0x2a2620, transparent: true, opacity: 0.5 }));
+  bordCour.position.copy(cour.position); bordCour.position.y = 0.006; scene.add(bordCour);
+
+  const groupeChemin = new THREE.Group(); scene.add(groupeChemin);
+  const matChemin = new THREE.MeshStandardMaterial({ color: 0x2346a8, roughness: 1, transparent: true, opacity: 0.85 });
+  for (const [A, B] of D.chemins) {
+    const a = T(A), b = T(B), d = b.clone().sub(a), L = d.length(), n = Math.ceil(L / 0.7);
+    for (let i = 0; i < n; i++) {   // pavés : un chemin en pointillés
+      const t0 = i / n, t1 = (i + 0.62) / n;
+      const p = a.clone().add(d.clone().multiplyScalar((t0 + t1) / 2));
+      const pave = new THREE.Mesh(new THREE.BoxGeometry(L * (t1 - t0), 0.02, 0.5), matChemin);
+      pave.position.set(p.x, 0.012, p.z);
+      pave.rotation.y = -Math.atan2(d.z, d.x);
+      pave.receiveShadow = true;
+      groupeChemin.add(pave);
+    }
+  }
+
+  // maquettes
+  const EP = 0.05;
+  function repere(pts) {
+    const o = pts[0], e1 = pts[1].clone().sub(o).normalize();
+    const v = pts[2].clone().sub(o); const e2 = v.sub(e1.clone().multiplyScalar(v.dot(e1))).normalize();
+    const n = new THREE.Vector3().crossVectors(e1, e2);
+    return { o, e1, e2, n, m: new THREE.Matrix4().makeBasis(e1, e2, n).setPosition(o) };
+  }
+  const groupes = {};
+  for (const k of NOMS) {
+    const g = new THREE.Group(), mat = new THREE.MeshStandardMaterial({ color: CARTON, roughness: 0.92, side: THREE.DoubleSide });
+    for (const poly of M[k].polys) {
+      const pts = poly.map(T), r = repere(pts);
+      const forme = new THREE.Shape(pts.map(p => { const q = p.clone().sub(r.o); return new THREE.Vector2(q.dot(r.e1), q.dot(r.e2)); }));
+      const geo = new THREE.ExtrudeGeometry(forme, { depth: EP, bevelEnabled: false }); geo.translate(0, 0, -EP / 2);
+      const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
+      mesh.applyMatrix4(r.m);
+      if (Math.abs(r.n.y) > 0.99) mesh.position.y += EP / 2 + 0.01;
+      mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), new THREE.LineBasicMaterial({ color: 0x2a2620, transparent: true, opacity: 0.5 })));
+      g.add(mesh);
+    }
+    groupes[k] = { g, mat, t: 0, cible: 0, couleur: new THREE.Color(M[k].couleur) };
+    scene.add(g);
+  }
+
+  // caméra
+  const cc = D.cour.centre;
+  const VUES = {
+    "v-3d": () => ({ p: new THREE.Vector3(-15, 15, 19), c: new THREE.Vector3(0, 0, -0.3) }),
+    "v-dessus": () => ({ p: new THREE.Vector3(0, 37, 0.01), c: new THREE.Vector3(0, 0, 0) }),
+    "v-entree": () => ({ p: T([-9.0, -6.1, 1.0]), c: T([cc[0], cc[1], 0.8]) }),
+    "v-cour": () => ({ p: T([cc[0] - 0.2, cc[1] - 1.6, 1.0]), c: T([M.pli.porte[0], M.pli.porte[1], 0.9]) }),
+  };
+  let anim = null, vue = "v-3d";
+  function allerVers(instant) {
+    const V = VUES[vue]();
+    if (instant) { camera.position.copy(V.p); controls.target.copy(V.c); anim = null; return; }
+    anim = { p0: camera.position.clone(), c0: controls.target.clone(), p1: V.p, c1: V.c, t: 0 };
+  }
+  const marquer = () => Object.keys(VUES).forEach(id => document.getElementById(id).setAttribute("aria-pressed", id === vue));
+  for (const id in VUES) document.getElementById(id).addEventListener("click", () => { vue = id; marquer(); allerVers(); });
+  controls.addEventListener("start", () => { vue = null; marquer(); });
+  marquer();
+
+  // soleil
+  const az = document.getElementById("azimut"), ht = document.getElementById("hauteur");
+  function placerSoleil() {
+    const an = THREE.MathUtils.degToRad(+az.value), h = THREE.MathUtils.degToRad(+ht.value);
+    const dir = new THREE.Vector3(Math.cos(h) * Math.sin(an), Math.sin(h), Math.cos(h) * Math.cos(an));
+    soleil.position.copy(dir.clone().multiplyScalar(40)); soleil.target.position.set(0, 0, 0);
+    disque.position.copy(dir.multiplyScalar(24));
+  }
+  az.addEventListener("input", placerSoleil); ht.addEventListener("input", placerSoleil); placerSoleil();
+  const btnTourner = document.getElementById("tourner");
+  btnTourner.addEventListener("click", () => { tourne = !tourne; btnTourner.setAttribute("aria-pressed", tourne); });
+
+  const btnCoul = document.getElementById("couleurs");
+  btnCoul.addEventListener("click", () => { enCouleurs = !enCouleurs; btnCoul.setAttribute("aria-pressed", enCouleurs); majCouleurs(); });
+  function majCouleurs() {
+    const cur = ETAPES[etape].m;
+    for (const k of NOMS) {
+      const o = groupes[k];
+      o.mat.color.copy(enCouleurs || k === cur ? o.couleur : new THREE.Color(CARTON));
+      o.mat.emissive.setHex(k === cur ? 0x161616 : 0x000000);
+    }
+  }
+
+  window.allerEtape = function (n, instant) {
+    etape = Math.max(0, Math.min(ETAPES.length - 1, n));
+    NOMS.forEach((k, i) => { groupes[k].cible = etape >= i + 1 ? 1 : 0; if (instant) groupes[k].t = groupes[k].cible; });
+    groupeChemin.visible = !!ETAPES[etape].chemin;
+    majCouleurs(); afficherFiche();
+  };
+
+  const reduit = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const horloge = new THREE.Clock();
+  function taille() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) {
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+  }
+  const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  function boucle() {
+    const dt = Math.min(horloge.getDelta(), 0.05);
+    taille();
+    for (const k of NOMS) {
+      const o = groupes[k];
+      if (o.t !== o.cible) o.t = reduit ? o.cible : (o.t < o.cible ? Math.min(o.cible, o.t + dt / 1.2) : Math.max(o.cible, o.t - dt / 0.6));
+      const e = ease(o.t);
+      o.g.visible = o.t > 0.001;
+      o.g.position.y = (1 - e) * 9;
+      o.g.rotation.y = (1 - e) * 0.9;
+    }
+    if (tourne && !reduit) { az.value = (+az.value + dt * 30) % 360; placerSoleil(); }
+    if (anim) {
+      anim.t = Math.min(1, anim.t + (reduit ? 1 : dt / 0.9));
+      const e = ease(anim.t);
+      camera.position.lerpVectors(anim.p0, anim.p1, e);
+      controls.target.lerpVectors(anim.c0, anim.c1, e);
+      if (anim.t >= 1) anim = null;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(boucle);
+  }
+  allerVers(true);
+  allerEtape(0, true);
+  boucle();
+}
+
+const coteEl = document.getElementById("cote");
+function cote() { const v = parseFloat(coteEl.value); return v > 0 ? v : 15; }
+function afficherFiche() {
+  const E = ETAPES[etape], c = cote();
+  const d = E.m ? M[E.m] : null;
+  document.getElementById("etape").innerHTML =
+    `<h2><span class="n">${etape}</span>${E.titre}</h2>` +
+    (d ? `<span class="piece"><i style="background:${d.couleur}"></i>${d.nom} · ${d.lumiere}</span>` : "") +
+    E.texte(c) + `<div class="cotes">${E.cotes(c)}</div>`;
+  document.getElementById("compte").textContent = `Étape ${etape} / ${ETAPES.length - 1}`;
+  document.querySelectorAll("#liste button").forEach((b, i) => b.setAttribute("aria-pressed", i === etape));
+  document.getElementById("prec").disabled = etape === 0;
+  document.getElementById("suiv").disabled = etape === ETAPES.length - 1;
+}
+const liste = document.getElementById("liste");
+ETAPES.forEach((E, i) => {
+  const li = document.createElement("li"), b = document.createElement("button");
+  b.type = "button";
+  b.innerHTML = (E.m ? `<i style="background:${M[E.m].couleur}"></i>` : "") + i;
+  b.title = E.titre;
+  b.addEventListener("click", () => window.allerEtape(i));
+  li.append(b); liste.append(li);
+});
+window.allerEtape = n => { etape = Math.max(0, Math.min(ETAPES.length - 1, n)); afficherFiche(); };
+document.getElementById("prec").addEventListener("click", () => window.allerEtape(etape - 1));
+document.getElementById("suiv").addEventListener("click", () => window.allerEtape(etape + 1));
+coteEl.addEventListener("input", afficherFiche);
+afficherFiche();
+try { demarrer(); }
+catch (e) {
+  canvas.replaceWith(Object.assign(document.createElement("div"), { className: "erreur", textContent: "La vue 3D n'a pas pu démarrer (" + e.message + "). Les étapes restent lisibles à droite." }));
+}
+</script>
