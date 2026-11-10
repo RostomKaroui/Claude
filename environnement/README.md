@@ -11,3 +11,9 @@
 - `pollution/Environnement_pollution_fiche_revision.pdf` : fiche de révision (2 pages A4).
 - `pollution/sources/` : fiche en HTML et script `generer_pdf.js` (utilise les polices de `sources/fonts/`).
 - `pollution/photos-cours/` : photos des diapositives du cours (22 photos, dont un doublon) et planche d'ensemble.
+
+## Cours 3 : déchets et réchauffement climatique
+- Réduire la pollution (fin du cours 2), déchets (ménagers, agricoles, industriels, nucléaires), cycle de vie des déchets, réchauffement climatique (gaz à effet de serre, causes).
+- `dechets-climat/Environnement_dechets_climat_fiche_revision.pdf` : fiche de révision (2 pages A4).
+- `dechets-climat/sources/` : fiche en HTML et script `generer_pdf.js` (utilise les polices de `sources/fonts/`).
+- `dechets-climat/photos-cours/` : photos des diapositives du cours (12 photos, dont un doublon, redressées) et planche d'ensemble.

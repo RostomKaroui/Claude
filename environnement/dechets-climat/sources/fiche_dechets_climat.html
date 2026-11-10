@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Environnement · déchets et climat · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   réduire la pollution */
+    --c2: #B4501E;  /* II  les déchets */
+    --c3: #3C7A3E;  /* III cycle de vie */
+    --c4: #8C1C13;  /* IV  réchauffement climatique */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.8pt; line-height: 1.3; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 80mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  .s4 { break-before: page; }
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .carte { --acc: var(--c1); border: 1px solid var(--filet); border-top: 3px solid var(--acc); border-radius: 6px; padding: 3px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.6pt; font-weight: 800; margin-bottom: 2px; color: var(--acc); }
+  .s1 .carte { --acc: var(--c1); } .s2 .carte { --acc: var(--c2); } .s3 .carte { --acc: var(--c3); } .s4 .carte { --acc: var(--c4); }
+  .carte p, .carte li { font-size: 8.3pt; line-height: 1.3; }
+  .menage { --acc: #2f7d8a !important; } .agri { --acc: #6b8e23 !important; } .indus { --acc: #6b6f76 !important; } .nuc { --acc: #b58900 !important; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .chiffre { display: inline-block; font-weight: 800; color: #fff; border-radius: 3px; padding: 0 4px; font-size: 8pt; background: var(--acc, var(--c2)); }
+
+  .idee { border: 1px solid var(--filet); border-left: 4px solid var(--c1); border-radius: 5px; padding: 4px 7px; font-size: 8.2pt; line-height: 1.28; background: #fff; }
+  .idee > b:first-child { display: block; font-size: 8.8pt; color: var(--c1); margin-bottom: 1px; }
+
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin: 3px 0; }
+  .stats > div { background: var(--fond); border-radius: 5px; padding: 2px 4px; text-align: center; font-size: 7.4pt; line-height: 1.2; color: var(--gris); }
+  .stats b { display: block; font-family: "Playfair", serif; font-weight: 700; font-size: 13pt; line-height: 1.1; color: var(--acc); white-space: nowrap; }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.4pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.4pt; }
+  table.t td { padding: 2px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.t td:first-child { font-weight: 800; color: var(--c3); white-space: nowrap; }
+  table.t tr:nth-child(even) td { background: #f3f8f3; }
+
+  .retenir { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8px; margin-top: 6px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 3px; }
+  .retenir dl { font-size: 8.4pt; line-height: 1.28; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 1.5px; }
+  .gros .carte p, .gros .carte li { font-size: 9.2pt; line-height: 1.34; }
+  .gros .carte h3 { font-size: 10.6pt; }
+  .gros .def { font-size: 9.4pt; }
+  .gros .stats > div { font-size: 8pt; } .gros .stats b { font-size: 14.5pt; }
+  .gros .retenir dl { font-size: 9pt; line-height: 1.32; }
+  .gros .retenir h4, .gros .notes h4 { font-size: 8.2pt; }
+  .fil { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; font-size: 8.8pt; line-height: 1.25; margin-top: 6px; }
+  .fil .e { color: #fff; padding: 5px 4px 5px 14px; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e b { display: block; font-size: 9.2pt; }
+  .lecon { margin-top: 5px; font-family: "Playfair", serif; font-style: italic; font-size: 11pt; text-align: center; }
+  .notes { margin-top: 6px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 15px; border-bottom: 1px dotted #c4cad1; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">ENVIRONNEMENT · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Déchets et climat</h1>
+  </div>
+  <div class="sous">Fiche de révision : réduire la pollution, les types de déchets, leur cycle de vie, le réchauffement climatique</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>I · Réduire la pollution</b>énergie, eau, bruit, faune</div>
+  <div class="p2"><b>II · Les déchets</b>ménagers, agricoles, industriels, nucléaires</div>
+  <div class="p3"><b>III · Cycle de vie</b>de la création au recyclage</div>
+  <div class="p4"><b>IV · Réchauffement</b>définition, gaz à effet de serre, causes</div>
+</div>
+
+<!-- ===================== I ===================== -->
+<section class="partie s1">
+  <h2><span class="num">I</span>Réduire la pollution <span style="font-family:Inter,sans-serif;font-weight:600;font-size:8.5pt;color:var(--gris)">(fin du cours précédent)</span></h2>
+  <div class="g5">
+    <div class="idee"><b>Énergie</b>Logements, centrales électriques et industries <b>plus efficaces</b> sur le plan énergétique.</div>
+    <div class="idee"><b>Air</b>Un accès à une <b>énergie domestique propre</b> réduirait grandement la pollution de l'air ambiant dans certaines régions.</div>
+    <div class="idee"><b>Eau</b>Assurer l'<b>épuration</b> de l'eau avant le rejet dans l'environnement ; <b>réutiliser</b> l'eau.</div>
+    <div class="idee"><b>Bruit</b><b>Insonorisation</b> des bâtiments et <b>isolation phonique</b>.</div>
+    <div class="idee"><b>Faune</b>Établir des <b>zones de quiétude</b> pour la faune sauvage urbaine et périurbaine, tels que des&nbsp;<b>parcs</b>.</div>
+  </div>
+</section>
+
+<!-- ===================== II ===================== -->
+<section class="partie s2">
+  <h2><span class="num">II</span>Les déchets</h2>
+
+  <div class="def">Les <b>déchets</b> désignent tous les <b>matériaux, objets ou substances</b> que les individus, les entreprises ou les collectivités <b>jettent ou considèrent comme inutiles</b>. C'est un problème qui a <b>toujours menacé les sociétés</b>. Ils peuvent être d'origine <b>ménagère, industrielle ou agricole</b>, auxquels s'ajoutent des types particuliers : déchets <b>hospitaliers</b>, <b>nucléaires</b> et <b>électroniques</b>.</div>
+
+  <div class="g2">
+    <div class="carte menage">
+      <h3>1 · Les déchets ménagers</h3>
+      <p>Tout type de déchet produit par les <b>activités quotidiennes d'un ménage</b>. Ils proviennent de la <b>consommation de biens et de services</b> et comprennent une <b>variété de matériaux</b>.</p>
+      <p style="margin-top:3px"><b>Le plastique</b> ne constitue que <span class="chiffre">12 %</span> des déchets municipaux, mais sa <b>décomposition est excessivement longue</b> :</p>
+      <ul>
+        <li>déchets <b>organiques</b> : quelques <b>jours ou semaines</b> ;</li>
+        <li>une <b>bouteille en plastique</b> : entre <span class="chiffre">100 et 1 000 ans</span> dans l'environnement ;</li>
+        <li><b>sacs plastiques</b> : danger pour la faune, qui peut <b>s'étouffer</b> en les ingérant ;</li>
+        <li><b>microplastiques</b> : polluent les <b>océans</b> et touchent les <b>écosystèmes marins</b>.</li>
+      </ul>
+    </div>
+
+    <div class="carte agri">
+      <h3>2 · Les déchets agricoles</h3>
+      <p>L'agriculture est aussi une <b>importante productrice de déchets</b>. Il s'agit souvent de <b>détritus organiques</b> faisant l'objet d'une <b>collecte séparée</b>, qui peuvent être <b>réutilisés</b> :</p>
+      <ul style="margin-top:2px">
+        <li>comme <b>engrais</b> ;</li>
+        <li>ou pour la <b>nourriture du bétail</b>.</li>
+      </ul>
+      <p style="margin-top:3px">On parle principalement du <b>fumier</b>, du <b>lisier</b> et des <b>résidus de récolte</b>.</p>
+    </div>
+
+    <div class="carte indus">
+      <h3>3 · Les déchets industriels</h3>
+      <p>Les ménages ne sont <b>pas, de loin, la première source</b> de déchets : l'industrie en génère <span class="chiffre">18 fois plus</span>, soit <span class="chiffre">12,7 kg</span> par jour et par habitant.</p>
+      <ul style="margin-top:2px">
+        <li><b>Non dangereux</b> (ferraille, papier-carton, verre, textile, bois, plastique…) : peuvent être <b>valorisés</b>, par exemple comme <b>combustible</b> à la place du pétrole.</li>
+        <li><b>Dangereux</b> (matériaux contenant de l'<b>amiante</b>, déchets <b>médicaux</b>…) : <b>difficiles à traiter</b>, haut niveau de <b>toxicité</b> : c'est eux le vrai problème.</li>
+      </ul>
+    </div>
+
+    <div class="carte nuc">
+      <h3>4 · Les déchets nucléaires</h3>
+      <p>Matériaux résiduels de la <b>production d'énergie nucléaire</b>, de la <b>recherche</b> et de la <b>médecine</b>. Ils contiennent des <b>isotopes radioactifs</b> qui peuvent rester dangereux pendant des <b>milliers d'années</b>.</p>
+      <ul style="margin-top:2px">
+        <li><b>Gestion complexe</b> : conditionnement, stockage temporaire, puis, à long terme, <b>stockage géologique profond</b>.</li>
+        <li><b>Défis</b> : sécurité, impact environnemental, santé publique.</li>
+        <li>Un <b>consensus international</b> se développe sur des solutions de stockage <b>sûres et durables</b> pour les générations futures.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== III ===================== -->
+<section class="partie s3">
+  <h2><span class="num">III</span>Le cycle de vie des déchets</h2>
+
+  <div class="g2" style="grid-template-columns: 1.7fr 1fr; align-items:center">
+    <div class="fig">
+      <svg viewBox="0 0 560 235" width="100%" role="img" aria-label="Cycle de vie des déchets : création, collecte, centre de tri, puis valorisation, décharge ou incinération, compostage ; les recyclables passent par un centre de traitement">
+        <defs><marker id="fv" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#3C7A3E"/></marker></defs>
+        <g stroke="#3C7A3E" stroke-width="2" fill="none" marker-end="url(#fv)">
+          <line x1="118" y1="140" x2="144" y2="140"/>
+          <line x1="262" y1="140" x2="298" y2="140"/>
+          <path d="M203,116 L203,62 L226,62"/>
+          <line x1="372" y1="62" x2="416" y2="62"/>
+          <path d="M410,130 L440,130 L440,92"/>
+          <line x1="410" y1="152" x2="416" y2="152"/>
+          <line x1="354" y1="164" x2="354" y2="192"/>
+        </g>
+        <g font-size="10.5" font-weight="800" text-anchor="middle" fill="#fff">
+          <rect x="4" y="116" width="114" height="48" rx="7" fill="#6b6f76"/><text x="61" y="137">Création</text><text x="61" y="151">des déchets</text>
+          <rect x="144" y="116" width="118" height="48" rx="7" fill="#2f7d8a"/><text x="203" y="137">Collecte</text><text x="203" y="151">des déchets</text>
+          <rect x="298" y="116" width="112" height="48" rx="7" fill="#B4501E"/><text x="354" y="137">Centre</text><text x="354" y="151">de tri</text>
+          <rect x="226" y="34" width="146" height="58" rx="7" fill="#3C7A3E"/><text x="299" y="55">Centre de traitement</text><text x="299" y="69">des déchets</text><text x="299" y="83">recyclables</text>
+          <rect x="416" y="34" width="140" height="58" rx="7" fill="#1f5f8f"/><text x="486" y="58">Centre de</text><text x="486" y="72">valorisation</text><text x="486" y="85" font-weight="600" font-size="8.6">(nouveaux emballages)</text>
+          <rect x="416" y="128" width="140" height="48" rx="7" fill="#8C1C13"/><text x="486" y="149">Décharge</text><text x="486" y="163">ou incinération</text>
+          <rect x="298" y="192" width="112" height="38" rx="7" fill="#6b8e23"/><text x="354" y="216">Compostage</text>
+        </g>
+        <text x="4" y="230" font-size="8" fill="#8a9099">Schéma du cours (SafetyCulture)</text>
+      </svg>
+    </div>
+    <div class="carte" style="--acc: var(--c3)">
+      <h3>À retenir</h3>
+      <ul>
+        <li>On <b>crée</b> les déchets (ménages, industries), puis on les <b>collecte</b>.</li>
+        <li>Les <b>recyclables</b> vont dans un <b>centre de traitement</b>, puis au <b>centre de valorisation</b> qui fabrique de <b>nouveaux emballages</b>.</li>
+        <li>Les autres passent par le <b>centre de tri</b> : <b>valorisation</b>, <b>décharge ou incinération</b>, ou <b>compostage</b>.</li>
+        <li>Plus on <b>trie</b> et on <b>valorise</b>, moins il en reste à <b>enfouir ou brûler</b>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== IV ===================== -->
+<section class="partie s4 gros">
+  <h2><span class="num">IV</span>Le réchauffement climatique</h2>
+
+  <div class="def"><i>« Phénomène <b>global</b> de transformation du climat caractérisé par une <b>augmentation générale des températures moyennes</b>, et qui <b>modifie durablement</b> les équilibres météorologiques et les écosystèmes. C'est l'une des principales réalités du phénomène global du <b>changement climatique</b>. »</i> <span class="gris">(youmatter)</span></div>
+
+  <div class="g3">
+    <div class="carte">
+      <h3>Les chiffres</h3>
+      <div class="stats">
+        <div><b>+ 1,2 °C</b>entre 1880 et 2020</div>
+        <div><b>≈ + 1 °C</b>depuis la fin du XIX<sup>e</sup> siècle</div>
+      </div>
+      <p>La hausse de la température de la surface terrestre entraîne des <b>bouleversements dans les écosystèmes</b> et une <b>fréquence accrue des catastrophes naturelles</b>, désormais appelées <b>événements climatiques extrêmes</b>.</p>
+    </div>
+
+    <div class="carte">
+      <h3>Les gaz à effet de serre</h3>
+      <p>Le <b>dioxyde de carbone</b> (CO<sub>2</sub>) et le <b>méthane</b> sont <b>naturellement présents</b> dans l'atmosphère et jouent un <b>rôle crucial dans la régulation du climat</b>.</p>
+      <p style="margin-top:3px">Ils forment une <b>barrière autour de la Terre</b> : ils <b>retiennent la chaleur du soleil</b> et maintiennent la température moyenne de la planète à environ <span class="chiffre">15 °C</span>.</p>
+      <svg viewBox="0 0 220 120" width="100%" role="img" aria-label="Les gaz à effet de serre retiennent une partie de la chaleur renvoyée par la Terre" style="margin-top:4px">
+        <defs>
+          <marker id="gj" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#d9a400"/></marker>
+          <marker id="gr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker>
+        </defs>
+        <circle cx="22" cy="14" r="10" fill="#f4c20d"/>
+        <text x="40" y="18" font-size="8.5" font-weight="800" fill="#b88a00">soleil</text>
+        <rect x="0" y="40" width="220" height="22" fill="#e6eef6" stroke="#9fbdd6" stroke-dasharray="3 2"/>
+        <text x="110" y="54" font-size="8.5" font-weight="800" fill="#4a6d8c" text-anchor="middle">CO₂ · méthane : la barrière</text>
+        <rect x="0" y="98" width="220" height="22" fill="#8a6f4d"/>
+        <text x="110" y="113" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">Terre : ≈ 15 °C</text>
+        <g stroke="#d9a400" stroke-width="2" fill="none" marker-end="url(#gj)"><line x1="50" y1="26" x2="64" y2="94"/><line x1="92" y1="26" x2="106" y2="94"/></g>
+        <g stroke="#c0392b" stroke-width="2" fill="none" marker-end="url(#gr)"><line x1="146" y1="94" x2="160" y2="66"/><line x1="188" y1="94" x2="202" y2="66"/></g>
+        <g stroke="#c0392b" stroke-width="1.4" stroke-dasharray="3 2" fill="none" marker-end="url(#gr)"><path d="M166,64 Q174,78 170,92"/><path d="M208,64 Q216,78 212,92"/></g>
+        <text x="150" y="82" font-size="8" font-weight="800" fill="#c0392b" text-anchor="end">chaleur</text>
+      </svg>
+    </div>
+
+    <div class="carte">
+      <h3>Les causes</h3>
+      <p>Le réchauffement actuel est <b>principalement dû aux activités de l'homme</b> :</p>
+      <ul style="margin-top:2px">
+        <li><b>production d'énergie</b>, surtout à partir des <b>énergies fossiles</b>, et <b>carburants des transports</b> (voitures, en partie aviation et transport maritime) : <b>principale cause</b> ;</li>
+        <li>la <b>gestion des territoires</b> ;</li>
+        <li>la <b>déforestation</b> ;</li>
+        <li>l'<b>agriculture</b> et l'<b>élevage</b>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fil">
+    <div class="e" style="background:#B4501E"><b>Activités humaines</b>énergies fossiles, transports, déforestation, agriculture, élevage</div>
+    <div class="e" style="background:#a0301f"><b>Gaz à effet de serre</b>CO<sub>2</sub> et méthane en plus grande quantité</div>
+    <div class="e" style="background:#8C1C13"><b>Réchauffement</b>+ 1,2 °C entre 1880 et 2020</div>
+    <div class="e" style="background:#5c1410"><b>Conséquences</b>écosystèmes bouleversés, événements climatiques extrêmes</div>
+  </div>
+  <div class="lecon">Le réchauffement qu'on connaît aujourd'hui est principalement dû aux activités de l'homme.</div>
+
+  <div class="retenir">
+    <div>
+      <h4>Chiffres à retenir</h4>
+      <dl>
+        <dt>12 % :</dt><dd>part du plastique dans les déchets municipaux.</dd>
+        <dt>100 à 1 000 ans :</dt><dd>durée de vie d'une bouteille en plastique dans la nature.</dd>
+        <dt>× 18 / 12,7 kg :</dt><dd>l'industrie produit 18 fois plus de déchets que les ménages, soit 12,7 kg par jour et par habitant.</dd>
+        <dt>15 °C :</dt><dd>température moyenne de la Terre grâce aux gaz à effet de serre.</dd>
+        <dt>+ 1,2 °C :</dt><dd>réchauffement entre 1880 et 2020.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Valorisation :</dt><dd>donner une nouvelle utilité aux déchets (matière, énergie).</dd>
+        <dt>Lisier / fumier :</dt><dd>déjections animales, utilisées comme engrais.</dd>
+        <dt>Microplastiques :</dt><dd>très petites particules de plastique.</dd>
+        <dt>Stockage géologique :</dt><dd>enfouissement profond des déchets nucléaires.</dd>
+        <dt>Événement climatique extrême :</dt><dd>catastrophe naturelle plus fréquente avec le réchauffement.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h4>Mes notes</h4>
+    <div class="ligne"></div><div class="ligne"></div><div class="ligne"></div>
+  </div>
+</section>
+
+</body>
+</html>
