@@ -17,3 +17,8 @@
 - `dechets-climat/Environnement_dechets_climat_fiche_revision.pdf` : fiche de révision (2 pages A4).
 - `dechets-climat/sources/` : fiche en HTML et script `generer_pdf.js` (utilise les polices de `sources/fonts/`).
 - `dechets-climat/photos-cours/` : photos des diapositives du cours (12 photos, dont un doublon, redressées) et planche d'ensemble.
+
+## DS : sujets blancs et mini fiche
+- `ds/Environnement_DS_entrainement.pdf` : 3 sujets blancs (16 vrai ou faux + une dissertation chacun), leurs corrigés avec justifications, plans de dissertation, méthode et autres sujets possibles (7 pages).
+- `ds/Environnement_mini_fiche_DS.pdf` : mini fiche de révision (1 page A4) : dates, chiffres, listes, définitions et pièges du vrai ou faux.
+- `ds/sources/` : `construire_ds.py` (contenu des sujets) puis `node generer_pdf.js` pour régénérer les PDF.
