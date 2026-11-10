@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Physique du bâtiment · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root { --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --c: #0E6E83; --clair: #e8f4f6; --or: #C2620F; }
+  @page { size: A4; margin: 12mm 14mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.6pt; line-height: 1.42; color: var(--encre); }
+  b { font-weight: 800; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .2em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 75mm; line-height: 1.3; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 11px; }
+  .plan div { border: 1px solid var(--filet); border-left: 4px solid var(--c); border-radius: 5px; padding: 5px 8px; font-size: 8.6pt; line-height: 1.3; }
+  .plan b { display: block; font-size: 9.4pt; color: var(--c); }
+  .plan-titre { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; color: var(--gris); margin-bottom: 4px; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 15pt; color: var(--c); margin: 2px 0 7px; }
+  .grille { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .carte { border: 1px solid var(--filet); border-radius: 7px; padding: 7px 10px 8px; break-inside: avoid; }
+  .carte h3 { font-size: 10.6pt; font-weight: 800; margin-bottom: 3px; display: flex; justify-content: space-between; align-items: baseline; }
+  .carte h3 .u { font-size: 8.4pt; font-weight: 800; color: #fff; background: var(--c); border-radius: 4px; padding: 1px 6px; }
+  .f { display: block; text-align: center; background: var(--clair); border-radius: 5px; padding: 4px 6px; margin: 5px 0; font-weight: 800; font-size: 11pt; color: var(--c); }
+  .f small { display: block; font-size: 8pt; font-weight: 400; color: var(--gris); }
+  .ex { font-size: 8.8pt; color: #4b5560; margin-top: 3px; }
+  .ex b { color: var(--or); }
+  .large { grid-column: 1 / -1; }
+  .cote { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+  svg { display: block; margin: 0 auto; }
+
+  table.t { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  table.t th { background: var(--c); color: #fff; text-align: left; padding: 3px 7px; font-size: 7.8pt; letter-spacing: .08em; }
+  table.t td { padding: 2.5px 7px; border-bottom: 1px solid var(--filet); }
+  table.t tr:nth-child(even) td { background: #f6fafb; }
+  table.t td.s { font-weight: 800; color: var(--c); }
+
+  .formulaire { border: 2px solid var(--encre); border-radius: 8px; padding: 7px 12px 6px; background: #f7f8f9; break-inside: avoid; margin-top: 8px; }
+  .formulaire h4 { font-size: 8.4pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 5px; }
+  .formulaire table { width: 100%; border-collapse: collapse; font-size: 9.2pt; }
+  .formulaire td { padding: 2.5px 6px; border-bottom: 1px dotted #c4cad1; }
+  .formulaire td:nth-child(2) { font-weight: 800; color: var(--c); white-space: nowrap; }
+  .formulaire td:nth-child(3) { color: var(--gris); }
+  .saut { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker">PHYSIQUE DU BÂTIMENT · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous" style="max-width:62mm">Généralités : les grandeurs de base</div>
+</div>
+
+<div class="plan-titre">LE PLAN DU COURS</div>
+<div class="plan">
+  <div><b>1. Statique</b>l'équilibre des forces : le bâtiment tient debout</div>
+  <div><b>2. Thermique</b>la chaleur : isolation et confort thermique</div>
+  <div><b>3. Acoustique</b>le son : bruit et confort acoustique</div>
+  <div><b>4. Éclairage</b>la lumière naturelle et artificielle</div>
+</div>
+
+<h2>Généralités</h2>
+<div class="grille">
+  <div class="carte">
+    <h3>Masse <span class="u">kg</span></h3>
+    <p>La <b>quantité de matière</b> d'un corps. Symbole <b>m</b>. Elle est <b>la même partout</b> (sur Terre comme sur la Lune). Elle se mesure avec une <b>balance</b>.</p>
+    <p class="ex" style="margin-top:6px"><b>À ne pas confondre :</b> la masse (kg) ne change jamais ; le poids (N) dépend de g. Sur la Lune (g ≈ 1,6 N/kg), on pèse environ 6 fois moins, mais la masse reste la même.</p>
+  </div>
+  <div class="carte">
+    <h3>Poids <span class="u">N</span></h3>
+    <p>La <b>force d'attraction</b> exercée par la Terre sur un corps, verticale et vers le bas. Symbole <b>P</b>. Il <b>change selon le lieu</b>. Il se mesure avec un <b>dynamomètre</b>.</p>
+    <span class="f">P = m × g<small>g ≈ 9,81 N/kg sur Terre (souvent arrondi à 10)</small></span>
+    <p class="ex">Ex. : une personne de 70 kg pèse <b>70 × 9,81 ≈ 687 N</b>.</p>
+  </div>
+
+  <div class="carte large">
+    <h3>Les états d'un corps</h3>
+    <div class="cote" style="grid-template-columns: 1.25fr 1fr;">
+      <div><svg id="fig-etats" width="420" height="120" viewBox="0 0 420 120"></svg></div>
+      <div>
+        <p>• <b>Solide</b> : forme et volume <b>propres</b> (béton, acier, bois).</p>
+        <p>• <b>Liquide</b> : volume propre, mais <b>prend la forme</b> du récipient (eau).</p>
+        <p>• <b>Gaz</b> : <b>ni forme ni volume</b> propres, il est compressible (air).</p>
+      </div>
+    </div>
+    <div><svg id="fig-changements" width="640" height="62" viewBox="0 0 640 62"></svg></div>
+  </div>
+
+  <div class="carte">
+    <h3>Masse volumique <span class="u">kg/m³</span></h3>
+    <p>La masse d'<b>1 m³</b> d'un matériau. Symbole <b>ρ</b> (rhô).</p>
+    <span class="f">ρ = m / V<small>m en kg, V en m³</small></span>
+    <table class="t">
+      <tr><th>MATÉRIAU</th><th>ρ (kg/m³)</th></tr>
+      <tr><td>air</td><td class="s">≈ 1,2</td></tr>
+      <tr><td>bois</td><td class="s">≈ 500 à 800</td></tr>
+      <tr><td>eau</td><td class="s">1 000</td></tr>
+      <tr><td>béton armé</td><td class="s">≈ 2 500</td></tr>
+      <tr><td>acier</td><td class="s">≈ 7 850</td></tr>
+    </table>
+  </div>
+  <div class="carte">
+    <h3>Densité <span class="u">sans unité</span></h3>
+    <p>Compare la masse volumique d'un corps à celle de l'<b>eau</b>. Symbole <b>d</b>.</p>
+    <span class="f">d = ρ<sub>corps</sub> / ρ<sub>eau</sub><small>ρ<sub>eau</sub> = 1 000 kg/m³</small></span>
+    <p class="ex">Ex. : béton armé : d = 2 500 / 1 000 = <b>2,5</b>. Si d &lt; 1, le corps <b>flotte</b> (bois).</p>
+    <h3 style="margin-top:7px">Poids volumique <span class="u">N/m³</span></h3>
+    <p>Le poids d'<b>1 m³</b> d'un matériau. Symbole <b>γ</b> (gamma).</p>
+    <span class="f">γ = P / V = ρ × g</span>
+    <p class="ex">Ex. : béton armé : 2 500 × 10 = <b>25 000 N/m³ = 25 kN/m³</b>, utilisé pour calculer les charges d'un bâtiment.</p>
+  </div>
+</div>
+
+<div class="grille saut">
+  <div class="carte large">
+    <h3>Travail <span class="u">J (joule)</span></h3>
+    <div class="cote" style="grid-template-columns: 1fr 1fr;">
+      <div>
+        <p>Une force <b>travaille</b> quand elle <b>déplace</b> son point d'application. Symbole <b>W</b>.</p>
+        <span class="f">W = F × d<small>F en N, d (déplacement) en m, force dans le sens du déplacement</small></span>
+        <p class="ex">Si la force est inclinée d'un angle α : W = F × d × cos α. Une force perpendiculaire au déplacement ne travaille pas.</p>
+        <p class="ex">Ex. : pousser une brouette avec 100 N sur 20 m : W = <b>2 000 J</b>.</p>
+      </div>
+      <div><svg id="fig-travail" width="320" height="136" viewBox="0 0 320 136"></svg></div>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h3>Énergie <span class="u">J (joule)</span></h3>
+    <p>La <b>capacité à produire un travail</b> (ou de la chaleur, de la lumière…). Symbole <b>E</b>. Elle ne se crée pas : elle se <b>transforme</b>.</p>
+    <span class="f">E<sub>p</sub> = m × g × h<small>énergie potentielle (un corps en hauteur)</small></span>
+    <span class="f">E<sub>c</sub> = ½ × m × v²<small>énergie cinétique (un corps en mouvement, v en m/s)</small></span>
+    <p class="ex">Autres formes : thermique, électrique, lumineuse… On utilise aussi le <b>kWh</b> : 1 kWh = 3 600 000 J.</p>
+  </div>
+  <div class="carte">
+    <h3>Puissance <span class="u">W (watt)</span></h3>
+    <p>La <b>vitesse</b> à laquelle on produit un travail (ou on consomme une énergie). Symbole <b>𝒫</b>.</p>
+    <span class="f">𝒫 = W / t<small>W en J, t en s : 1 W = 1 J/s</small></span>
+    <p class="ex">Ex. : monter une charge en 10 s au lieu de 20 s demande le même travail, mais <b>deux fois plus de puissance</b>.</p>
+    <p class="ex">Ex. : une lampe de 60 W allumée 10 h consomme 600 Wh = <b>0,6 kWh</b>.</p>
+  </div>
+
+  <div class="carte large">
+    <h3>Les unités fondamentales (système international, SI)</h3>
+    <div class="cote" style="grid-template-columns: 1.15fr 1fr; align-items: start;">
+      <table class="t">
+        <tr><th>GRANDEUR</th><th>UNITÉ</th><th>SYMBOLE</th></tr>
+        <tr><td>longueur</td><td>mètre</td><td class="s">m</td></tr>
+        <tr><td>masse</td><td>kilogramme</td><td class="s">kg</td></tr>
+        <tr><td>temps</td><td>seconde</td><td class="s">s</td></tr>
+        <tr><td>intensité électrique</td><td>ampère</td><td class="s">A</td></tr>
+        <tr><td>température</td><td>kelvin</td><td class="s">K</td></tr>
+        <tr><td>quantité de matière</td><td>mole</td><td class="s">mol</td></tr>
+        <tr><td>intensité lumineuse</td><td>candela</td><td class="s">cd</td></tr>
+      </table>
+      <div>
+        <p style="margin-bottom:4px">Les autres unités en <b>découlent</b> (unités dérivées) :</p>
+        <table class="t">
+          <tr><th>UNITÉ DÉRIVÉE</th><th>=</th></tr>
+          <tr><td><b>newton</b> (N), force</td><td class="s">kg·m/s²</td></tr>
+          <tr><td><b>joule</b> (J), travail, énergie</td><td class="s">N·m</td></tr>
+          <tr><td><b>watt</b> (W), puissance</td><td class="s">J/s</td></tr>
+          <tr><td><b>pascal</b> (Pa), pression</td><td class="s">N/m²</td></tr>
+        </table>
+        <p class="ex">La <b>candela</b> servira en éclairage, le <b>kelvin</b> en thermique.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="formulaire">
+  <h4>Formulaire à savoir par cœur</h4>
+  <table>
+    <tr><td>Poids</td><td>P = m × g</td><td>P en N · m en kg · g ≈ 9,81 N/kg</td></tr>
+    <tr><td>Masse volumique</td><td>ρ = m / V</td><td>kg/m³</td></tr>
+    <tr><td>Densité</td><td>d = ρ / ρ<sub>eau</sub></td><td>sans unité</td></tr>
+    <tr><td>Poids volumique</td><td>γ = P / V = ρ × g</td><td>N/m³</td></tr>
+    <tr><td>Travail</td><td>W = F × d</td><td>J</td></tr>
+    <tr><td>Énergie</td><td>E<sub>p</sub> = m g h · E<sub>c</sub> = ½ m v²</td><td>J</td></tr>
+    <tr><td>Puissance</td><td>𝒫 = W / t</td><td>W (= J/s)</td></tr>
+  </table>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const C = "#0E6E83", ENCRE = "#1f2328", OR = "#C2620F";
+function el(p, n, a = {}, t) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t !== undefined) e.textContent = t; p.appendChild(e); return e; }
+const txt = (g, x, y, t, a = {}) => el(g, "text", { x, y, "font-family": "Inter", "font-size": 10, fill: ENCRE, "text-anchor": "middle", ...a }, t);
+
+/* états : particules */
+(() => {
+  const g = document.getElementById("fig-etats");
+  const boite = (x, titre, gen) => {
+    el(g, "rect", { x, y: 8, width: 120, height: 88, rx: 6, fill: "#f6fafb", stroke: "#b9c7cc", "stroke-width": 1.4 });
+    gen(x);
+    txt(g, x + 60, 114, titre, { "font-weight": 800, fill: C });
+  };
+  boite(4, "SOLIDE", (x) => { for (let i = 0; i < 6; i++) for (let j = 0; j < 4; j++) el(g, "circle", { cx: x + 22 + i * 15.5, cy: 28 + j * 16, r: 7, fill: C }); });
+  boite(150, "LIQUIDE", (x) => {
+    el(g, "rect", { x: x + 1, y: 44, width: 118, height: 51, fill: "#d7ecf1" });
+    const P = [[18,58],[33,52],[50,60],[66,54],[84,61],[100,55],[24,74],[41,70],[58,78],[75,72],[93,79],[108,72],[16,89],[33,88],[50,92],[68,89],[86,90],[104,88]];
+    P.forEach(([a, b]) => el(g, "circle", { cx: x + a, cy: b, r: 6.5, fill: C }));
+  });
+  boite(296, "GAZ", (x) => { [[20,22],[70,30],[100,18],[40,55],[92,62],[18,84],[62,82],[104,88]].forEach(([a, b]) => el(g, "circle", { cx: x + a, cy: b, r: 6.5, fill: C })); });
+})();
+
+/* changements d'état */
+(() => {
+  const g = document.getElementById("fig-changements");
+  const box = (x, t) => { el(g, "rect", { x, y: 18, width: 90, height: 26, rx: 13, fill: C }); txt(g, x + 45, 35, t, { "font-weight": 800, fill: "#fff" }); };
+  box(10, "Solide"); box(275, "Liquide"); box(540, "Gaz");
+  const fl = (x1, x2, y, t, dir) => {
+    el(g, "line", { x1, y1: y, x2, y2: y, stroke: dir > 0 ? OR : C, "stroke-width": 1.8 });
+    const xe = dir > 0 ? x2 : x1;
+    el(g, "polygon", { points: dir > 0 ? `${xe},${y} ${xe - 7},${y - 4} ${xe - 7},${y + 4}` : `${xe},${y} ${xe + 7},${y - 4} ${xe + 7},${y + 4}`, fill: dir > 0 ? OR : C });
+    txt(g, (x1 + x2) / 2, dir > 0 ? y - 4 : y + 11, t, { "font-size": 9, fill: dir > 0 ? OR : C, "font-weight": 600 });
+  };
+  fl(104, 271, 24, "fusion →", 1); fl(104, 271, 39, "← solidification", -1);
+  fl(369, 536, 24, "vaporisation →", 1); fl(369, 536, 39, "← liquéfaction", -1);
+  txt(g, 320, 60, "chaleur reçue : flèches orange · chaleur cédée : flèches bleues", { "font-size": 8.5, fill: "#6b737c" });
+})();
+
+/* travail : force qui déplace une caisse */
+(() => {
+  const g = document.getElementById("fig-travail");
+  el(g, "rect", { y: 92, width: 320, height: 6, fill: "#9aa3ad" });
+  for (let x = 0; x < 320; x += 12) el(g, "line", { x1: x, y1: 98, x2: x - 8, y2: 108, stroke: "#9aa3ad", "stroke-width": 1 });
+  el(g, "rect", { x: 30, y: 52, width: 50, height: 40, fill: "#d7ecf1", stroke: C, "stroke-width": 1.6, "stroke-dasharray": "4 3" });
+  el(g, "rect", { x: 210, y: 52, width: 50, height: 40, fill: C });
+  // force
+  el(g, "line", { x1: 150, y1: 72, x2: 204, y2: 72, stroke: OR, "stroke-width": 3 });
+  el(g, "polygon", { points: "210,72 200,66 200,78", fill: OR });
+  txt(g, 176, 64, "F", { "font-weight": 800, "font-size": 13, fill: OR });
+  // déplacement
+  el(g, "line", { x1: 55, y1: 118, x2: 235, y2: 118, stroke: ENCRE, "stroke-width": 1.4 });
+  el(g, "polygon", { points: "235,118 227,114 227,122", fill: ENCRE });
+  el(g, "line", { x1: 55, y1: 112, x2: 55, y2: 124, stroke: ENCRE, "stroke-width": 1.4 });
+  txt(g, 145, 132, "d (déplacement)", { "font-size": 9.5 });
+  txt(g, 160, 24, "W = F × d", { "font-weight": 800, "font-size": 14, fill: C });
+})();
+</script>
+</body>
+</html>
