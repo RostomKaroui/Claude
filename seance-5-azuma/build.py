@@ -22,6 +22,12 @@ YR = 14 / 21                         # haut du garde-corps du pont = 2/3 a
 YF, YD = 18 / 21, 20 / 21            # plancher de l'étage : haut = 18 e, dessous = 20 e (2 e d'épaisseur)
 YP = 19 / 21                         # dessus de la dalle du pont : e plus bas que le plancher ; son dessous = a
 YS = 13 / 8 - 1 / 21                 # dessus de la dalle du sol (épaisseur e)
+PX = 5 * E / 2                       # la porte d'entrée : cadre de 5 e de large (0,238 a ; mesuré 0,237 sur la façade B), montants e/2, passage 4 e
+SEUIL = 0.035                        # le seuil de la porte (≈ 14 cm = 3/4 e)
+WT, WH = 1 - E / 2, 1 / 7            # fenêtres du jardin : haut = a − e/2, hauteur 1/7 a = 3 e (remesuré : 0,972 à 1,110 a)
+VERRE = 0.01 / 4                     # le vitrage : 1 cm = 0,0025 a (convention, voir le détail)
+TRAIT_MODE = False                   # True : rendu au trait (trait fort sur la coupe, moyen sur ce qu'on voit, fin pour le reste)
+FORT, MOYEN, FIN = 2.4, 1.2, 0.55    # épaisseurs des traits (px, soit 0,67 / 0,33 / 0,15 mm sur le carnet)
 A_REEL, A_FEUILLE, K_CARNET = 400, 3.7, 1.5       # a en cm : réel, sur la feuille, agrandissement pour le carnet
 A_CARNET = A_FEUILLE * K_CARNET                    # 5,55 cm
 COL = {"a": "#1f5fd1", "t": "#d9342b", "q": "#14965a", "e": "#8a3cc4", "g": "#6b6e70"}
@@ -43,6 +49,7 @@ class Dessin:
         self.w, self.h, self.mg, self.mh = w, h, mg, mh
         self.W, self.H = (w + mg + md) * S, (h + mh + mb) * S
         self.fond, self.par, self.dessus, self.cal = [], [], [], []     # par, dessus, cal : (couleur, svg) ; couleur None = gris
+        self.murs = []                                                  # les éléments coupés (px), pour le rendu au trait
 
     def _t(self, t): return COURT.get(t, t) if IMPRESSION else t
 
@@ -51,6 +58,7 @@ class Dessin:
 
     # --- le bâtiment (gris) ---
     def mur(self, x0, y0, x1, y1):
+        self.murs.append((self.X(x0), self.Y(y0), (x1 - x0) * S, (y1 - y0) * S))
         self.fond.append(f'<rect x="{self.X(x0):.1f}" y="{self.Y(y0):.1f}" width="{(x1-x0)*S:.1f}" height="{(y1-y0)*S:.1f}" fill="{GRIS}"/>')
 
     def ligne(self, x0, y0, x1, y1, w=1.2, c=TRAIT, dash=""):
@@ -77,9 +85,11 @@ class Dessin:
         self.fond.append(f'<rect x="{self.X(x0):.1f}" y="{self.Y(y0):.1f}" width="{(x1-x0)*S:.1f}" height="{(y1-y0)*S:.1f}" fill="#fbfbf8"/>')
         if x1 - x0 > y1 - y0:
             self.ligne(x0, y0, x1, y0, 0.9); self.ligne(x0, y1, x1, y1, 0.9)
+            self.ligne(x0, y0, x0, y1, 1.9); self.ligne(x1, y0, x1, y1, 1.9)             # les bouts du mur coupé : trait fort
             if vitre: self.ligne(x0, (y0 + y1) / 2, x1, (y0 + y1) / 2, 0.9)
         else:
             self.ligne(x0, y0, x0, y1, 0.9); self.ligne(x1, y0, x1, y1, 0.9)
+            self.ligne(x0, y0, x1, y0, 1.9); self.ligne(x0, y1, x1, y1, 1.9)
             if vitre: self.ligne((x0 + x1) / 2, y0, (x0 + x1) / 2, y1, 0.9)
 
     def sol(self, y, x0=-0.12, x1=None):
@@ -139,9 +149,28 @@ class Dessin:
         t = self._t(t)
         self.dessus.append((k, f'<text x="{self.X(x):.1f}" y="{self.Y(y):.1f}" fill="{COL[k]}" font-size="{taille}" font-weight="700" text-anchor="middle" paint-order="stroke" stroke="#fbfbf8" stroke-width="3">{html.escape(t)}</text>'))
 
+    def _svg_trait(self, titre, mm):
+        """rendu au trait : le coupé en trait fort (contour des murs réunis), ce qu'on voit en moyen, le reste en fin"""
+        import re
+        enc = "#151515"
+        poids = lambda w: FORT if w >= 1.7 else (MOYEN if w >= 1.1 else FIN)
+        p1 = "".join(f'<rect x="{x-FORT:.1f}" y="{y-FORT:.1f}" width="{w+2*FORT:.1f}" height="{h+2*FORT:.1f}" fill="{enc}"/>' for x, y, w, h in self.murs)
+        p2 = "".join(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="#efefef"/>' for x, y, w, h in self.murs)
+        fond = "".join(x for x in self.fond if not x.endswith(f'fill="{GRIS}"/>'))
+        fond = re.sub(r'stroke-width="([\d.]+)"', lambda m: f'stroke-width="{poids(float(m.group(1)))}"', fond)
+        fond = fond.replace(f'stroke="{TRAIT}"', f'stroke="{enc}"').replace(f'stroke="{GRIS}"', f'stroke="{enc}"')
+        textes = "".join(x for k, x in self.dessus if k is None).replace(TRAIT, "#777")
+        defs = ('<defs><pattern id="hach" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
+                f'<line x1="0" y1="0" x2="0" y2="7" stroke="{enc}" stroke-width="{FIN}"/></pattern></defs>')
+        taille = f' width="{self.W*mm:.2f}mm" height="{self.H*mm:.2f}mm"' if mm else ""
+        fond_page = "" if mm else '<rect width="100%" height="100%" fill="#fbfbf8"/>'
+        return (f'<svg viewBox="0 0 {self.W:.0f} {self.H:.0f}"{taille} role="img" aria-label="{html.escape(titre)}" '
+                f'font-family="IBM Plex Mono, ui-monospace, monospace">{defs}{fond_page}{p1}{p2}{fond}{textes}</svg>')
+
     def svg(self, titre, couche=None, mm=None):
         """couche None : la page web (tout) ; "base" : le bâtiment seul ; ensemble de couleurs : un calque
         (le bâtiment en fantôme pâle, puis les formes et les cotes de ces couleurs). mm : mm par px pour l'impression."""
+        if TRAIT_MODE and couche is None: return self._svg_trait(titre, mm)
         defs = ('<defs><pattern id="hach" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
                 f'<line x1="0" y1="0" x2="0" y2="7" stroke="{TRAIT}" stroke-width="1.2"/></pattern></defs>')
         gris = "".join(x for k, x in self.dessus if k is None)
@@ -245,6 +274,12 @@ def plan_rdc():
     d.mur(11 / 3 - E / 2, 1 / 3 - E / 2, 11 / 3 + E / 2, 2 / 3 + E / 2)                      # sas d'entrée
     d.mur(11 / 3, 1 / 3 - E / 2, 4 - E, 1 / 3 + E / 2); d.mur(11 / 3, 2 / 3 - E / 2, 4 - E, 2 / 3 + E / 2)
     d.fenetre(4 - E, 0.5 - 2 * E, 4, 0.5 + 2 * E, vitre=False)                           # porte d'entrée : passage 4 e
+    d.rect(4, 0.5 - 2 * E, 4 + 1.5 * E, 0.5 + 2 * E, 1.2)                                # encadrement en saillie : 1,5 e (mesuré 0,07 a)
+    d.rect(4 - E / 2 - E / 8, 0.5 - 2 * E, 4 - E / 2 + E / 8, 0.5 + 2 * E, 1.2)          # vantail fermé : 4 e de large, e/4 d'épaisseur
+    d.ligne(4 - E / 2, 0.5 - 2 * E, 4 - E / 2, 0.5 + 2 * E, 0.8)                         # le vitrage, au milieu du vantail
+    hx, hy, r = 4 - E / 2, 0.5 + 2 * E, 4 * E                                            # l'arc d'ouverture (charnière en bas), vantail ouvert à 90°
+    d.fond.append(f'<path d="M{d.X(hx):.1f} {d.Y(hy-r):.1f} A {r*S:.1f} {r*S:.1f} 0 0 0 {d.X(hx-r):.1f} {d.Y(hy):.1f}" fill="none" stroke="{TRAIT}" stroke-width="0.8" stroke-dasharray="5 3"/>')
+    d.ligne(hx, hy, hx - r, hy, 1.3)
     for x, t in ((0.25, "bain"), (0.92, "cuisine"), (2.0, "patio"), (3.15, "séjour"), (3.83, "sas")):
         d.texte(x, 0.88 if t != "sas" else 0.52, t, taille=11)
     carres_et_tiers(d)
@@ -439,20 +474,25 @@ def facade_b():
     H = 13 / 8
     d = Dessin(1, H, mg=1.0, md=1.0, mh=0.45, mb=0.55)
     d.rect(0, 0, 1, H, 1.8, c=GRIS); d.sol(H)
-    d.rect(0.375, 1.0, 0.625, H - 0.035, 1.4, c=GRIS); d.ligne(0.375, H - 0.035, 0.625, H - 0.035, 1.2)
+    PB = H - SEUIL                                                                        # le haut du seuil
+    d.rect(0.5 - PX, 1.0, 0.5 + PX, PB, 1.5, c=GRIS)                                      # cadre dormant : 5 e de large, tête sur la ligne a
+    d.rect(0.5 - 2 * E, 1.0 + E / 2, 0.5 + 2 * E, PB, 1.2, c=GRIS)                        # vantail : 4 e de large (montants e/2, traverse haute e/2)
+    d.rect(0.5 - 2 * E + E / 3, 1.0 + E / 2 + E / 3, 0.5 + 2 * E - E / 3, PB - E / 3, 0.8, c=GRIS)   # le vitrage, dans le cadre du vantail (e/3)
+    d.ligne(0.5 - PX, PB, 0.5 + PX, PB, 1.2)                                              # le seuil
+    d.rect(0.5 + 1.6 * E, 1.0 + 0.30, 0.5 + 1.6 * E + 0.008, 1.0 + 0.36, 1.0, c=GRIS)    # la poignée
     d.cote_h(0, 1, -0.16, "a", "a", ext=0)
     d.zone(0, 0, 1, 1, "a", op=0.10, dash="8 4")
     d.etiquette(0.5, 0.52, "1 carré a × a", "a", 13)
     d.cote_v(0, 1, -0.18, "a", "a", ext=0); d.cote_v(1, H, -0.18, "5/8 a", "q", ext=0)
-    d.cote_h(0.375, 0.625, H + 0.3, "porte 1/4 a", "q", ext=H)
+    d.cote_h(0.5 - PX, 0.5 + PX, H + 0.3, "cadre 5 e", "e", ext=H)
     d.cote_v(1.0, H, 1.18, "porte 5/8 a", "q", ext=0.625, cote="d")
     d.forme(0, 0, 1, 1, "a", op=0.16, w=2.4)
-    d.forme(0.375, 1.0, 0.625, H - 0.035, "q", op=0.40)                                   # porte 1/4 × 5/8
-    for x in (0.25, 0.5, 0.75): d.trait_c(x, 1.0, x, H, "q", w=1.2, dash="4 4")          # les quarts de a
+    d.forme(0.5 - PX, 1.0, 0.5 + PX, PB, "e", op=0.30)                                    # cadre 5 e × 5/8 a
+    d.forme(0.5 - 2 * E, 1.0 + E / 2, 0.5 + 2 * E, PB, "e", op=0, w=1.6)                  # vantail 4 e
     return d, "Façade B, sur la rue", [
         ("a", "La façade sur la rue est un rectangle de <b>a</b> par <b>a + 5/8 a</b>. Au-dessus de la porte, le mur est <b>exactement un carré a × a</b>."),
-        ("q", "La seule ouverture, la porte, fait <b>1/4 a</b> de large (son cadre), au milieu (de 3/8 a à 5/8 a). Son haut tombe pile au bas du carré, donc elle fait <b>5/8 a</b> de haut."),
-        ("e", "Sur le plan, le passage dans ce cadre fait <b>4 e ≈ 76 cm</b>."),
+        ("e", "La seule ouverture, la porte, a un cadre de <b>5 e = 95 cm</b> de large (mesuré 0,380 à 0,617 a : 0,5 a ± 2,5 e), au milieu. C'est presque 1/4 a (100 cm). Son haut tombe pile au bas du carré a, donc elle fait <b>5/8 a</b> de haut."),
+        ("e", "Les montants du cadre font <b>e/2</b> : il reste un passage de <b>4 e ≈ 76 cm</b> (le même que sur le plan) et un vantail de <b>4 e × 12 e</b> (76 × 229 cm). Le seuil fait environ 14 cm."),
     ]
 
 
@@ -463,8 +503,8 @@ def coupe_e():
     d.ligne(E, YT2 - 2 * E, 1 - E, YT2 - 2 * E, 1.2); d.ligne(E, YT2, 1 - E, YT2, 1.1, dash="6 4")      # rives des toitures, au fond
     d.mur(1 / 3, YR, 1 / 3 + E, YP); d.mur(2 / 3 - E, YR, 2 / 3, YP)                       # garde-corps du pont : 5 e de haut
     d.mur(1 / 3, YP, 2 / 3, 1.0)                                                             # dalle du pont : le dessous = bas du carré a
-    d.fond.append(f'<polygon points="{d.X(1/3):.1f},{d.Y(1.0):.1f} {d.X(2/3):.1f},{d.Y(1.0):.1f} {d.X(0.61):.1f},{d.Y(1.06):.1f} {d.X(0.39):.1f},{d.Y(1.06):.1f}" fill="{GRIS}"/>')
-    d.rect(0.42, 1.07, 0.6, YS, 1.3)                                    # porte sous le pont
+    d.rect(0.5 - 2 * E, YS - 12 * E, 0.5 + 2 * E, YS, 1.3)                  # porte sous le pont : 4 e de large, 12 e de haut
+    d.rect(0.5 - 2 * E + E / 3, YS - 12 * E + E / 3, 0.5 + 2 * E - E / 3, YS - E / 3, 0.8)       # le vitrage dans le vantail
     for x0 in (0.4, 0.4 + 2 * F): d.rect(x0, 0.26, x0 + F, YR, 1.1)      # fenêtres hautes : 2 fentes de 1/15 a, centrées
     d.rect(E, YS - 0.70, 0.25, YS, 1.2)                                 # escalier : 12 hauteurs, 280 cm à monter
     for i in range(1, 12): d.ligne(E, YS - 0.70 + i * 0.70 / 12, 0.25, YS - 0.70 + i * 0.70 / 12, 0.9)
@@ -476,7 +516,7 @@ def coupe_e():
     d.cote_h(E, 0.25, H + 0.28, "escalier 1/4 a − e", "e", ext=H, cote="d")
     d.cote_h(0, 0.25, H + 0.48, "avec le mur : 1/4 a", "q", ext=H, cote="d")
     d.cote_h(1 / 3, 1 / 3 + E, 0.52, "e", "e", cote="g"); d.cote_h(2 / 3 - E, 2 / 3, 0.52, "e", "e", cote="d")
-    d.cote_v(1.0, YS, -0.18, "porte 230 = 12 e", "e", ext=0.42)
+    d.cote_v(YS - 12 * E, YS, -0.18, "porte 230 = 12 e", "e", ext=0.4)
     d.cote_h(0.4, 0.6, 0.2, "1/5 a", "t", ext=0.26)
     d.forme(1 / 3, YR, 2 / 3, 1.06, "t", op=0.30)                                         # pont 1/3 a
     for x in (1 / 3, 2 / 3): d.trait_c(x, 0, x, H, "t", w=1.4, dash="4 4")
@@ -485,7 +525,7 @@ def coupe_e():
     d.forme(1 / 3, YR, 1 / 3 + E, YP, "e", op=0.7, w=0); d.forme(2 / 3 - E, YR, 2 / 3, YP, "e", op=0.7, w=0)
     d.forme(E, YS - 0.70, 0.25, YS, "e", op=0.25)                                          # escalier 1/4 a − e
     d.forme(0, YS - 0.70, 0.25, YS, "q", op=0, w=2.2, dash="6 3")                          # + le mur = 1/4 a
-    d.forme(0.42, 1.0, 0.6, YS, "e", op=0.15, w=0)                                         # 230 = 12 e sous le pont
+    d.forme(0.5 - 2 * E, YS - 12 * E, 0.5 + 2 * E, YS, "e", op=0.15, w=0)                  # porte : 12 e de haut, 4 e de large
     for x0 in (0.4, 0.4 + 2 * F): d.forme(x0, 0.26, x0 + F, YR, "t", op=0.5)
     d.forme(E, YT2 - 2 * E, 1 - E, YT2, "e", op=0.25, w=0)                                 # 40 = 2 e
     d.forme(0, 0, E, H, "e", op=0.65, w=0); d.forme(1 - E, 0, 1, H, "e", op=0.65, w=0)
@@ -496,7 +536,7 @@ def coupe_e():
         ("q", "L'escalier, contre le mur : <b>escalier + mur = 1/4 a</b>. Sans le mur, l'escalier fait <b>1/4 a − e ≈ 81 cm</b>."),
         ("t", "Les deux fenêtres hautes sont des fentes de <b>1/15 a</b>, séparées de 1/15 a : un groupe de <b>1/5 a</b>, centré sur le patio."),
         ("e", "La cote de 40 cm en haut vaut <b>2 e</b> (38 cm)."),
-        ("e", "Sous le pont, la hauteur libre est de 230 cm = <b>12 e</b> (12 × 19,05 = 228,6), soit environ <b>4/7 a</b> (4 septièmes de a)."),
+        ("e", "La porte sous le pont fait <b>4 e de large</b> (76 cm) et <b>12 e de haut</b> (12 × 19,05 = 228,6 ≈ la cote de 230), soit <b>4/7 a</b>. Son haut touche presque le dessous du pont (a)."),
     ]
 
 
@@ -506,21 +546,22 @@ def facade_c():
     d.rect(0, 0, 1, H, 1.8, c=GRIS); d.sol(H)
     W1, W2 = 0.5 - 1 / 14 - 1 / 8, 0.5 + 1 / 14                      # 2 fenêtres de 1/8 a, écart 1/7 a = 3 e, centrées
     for x0 in (W1, W2):
-        d.rect(x0, 1.03, x0 + 0.125, 1.155, 1.4, c=GRIS); d.rect(x0 + 0.012, 1.042, x0 + 0.113, 1.143, 1)
+        d.rect(x0, WT, x0 + 0.125, WT + WH, 1.4, c=GRIS)                                      # cadre de la fenêtre
+        d.rect(x0 + E / 3, WT + E / 3, x0 + 0.125 - E / 3, WT + WH - E / 3, 0.8, c=GRIS)       # le vitrage (cadre e/3)
     d.cote_h(0, 1, -0.16, "a", "a", ext=0)
     d.zone(0, 0, 1, 1, "a", op=0.10, dash="8 4")
     d.etiquette(0.5, 0.52, "1 carré a × a", "a", 13)
     d.cote_v(0, 1, -0.18, "a", "a", ext=0); d.cote_v(1, H, -0.18, "5/8 a", "q", ext=0)
-    d.cote_h(W1, W1 + 0.125, H + 0.25, "1/8", "q", ext=1.155, cote="g"); d.cote_h(W2, W2 + 0.125, H + 0.25, "1/8", "q", ext=1.155, cote="d")
-    d.cote_h(W1 + 0.125, W2, H + 0.45, "1/7 a = 3 e", "e", ext=1.155, cote="d")
-    d.cote_v(1.03, 1.155, 1.18, "≈ 1/8 a", "q", ext=0.69, cote="d")
+    d.cote_h(W1, W1 + 0.125, H + 0.25, "1/8", "q", ext=WT + WH, cote="g"); d.cote_h(W2, W2 + 0.125, H + 0.25, "1/8", "q", ext=WT + WH, cote="d")
+    d.cote_h(W1 + 0.125, W2, H + 0.45, "1/7 a = 3 e", "e", ext=WT + WH, cote="d")
+    d.cote_v(WT, WT + WH, 1.18, "1/7 a = 3 e", "e", ext=W2 + 0.125, cote="d")
     d.forme(0, 0, 1, 1, "a", op=0.16, w=2.4)
-    for x0 in (W1, W2): d.forme(x0, 1.03, x0 + 0.125, 1.155, "q", op=0.45)
-    d.forme(W1 + 0.125, 1.03, W2, 1.155, "e", op=0.3, w=0)
-    for i in range(1, 3): d.trait_c(W1 + 0.125 + i * E, 1.03, W1 + 0.125 + i * E, 1.155, "e", w=1.2, dash="2 2")
+    for x0 in (W1, W2): d.forme(x0, WT, x0 + 0.125, WT + WH, "q", op=0.45)
+    d.forme(W1 + 0.125, WT, W2, WT + WH, "e", op=0.3, w=0)
+    for i in range(1, 3): d.trait_c(W1 + 0.125 + i * E, WT, W1 + 0.125 + i * E, WT + WH, "e", w=1.2, dash="2 2")
     return d, "Façade C, sur le jardin", [
         ("a", "Même rectangle que la façade B : <b>a</b> par <b>a + 5/8 a</b>, avec <b>un carré a × a</b> au-dessus des ouvertures."),
-        ("q", "Les deux petites fenêtres sont des carrés d'environ <b>1/8 a = moitié de 1/4 a</b>. Leur haut est juste sous le carré a."),
+        ("q", "Les deux petites fenêtres font <b>1/8 a</b> de large (50 cm) et <b>1/7 a = 3 e</b> de haut (57 cm). Leur haut est <b>e/2 au-dessus</b> de la ligne a (remesuré : de 0,972 à 1,110 a). Le cadre fait e/3, le vitrage est dedans."),
         ("e", "Elles sont séparées de <b>1/7 a = 3 e</b> (≈ 57 cm) et centrées. L'écart mesuré (0,15 a) est plus proche de 1/7 (0,143) que de 1/8 (0,125)."),
     ]
 
@@ -1210,8 +1251,9 @@ MESURES = [
         ("Épaisseur des murs", "e = 1/21 a", E_, "1/7 du tiers"),
         ("Salle de bain (face extérieure → axe de la cloison)", "1/2 a", Fr(1, 2), ""),
         ("Sas d'entrée (un carré, aux axes de ses murs)", "1/3 a", Fr(1, 3), ""),
-        ("Porte d'entrée : le cadre", "1/4 a", Fr(1, 4), "de 3/8 a à 5/8 a"),
-        ("Porte d'entrée : le passage", "4 e", 4 * E_, ""),
+        ("Porte d'entrée : le cadre (façade)", "5 e", 5 * E_, "mesuré 0,380 à 0,617 a"),
+        ("Porte d'entrée : le passage libre et le vantail", "4 e", 4 * E_, "montants e/2"),
+        ("Porte d'entrée : l'encadrement en saillie", "1,5 e", Fr(3, 2) * E_, "mesuré 0,07 a"),
         ("Douche : largeur", "1/4 a", Fr(1, 4), "de 3/8 a à 5/8 a"),
         ("Douche : profondeur (face extérieure → axe du mur)", "4 e", 4 * E_, ""),
     ]),
@@ -1236,9 +1278,17 @@ MESURES = [
         ("Trumeau (le plein entre deux fentes)", "1/15 a", F_, ""),
         ("Un groupe : fente + trumeau + fente", "1/5 a", 3 * F_, ""),
         ("Recul du groupe (depuis l'axe du mur du patio)", "1/9 a", N_, "le tiers du tiers"),
-        ("Fenêtre du jardin (un carré)", "1/8 a", Fr(1, 8), ""),
+        ("Fenêtre du jardin : largeur", "1/8 a", Fr(1, 8), ""),
+        ("Fenêtre du jardin : hauteur", "1/7 a = 3 e", Fr(1, 7), "haut à e/2 au-dessus de la ligne a"),
         ("Écart entre les deux fenêtres du jardin", "1/7 a = 3 e", 3 * E_, "centrées sur la façade"),
         ("Fenêtres hautes de la coupe E : une fente", "1/15 a", F_, "groupe de 1/5 a"),
+    ]),
+    ("Les profils des portes et fenêtres (proposés)", [
+        ("Montant du cadre de la porte", "e/2", E_ / 2, "proposition"),
+        ("Épaisseur du vantail", "e/4", E_ / 4, "proposition"),
+        ("Montant du vantail, cadre des fenêtres", "e/3", E_ / 3, "proposition"),
+        ("Montant des fentes", "e/6", E_ / 6, "proposition"),
+        ("Épaisseur du verre", "1 cm", Fr(1, 400), "verre simple de 10 mm, à valider"),
     ]),
     ("Les hauteurs (depuis le haut de l'acrotère)", [
         ("Hauteur totale", "13/8 a", Fr(13, 8), "cote 650"),
@@ -1249,8 +1299,9 @@ MESURES = [
         ("Plancher de l'étage", "2 e", 2 * E_, "cote 40 en haut de la coupe E"),
         ("Dalle du sol", "e", E_, ""),
         ("Hauteur libre sous le pont", "5/8 a − e", Fr(5, 8) - E_, "cote 230 ≈ 12 e"),
+        ("Porte sous le pont (vantail)", "12 e", 12 * E_, "76 × 229 cm"),
         ("Porte de la façade B : hauteur", "5/8 a", Fr(5, 8), "= 250, comme le rez-de-chaussée"),
-        ("Porte de la façade B : largeur du cadre", "1/4 a", Fr(1, 4), ""),
+        ("Porte de la façade B : seuil", "3/4 e", Fr(3, 4) * E_, "≈ 14 cm"),
     ]),
 ]
 
@@ -1315,10 +1366,18 @@ HYPOTHESES = [
      "H1 : 3 × 1/8 a (fenêtre, écart, fenêtre). H2 : fenêtres de 1/8 a, écart de 1/7 a = 3 e.",
      "Façade C : 0,30–0,425 et 0,575–0,70 ; plan : 0,297–0,412 et 0,565–0,688. Fenêtres 0,12 ≈ 1/8 ; écart 0,15 : plus proche de 1/7 (0,143) que de 1/8 (0,125).",
      "H2 : <b>1/8 a + 1/7 a + 1/8 a</b>, centré."),
-    ("q", "La porte d'entrée : 1/4 a ou moins ?",
-     "H1 : l'ouverture fait 1/4 a. H2 : le cadre fait 1/4 a, le passage est plus petit.",
-     "Façade B : cadre de 3/8 a à 5/8 a = 1/4 a. Plan : passage de 0,40 à 0,59 a = 0,19 a ≈ 4 e (0,190).",
-     "H2 : <b>cadre 1/4 a × 5/8 a</b>, <b>passage 4 e ≈ 76 cm</b>."),
+    ("e", "La porte d'entrée : cadre de 1/4 a ou de 5 e ?",
+     "H1 : le cadre fait 1/4 a (0,250). H2 : le cadre fait 5 e (0,238). Le passage : 4 e ?",
+     "Façade B remesurée : les traits du cadre sont à 0,380 et 0,617 a, soit <b>0,237 a</b> de large, centré (0,5 ± 0,119). 5 e = 0,238 ; 1/4 = 0,250 est 3 px trop large. Plan : passage de 0,40 à 0,59 a = 0,19 a = 4 e ; l'encadrement dépasse de 0,07 a = 1,5 e.",
+     "H2 : <b>cadre 5 e</b> (montants e/2), <b>passage 4 e ≈ 76 cm</b>, vantail 4 e × 12 e. 1/4 a est l'approximation simple."),
+    ("t", "Les fenêtres du jardin : combien de haut ?",
+     "H1 : des carrés de 1/8 a. H2 : 1/8 a de large et 1/7 a de haut.",
+     "Façade C remesurée avec la hauteur totale de 13/8 a comme étalon : largeur entre les traits 0,126 a ; hauteur <b>0,139 a</b> ; de 0,972 à 1,110 a. (Avant, j'avais oublié que la photo était étirée de 7 % en hauteur.)",
+     "H2 : <b>1/8 a × 1/7 a = 3 e</b>, le haut à <b>e/2 au-dessus</b> de la ligne a."),
+    ("e", "L'épaisseur du vitrage ?",
+     "H1 : verre simple de 1 cm. H2 : double vitrage de 2,4 cm. H3 : un trait, sans épaisseur.",
+     "Aucune des feuilles ne donne l'épaisseur du verre : à 1/72, 1 cm ne fait que 0,14 mm, bien moins qu'un trait. Sur le plan original, la paroi vitrée du patio fait 0,033 a (13 cm) avec le cadre.",
+     "<b>Convention proposée</b> : verre simple de <b>1 cm</b>, dessiné en <b>un trait fin</b> à 1/72 et avec son épaisseur sur les détails au 1/10. À valider avec la prof."),
     ("e", "La profondeur de la douche et les dalles ?",
      "Douche : 1/5 a ou 4 e ? Acrotère : 1/8 a ou 1/7 a ? Plancher : 1/16 a ou 2 e ?",
      "Douche : 0,19 a (1/5 = 0,20 : trop). Acrotère mesuré 0,140 à 0,143 (1/7 = 0,143, 1/8 = 0,125). Plancher de l'étage : 0,095 à 0,10 = 2 e (0,095). Dalle du toit : 0,063 ≈ 1/16.",
@@ -1327,6 +1386,7 @@ HYPOTHESES = [
 
 
 def blocs_ajout():
+    import trait
     plis = "".join(
         f'<figure class="pas"><figcaption><span class="n">{n}</span>{html.escape(t)}</figcaption><div class="dessin">{etape(n)[0].svg(t)}</div></figure>'
         for n, t in ETAPES)
@@ -1377,6 +1437,8 @@ def blocs_ajout():
     <div class="cons-liste">{"".join(cons)}</div>
     <div class="tab recap"><table><thead><tr><th>Mesure</th><th>Au pli</th><th>À la règle et au compas</th></tr></thead><tbody>{recap}</tbody></table></div>
   </section>
+
+  {trait.blocs_web()}
 
   <section class="bloc" aria-labelledby="t-tab">
     <div class="surtitre">Toutes les mesures · réel, feuille et carnet</div>
@@ -1474,6 +1536,8 @@ h1 {{ font-family: var(--f-titre); font-stretch: 125%; font-weight: 800; font-si
 .tab .note {{ color: var(--encre-2); font-size: .85rem; }}
 .tab .carnet {{ font-weight: 700; background: color-mix(in srgb, var(--c-a) 9%, transparent); padding-right: 8px; padding-left: 8px; }}
 .tab.recap {{ margin-top: 6px; }}
+.tab.traits td, .tab.traits th {{ text-align: left !important; white-space: normal !important; }}
+.tab.traits td:first-child {{ width: 50mm; }}
 .tab.recap td:nth-child(n+3), .tab.recap th:nth-child(n+3) {{ text-align: left; white-space: normal; }}
 .tab.recap td:nth-child(2), .tab.recap td:nth-child(3) {{ white-space: normal; }}
 .echelle {{ display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }}
@@ -1531,5 +1595,6 @@ footer {{ font-family: var(--f-tech); font-size: .74rem; color: var(--encre-2); 
 
 
 if __name__ == "__main__":
-    open(os.path.join(ICI, "index.html"), "w", encoding="utf-8").write(page())
+    import importlib
+    open(os.path.join(ICI, "index.html"), "w", encoding="utf-8").write(importlib.import_module("build").page())
     print("index.html écrit")
