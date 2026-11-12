@@ -1,0 +1,680 @@
+<title>Le Pavillon au porche</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Planche d'atelier : vue 3D + fiche de montage, puis les gabarits cotés de chaque pièce de carton gris. */
+:root {
+  --papier: #f2f3f0; --feuille: #fbfbf9; --encre: #1d2220; --encre-2: #5b625e;
+  --trait: #2346a8; --ligne: #d5d8d2; --scene: #e9eae6; --sol: #dcdcd5; --carton: #c9c4b8; --trou: #f2f3f0;
+  --f-titre: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-texte: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-tech: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4;
+    --trait: #93acf2; --ligne: #2d332f; --scene: #232825; --sol: #2f3531; --carton: #5b574f; --trou: #1c201e; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4;
+  --trait: #93acf2; --ligne: #2d332f; --scene: #232825; --sol: #2f3531; --carton: #5b574f; --trou: #1c201e; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--papier); color: var(--encre); font-family: var(--f-texte); font-size: 1.02rem; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 40px; }
+.planche { max-width: 1240px; margin-inline: auto; display: grid; gap: 18px; }
+.tech, .surtitre { font-family: var(--f-tech); font-size: .74rem; letter-spacing: .06em; color: var(--encre-2); }
+.surtitre { text-transform: uppercase; }
+header.cartouche { border: 1.5px solid var(--encre); background: var(--feuille); padding: 18px 22px; display: grid; grid-template-columns: 1fr auto; gap: 14px 28px; align-items: end; }
+h1 { font-family: var(--f-titre); font-stretch: 125%; font-weight: 800; font-size: clamp(1.8rem, 4.6vw, 2.8rem); line-height: 1; margin: 6px 0 0; text-wrap: balance; }
+.cartouche p { margin: 10px 0 0; max-width: 66ch; color: var(--encre-2); }
+.reglages { display: grid; grid-template-columns: auto 6.5em; gap: 10px 14px; font-family: var(--f-tech); font-size: .78rem; align-items: center; }
+.reglages label { color: var(--encre-2); text-transform: uppercase; letter-spacing: .06em; }
+.reglages input { width: 6.5em; font: inherit; font-size: 1rem; padding: 6px 8px; border: 1.5px solid var(--encre); background: var(--papier); color: var(--encre); }
+
+.atelier { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); border: 1.5px solid var(--encre); background: var(--feuille); }
+.vue { position: relative; border-right: 1.5px solid var(--encre); min-width: 0; display: grid; grid-template-rows: auto 1fr; }
+.barre { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-bottom: 1px solid var(--ligne); }
+.barre .sep { flex: 1; }
+button { font-family: var(--f-tech); font-size: .76rem; letter-spacing: .03em; padding: 6px 10px; border: 1.5px solid var(--encre); background: var(--feuille); color: var(--encre); cursor: pointer; }
+button:hover { background: var(--papier); }
+button[aria-pressed="true"] { background: var(--encre); color: var(--feuille); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--trait); outline-offset: 2px; }
+#scene { width: 100%; height: 100%; min-height: 440px; aspect-ratio: 4 / 3; max-height: 72vh; display: block; touch-action: none; background: var(--scene); }
+.aide { position: absolute; left: 12px; bottom: 10px; font-family: var(--f-tech); font-size: .7rem; color: var(--encre-2); pointer-events: none; }
+
+.fiche { padding: 18px 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.nav { display: flex; gap: 8px; align-items: center; }
+.nav .compte { font-family: var(--f-tech); font-size: .8rem; margin-left: auto; color: var(--encre-2); }
+ol.etapes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 5px; }
+ol.etapes button { min-width: 2.4em; padding: 5px 7px; }
+.etape { display: grid; gap: 10px; }
+.etape h2 { font-family: var(--f-titre); font-stretch: 112%; font-weight: 700; font-size: 1.45rem; line-height: 1.1; margin: 0; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }
+.etape h2 .n { font-stretch: 62%; font-weight: 800; font-size: 2.4rem; color: var(--trait); line-height: .8; }
+.etape ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.etape p { margin: 0; }
+.cotes { font-family: var(--f-tech); font-size: .78rem; border-top: 1px solid var(--ligne); padding-top: 10px; color: var(--encre-2); }
+.astuce { font-family: var(--f-tech); font-size: .78rem; border-left: 3px solid var(--trait); padding: 4px 0 4px 10px; }
+.colle { color: var(--trait); font-weight: 600; }
+.etape .mini { width: 100%; max-width: 360px; height: auto; display: block; }
+
+section.bloc { border: 1.5px solid var(--encre); background: var(--feuille); padding: 18px 22px; display: grid; gap: 14px; min-width: 0; }
+section.bloc h2 { font-family: var(--f-titre); font-stretch: 112%; font-size: 1.3rem; margin: 0; text-wrap: balance; }
+section.bloc > p { margin: 0; max-width: 72ch; }
+.tableau { overflow-x: auto; }
+table { border-collapse: collapse; font-family: var(--f-tech); font-size: .8rem; width: 100%; min-width: 560px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--ligne); vertical-align: top; }
+th { color: var(--encre-2); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; font-size: .72rem; }
+td b { font-family: var(--f-titre); font-size: .92rem; }
+.gabarits { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+.gabarits figure { margin: 0; border-top: 1.5px solid var(--encre); padding-top: 8px; display: grid; gap: 6px; min-width: 0; }
+.gabarits figcaption { font-family: var(--f-tech); font-size: .76rem; color: var(--encre-2); }
+.gabarits figcaption b { font-family: var(--f-titre); font-size: 1rem; color: var(--encre); display: block; }
+.gabarits svg { width: 100%; height: auto; display: block; }
+.espaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.espaces div { border-top: 1.5px solid var(--encre); padding-top: 8px; min-width: 0; }
+.espaces b { font-family: var(--f-titre); display: block; margin-bottom: 4px; }
+.erreur { padding: 16px; font-family: var(--f-tech); font-size: .8rem; }
+footer { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
+/* dessins des gabarits */
+.g-carton { fill: var(--carton); stroke: var(--encre); stroke-width: .35; }
+.g-trou { fill: var(--trou); stroke: var(--encre); stroke-width: .35; }
+.g-menui { stroke: var(--encre-2); stroke-width: .25; stroke-dasharray: 1.2 .8; fill: none; }
+.g-cote { stroke: var(--trait); stroke-width: .2; fill: none; }
+.g-cote-t { fill: var(--trait); font-family: var(--f-tech); font-size: 2.6px; paint-order: stroke; stroke: var(--feuille); stroke-width: .7px; stroke-linejoin: round; }
+.g-nom { fill: var(--encre); font-family: var(--f-titre); font-size: 3.4px; font-weight: 700; }
+.g-sens { fill: var(--encre-2); font-family: var(--f-tech); font-size: 2.3px; }
+.g-compas { fill: var(--trait); }
+.g-repere { stroke: var(--trait); stroke-width: .3; stroke-dasharray: 2 1; }
+@media (max-width: 860px) {
+  .atelier { grid-template-columns: 1fr; }
+  .vue { border-right: 0; border-bottom: 1.5px solid var(--encre); }
+  #scene { min-height: 320px; aspect-ratio: 1 / 1; }
+  header.cartouche { grid-template-columns: 1fr; }
+}
+/* mode impression 1:1 (#gabarit) : uniquement les pièces, à la taille réelle */
+#impression { display: none; }
+html:has(body.imprimer), body.imprimer { margin: 0; padding: 0; background: #fff; color: #000; }
+@page { size: 210mm 297mm; margin: 0; }
+body.imprimer .planche { display: none; }
+body.imprimer #impression { display: block; }
+.page { width: 210mm; height: 297mm; padding: 10mm 8mm; position: relative; overflow: hidden; page-break-after: always; background: #fff; }
+.page h3 { font-family: var(--f-titre); font-size: 14pt; margin: 0 0 1mm; }
+.page p { font-family: var(--f-tech); font-size: 7.5pt; margin: 0 0 2mm; color: #333; }
+.page svg { display: block; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+<main class="planche">
+  <header class="cartouche">
+    <div>
+      <div class="surtitre">Atelier · Exercice court n°1 · manipulation volumétrique · carton gris</div>
+      <h1>Le Pavillon au porche</h1>
+      <p>Une grande pièce carrée et un porche d'un quart de sa largeur, ouvert sur le ciel. En double épaisseur de carton gris (2 couches) : la dalle de sol, les quatre façades, la cloison et la dalle de toit. Le socle est en une seule couche. Toutes les cotes sont en cm et partent des 4 mesures prises sur ton plan.</p>
+    </div>
+    <div class="reglages">
+      <label for="cote-l">Longueur (cm)</label>
+      <input id="cote-l" type="number" min="3" max="40" step="0.05" value="6.9">
+      <label for="cote-d">Largeur (cm)</label>
+      <input id="cote-d" type="number" min="3" max="40" step="0.05" value="5.3">
+      <label for="cote-hg">Haut. grande pièce (cm)</label>
+      <input id="cote-hg" type="number" min="3" max="40" step="0.05" value="5.6">
+      <label for="cote-hp">Haut. porche (cm)</label>
+      <input id="cote-hp" type="number" min="3" max="40" step="0.05" value="5">
+      <label for="cote-e">Carton (cm)</label>
+      <input id="cote-e" type="number" min="0.1" max="0.4" step="0.05" value="0.2">
+    </div>
+  </header>
+
+  <div class="atelier">
+    <div class="vue">
+      <div class="barre" role="toolbar" aria-label="Vues">
+        <button id="v-3d" type="button">Vue 3D</button>
+        <button id="v-sud" type="button">Façade 2 (sud)</button>
+        <button id="v-est" type="button">Façade 1 (porche)</button>
+        <button id="v-dessus" type="button">Plan</button>
+        <button id="v-coupe" type="button">Coupe AA</button>
+        <span class="sep"></span>
+        <button id="menuis" type="button" aria-pressed="true">Menuiseries</button>
+        <button id="toit" type="button" aria-pressed="true">Dalle de toit</button>
+      </div>
+      <canvas id="scene" aria-label="Maquette 3D interactive du pavillon"></canvas>
+      <div class="aide">glisser : tourner · molette / pincer : zoom · clic droit : déplacer</div>
+    </div>
+    <div class="fiche">
+      <div class="nav">
+        <button id="prec" type="button">← Précédent</button>
+        <button id="suiv" type="button">Suivant →</button>
+        <span class="compte" id="compte"></span>
+      </div>
+      <ol class="etapes" id="liste"></ol>
+      <div class="etape" id="etape" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <section class="bloc" aria-labelledby="t-liste">
+    <div class="surtitre">À découper dans le carton gris</div>
+    <h2 id="t-liste">Les pièces et leurs cotes</h2>
+    <p id="regle-echelle"></p>
+    <div class="tableau"><table id="tab-pieces"></table></div>
+  </section>
+
+  <section class="bloc" aria-labelledby="t-gab">
+    <div class="surtitre">Gabarits cotés · vus de l'extérieur · cotes en cm</div>
+    <h2 id="t-gab">Ce que tu traces sur chaque pièce</h2>
+    <p>En gris : le carton. En clair : ce que tu enlèves au cutter. Les pointillés sont les menuiseries (au crayon ou en fines bandes). Le point bleu est la pointe du compas pour les arcs.</p>
+    <div class="gabarits" id="gabarits"></div>
+  </section>
+
+  <section class="bloc" aria-labelledby="t-struct">
+    <div class="surtitre">Pour comprendre le pavillon</div>
+    <h2 id="t-struct">La structure cachée et les proportions</h2>
+    <div class="espaces">
+      <div><b>Un carré et son quart</b>La grande pièce est un carré. Le porche fait environ le quart de sa largeur, sur toute la profondeur : c'est la note « 4a = A » de ton plan.</div>
+      <div><b>Presque un cube</b>Les murs de la grande pièce sont aussi hauts que le pavillon est profond (A + 2e) : la façade 3 est un carré. Le porche est un peu plus bas, d'où le décroché des façades 2 et 4.</div>
+      <div><b>Poteaux et poutres</b>Sur le plan, les angles sont des poteaux en L ; entre eux, les traits fins sont des vitrages. Dans la coupe, des poutres portent la dalle. La maquette fait des murs pleins, mais les grandes baies montrent cette ossature.</div>
+      <div><b>Une marche au sol</b>Dans la coupe AA, le sol fait une marche au nu extérieur des murs : le pavillon est posé sur une dalle surélevée, au-dessus du sol de la rue. Le socle est en 1 couche de carton, la dalle de sol en 2 couches, comme les murs.</div>
+      <div><b>Un toit en creux</b>Dans la coupe AA, le haut des murs dépasse la dalle : c'est l'acrotère, un petit muret qui fait le tour du toit. La dalle, en double épaisseur comme les murs, est posée entre les murs, et son dessus arrive au niveau du haut du porche.</div>
+      <div><b>Un porche à ciel ouvert</b>La coupe AA ne montre pas de dalle au-dessus du porche : on y entre par l'arc de la façade 1, à l'air libre, avant de passer la porte double de la grande pièce.</div>
+    </div>
+  </section>
+  <footer id="pied"></footer>
+</main>
+<div id="impression"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ---------------------------------------------------------------- géométrie (mm)
+// repère : x vers l'est, y vers le nord, z vers le haut ; 0 = coin sud-ouest, dessous du plancher.
+const R5 = v => Math.round(v * 2) / 2;
+const f = v => (Math.round(v * 20) / 200).toLocaleString("fr-FR");   // mm -> texte en cm (au demi-mm)
+const fx = v => (Math.round(v * 100) / 100).toLocaleString("fr-FR");
+// M = les 4 cotes mesurées sur le plan (mm) : L longueur de la façade 2, D largeur du plan,
+// Hg hauteur de la grande pièce, Hp hauteur du porche (depuis le sol de la rue, marche comprise) ; t = carton
+function geometrie(M, t) {
+  const e = 2 * t;                                  // mur = 2 couches de carton ; dalle de sol aussi ; socle = 1 couche
+  const L = M.L, D = M.D;
+  const A = D - 2 * e;                              // grande pièce : carré intérieur A × A
+  const a = L - 3 * e - A;                          // largeur intérieure du porche
+  const Hm = M.Hg - e, Ha = M.Hp - e;               // hauteur des murs, posés sur la marche (dalle de sol, 2 couches)
+  const p = M.Hg - M.Hp;                            // acrotère : le haut des murs dépasse la dalle de toit (coupe AA)
+  const zb = Hm - p - e;                            // dessous de la dalle de toit (2 couches), depuis le bas des murs
+  const Ar = D * 50 / 54;                           // taille de référence : les ouvertures gardent les proportions du dessin
+  const m = R5(0.27 * Ar);                          // le socle (sol de la rue) déborde de la dalle, comme dans la coupe AA
+  const Lm = 2 * e + A;
+  const xa = R5((Lm + L - e) / 2);                  // milieu du porche (arrondi au demi-mm)
+  const Rw = v => 2 * Math.round(v / 2);            // largeurs en mm pairs : bords et rayons tombent au demi-mm
+  const arc = (cx, w, v0, top) => ({ type: "arc", cx: R5(cx), w: Rw(w), v0: R5(v0), top: R5(top) });
+  const rect = (cx, w, v0, v1) => ({ type: "rect", cx: R5(cx), w: Rw(w), v0: R5(v0), v1: R5(v1) });
+  const fenS = arc(Lm / 2, 0.66 * Ar, 0.06 * Ar, 0.78 * Ar);
+  const fente = rect(xa, 0.14 * Ar, 0.26 * Ar, 0.78 * Ar);
+  const fenN = rect(Lm / 2, 0.40 * Ar, 0.36 * Ar, 0.74 * Ar);
+  const fenO = arc(A / 2, 0.68 * Ar, 0.06 * Ar, 0.78 * Ar);
+  const passage = arc(A / 2, 0.66 * Ar, 0, 0.78 * Ar);
+  const porte = 2 * Math.round(0.13 * Ar), imposte = 2 * Math.round(0.09 * Ar), hp = Math.round(0.56 * Ar), poteau = 2;
+  const ouvCloison = [rect(A / 2, porte, 0, hp), rect(A / 2 - porte / 2 - poteau - imposte / 2, imposte, 0, hp), rect(A / 2 + porte / 2 + poteau + imposte / 2, imposte, 0, hp)];
+  const longue = [[0, 0], [L, 0], [L, Ha], [Lm, Ha], [Lm, Hm], [0, Hm]];
+  const pieces = [
+    { id: "socle", num: "", nom: "Socle", role: "le sol de la rue, déborde tout autour : 1 couche", w: L + 2 * m, h: D + 2 * m, plat: true, nb: 1,
+      contour: [[0, 0], [L + 2 * m, 0], [L + 2 * m, D + 2 * m], [0, D + 2 * m]], trous: [], sens: ["ouest", "est"] },
+    { id: "plancher", num: "", nom: "Dalle de sol", role: "sous le pavillon, fait la marche : 2 couches", w: L, h: D, plat: true, nb: 2,
+      contour: [[0, 0], [L, 0], [L, D], [0, D]], trous: [], sens: ["ouest", "est"] },
+    { id: "sud", num: "2", nom: "Façade sud", nb: 2, role: "grande baie en arc + fente du porche", w: L, h: Hm,
+      contour: longue, trous: [fenS, fente], sens: ["ouest", "est"] },
+    { id: "ouest", num: "3", nom: "Façade ouest", nb: 2, role: "baie en arc, entre les deux longs murs", w: A, h: Hm,
+      contour: [[0, 0], [A, 0], [A, Hm], [0, Hm]], trous: [fenO], sens: ["nord", "sud"] },
+    { id: "cloison", num: "", nom: "Cloison", nb: 2, role: "porte double + deux vitrages, entre pièce et porche", w: A, h: Hm,
+      contour: [[0, 0], [A, 0], [A, Hm], [0, Hm]], trous: ouvCloison, sens: ["sud", "nord"] },
+    { id: "est", num: "1", nom: "Façade est", nb: 2, role: "arc d'entrée du porche", w: A, h: Ha,
+      contour: [[0, 0], [A, 0], [A, Ha], [0, Ha]], trous: [passage], sens: ["sud", "nord"] },
+    { id: "nord", num: "4", nom: "Façade nord", nb: 2, role: "fenêtre à barreaux + fente du porche", w: L, h: Hm,
+      contour: longue, trous: [fenN, fente], sens: ["ouest", "est"], miroir: true },
+    { id: "toit", num: "", nom: "Dalle de toit", nb: 2, role: "en 2 couches, posée entre les murs, plus bas que leur sommet", w: A, h: A, plat: true,
+      contour: [[0, 0], [A, 0], [A, A], [0, A]], trous: [], sens: ["ouest", "est"] },
+  ];
+  // menuiseries (segments dans le repère de la pièce)
+  const menuis = { sud: [], ouest: [], nord: [], cloison: [] };
+  { const o = fenS, r = o.w / 2, s = o.top - r;
+    menuis.sud.push([o.cx, o.v0, o.cx, o.top], [o.cx - r, s, o.cx + r, s], [o.cx - r / 2, o.v0, o.cx - r / 2, s], [o.cx + r / 2, o.v0, o.cx + r / 2, s]); }
+  { const o = fenO, r = o.w / 2, s = o.top - r; menuis.ouest.push([o.cx, o.v0, o.cx, o.top], [o.cx - r, s, o.cx + r, s]); }
+  { const o = fenN, x0 = o.cx - o.w / 2; for (const k of [1, 2, 3]) menuis.nord.push([x0 + o.w * k / 4, o.v0, x0 + o.w * k / 4, o.v1]); }
+  menuis.cloison.push([A / 2, 0, A / 2, hp]);
+  for (const p of pieces) p.ep = t;
+  return { M, A, Ar, t, e, m, p, zb, a, Hm, Ha, Lm, L, D, pieces, menuis, hp, porte, imposte };
+}
+// contour d'une pièce avec ses ouvertures (les ouvertures posées en bas entaillent le contour)
+function arcPts(o, n = 28) {
+  const r = o.w / 2, s = o.top - r, pts = [];
+  for (let i = 0; i <= n; i++) { const t = Math.PI * i / n; pts.push([o.cx + r * Math.cos(t), s + r * Math.sin(t)]); }
+  return pts;                                     // de droite à gauche par le haut
+}
+function trouPts(o) {
+  if (o.type === "rect") { const x0 = o.cx - o.w / 2, x1 = o.cx + o.w / 2; return [[x0, o.v0], [x1, o.v0], [x1, o.v1], [x0, o.v1]]; }
+  const r = o.w / 2; return [[o.cx - r, o.v0], [o.cx + r, o.v0], ...arcPts(o)];
+}
+function formes(p) {
+  const bas = p.trous.filter(o => o.v0 === 0).sort((m, n) => m.cx - n.cx);
+  const hauts = p.trous.filter(o => o.v0 > 0);
+  let contour = p.contour;
+  if (bas.length) {
+    const reste = p.contour.slice(1);              // après le coin (0,0), le contour part vers la droite
+    const out = [[0, 0]];
+    for (const o of bas) {
+      const x0 = o.cx - o.w / 2, x1 = o.cx + o.w / 2;
+      out.push([x0, 0]);
+      if (o.type === "rect") out.push([x0, o.v1], [x1, o.v1]);
+      else out.push(...arcPts(o).reverse());
+      out.push([x1, 0]);
+    }
+    contour = out.concat(reste);
+  }
+  return { contour, trous: hauts.map(trouPts) };
+}
+
+// ---------------------------------------------------------------- étapes
+const ETAPES = [
+  { titre: "Avant de couper", pieces: [],
+    texte: g => `<p>Toutes les cotes partent de <b>tes 4 mesures</b> (en haut de la page) : la longueur de la façade 2, la largeur du plan, la hauteur de la grande pièce et celle du porche. Si ton carton n'a pas ${f(g.t)} cm d'épaisseur, change-le aussi : tout se recalcule.</p>
+      <ul><li><b>Double épaisseur</b> : les murs, la dalle de sol et la dalle de toit sont faits de <b>2 couches identiques</b> de carton collées l'une sur l'autre. Le socle est en <b>1 seule couche</b>. Découpe la 1re couche, puis trace la 2e en suivant son contour et ses ouvertures.</li>
+      <li>Outils : cutter neuf, règle métallique, équerre, compas, crayon HB, colle vinylique (colle blanche).</li>
+      <li>Trace chaque pièce <b>à la règle et à l'équerre</b>, puis les ouvertures, puis les arcs au compas.</li>
+      <li>Coupe d'abord les ouvertures, ensuite le contour : la pièce reste rigide plus longtemps.</li></ul>`,
+    astuce: "Pour un arc : coupe-le en plusieurs petits traits courbes, sans forcer. Repasse 2 ou 3 fois plutôt qu'un seul coup.",
+    cotes: g => `Tes mesures : ${f(g.L)} × ${f(g.D)} cm, hauteurs ${f(g.M.Hg)} et ${f(g.M.Hp)} cm · carton ${f(g.t)} cm · mur = 2 couches = ${f(g.e)} cm · grande pièce ${f(g.A)} × ${f(g.A)} cm · porche ${f(g.a)} cm de large` },
+  { titre: "Le sol en double épaisseur", pieces: ["socle", "plancher"],
+    texte: g => `<p>Dans la coupe AA, le sol fait <b>une marche</b> : le pavillon est posé sur une dalle surélevée, plus haute que le sol de la rue. La marche tombe pile au nu extérieur des murs. Le socle est en <b>1 couche</b> de carton, la dalle de sol en <b>2 couches</b>, comme les murs.</p>
+      <ul><li>En bas, le <b>socle</b> (le sol de la rue) : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm, en <b>1 couche</b>.</li>
+      <li>Dessus, la <b>dalle de sol</b> : ${f(g.L)} × ${f(g.D)} cm, en <b>2 couches</b>, collée au centre du socle, avec ${f(g.m)} cm de socle visible tout autour. Elle fait la marche de ${f(g.e)} cm.</li>
+      <li>Tous les murs sont collés <b>sur la dalle</b>, au ras de ses bords : leur face extérieure tombe juste au bord de la marche.</li></ul>
+      <ul><li>Au crayon, trace dessus l'emplacement des murs : une bande de ${f(g.e)} cm le long de chaque bord, et la cloison à ${f(g.e + g.A)} cm du bord ouest.</li></ul>`,
+    astuce: "Ces traits au crayon te servent de repère pour poser chaque mur bien droit.",
+    cotes: g => `Socle : ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm × 1 couche · dalle de sol : ${f(g.L)} × ${f(g.D)} cm × 2 couches · marche : ${f(g.e)} cm · sol total : ${f(g.t + g.e)} cm` },
+  { titre: "La façade sud (façade 2)", pieces: ["sud"],
+    texte: g => `<p>Colle ses 2 couches l'une sur l'autre, bien alignées. Puis colle la façade sud <b>debout sur le bord sud</b> de la dalle de sol, sa face extérieure au ras du bord. La grande baie en arc est côté <b>ouest</b>, la fente et la partie basse côté <b>est</b> (le porche).</p>`,
+    astuce: "Pour coller 2 couches : colle en fine couche, aligne les ouvertures, et laisse sécher sous un livre avant de les découper au propre. Tiens ensuite le mur avec une équerre ou un cube de gomme pendant 2 minutes, le temps que la colle prenne.",
+    cotes: g => `${f(g.L)} cm de long · ${f(g.Hm)} cm de haut (grande pièce) · ${f(g.Ha)} cm (porche)`,
+    colle: g => [[[0, g.e, g.e], [g.L, g.e, g.e]]] },
+  { titre: "La façade ouest (façade 3)", pieces: ["ouest"],
+    texte: g => `<p>Colle ses 2 couches ensemble, puis colle la façade ouest au bout ouest de la dalle, <b>entre</b> les deux longs murs : elle s'appuie contre la face intérieure de la façade sud. Sa baie en arc est au centre.</p>`,
+    astuce: "Vérifie l'angle droit avec l'équerre avant que la colle sèche.",
+    cotes: g => `${f(g.A)} × ${f(g.Hm)} cm`,
+    colle: g => [[[g.e / 2, g.e, g.e], [g.e / 2, g.D - g.e, g.e]], [[g.e / 2, g.e, g.e], [g.e / 2, g.e, g.e + g.Hm]]] },
+  { titre: "La cloison à porte double", pieces: ["cloison"],
+    texte: g => `<p>Colle ses 2 couches ensemble, puis colle la cloison <b>parallèle</b> à la façade ouest, à <b>${f(g.e + g.A)} cm</b> du bord ouest de la dalle de sol : entre les deux, il reste exactement A = ${f(g.A)} cm, la grande pièce carrée.</p>
+      <ul><li>La porte double et ses deux vitrages partent du sol.</li></ul>`,
+    astuce: "Coupe une cale de carton de A de long : posée entre la façade ouest et la cloison, elle donne le bon écart.",
+    cotes: g => `${f(g.A)} × ${f(g.Hm)} cm · porte ${f(g.porte)} × ${f(g.hp)} cm · vitrages ${f(g.imposte)} cm`,
+    colle: g => [[[g.e + g.A + g.e / 2, g.e, g.e], [g.e + g.A + g.e / 2, g.D - g.e, g.e]], [[g.e + g.A + g.e / 2, g.e, g.e], [g.e + g.A + g.e / 2, g.e, g.e + g.Hm]]] },
+  { titre: "La façade est (façade 1)", pieces: ["est"],
+    texte: g => `<p>Colle ses 2 couches ensemble, puis colle la façade est au bout est de la dalle, entre les deux longs murs. Son grand arc est <b>l'entrée du porche</b> : il part du sol.</p>
+      <ul><li>Elle est plus basse que la cloison : au-dessus d'elle, on voit le haut de la grande pièce, comme sur la façade 1 de ton plan.</li></ul>`,
+    cotes: g => `${f(g.A)} × ${f(g.Ha)} cm · arc ${f(R5(0.66 * g.Ar))} cm de large, ${f(R5(0.78 * g.Ar))} cm de haut`,
+    colle: g => [[[g.L - g.e / 2, g.e, g.e], [g.L - g.e / 2, g.D - g.e, g.e]], [[g.L - g.e / 2, g.e, g.e], [g.L - g.e / 2, g.e, g.e + g.Ha]]] },
+  { titre: "La façade nord (façade 4)", pieces: ["nord"],
+    texte: g => `<p>Colle ses 2 couches ensemble. Puis ferme la boîte : colle la façade nord sur le bord nord de la dalle, contre les bouts de la façade ouest, de la cloison et de la façade est.</p>
+      <ul><li>Vue de l'extérieur, la partie basse (le porche) est à <b>gauche</b> : c'est le même mur que la façade sud, vu de l'autre côté.</li></ul>`,
+    astuce: "Pose-la à sec d'abord : si elle ne touche pas partout, ponce légèrement le bout qui dépasse.",
+    cotes: g => `${f(g.L)} cm de long · fenêtre ${f(R5(0.4 * g.Ar))} × ${f(R5(0.74 * g.Ar) - R5(0.36 * g.Ar))} cm`,
+    colle: g => [[[0, g.D - g.e, g.e], [g.L, g.D - g.e, g.e]], [[g.e, g.D - g.e, g.e], [g.e, g.D - g.e, g.e + g.Hm]], [[g.e + g.A + g.e, g.D - g.e, g.e], [g.e + g.A + g.e, g.D - g.e, g.e + g.Hm]], [[g.L - g.e, g.D - g.e, g.e], [g.L - g.e, g.D - g.e, g.e + g.Ha]]] },
+  { titre: "La dalle de toit", pieces: ["toit"],
+    texte: g => `<p>La dalle de toit est en <b>double épaisseur</b> (2 couches de ${f(g.A)} × ${f(g.A)} cm) et elle est posée <b>à l'intérieur</b> de la grande pièce, entre les 4 murs, <b>plus bas que leur sommet</b> : les murs dépassent de ${f(g.p)} cm tout autour, comme un petit muret (l'acrotère). C'est ce que montre la coupe AA.</p>
+      <ul><li>Sur la face intérieure des 4 murs de la grande pièce, trace un trait à <b>${f(g.zb)} cm</b> du bas du mur (il est sur les gabarits) : c'est le dessous de la dalle.</li>
+      <li>Glisse la dalle par le haut jusqu'au trait et colle-la sur ses 4 bords.</li>
+      <li>Le dessus de la dalle arrive au niveau du haut des murs du porche. Le porche reste <b>à ciel ouvert</b>.</li></ul>`,
+    astuce: "Pour la tenir au bon niveau pendant le séchage, colle d'abord sous le trait 4 petites cales de carton, une par mur.",
+    cotes: g => `Dalle ${f(g.A)} × ${f(g.A)} cm × 2 couches · dessous à ${f(g.zb)} cm du bas des murs · acrotère ${f(g.p)} cm · dessus à ${f(g.t + g.e + g.Hm - g.p)} cm de la table`,
+    colle: g => { const z = g.e + g.zb, e = g.e, A = g.A; return [[[e, e, z], [e + A, e, z]], [[e, e + A, z], [e + A, e + A, z]], [[e, e, z], [e, e + A, z]], [[e + A, e, z], [e + A, e + A, z]]]; } },
+  { titre: "Les menuiseries", pieces: ["menuis"],
+    texte: g => `<p>Ajoute les menuiseries des baies : la croix des arcs, les meneaux de la grande baie sud, les 3 barreaux de la fenêtre nord, la séparation de la porte double.</p>
+      <ul><li>Simple : trace-les au crayon fin sur un rhodoid (ou un calque) collé derrière l'ouverture.</li>
+      <li>Plus soigné : de fines bandes de 0,1 cm, coupées dans du bristol, collées au milieu de l'ouverture.</li></ul>`,
+    astuce: "Ne les coupe pas dans le carton gris : des bandes aussi fines cassent.",
+    cotes: g => `Bandes de 0,1 cm · rhodoid ou calque découpé 0,2 cm plus grand que l'ouverture` },
+  { titre: "Le pavillon terminé", pieces: [],
+    texte: g => `<p>On entre par l'arc de la façade 1 dans le porche, à ciel ouvert. La porte double mène à la grande pièce carrée, éclairée par trois baies : l'arc ouest, la grande baie sud et la fenêtre nord.</p>
+      <ul><li>Compare ta maquette au plan, aux 4 façades et à la coupe : chaque ouverture doit tomber au même endroit.</li></ul>`,
+    cotes: g => `Socle ${f(g.L + 2 * g.m)} × ${f(g.D + 2 * g.m)} cm · pavillon ${f(g.L)} × ${f(g.D)} cm · hauteur ${f(g.t + g.e + g.Hm)} cm (grande pièce), ${f(g.t + g.e + g.Ha)} cm (porche), socle compris · murs ${f(g.e)} cm` },
+];
+
+// ---------------------------------------------------------------- gabarits SVG
+function svgPiece(p, g, opts = {}) {
+  const pad = { g: 14, d: 6, h: 9, b: 14 };          // place des cotes (mm)
+  const W = p.w + pad.g + pad.d, H = p.h + pad.h + pad.b;
+  const X = u => pad.g + (p.miroir ? p.w - u : u), Y = v => pad.h + p.h - v;
+  const pts = l => l.map(([u, v]) => `${X(u).toFixed(2)},${Y(v).toFixed(2)}`).join(" ");
+  const { contour, trous } = formes(p);
+  const s = [];
+  if (p.plat) {
+    s.push(`<polygon class="g-carton" points="${pts(contour)}"/>`);
+  } else {
+    // contour + trous en un seul chemin (trous en evenodd)
+    const d = [contour, ...trous].map(l => "M" + l.map(([u, v]) => `${X(u).toFixed(2)} ${Y(v).toFixed(2)}`).join("L") + "Z").join("");
+    s.push(`<path class="g-carton" fill-rule="evenodd" d="${d}"/>`);
+  }
+  const rep = { sud: [g.e, g.Lm - g.e], nord: [g.e, g.Lm - g.e], ouest: [0, g.A], cloison: [0, g.A] }[p.id];
+  if (rep) {
+    s.push(`<line class="g-repere" x1="${X(rep[0])}" y1="${Y(g.zb)}" x2="${X(rep[1])}" y2="${Y(g.zb)}"/>`);
+    s.push(`<text class="g-sens" x="${(X(rep[0]) + X(rep[1])) / 2}" y="${Y(g.zb) + 2.6}" text-anchor="middle">dessous dalle de toit · ${f(g.zb)}</text>`);
+  }
+  for (const m of g.menuis[p.id] || []) s.push(`<line class="g-menui" x1="${X(m[0])}" y1="${Y(m[1])}" x2="${X(m[2])}" y2="${Y(m[3])}"/>`);
+  if (p.id === "socle") {
+    s.push(`<rect class="g-menui" x="${X(g.m)}" y="${Y(g.m + g.D)}" width="${g.L}" height="${g.D}"/>`);
+    s.push(`<text class="g-sens" x="${X(g.m + g.L / 2)}" y="${Y(g.m + g.D / 2)}" text-anchor="middle">place de la dalle de sol (la marche)</text>`);
+  }
+  // repères du plancher : emplacement des murs
+  if (p.id === "plancher") {
+    const e = g.e, D = g.D, L = g.L, Lm = g.Lm;
+    for (const r of [[0, 0, L, e], [0, D - e, L, D], [0, e, e, D - e], [Lm - e, e, Lm, D - e], [L - e, e, L, D - e]])
+      s.push(`<rect class="g-menui" x="${X(r[0])}" y="${Y(r[3])}" width="${r[2] - r[0]}" height="${r[3] - r[1]}"/>`);
+    s.push(`<text class="g-sens" x="${X(g.Lm / 2)}" y="${Y(g.D / 2)}" text-anchor="middle">grande pièce ${f(g.A)} × ${f(g.A)}</text>`);
+    s.push(`<text class="g-sens" x="${X((g.Lm + g.L - g.e) / 2)}" y="${Y(g.D / 2) + 1}" text-anchor="middle" transform="rotate(-90 ${X((g.Lm + g.L - g.e) / 2)} ${Y(g.D / 2)})">porche</text>`);
+  }
+  // cotes
+  const c = [];
+  const horiz = (u0, u1, y, txt) => { const a = Math.min(X(u0), X(u1)), b = Math.max(X(u0), X(u1));
+    c.push(`<line class="g-cote" x1="${a}" y1="${y}" x2="${b}" y2="${y}"/><line class="g-cote" x1="${a}" y1="${y - 1.2}" x2="${a}" y2="${y + 1.2}"/><line class="g-cote" x1="${b}" y1="${y - 1.2}" x2="${b}" y2="${y + 1.2}"/>`);
+    c.push(`<text class="g-cote-t" x="${(a + b) / 2}" y="${y - 0.8}" text-anchor="middle">${txt}</text>`); };
+  const vert = (v0, v1, x, txt) => { const a = Y(v1), b = Y(v0);
+    c.push(`<line class="g-cote" x1="${x}" y1="${a}" x2="${x}" y2="${b}"/><line class="g-cote" x1="${x - 1.2}" y1="${a}" x2="${x + 1.2}" y2="${a}"/><line class="g-cote" x1="${x - 1.2}" y1="${b}" x2="${x + 1.2}" y2="${b}"/>`);
+    c.push(`<text class="g-cote-t" x="${x - 0.8}" y="${(a + b) / 2}" text-anchor="middle" transform="rotate(-90 ${x - 0.8} ${(a + b) / 2})">${txt}</text>`); };
+  horiz(0, p.w, pad.h + p.h + 10.5, f(p.w));
+  vert(0, p.h, 3.5, f(p.h));
+  if (p.id === "sud" || p.id === "nord") vert(0, g.Ha, 8, f(g.Ha));
+  // ouvertures : position depuis le bord, largeur, hauteurs
+  // ouvertures : cotes en chaîne le long du bas (bord, ouverture, trumeau, ouverture, bord), en coordonnées vues
+  const yc = pad.h + p.h + 5.5, U = x => (X(x) - pad.g);   // position vue depuis le bord gauche
+  const vues = p.trous.map(o => { const a = U(o.cx - o.w / 2), b = U(o.cx + o.w / 2); return { o, g: Math.min(a, b), d: Math.max(a, b) }; }).sort((m, n) => m.g - n.g);
+  const hz = (a, b, txt) => horiz(p.miroir ? p.w - a : a, p.miroir ? p.w - b : b, yc, txt);
+  let prec = 0;
+  for (const t of vues) { if (t.g - prec > 0.4) hz(prec, t.g, f(t.g - prec)); hz(t.g, t.d, f(t.d - t.g)); prec = t.d; }
+  if (vues.length && p.w - prec > 0.4) hz(prec, p.w, f(p.w - prec));
+  const faites = new Set();
+  for (const t of vues.slice().reverse()) {
+    const o = t.o, haut = o.type === "arc" ? o.top : o.v1, cle = o.v0 + "/" + haut;
+    if (!faites.has(cle)) {
+      faites.add(cle);
+      const xv = pad.g + t.d + 2;                     // hauteurs, à droite de l'ouverture
+      if (o.v0 > 0) vert(0, o.v0, xv, f(o.v0));
+      vert(o.v0, haut, xv + 3.2, f(haut - o.v0));
+    }
+    if (o.type === "arc") {
+      const r = o.w / 2, sp = o.top - r;
+      c.push(`<circle class="g-compas" cx="${X(o.cx)}" cy="${Y(sp)}" r="0.7"/>`);
+      c.push(`<line class="g-cote" stroke-dasharray="0.8 0.6" x1="${X(o.cx)}" y1="${Y(sp)}" x2="${X(o.cx + r * Math.cos(2.3))}" y2="${Y(sp + r * Math.sin(2.3))}"/>`);
+      c.push(`<text class="g-cote-t" x="${X(o.cx)}" y="${Y(sp) + 3.4}" text-anchor="middle">r ${f(r)}</text>`);
+      c.push(`<text class="g-cote-t" x="${X(o.cx)}" y="${Y(sp) + 6.4}" text-anchor="middle">centre à ${f(sp)}</text>`);
+    }
+  }
+  // sens
+  const [gauche, droite] = p.miroir ? [p.sens[1], p.sens[0]] : p.sens;
+  c.push(`<text class="g-sens" x="${pad.g}" y="${pad.h - 2}">← ${gauche}</text><text class="g-sens" x="${pad.g + p.w}" y="${pad.h - 2}" text-anchor="end">${droite} →</text>`);
+  if (!p.plat) c.push(`<text class="g-sens" x="${pad.g + p.w / 2}" y="${pad.h - 2}" text-anchor="middle">haut</text>`);
+  const taille = opts.mm ? `width="${W}mm" height="${H}mm"` : "";
+  return `<svg viewBox="0 0 ${W} ${H}" ${taille} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gabarit ${p.nom}">${s.join("")}${c.join("")}</svg>`;
+}
+
+// ---------------------------------------------------------------- page
+const $ = id => document.getElementById(id);
+let G = null, etape = ETAPES.length - 1, scene3d = null;
+function lire() {
+  const lu = (id, def, lo, hi) => 10 * Math.min(hi, Math.max(lo, parseFloat(String($(id).value).replace(",", ".")) || def));
+  const t = lu("cote-e", 0.2, 0.1, 0.4);
+  const M = { L: lu("cote-l", 6.9, 3, 40), D: lu("cote-d", 5.3, 3, 40), Hg: lu("cote-hg", 5.6, 3, 40), Hp: lu("cote-hp", 5, 3, 40) };
+  M.Hp = Math.min(M.Hp, M.Hg - 2 * t);              // le porche reste plus bas que la grande pièce
+  M.L = Math.max(M.L, M.D);                          // le porche garde une largeur
+  G = geometrie(M, t);
+}
+function remplirTables() {
+  const k = G.Ar / 50;
+  $("regle-echelle").innerHTML = `Cotes en cm, calculées à partir de tes mesures : façade 2 de ${f(G.L)} cm, plan de ${f(G.D)} cm de large, ${f(G.M.Hg)} cm de haut pour la grande pièce et ${f(G.M.Hp)} cm pour le porche (depuis le sol de la rue). Carton de ${f(G.t)} cm : les 5 murs, la dalle de sol et la dalle de toit sont en 2 couches (${f(G.e)} cm) ; le socle en 1 couche (${f(G.t)} cm).`;
+  const lignes = G.pieces.map(p => `<tr><td><b>${p.nom}</b>${p.num ? ` <span class="tech">(façade ${p.num})</span>` : ""}</td><td>${f(p.w)} × ${f(p.h)}</td><td>${p.nb}${p.nb === 2 ? " (2 couches)" : ""}</td><td>${p.role}</td></tr>`).join("");
+  $("tab-pieces").innerHTML = `<thead><tr><th>Pièce</th><th>Taille (cm)</th><th>Nombre</th><th>Ouvertures / rôle</th></tr></thead><tbody>${lignes}</tbody>`;
+  $("gabarits").innerHTML = G.pieces.map(p => `<figure><figcaption><b>${p.nom}${p.num ? " · façade " + p.num : ""}</b>${f(p.w)} × ${f(p.h)} cm · ${p.nb === 2 ? "à découper 2 fois · " : ""}${p.role}</figcaption>${svgPiece(p, G)}</figure>`).join("");
+  $("pied").textContent = `Cotes à partir de tes 4 mesures ; ouvertures aux proportions des façades et de la coupe AA : porche ${f(G.p)} cm plus bas, au niveau du dessus de la dalle de toit (posée entre les murs, sous l'acrotère). Murs et sol en double épaisseur de carton (${f(G.t)} cm × 2).`;
+}
+function afficherFiche() {
+  const E = ETAPES[etape];
+  $("compte").textContent = `${etape + 1} / ${ETAPES.length}`;
+  $("liste").innerHTML = ETAPES.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="${i === etape}" title="${x.titre}">${i}</button></li>`).join("");
+  $("liste").querySelectorAll("button").forEach(b => b.addEventListener("click", () => allerEtape(+b.dataset.i)));
+  const piece = E.pieces.length && E.pieces[0] !== "menuis" ? G.pieces.find(p => p.id === E.pieces[0]) : null;
+  $("etape").innerHTML = `<h2><span class="n">${etape}</span>${E.titre}</h2>${E.texte(G)}${piece ? svgPiece(piece, G).replace("<svg ", '<svg class="mini" ') : ""}${E.astuce ? `<div class="astuce">${E.astuce}</div>` : ""}<div class="cotes">${E.cotes(G)}</div>`;
+  $("prec").disabled = etape === 0; $("suiv").disabled = etape === ETAPES.length - 1;
+}
+function allerEtape(n) { etape = Math.max(0, Math.min(ETAPES.length - 1, n)); afficherFiche(); if (scene3d) scene3d.etape(etape); }
+$("prec").addEventListener("click", () => allerEtape(etape - 1));
+$("suiv").addEventListener("click", () => allerEtape(etape + 1));
+
+// ---------------------------------------------------------------- 3D (unités : cm)
+function demarrer3D() {
+  if (!window.THREE || !THREE.OrbitControls) throw new Error("three.js n'a pas pu être chargé.");
+  const canvas = $("scene");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.localClippingEnabled = true; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 4 / 3, 0.1, 300);
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.minDistance = 4; controls.maxDistance = 80;
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x6f6a5e, 0.6));
+  const soleil = new THREE.DirectionalLight(0xfff1d6, 0.9);
+  soleil.position.set(-14, 22, 18); soleil.castShadow = true; soleil.shadow.mapSize.set(2048, 2048);
+  Object.assign(soleil.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 80 });
+  soleil.shadow.bias = -0.0005; soleil.shadow.normalBias = 0.02; scene.add(soleil);
+  const sol = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ roughness: 1 }));
+  sol.rotation.x = -Math.PI / 2; sol.receiveShadow = true; scene.add(sol);
+  const grille = new THREE.GridHelper(40, 40, 0x000000, 0x000000); grille.material.opacity = 0.06; grille.material.transparent = true; grille.position.y = 0.002; scene.add(grille);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function theme() { const c = new THREE.Color(css("--scene") || "#e9eae6"); scene.background = c; scene.fog = new THREE.Fog(c, 40, 110); sol.material.color = new THREE.Color(css("--sol") || "#dcdcd5"); }
+  theme();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", theme);
+  new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  const matCarton = new THREE.MeshStandardMaterial({ color: 0xb9b2a4, roughness: 0.93, side: THREE.DoubleSide });
+  const matActif = new THREE.MeshStandardMaterial({ color: 0xd7c49a, roughness: 0.9, side: THREE.DoubleSide, emissive: 0x2a2010 });
+  const matMenui = new THREE.MeshStandardMaterial({ color: 0xf4f1ea, roughness: 0.8 });
+  const matArete = new THREE.LineBasicMaterial({ color: 0x2a2620, transparent: true, opacity: 0.45 });
+  // coupe AA : on garde la moitié nord (le plan de coupe passe par l'axe, à travers la porte double)
+  const planCoupe = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
+  const matColle = new THREE.MeshBasicMaterial({ color: 0x2346a8, transparent: true, opacity: 0.9, depthTest: false });
+  const racine = new THREE.Group(); scene.add(racine);
+  const groupeColle = new THREE.Group(); scene.add(groupeColle);
+  let objets = {}, menuis = null, g = null;
+  // mm (x est, y nord, z haut) -> scène (cm), centré
+  const V = (x, y, z) => new THREE.Vector3((x - g.L / 2) / 10, z / 10, -(y - g.D / 2) / 10);
+
+  function plaque(p) {
+    const { contour, trous } = formes(p);
+    const sh = new THREE.Shape(contour.map(([u, v]) => new THREE.Vector2(u / 10, v / 10)));
+    for (const t of trous) sh.holes.push(new THREE.Path(t.map(([u, v]) => new THREE.Vector2(u / 10, v / 10))));
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: p.ep / 10, bevelEnabled: false, curveSegments: 24 });
+    const m = new THREE.Mesh(geo, matCarton); m.castShadow = m.receiveShadow = true;
+    m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), matArete));
+    return m;
+  }
+  // place une plaque : u le long de 'du', v le long de 'dv', épaisseur vers 'dn' (vecteurs mm), origine o (mm)
+  function poser(m, o, du, dv, dn) {
+    const U = V(du[0], du[1], du[2]).sub(V(0, 0, 0)), W = V(dv[0], dv[1], dv[2]).sub(V(0, 0, 0)), N = V(dn[0], dn[1], dn[2]).sub(V(0, 0, 0));
+    const mat = new THREE.Matrix4().makeBasis(U.normalize(), W.normalize(), N.normalize()).setPosition(V(...o));
+    m.matrixAutoUpdate = false; m.matrix.copy(mat); m.userData.base = mat.clone();
+  }
+  function construire() {
+    g = G; racine.clear(); objets = {};
+    const e = g.e;
+    for (const p of g.pieces) {
+      let m = plaque(p);
+      if (p.nb === 2) {                              // 2 couches collées : la 2e décalée d'une épaisseur de carton
+        const gr = new THREE.Group(); gr.add(m); const m2 = plaque(p); m2.position.z = p.ep / 10; gr.add(m2); m = gr;
+      }
+      switch (p.id) {
+        case "socle": poser(m, [-g.m, -g.m, -g.t], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "plancher": poser(m, [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "toit": poser(m, [e, e, e + g.zb], [1, 0, 0], [0, 1, 0], [0, 0, 1]); break;
+        case "sud": poser(m, [0, e, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
+        case "nord": poser(m, [0, g.D, e], [1, 0, 0], [0, 0, 1], [0, -1, 0]); break;
+        case "ouest": poser(m, [e, g.D - e, e], [0, -1, 0], [0, 0, 1], [-1, 0, 0]); break;
+        case "cloison": poser(m, [2 * e + g.A, g.D - e, e], [0, -1, 0], [0, 0, 1], [-1, 0, 0]); break;
+        case "est": poser(m, [g.L, g.D - e, e], [0, -1, 0], [0, 0, 1], [-1, 0, 0]); break;
+      }
+      racine.add(m); objets[p.id] = { m, t: 1, cible: 1 };
+    }
+    // menuiseries : barres de 1 mm au milieu de l'épaisseur
+    menuis = new THREE.Group();
+    const barre = (a, b) => { const L = a.distanceTo(b); const geo = new THREE.BoxGeometry(0.1, L, 0.1); const mm = new THREE.Mesh(geo, matMenui); mm.position.copy(a).add(b).multiplyScalar(0.5); mm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); mm.castShadow = true; menuis.add(mm); };
+    const surMur = { sud: (u, v) => V(u, e / 2, e + v), nord: (u, v) => V(u, g.D - e / 2, e + v), ouest: (u, v) => V(e / 2, e + u, e + v), cloison: (u, v) => V(e + g.A + e / 2, e + u, e + v) };
+    for (const [id, segs] of Object.entries(g.menuis)) for (const s of segs) barre(surMur[id](s[0], s[1]), surMur[id](s[2], s[3]));
+    // cadres des baies en arc (anneau fin)
+    const piece = id => g.pieces.find(p => p.id === id);
+    for (const [id, o] of [["sud", piece("sud").trous[0]], ["ouest", piece("ouest").trous[0]]]) {
+      const r = o.w / 2, sp = o.top - r, n = 20;
+      for (let i = 0; i < n; i++) { const t0 = Math.PI * i / n, t1 = Math.PI * (i + 1) / n;
+        barre(surMur[id](o.cx + (r - .5) * Math.cos(t0), sp + (r - .5) * Math.sin(t0)), surMur[id](o.cx + (r - .5) * Math.cos(t1), sp + (r - .5) * Math.sin(t1))); }
+    }
+    racine.add(menuis); objets.menuis = { m: menuis, t: 1, cible: 1 };
+    sol.position.y = -g.t / 10; grille.position.y = -g.t / 10 + 0.002;
+    numeros();
+    appliquer(true);
+  }
+  // numéros des façades, au sol
+  let etiquettes = new THREE.Group(); scene.add(etiquettes);
+  function pastille(txt) {
+    const cv = document.createElement("canvas"); cv.width = cv.height = 128; const x = cv.getContext("2d");
+    x.strokeStyle = "#2346a8"; x.lineWidth = 7; x.beginPath(); x.arc(64, 64, 50, 0, 7); x.stroke();
+    x.fillStyle = "#2346a8"; x.font = "bold 64px sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(txt, 64, 68);
+    const s = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true }));
+    s.rotation.x = -Math.PI / 2; return s;
+  }
+  function numeros() {
+    etiquettes.clear();
+    for (const [t, x, y] of [["1", g.L + 14, g.D / 2], ["2", g.Lm / 2, -14], ["3", -14, g.D / 2], ["4", g.Lm / 2, g.D + 14], ["N", g.L + 14, g.D + 14]]) {
+      const s = pastille(t); s.position.copy(V(x, y, 0.3 - g.t)); etiquettes.add(s);
+    }
+  }
+  // étapes : pièces posées / à venir / en cours
+  let etapeCour = ETAPES.length - 1;
+  const AFF = { menuis: true, toit: true };
+  function posees(n) { const s = new Set(); for (let i = 0; i <= n; i++) ETAPES[i].pieces.forEach(k => s.add(k)); if (n === ETAPES.length - 1) Object.keys(objets).forEach(k => s.add(k)); return s; }
+  function appliquer(instant) {
+    const s = posees(etapeCour), cur = ETAPES[etapeCour].pieces;
+    for (const [k, o] of Object.entries(objets)) {
+      o.cible = s.has(k) ? 1 : 0;
+      if (k === "menuis" && !AFF.menuis) o.cible = 0;
+      if (k === "toit" && !AFF.toit) o.cible = 0;
+      if (instant) o.t = o.cible;
+      if (k !== "menuis") o.m.traverse(ch => { if (ch.isMesh) ch.material = cur.includes(k) ? matActif : matCarton; });
+    }
+    groupeColle.clear();
+    const E = ETAPES[etapeCour];
+    if (E.colle) for (const [a, b] of E.colle(g)) {
+      const A = V(...a), B = V(...b), d = B.clone().sub(A), L = d.length();
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, L, 10), matColle);
+      tube.position.copy(A).add(B).multiplyScalar(0.5); tube.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); tube.renderOrder = 10;
+      groupeColle.add(tube);
+    }
+  }
+  // caméra
+  const VUES = {
+    "v-3d": () => ({ p: new THREE.Vector3(13, 10, 15), c: new THREE.Vector3(0, 2.4, 0) }),
+    "v-sud": () => ({ p: new THREE.Vector3(0, 2.8, 24), c: new THREE.Vector3(0, 2.8, 0) }),
+    "v-est": () => ({ p: new THREE.Vector3(24, 2.6, 0), c: new THREE.Vector3(0, 2.6, 0) }),
+    "v-dessus": () => ({ p: new THREE.Vector3(0, 26, 0.01), c: new THREE.Vector3(0, 0, 0) }),
+    "v-coupe": () => ({ p: new THREE.Vector3(0, 2.6, 22), c: new THREE.Vector3(0, 2.4, 0) }),
+  };
+  let vue = "v-3d", anim = null;
+  function allerVers(id, instant) {
+    const v = VUES[id](), k = g ? g.Ar / 50 : 1; v.p.multiplyScalar(k); v.c.multiplyScalar(k);
+    if (instant) { camera.position.copy(v.p); controls.target.copy(v.c); anim = null; return; }
+    anim = { p0: camera.position.clone(), c0: controls.target.clone(), p1: v.p, c1: v.c, t: 0 };
+  }
+  const BOUTONS = Object.keys(VUES);
+  const marquer = () => BOUTONS.forEach(id => $(id).setAttribute("aria-pressed", id === vue));
+  function couper(oui) { for (const mt of [matCarton, matActif, matMenui, matArete]) { mt.clippingPlanes = oui ? [planCoupe] : []; mt.clipShadows = oui; mt.needsUpdate = true; } }
+  for (const id of BOUTONS) $(id).addEventListener("click", () => { vue = id; marquer(); couper(id === "v-coupe"); allerVers(id); });
+  controls.addEventListener("start", () => { vue = null; marquer(); });
+  for (const k of ["menuis", "toit"]) $(k).addEventListener("click", () => { AFF[k] = !AFF[k]; $(k).setAttribute("aria-pressed", AFF[k]); appliquer(); });
+  construire(); allerVers("v-3d", true); marquer();
+  function taille() { const w = canvas.clientWidth, h = canvas.clientHeight; if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); } }
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t0 = performance.now();
+  function boucle(now) {
+    const dt = Math.min(0.05, (now - t0) / 1000); t0 = now;
+    taille();
+    for (const o of Object.values(objets)) {
+      o.t += (o.cible - o.t) * (reduit ? 1 : Math.min(1, dt * 7));
+      const leve = (1 - o.t) * 3;                 // une pièce arrive d'en haut
+      o.m.visible = o.t > 0.02;
+      if (o.m.userData.base) { o.m.matrix.copy(o.m.userData.base); o.m.matrix.elements[13] += leve; o.m.matrixWorldNeedsUpdate = true; }
+      else o.m.position.y = leve;
+    }
+    if (anim) { anim.t = Math.min(1, anim.t + dt * 1.6); const s = anim.t * anim.t * (3 - 2 * anim.t);
+      camera.position.lerpVectors(anim.p0, anim.p1, s); controls.target.lerpVectors(anim.c0, anim.c1, s); if (anim.t >= 1) anim = null; }
+    controls.update(); renderer.render(scene, camera); requestAnimationFrame(boucle);
+  }
+  requestAnimationFrame(boucle);
+  return { etape: n => { etapeCour = n; appliquer(); }, reconstruire: () => { construire(); } };
+}
+
+// ---------------------------------------------------------------- impression 1:1
+function pagesImpression() {
+  const P = id => G.pieces.find(p => p.id === id);
+  const regle = `<svg width="60mm" height="7mm" viewBox="0 0 60 7"><line x1="0" y1="5" x2="50" y2="5" stroke="#000" stroke-width=".3"/>${[0, 10, 20, 30, 40, 50].map(x => `<line x1="${x}" y1="3" x2="${x}" y2="6" stroke="#000" stroke-width=".3"/>`).join("")}<text x="52" y="6" font-size="2.6" font-family="monospace">5 cm</text></svg>`;
+  const tete = n => `<h3>Le Pavillon au porche · gabarits à taille réelle (${n}/3)</h3><p>${f(G.L)} × ${f(G.D)} cm · hauteurs ${f(G.M.Hg)} et ${f(G.M.Hp)} cm · carton ${f(G.t)} cm · « × 2 » : découpe la pièce 2 fois (2 couches) · le socle : 1 fois · imprime à 100 % (sans « ajuster à la page ») et vérifie : la règle doit mesurer 5 cm.</p>${regle}`;
+  const ligne = ids => `<div style="display:flex;gap:4mm;align-items:flex-end;margin-top:4mm">${ids.map(id => `<div><p style="margin:0 0 0 14mm;font-family:var(--f-titre);font-weight:700;font-size:9pt;color:#000">${P(id).nom}${P(id).num ? " · façade " + P(id).num : ""} — ${f(P(id).w)} × ${f(P(id).h)} cm${P(id).nb === 2 ? " · × 2" : ""}</p>${svgPiece(P(id), G, { mm: true })}</div>`).join("")}</div>`;
+  $("impression").innerHTML = `<div class="page">${tete(1)}${ligne(["sud", "nord"])}${ligne(["ouest", "cloison"])}</div><div class="page">${tete(2)}${ligne(["est", "toit"])}${ligne(["plancher"])}</div><div class="page">${tete(3)}${ligne(["socle"])}</div>`;
+}
+
+// ---------------------------------------------------------------- planche A4 : toutes les pièces sur une feuille, à taille réelle
+// Chaque pièce une fois (« × 2 » = à découper 2 fois), vue de l'extérieur. Pas de cotes autour : on calque le contour.
+function plancheA4() {
+  const g = G, P = id => g.pieces.find(p => p.id === id), gap = 5, x0 = 10;
+  const rangs = [["sud", "nord", "ouest"], ["cloison", "est", "toit"], ["socle", "plancher"]];
+  const out = [];
+  const T = (x, y, txt, taille, opts = "") => out.push(`<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-family="Archivo, Arial, sans-serif" font-size="${taille}" fill="#111" ${opts}>${txt}</text>`);
+  // en-tête + règle de contrôle
+  T(x0, 12, "Le Pavillon au porche · toutes les pièces à taille réelle", 5.2, 'font-weight="700"');
+  T(x0, 18, `Carton ${f(g.t)} cm · « × 2 » = découpe la pièce 2 fois (2 couches collées) · pièces vues de l'extérieur · imprime à 100 %, la règle doit faire 5 cm`, 2.6);
+  out.push(`<g stroke="#111" stroke-width=".3"><line x1="${x0}" y1="23" x2="${x0 + 50}" y2="23"/>${[0, 10, 20, 30, 40, 50].map(k => `<line x1="${x0 + k}" y1="21.5" x2="${x0 + k}" y2="24.5"/>`).join("")}</g>`);
+  T(x0 + 52, 24, "5 cm", 2.6);
+  let y = 30;
+  for (const rang of rangs) {
+    let x = x0, hmax = 0;
+    for (const id of rang) {
+      const p = P(id), { contour, trous } = formes(p);
+      const X = u => x + (p.miroir ? p.w - u : u), Y = v => y + p.h - v;
+      const d = [contour, ...trous].map(l => "M" + l.map(([u, v]) => `${X(u).toFixed(2)} ${Y(v).toFixed(2)}`).join("L") + "Z").join("");
+      out.push(`<path d="${d}" fill="#ecebe6" fill-rule="evenodd" stroke="#111" stroke-width=".3"/>`);
+      for (const m of g.menuis[id] || []) out.push(`<line x1="${X(m[0])}" y1="${Y(m[1])}" x2="${X(m[2])}" y2="${Y(m[3])}" stroke="#777" stroke-width=".2" stroke-dasharray="1 .8"/>`);
+      for (const o of p.trous.filter(o => o.type === "arc")) out.push(`<circle cx="${X(o.cx)}" cy="${Y(o.top - o.w / 2)}" r=".6" fill="#2346a8"/>`);
+      const rep = { sud: [g.e, g.Lm - g.e], nord: [g.e, g.Lm - g.e], ouest: [0, g.A], cloison: [0, g.A] }[id];
+      if (rep) out.push(`<line x1="${X(rep[0])}" y1="${Y(g.zb)}" x2="${X(rep[1])}" y2="${Y(g.zb)}" stroke="#2346a8" stroke-width=".3" stroke-dasharray="2 1"/>`);
+      if (id === "socle") out.push(`<rect x="${X(g.m)}" y="${Y(g.m + g.D)}" width="${g.L}" height="${g.D}" fill="none" stroke="#777" stroke-width=".2" stroke-dasharray="1.5 1"/>`);
+      if (id === "plancher") out.push(`<line x1="${X(g.Lm - g.e)}" y1="${Y(g.e)}" x2="${X(g.Lm - g.e)}" y2="${Y(g.D - g.e)}" stroke="#777" stroke-width=".2" stroke-dasharray="1.5 1"/><line x1="${X(g.Lm)}" y1="${Y(g.e)}" x2="${X(g.Lm)}" y2="${Y(g.D - g.e)}" stroke="#777" stroke-width=".2" stroke-dasharray="1.5 1"/>`);
+      // étiquette dans la bande pleine du haut (murs) ou au centre (plaques)
+      const nom = `${p.nom}${p.num ? " (" + p.num + ")" : ""}${p.nb === 2 ? " · × 2" : ""}`, dims = `${f(p.w)} × ${f(p.h)} cm`;
+      const haut = p.plat ? y + p.h / 2 - 1 : y + 4.2, cx = x + p.w / 2;
+      const bande = p.plat ? 99 : p.h - Math.max(0, ...p.trous.map(o => o.type === "arc" ? o.top : o.v1));
+      if (bande < 9) T(cx, haut, `${nom} · ${dims}`, 2.6, 'font-weight="700" text-anchor="middle"');   // bande pleine trop étroite : une seule ligne
+      else { T(cx, haut, nom, 3, 'font-weight="700" text-anchor="middle"'); T(cx, haut + 3.4, dims, 2.4, 'text-anchor="middle"'); }
+      if (!p.plat) T(cx, y + p.h + 3.2, `← ${p.miroir ? p.sens[1] : p.sens[0]} · bas · ${p.miroir ? p.sens[0] : p.sens[1]} →`, 2.1, 'text-anchor="middle" fill="#555"');
+      x += p.w + gap; hmax = Math.max(hmax, p.h);
+    }
+    y += hmax + gap + 4;
+  }
+  T(x0, 290, "Pointillés : menuiseries (crayon) · trait bleu : dessous de la dalle de toit, face intérieure · point bleu : pointe du compas · sur la dalle de sol : place de la cloison", 2.3, 'fill="#555"');
+  $("impression").innerHTML = `<div class="page" style="padding:0"><svg width="210mm" height="297mm" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">${out.join("")}</svg></div>`;
+  return y;
+}
+
+// ---------------------------------------------------------------- lancement
+lire(); remplirTables(); afficherFiche();
+if (location.hash === "#gabarit") { document.body.classList.add("imprimer"); pagesImpression(); }
+else if (location.hash === "#planche") { document.body.classList.add("imprimer"); plancheA4(); }
+else {
+  try { scene3d = demarrer3D(); scene3d.etape(etape); }
+  catch (err) { $("scene").replaceWith(Object.assign(document.createElement("div"), { className: "erreur", textContent: "La vue 3D n'a pas pu démarrer : " + err.message })); }
+}
+for (const id of ["cote-l", "cote-d", "cote-hg", "cote-hp", "cote-e"]) $(id).addEventListener("input", () => { lire(); remplirTables(); afficherFiche(); if (scene3d) { scene3d.reconstruire(); scene3d.etape(etape); } });
+</script>
