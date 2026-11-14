@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maquette de la voûte croisée</title>
+<title>Maquette voûte croisée</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root {
   --papier: #f2f3f0; --feuille: #fbfbf9; --encre: #1d2220; --encre-2: #5b625e; --trait: #2346a8; --ligne: #d5d8d2;
@@ -16,9 +17,11 @@
   :root:not([data-theme="light"]) { --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4; --trait: #93acf2;
     --ligne: #2d332f; --scene: #232825; --accent: #ff8f86; --ok: #6fd6a0; color-scheme: dark; }
 }
+:root[data-theme="dark"] { --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4; --trait: #93acf2;
+  --ligne: #2d332f; --scene: #232825; --accent: #ff8f86; --ok: #6fd6a0; color-scheme: dark; }
 * { box-sizing: border-box; }
 html { overflow-x: hidden; }
-body { background: var(--papier); color: var(--encre); font-family: var(--f-texte); font-size: 1.02rem; line-height: 1.55; margin: 0; padding: 24px 16px 48px; }
+body { background: var(--papier); color: var(--encre); font-family: var(--f-texte); font-size: 1.02rem; line-height: 1.55; margin: 0; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .planche { max-width: 1240px; margin: 0 auto; display: grid; gap: 18px; }
 .surtitre { font-family: var(--f-tech); font-size: .74rem; letter-spacing: .06em; color: var(--encre-2); text-transform: uppercase; }
 header.cartouche { border: 1.5px solid var(--encre); background: var(--feuille); padding: 14px 18px; display: grid; gap: 4px; }
@@ -1387,7 +1390,7 @@ function goto(n, opts) {
   document.querySelectorAll(".etapes button").forEach((b, i) => b.classList.toggle("on", i === step));
   document.getElementById("prec").disabled = step === 0; document.getElementById("suiv").disabled = step === STEPS.length - 1;
   labDiv.forEach(l => { l.show = (l.cls.includes("cote") ? !!st.cotes : l.cls === "num" ? (!!st.numeros && pieces[l.d.dataset.k].first <= step) : (st.labels || []).includes(l.d.dataset.k)); l.d.style.display = l.show ? "" : "none"; });
-  history.replaceState(null, "", "#etape" + step);
+  try { history.replaceState(null, "", "#etape" + step); } catch (e) {}
 }
 function render_fiche(st) {
   let h = `<div class="surtitre">Étape ${st.n} sur ${STEPS.length - 1} · ${st.kicker}</div><h2>${st.titre}</h2><div class="texte">${st.texte.map(t => `<p>${t}</p>`).join("")}</div>`;

@@ -32,3 +32,6 @@ L'arête du voûtain est la courbe **w = 4,5 × sin(s ÷ 4,5)** (s = distance de
 
 ## Changer la taille
 Dans `geometrie.py` : `H` (hauteur des piliers, 8,0 cm → 8,3 pour 13 cm de haut), `A` (rayon), `B` (épaisseur des arcs/piliers). Puis `python3 geometrie.py && python3 patrons.py && node rendu_patrons.js "$PWD" && python3 build.py`.
+
+## Simulation 3D en ligne
+`montage-artefact.html` est la même page 3D, sans les balises `<html>/<head>/<body>`, pour être publiée comme page web (`python3 build.py && python3 artifact.py`). `montage.html` fonctionne seule dans un navigateur.
