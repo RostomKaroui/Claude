@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette de la voûte croisée</title>
+<style>
+:root {
+  --papier: #f2f3f0; --feuille: #fbfbf9; --encre: #1d2220; --encre-2: #5b625e; --trait: #2346a8; --ligne: #d5d8d2;
+  --scene: #e9eae6; --accent: #b3261e; --ok: #1f7a4d;
+  --f-titre: "Arial Narrow", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --f-texte: Georgia, "Times New Roman", serif;
+  --f-tech: ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --papier: #151816; --feuille: #1c201e; --encre: #e4e7e2; --encre-2: #a2a9a4; --trait: #93acf2;
+    --ligne: #2d332f; --scene: #232825; --accent: #ff8f86; --ok: #6fd6a0; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { background: var(--papier); color: var(--encre); font-family: var(--f-texte); font-size: 1.02rem; line-height: 1.55; margin: 0; padding: 24px 16px 48px; }
+.planche { max-width: 1240px; margin: 0 auto; display: grid; gap: 18px; }
+.surtitre { font-family: var(--f-tech); font-size: .74rem; letter-spacing: .06em; color: var(--encre-2); text-transform: uppercase; }
+header.cartouche { border: 1.5px solid var(--encre); background: var(--feuille); padding: 14px 18px; display: grid; gap: 4px; }
+h1 { font-family: var(--f-titre); font-weight: 800; font-size: clamp(1.5rem, 3.2vw, 2.3rem); line-height: 1.05; margin: 0; letter-spacing: .01em; }
+.sous { color: var(--encre-2); margin: 0; }
+.atelier { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .atelier { grid-template-columns: minmax(0, 1fr); } }
+.atelier > *, .planche > *, .deux > * { min-width: 0; }
+.planche { grid-template-columns: minmax(0, 1fr); }
+.scene-bloc { border: 1.5px solid var(--encre); background: var(--feuille); }
+.scene { position: relative; background: var(--scene); aspect-ratio: 4 / 3.3; overflow: hidden; }
+@media (max-width: 700px) { .scene { aspect-ratio: 1 / 1.05; } }
+.scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.lab { position: absolute; transform: translate(8px, -50%); font-family: var(--f-tech); font-size: .72rem; background: var(--feuille); color: var(--encre);
+  border: 1px solid var(--encre); padding: 1px 6px; white-space: nowrap; pointer-events: none; }
+.lab::before { content: ""; position: absolute; left: -9px; top: 50%; width: 8px; height: 1px; background: var(--encre); }
+.lab.cote { color: var(--trait); border-color: var(--trait); }
+.lab.cote::before { background: var(--trait); }
+.num { position: absolute; transform: translate(-50%, -50%); width: 22px; height: 22px; border-radius: 50%; background: var(--encre); color: var(--feuille);
+  font-family: var(--f-tech); font-size: .8rem; display: grid; place-items: center; pointer-events: none; }
+.barre { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; border-top: 1.5px solid var(--encre); align-items: center; }
+button { font: inherit; font-family: var(--f-tech); font-size: .8rem; background: var(--feuille); color: var(--encre); border: 1.5px solid var(--encre); padding: 6px 12px; cursor: pointer; }
+button:hover { background: var(--encre); color: var(--feuille); }
+button[disabled] { opacity: .35; cursor: default; background: var(--feuille); color: var(--encre); }
+.etapes { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; max-width: 100%; }
+.etapes button { padding: 5px 9px; }
+.etapes button.on { background: var(--encre); color: var(--feuille); }
+.curv { display: none; align-items: center; gap: 8px; font-family: var(--f-tech); font-size: .78rem; padding: 10px; border-top: 1.5px solid var(--encre); background: var(--feuille); }
+.curv.on { display: flex; }
+.curv input { flex: 1; max-width: 340px; }
+.fiche { border: 1.5px solid var(--encre); background: var(--feuille); padding: 16px 18px; display: grid; gap: 12px; }
+.fiche h2 { font-family: var(--f-titre); font-size: 1.45rem; margin: 0; line-height: 1.1; }
+.fiche p { margin: 0; }
+.fiche .texte { display: grid; gap: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { border-bottom: 1px solid var(--ligne); padding: 5px 8px; text-align: left; vertical-align: top; }
+th { font-family: var(--f-tech); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-2); font-weight: 500; }
+td.v { font-family: var(--f-tech); white-space: nowrap; color: var(--trait); }
+.patron { width: 100%; height: auto; background: #fff; border: 1px solid var(--ligne); }
+.legende { font-family: var(--f-tech); font-size: .72rem; color: var(--encre-2); }
+section.bloc { border: 1.5px solid var(--encre); background: var(--feuille); padding: 16px 18px; display: grid; gap: 12px; }
+section.bloc h2 { font-family: var(--f-titre); font-size: 1.35rem; margin: 0; }
+.deux { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 760px) { .deux { grid-template-columns: minmax(0, 1fr); } }
+ul { margin: 0; padding-left: 1.2em; } li { margin: 3px 0; }
+.bon::marker { color: var(--ok); } .mauvais::marker { color: var(--accent); }
+.note { font-family: var(--f-tech); font-size: .78rem; color: var(--encre-2); }
+.scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="planche">
+  <header class="cartouche">
+    <div class="surtitre">Maquette · voûte croisée (voûte d'arêtes) · cm</div>
+    <h1>Maquette de la voûte croisée</h1>
+    <p class="sous">12,7 cm de haut · 12 × 12 cm d'emprise · 4 piliers, 4 voûtains identiques, 1 socle. Fais défiler les étapes : chaque pièce arrive en 3D avec ses mesures exactes.</p>
+  </header>
+
+  <div class="atelier">
+    <div class="scene-bloc">
+      <div class="scene" id="scene"><canvas id="cv"></canvas></div>
+      <div class="curv" id="curv"><label for="courbure">Dépliée</label><input type="range" id="courbure" min="2" max="100" value="100"><label for="courbure">Courbée en place</label></div>
+      <div class="barre">
+        <button id="prec">◀ Précédent</button><button id="suiv">Suivant ▶</button><button id="rejouer">↺ Rejouer</button>
+        <button id="coul">Couleurs</button>
+        <div class="etapes" id="etapes"></div>
+      </div>
+    </div>
+    <div class="fiche" id="fiche"></div>
+  </div>
+
+  <section class="bloc">
+    <h2>Liste de découpe : toutes les mesures exactes</h2>
+    <div class="scroll">{{TABLEAU}}</div>
+    <p class="note">Tolérance : ± 0,5 mm suffit. Les 4 voûtains doivent être identiques entre eux ; les 4 piliers aussi.</p>
+    <div class="deux">
+      <div>
+        <h3 style="margin:.2em 0">Tracer l'arête courbe à la main (si tu n'imprimes pas)</h3>
+        <p>L'arête du voûtain est la courbe <b>w = 4,5 × sin(s ÷ 4,5)</b>. Mesure <b>s</b> (cm) depuis l'axe de la clef sur le bord bas du papier, monte de <b>w</b> (cm), marque le point, relie-les à main levée en courbe douce. Même courbe à gauche et à droite.</p>
+      </div>
+      <div class="scroll">{{POINTS}}</div>
+    </div>
+  </section>
+
+  <section class="bloc">
+    <h2>Avec quoi la faire ? Mes conseils</h2>
+    <div class="deux">
+      <div>
+        <h3 style="margin:.2em 0">À prendre</h3>
+        <ul>
+          <li class="bon"><b>Bristol blanc 180–220 g/m²</b> pour les 4 voûtains et les 4 piliers : il se courbe en demi-cercle de 4,5 cm sans casser, se plie net, se découpe propre et garde sa forme. ≈ 3 feuilles A4. Imprime les patrons directement dessus (la plupart des imprimantes passent 200 g en alimentation manuelle), sinon décalque ou colle le patron.</li>
+          <li class="bon"><b>Carton gris 2 mm</b> pour le socle (14 × 14 cm) et le gabarit de contrôle : plat, rigide, classique des maquettes.</li>
+          <li class="bon"><b>Colle blanche vinylique</b> (type colle à bois) pour les languettes, avec des <b>pinces à linge</b> ou trombones pour presser 10 minutes. Alternative propre : <b>ruban double-face fin</b> (3–6 mm).</li>
+          <li class="bon"><b>Cutter à lame neuve</b>, règle métal, tapis de coupe, ciseaux fins pour les courbes, dos de lame ou stylet pour marquer les plis, crayon HB.</li>
+          <li class="bon"><b>Option rouleaux de papier</b> : une bande de papier roulée serrée (≈ 1,3 cm de diamètre) glissée dans chaque pilier avant de le fermer le rend plein et solide.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="margin:.2em 0">À éviter</h3>
+        <ul>
+          <li class="mauvais"><b>Carton gris (ou carton ondulé) pour la voûte</b> : à 1–2 mm il ne se courbe pas à un rayon de 4,5 cm sans casser ni plisser, et on ne peut pas faire de languettes. Réserve-le au socle.</li>
+          <li class="mauvais"><b>Rouleaux d'essuie-tout / papier toilette pour la voûte</b> : leur diamètre (≈ 4–4,5 cm) est trop petit pour une portée de 9 cm, et un cylindre entier ne donne pas les 4 voûtains qui se rejoignent aux arêtes.</li>
+          <li class="mauvais"><b>Papier fin ou calque (&lt; 120 g)</b> : trop mou, la voûte s'affaisse.</li>
+          <li class="mauvais"><b>Colle en bâton seule</b> : trop faible sur de si petites languettes.</li>
+        </ul>
+        <h3 style="margin:.9em 0 .2em">Astuces de montage</h3>
+        <ul>
+          <li>Toujours <b>plier avant de coller</b>, et monter une fois « à blanc » (sans colle).</li>
+          <li>Découpe les courbes <b>aux ciseaux</b>, les droites au cutter.</li>
+          <li>Glisse le gabarit de contrôle sous un arc : il doit épouser le demi-cercle.</li>
+          <li>Pour un rendu pierre : bristol gris clair, ou spray mat après montage.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>{{THREE}}</script>
+<script>{{ORBIT}}</script>
+<script>
+const D = {{DATA}};
+const SVG = {{SVG}};
+const A = D.A, B = D.B, H = D.H, EP = D.EP, SOCLE = D.SOCLE, L = D.L, TOPZ = EP + H + A;
+const PIERS = D.piliers;
+const COUL = ["#d9822b", "#2f6db5", "#2f9e8f", "#e0b53a"];
+const NS = 56, NR = 6;
+let couleurs = true;
+
+// ---------- géométrie (même formules que geometrie.py) ----------
+const w0 = s => A * Math.abs(Math.sin(s / A));
+const ROT = [[1, 0], [0, -1], [-1, 0], [0, 1]];
+function webPoint(k, s, w, kappa) {
+  let y, z;
+  if (kappa < 1e-6) { y = -s; z = TOPZ; } else { y = -Math.sin(kappa * s) / kappa; z = TOPZ + (Math.cos(kappa * s) - 1) / kappa; }
+  const [c, sn] = ROT[k];
+  return [w * c - y * sn, w * sn + y * c, z];
+}
+const V3 = (x, y, z) => new THREE.Vector3(x, z, -y);
+
+// ---------- scène ----------
+const cv = document.getElementById("cv"), box = document.getElementById("scene");
+if (!window.THREE || !THREE.OrbitControls) throw new Error("three.js n'a pas pu être chargé.");
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = false;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xdcdcd5);
+const camera = new THREE.PerspectiveCamera(32, 4 / 3.3, 1, 400);
+const ctl = new THREE.OrbitControls(camera, cv);
+ctl.enableDamping = true; ctl.dampingFactor = 0.08; ctl.minDistance = 10; ctl.maxDistance = 70; ctl.maxPolarAngle = Math.PI * 0.495;
+scene.add(new THREE.HemisphereLight(0xffffff, 0xbfc3bd, 0.82));
+const sun = new THREE.DirectionalLight(0xffffff, 0.62); sun.position.set(14, 26, 10); sun.castShadow = false;
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.camera.left = -14; sun.shadow.camera.right = 14; sun.shadow.camera.top = 14; sun.shadow.camera.bottom = -14;
+sun.shadow.camera.near = 5; sun.shadow.camera.far = 70; sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
+scene.add(sun);
+const table = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshBasicMaterial({ color: 0xdcdcd5 }));
+table.rotation.x = -Math.PI / 2; table.position.y = -0.02; scene.add(table);
+
+const ink = new THREE.LineBasicMaterial({ color: 0x1d2220 });
+const pieces = {};      // id -> {obj, first, mats, kind, k}
+function reg(id, obj, first, kind, extra) { pieces[id] = Object.assign({ obj, first, kind }, extra || {}); scene.add(obj); obj.visible = false; return pieces[id]; }
+
+// socle
+{
+  const g = new THREE.Group();
+  const m = new THREE.Mesh(new THREE.BoxGeometry(SOCLE, EP, SOCLE), new THREE.MeshLambertMaterial({ color: 0xb9b4a7 }));
+  m.position.y = EP / 2; m.receiveShadow = true; m.castShadow = true; g.add(m);
+  { const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), ink); e.position.copy(m.position); g.add(e); }
+  // repères des piliers (carrés rouges)
+  const red = new THREE.LineBasicMaterial({ color: 0xc23a2f });
+  PIERS.forEach(([cx, cy]) => {
+    const h = B / 2, pts = [[-h, -h], [h, -h], [h, h], [-h, h], [-h, -h]].map(([a, b]) => V3(cx + a, cy + b, EP + 0.02));
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), red));
+  });
+  reg("socle", g, 1, "socle", { mats: [m.material], base: [0xb9b4a7] });
+}
+// piliers
+PIERS.forEach(([cx, cy], i) => {
+  const g = new THREE.Group();
+  const m = new THREE.Mesh(new THREE.BoxGeometry(B, H, B), new THREE.MeshLambertMaterial({ color: 0xece6d8 }));
+  m.position.copy(V3(cx, cy, EP + H / 2)); m.castShadow = true; m.receiveShadow = true; g.add(m);
+  { const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), ink); e.position.copy(m.position); g.add(e); }
+  reg("pil" + i, g, 2, "pilier", { mats: [m.material], base: [0xece6d8], i });
+});
+// voûtains
+const voute = new THREE.Group(); scene.add(voute);
+function buildWeb(k) {
+  const g = new THREE.Group();
+  const nv = (NS + 1) * (NR + 1), pos = new Float32Array(nv * 3), idx = [];
+  for (let i = 0; i < NS; i++) for (let j = 0; j < NR; j++) {
+    const a = i * (NR + 1) + j, b = (i + 1) * (NR + 1) + j, c = i * (NR + 1) + j + 1, d = (i + 1) * (NR + 1) + j + 1;
+    idx.push(a, b, c, b, d, c);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.setIndex(idx);
+  const mat = new THREE.MeshLambertMaterial({ color: COUL[k], side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+  const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true; g.add(mesh);
+  // contour et arêtes
+  const loopIdx = [];
+  for (let i = 0; i <= NS; i++) loopIdx.push(i * (NR + 1));
+  for (let j = 1; j <= NR; j++) loopIdx.push(NS * (NR + 1) + j);
+  for (let i = NS - 1; i >= 0; i--) loopIdx.push(i * (NR + 1) + NR);
+  for (let j = NR - 1; j >= 1; j--) loopIdx.push(j);
+  const lg = new THREE.BufferGeometry(); lg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(loopIdx.length * 3), 3));
+  const contour = new THREE.LineLoop(lg, ink); g.add(contour);
+  const gg = new THREE.BufferGeometry(); gg.setAttribute("position", new THREE.BufferAttribute(new Float32Array((NS + 1) * 3), 3));
+  const groin = new THREE.Line(gg, new THREE.LineBasicMaterial({ color: 0xa01d1d })); g.add(groin);
+  const web = { k, geo, loopIdx, contour, groin, mesh, kappa: 1 / A };
+  g.userData.web = web;
+  return { g, web };
+}
+function updateWeb(web, kappa) {
+  const p = web.geo.attributes.position.array, k = web.k;
+  for (let i = 0; i <= NS; i++) {
+    const s = -L + 2 * L * i / NS, wl = w0(s);
+    for (let j = 0; j <= NR; j++) {
+      const w = wl + (A + B - wl) * j / NR, q = webPoint(k, s, w, kappa), o = (i * (NR + 1) + j) * 3;
+      p[o] = q[0]; p[o + 1] = q[2]; p[o + 2] = -q[1];
+    }
+  }
+  web.geo.attributes.position.needsUpdate = true; web.geo.computeVertexNormals(); web.geo.computeBoundingSphere();
+  const lp = web.contour.geometry.attributes.position.array;
+  web.loopIdx.forEach((vi, n) => { lp[n * 3] = p[vi * 3]; lp[n * 3 + 1] = p[vi * 3 + 1]; lp[n * 3 + 2] = p[vi * 3 + 2]; });
+  web.contour.geometry.attributes.position.needsUpdate = true;
+  const gp = web.groin.geometry.attributes.position.array;
+  for (let i = 0; i <= NS; i++) { const vi = i * (NR + 1); gp[i * 3] = p[vi * 3]; gp[i * 3 + 1] = p[vi * 3 + 1]; gp[i * 3 + 2] = p[vi * 3 + 2]; }
+  web.groin.geometry.attributes.position.needsUpdate = true;
+  web.kappa = kappa;
+}
+for (let k = 0; k < 4; k++) {
+  const { g, web } = buildWeb(k); updateWeb(web, 1 / A);
+  voute.add(g); g.visible = false;
+  pieces["web" + k] = { obj: g, first: 3 + k, kind: "web", k, web, mats: [web.mesh.material], base: [COUL[k]] };
+}
+
+// ---------- cotes 3D ----------
+const cotes3d = new THREE.Group(); scene.add(cotes3d); cotes3d.visible = false;
+const COTES = [
+  { a: [7.0, -7.0, 0], b: [7.0, -7.0, D.HAUT], txt: "hauteur 12,7 cm" },
+  { a: [-A, -7.6, EP], b: [A, -7.6, EP], txt: "portée libre 9,0 cm" },
+  { a: [-(A + B), -8.6, 0], b: [A + B, -8.6, 0], txt: "emprise 12,0 cm" },
+  { a: [-7.0, -7.0, 0], b: [-7.0, -7.0, EP + H], txt: "piliers 8,0 cm" },
+];
+COTES.forEach(c => {
+  const mat = new THREE.LineBasicMaterial({ color: 0x2346a8 });
+  cotes3d.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([V3(...c.a), V3(...c.b)]), mat));
+  [c.a, c.b].forEach(p => { const d = c.a[0] !== c.b[0] ? [0, 0.3, 0] : [0.3, 0, 0];
+    cotes3d.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([V3(p[0] - d[0], p[1] - d[1], p[2] - d[2]), V3(p[0] + d[0], p[1] + d[1], p[2] + d[2])]), mat)); });
+});
+
+// ---------- étiquettes ----------
+const labDiv = [];
+function lab(cls, text, fn) { const d = document.createElement("div"); d.className = cls; d.textContent = text; d.style.display = "none"; box.appendChild(d); labDiv.push({ d, fn, cls }); return d; }
+const ANCH = {
+  clef: () => V3(0, 0, D.HAUT + 0.05).add(new THREE.Vector3(0, voute.position.y, 0)),
+  arete: () => { const s = L * 0.55; const q = webPoint(0, s, w0(s), 1 / A); return V3(q[0], q[1], q[2]).add(new THREE.Vector3(0, voute.position.y, 0)); },
+  voutain: () => { const q = webPoint(0, 1.2, 2.6, 1 / A); return V3(q[0], q[1], q[2]).add(new THREE.Vector3(0, voute.position.y, 0)); },
+  arc: () => { const q = webPoint(0, L * 0.35, A + B * 0.7, 1 / A); return V3(q[0], q[1], q[2]).add(new THREE.Vector3(0, voute.position.y, 0)); },
+  pilier: () => V3(-(A + B / 2), -(A + B / 2), EP + H * 0.55),
+  socle: () => V3(0, -(SOCLE / 2), EP / 2),
+};
+const NOMS = { clef: "clef", arete: "arête", voutain: "voûtain", arc: "arc (bande 1,5 cm)", pilier: "pilier", socle: "socle" };
+Object.keys(ANCH).forEach(k => lab("lab", NOMS[k], ANCH[k]).dataset.k = k);
+COTES.forEach(c => lab("lab cote", c.txt, () => V3((c.a[0] + c.b[0]) / 2, (c.a[1] + c.b[1]) / 2, (c.a[2] + c.b[2]) / 2)));
+for (let k = 0; k < 4; k++) { const d = lab("num", String(k + 1), () => { const q = webPoint(k, 0, 3.4, 1 / A); return V3(q[0], q[1], q[2]).add(new THREE.Vector3(0, voute.position.y, 0)); }); d.dataset.k = "web" + k; }
+
+// ---------- étapes ----------
+const STEPS = D.steps;
+let step = 0, anim = [], camAnim = null, lift = { v: 0, to: 0, from: 0, t0: 0, dur: 1 };
+const curvEl = document.getElementById("curv"), curvIn = document.getElementById("courbure");
+const ease = t => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
+let currentWeb = null;
+
+function setColors() {
+  Object.values(pieces).forEach(p => p.mats.forEach((m, i) => {
+    let c = new THREE.Color(p.base[i]);
+    if (!couleurs && p.kind === "web") c = new THREE.Color(0xf1ede3);
+    if (p.cur === false) c.lerp(new THREE.Color(0x9a9a92), p.kind === "socle" ? 0 : 0.28);
+    m.color.copy(c);
+  }));
+  Object.values(pieces).forEach(p => { if (p.kind === "web") p.obj.children.forEach(ch => { if (ch.material && ch.material.polygonOffset) ch.material.emissive = new THREE.Color(p.cur ? 0x2a2a2a : 0x000000); }); });
+}
+function placeCam(c, instant) {
+  const tgt = new THREE.Vector3(c.tgt[0], c.tgt[2], -c.tgt[1]);
+  const f = Math.max(1, 1.22 / camera.aspect);                       // écran étroit : on recule pour tout voir
+  const pos = new THREE.Vector3(c.pos[0], c.pos[2], -c.pos[1]).sub(tgt).multiplyScalar(f).add(tgt);
+  const to = { pos, tgt };
+  if (instant) { camera.position.copy(to.pos); ctl.target.copy(to.tgt); camAnim = null; return; }
+  camAnim = { t0: performance.now(), dur: 1100, p0: camera.position.clone(), t0v: ctl.target.clone(), to };
+}
+function goto(n, opts) {
+  opts = opts || {};
+  const prev = step; step = Math.max(0, Math.min(STEPS.length - 1, n));
+  const st = STEPS[step], inst = !!opts.instant;
+  anim = [];
+  Object.entries(pieces).forEach(([id, p]) => {
+    const vis = step === 0 ? true : p.first <= step;
+    const nouveau = st.nouveaux.includes(id);
+    p.cur = step === 0 || (st.actifs || st.nouveaux).includes(id);
+    if (!vis) { p.obj.visible = false; return; }
+    const wasVis = p.obj.visible;
+    p.obj.visible = true;
+    if (p.kind === "web") updateWeb(p.web, 1 / A);
+    if (nouveau && !inst && (!wasVis || opts.replay) && step > 0) {
+      anim.push({ p, t0: performance.now() + 60 * anim.length, dur: p.kind === "web" ? 1900 : 900 });
+    }
+  });
+  currentWeb = st.nouveaux.find(id => id.startsWith("web")) ? pieces[st.nouveaux.find(id => id.startsWith("web"))] : null;
+  curvEl.classList.toggle("on", !!currentWeb && step >= 3 && step <= 6); curvIn.value = 100;
+  // voûte flottante pendant le montage des voûtains, puis posée sur les piliers à l'étape 7
+  lift.from = voute.position.y; lift.to = st.lift || 0; lift.t0 = performance.now(); lift.dur = inst ? 1 : 1700;
+  if (inst) voute.position.y = lift.to;
+  cotes3d.visible = !!st.cotes;
+  placeCam(st.camera, inst);
+  render_fiche(st); setColors();
+  document.querySelectorAll(".etapes button").forEach((b, i) => b.classList.toggle("on", i === step));
+  document.getElementById("prec").disabled = step === 0; document.getElementById("suiv").disabled = step === STEPS.length - 1;
+  labDiv.forEach(l => { l.show = (l.cls.includes("cote") ? !!st.cotes : l.cls === "num" ? (!!st.numeros && pieces[l.d.dataset.k].first <= step) : (st.labels || []).includes(l.d.dataset.k)); l.d.style.display = l.show ? "" : "none"; });
+  history.replaceState(null, "", "#etape" + step);
+}
+function render_fiche(st) {
+  let h = `<div class="surtitre">Étape ${st.n} sur ${STEPS.length - 1} · ${st.kicker}</div><h2>${st.titre}</h2><div class="texte">${st.texte.map(t => `<p>${t}</p>`).join("")}</div>`;
+  if (st.mesures && st.mesures.length) h += `<table><tr><th>Mesure</th><th>Valeur exacte</th></tr>${st.mesures.map(m => `<tr><td>${m[0]}</td><td class="v">${m[1]}</td></tr>`).join("")}</table>`;
+  if (st.patron) h += `<div>${SVG[st.patron]}<div class="legende">Patron à l'échelle 1 dans <b>patrons-A4.pdf</b> · noir : on coupe · bleu : pli vers soi · rouge : pli en s'éloignant · gris : languette</div></div>`;
+  document.getElementById("fiche").innerHTML = h;
+}
+document.getElementById("etapes").innerHTML = STEPS.map((s, i) => `<button data-i="${i}" title="${s.titre}">${i}</button>`).join("");
+document.getElementById("etapes").addEventListener("click", e => { const b = e.target.closest("button"); if (b) goto(+b.dataset.i); });
+document.getElementById("prec").onclick = () => goto(step - 1);
+document.getElementById("suiv").onclick = () => goto(step + 1);
+document.getElementById("rejouer").onclick = () => goto(step, { replay: true });
+document.getElementById("coul").onclick = () => { couleurs = !couleurs; setColors(); };
+window.addEventListener("keydown", e => { if (e.key === "ArrowRight") goto(step + 1); if (e.key === "ArrowLeft") goto(step - 1); });
+curvIn.addEventListener("input", () => {
+  if (!currentWeb) return; anim = anim.filter(a => a.p !== currentWeb);
+  const t = curvIn.value / 100; updateWeb(currentWeb.web, Math.max(0.02, t) / A); currentWeb.obj.position.y = 0;
+});
+
+// ---------- boucle ----------
+function resize() {
+  const w = box.clientWidth, h = box.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", resize);
+function frame(now) {
+  // entrées des pièces
+  anim.forEach(a => {
+    const t = ease((now - a.t0) / a.dur), p = a.p;
+    if (now < a.t0) { p.obj.visible = false; return; } p.obj.visible = true;
+    if (p.kind === "web") { const kap = (0.02 + (1 / A - 0.02) * ease((now - a.t0) / (a.dur * 0.85))); updateWeb(p.web, kap); p.obj.position.y = (1 - t) * 4; }
+    else p.obj.position.y = (1 - t) * 5;
+    if (t >= 1) { p.obj.position.y = 0; if (p.kind === "web") updateWeb(p.web, 1 / A); }
+  });
+  anim = anim.filter(a => (now - a.t0) / a.dur < 1);
+  const lt = ease((now - lift.t0) / lift.dur); voute.position.y = lift.from + (lift.to - lift.from) * lt;
+  if (camAnim) {
+    const t = ease((now - camAnim.t0) / camAnim.dur);
+    camera.position.lerpVectors(camAnim.p0, camAnim.to.pos, t); ctl.target.lerpVectors(camAnim.t0v, camAnim.to.tgt, t);
+    if (t >= 1) camAnim = null;
+  }
+  ctl.update(); renderer.render(scene, camera);
+  const w = box.clientWidth, h = box.clientHeight;
+  labDiv.forEach(l => {
+    if (!l.show) return;
+    const v = l.fn().project(camera); l.d.style.left = ((v.x * 0.5 + 0.5) * w) + "px"; l.d.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  });
+  requestAnimationFrame(frame);
+}
+window.__aller = (n, instant) => { goto(n, { instant: !!instant }); };
+window.__pret = true;
+resize();
+const dep = parseInt((location.hash.match(/etape(\d+)/) || [])[1] || "0", 10);
+goto(dep, { instant: true });
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
