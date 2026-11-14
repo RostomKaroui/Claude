@@ -41,7 +41,9 @@ const maison = (s, x, y, w, h, murs, toit, nom) => {
 const soleil = (s, cx, cy, r, couleur, nom) => {
   for (let i = 0; i < 12; i++) {
     const a = (i / 12) * Math.PI * 2;
-    s.addShape(pres.shapes.LINE, { x: cx + Math.cos(a) * r * 1.35, y: cy + Math.sin(a) * r * 1.35, w: Math.cos(a) * r * 0.55, h: Math.sin(a) * r * 0.55, line: { color: couleur, width: 2 }, objectName: nom + " rayon " + (i + 1) });
+    const x1 = cx + Math.cos(a) * r * 1.35, y1 = cy + Math.sin(a) * r * 1.35, x2 = cx + Math.cos(a) * r * 1.9, y2 = cy + Math.sin(a) * r * 1.9;
+    const w = Math.max(Math.abs(x2 - x1), 0.001), h = Math.max(Math.abs(y2 - y1), 0.001);
+    s.addShape(pres.shapes.LINE, { x: Math.min(x1, x2), y: Math.min(y1, y2), w, h, flipV: (x2 - x1) * (y2 - y1) < 0, line: { color: couleur, width: 2 }, objectName: nom + " rayon " + (i + 1) });
   }
   ovale(s, cx - r, cy - r, 2 * r, 2 * r, couleur, nom);
 };
