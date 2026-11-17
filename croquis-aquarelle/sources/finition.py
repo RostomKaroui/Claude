@@ -17,3 +17,4 @@ lines *= 1 - a2[..., None] * (1 - np.array([0.30, 0.31, 0.36], np.float32))
 pg = np.ones((PH, PW, 3), np.uint8) * 253
 pg[oy:oy + H, ox:ox + W] = (np.clip(lines, 0, 1) * 255).astype(np.uint8)
 cv2.imwrite(os.path.join(HERE, "..", "Avenue_HB_traits_a_peindre.png"), pg[..., ::-1])
+exec(open(os.path.join(HERE, "signature.py")).read())
