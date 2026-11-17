@@ -168,42 +168,35 @@ def jet(X, Yb, Z, Hj):
         stroke([tuple(b0 + [-w * 0.6, 0]), tuple(t0 + [-w * 0.4, 0])], p=0.32, w=1.1, wob=0.3, over=0)
         stroke([tuple(b0 + [0.36 * k_ * np.cos(a), 0.08 * k_ * np.sin(a)]) for a in np.linspace(0.15, np.pi - 0.15, 12)], p=0.32, w=1.1, wob=0.3, over=0)
 
-def fontaine_far():
-    cx_, cz_, R, r, h = FF['cx'], FF['cz'], FF['R'], FF['r'], FF['h']
-    ob, ot, it_, wt = circ_pts(cx_, cz_, R, 0), circ_pts(cx_, cz_, R, h), circ_pts(cx_, cz_, r, h), circ_pts(cx_, cz_, r, h - 0.08)
-    k_ = px_m(cz_); ccx = S(cx_, 0, cz_)[0]
-    ombre_lilas(ellipse_r(np.array(S(cx_ - 1.0, 0, cz_)), (R + 0.6) * k_, (R + 0.6) * k_ * 0.18), 0.45)
-    wash(FONT_FAR, (0.82, 0.82, 0.93), k=0.75, edge=0.5, var=0.3, rough=1.5)
-    wash(FONT_FAR * (xx < ccx), (0.66, 0.64, 0.84), k=0.45, edge=0.0, var=0.2, rough=1.5)
-    wash(polyR(ot) * (1 - polyR(it_)), (0.96, 0.95, 0.93), k=0.45, edge=0.3, var=0.2, rough=1)
-    wm = polyR(wt); wash(wm, (0.42, 0.80, 0.84), k=0.85, edge=0.5, var=0.35, rough=1.5, brush=0, dry=0.2)
-    yc = S(cx_, h, cz_)[1]; wash(wm * (yy < yc), (0.30, 0.62, 0.74), k=0.40, edge=0.0, var=0.3, rough=1.5)
-    wash(band_mask(ob[: len(ob) // 2 + 1], max(2, 0.08 * k_)), (0.99, 0.86, 0.45), k=0.8, edge=0.0, var=0.1, rough=0.5, soft=1)
-    poly_stroke(ot, p=0.85, w=1.8, wob=0.4); poly_stroke(it_, p=0.7, w=1.5, wob=0.4); stroke(ob[: len(ob) // 2 + 1], p=0.8, w=1.7, wob=0.4)
-    i0 = int(np.argmin([q[0] for q in ot])); i1 = int(np.argmax([q[0] for q in ot]))
-    for i_ in (i0, i1): stroke([ot[i_], ob[i_]], p=0.8, w=1.6, wob=0.2, over=0)
-    jets = [(cx_ + 1.6 * np.cos(a), cz_ + 1.6 * np.sin(a), 1.1) for a in np.linspace(0, 2 * np.pi, 8, endpoint=False)] + [(cx_, cz_, 2.4)]
-    for X, Z, Hj in sorted(jets, key=lambda t: -t[1]): jet(X, h - 0.08, Z, Hj)
-
-def fontaine_near():
-    X0, X1, Z0, Z1, h, c = FN['X0'], FN['X1'], FN['Z0'], FN['Z1'], FN['h'], FN['c']
-    k_ = px_m((Z0 + Z1) / 2)
+def fontaine_carree(F, FM, n=3, h_jet=(1.0, 1.9)):
+    """Bassin carre moderne : margelle en pierre claire (assise), eau turquoise, grille de jets, bandeau lumineux."""
+    cx_, cz_, a_, c, h = F['cx'], F['cz'], F['a'], F['c'], F['h']
+    X0, X1, Z0, Z1 = cx_ - a_, cx_ + a_, cz_ - a_, cz_ + a_
+    k_ = px_m(cz_)
     ombre_lilas(polyR(SL([(X0 - 0.7, 0, Z0 + .1), (X0, 0, Z0 + .1), (X0, 0, Z1 + .2), (X0 - 0.7, 0, Z1 + .2)])), 0.5)
     front = SL([(X0, 0, Z0), (X1, 0, Z0), (X1, h, Z0), (X0, h, Z0)])
+    side = SL([(X0, 0, Z0), (X0, 0, Z1), (X0, h, Z1), (X0, h, Z0)]) if S(X0, 0, Z0)[0] > S(cx_, 0, cz_)[0] - 1e9 and X0 > 0 else SL([(X1, 0, Z0), (X1, 0, Z1), (X1, h, Z1), (X1, h, Z0)])
     otop = SL([(X0, h, Z0), (X1, h, Z0), (X1, h, Z1), (X0, h, Z1)]); itop = SL([(X0 + c, h, Z0 + c), (X1 - c, h, Z0 + c), (X1 - c, h, Z1 - c), (X0 + c, h, Z1 - c)])
     wat = SL([(X0 + c, h - .08, Z0 + c), (X1 - c, h - .08, Z0 + c), (X1 - c, h - .08, Z1 - c), (X0 + c, h - .08, Z1 - c)])
-    wash(polyR(front), (0.78, 0.78, 0.91), k=0.80, edge=0.5, var=0.3, rough=1.2, brush=0, dry=0.2)
+    # face laterale visible (celle tournee vers l'axe de la vue)
+    sm = polyR(side) * (1 - polyR(front))
+    wash(sm, (0.68, 0.66, 0.86), k=0.75, edge=0.5, var=0.3, rough=1.2)
+    wash(polyR(front), (0.80, 0.80, 0.92), k=0.80, edge=0.5, var=0.3, rough=1.2, brush=0, dry=0.15)
     wash(polyR(otop) * (1 - polyR(itop)), (0.96, 0.95, 0.93), k=0.50, edge=0.4, var=0.3, rough=1.2)
-    wm = polyR(wat); wash(wm, (0.42, 0.80, 0.84), k=0.88, edge=0.5, var=0.35, rough=1.5, brush=0, bstr=0.3, dry=0.2)
+    wm = polyR(wat); wash(wm, (0.42, 0.80, 0.84), k=0.88, edge=0.5, var=0.35, rough=1.5, brush=0, bstr=0.3, dry=0.15)
     yb, yt = max(q[1] for q in wat), min(q[1] for q in wat)
     wash(wm * np.clip((yb - yy) / (yb - yt + 1), 0, 1) ** 1.3, (0.28, 0.58, 0.72), k=0.55, edge=0.0, var=0.3, rough=1.5)
-    lift(wm * (STK[0] > 1.7) * (lo2 > -0.2), 0.7, soft=1.0)                         # reflets horizontaux
-    led = SL([(X0 + .05, h - .07, Z0 - .002), (X1 - .05, h - .07, Z0 - .002)])
-    wash(band_mask(led, max(3, 0.05 * k_)), (0.99, 0.86, 0.45), k=0.9, edge=0.0, var=0.1, rough=0.5, soft=1.2)
-    poly_stroke(front, p=0.9, w=2.2, wob=0.5); poly_stroke(otop, p=0.85, w=2.0, wob=0.5); poly_stroke(itop, p=0.75, w=1.8, wob=0.5)
-    stroke(wat[2:] + wat[:1], p=0.4, w=1.3, wob=0.4, over=0)
-    grille = [(X, Z, hj) for Z in (Z0 + 1.3, Z1 - 1.3) for X, hj in zip(np.linspace(X0 + 0.75, X1 - 0.75, 4), (1.0, 1.35, 1.35, 1.0))]
-    for X, Z, hj in sorted(grille, key=lambda t: -t[1]): jet(X, h - .08, Z, hj)
+    lift(wm * (STK[0] > 1.7) * (lo2 > -0.2), 0.7, soft=1.0)
+    led = SL([(X0 + .05, h * 0.55, Z0 - .002), (X1 - .05, h * 0.55, Z0 - .002)])
+    wash(band_mask(led, max(2, 0.05 * k_)), (0.99, 0.86, 0.45), k=0.9, edge=0.0, var=0.1, rough=0.5, soft=1.2)
+    poly_stroke(front, p=0.9, w=2.1, wob=0.5); poly_stroke(otop, p=0.85, w=2.0, wob=0.5); poly_stroke(itop, p=0.75, w=1.7, wob=0.5)
+    stroke(side[:2], p=0.8, w=1.8, wob=0.3, over=0); stroke(side[1:3], p=0.8, w=1.8, wob=0.3, over=0)
+    if k_ > 25:   # joints de la margelle
+        for t in np.linspace(0, 1, 6)[1:-1]:
+            xs_ = X0 + (X1 - X0) * t; stroke(SL([(xs_, h, Z0), (xs_, h, Z0 + c)]), p=0.35, w=1.2, wob=0.2, over=0)
+    xs = np.linspace(X0 + c + 0.45, X1 - c - 0.45, n); zs = np.linspace(Z0 + c + 0.45, Z1 - c - 0.45, n)
+    jets = [(X, Z, h_jet[1] if (i == n // 2 and j == n // 2) else h_jet[0]) for i, X in enumerate(xs) for j, Z in enumerate(zs)]
+    for X, Z, Hj in sorted(jets, key=lambda t: -t[1]): jet(X, h - 0.08, Z, Hj)
 
 # ================================================================== VEGETATION : massifs fleuris en bordure + buissons sous les arbres
 VEG_OCC = np.zeros((H, W), np.float32)
@@ -267,7 +260,7 @@ while Z < 115:
     Z += st
 
 # --- on peint : fontaine du fond, vegetation, puis le mobilier par-dessus
-fontaine_far()
+fontaine_carree(FF, FONT_FAR, n=3, h_jet=(1.1, 2.3))
 massif(sousG + sousD, base_col=(0.56, 0.78, 0.46), dark_col=(0.20, 0.50, 0.44), fleur_p=0.8)
 massif(bord, fleur_p=0.85)
 
@@ -285,7 +278,7 @@ for (X, Z, ch, pa, sx_, t_) in ((-2.9, 58, (0.85, 0.50, 0.40), (0.35, 0.40, 0.60
                                 (2.91, 23.6, (0.46, 0.66, 0.56), (0.30, 0.36, 0.55), "h", 1.0), (3.6, 23.4, (0.96, 0.76, 0.32), (0.36, 0.44, 0.66), "h", 0.62)):
     personne3d(X, 0, Z, ch, pa, pose="debout", bras="marche", sexe=sx_, taille=t_)
 
-fontaine_near()
+fontaine_carree(FN, FONT_NEAR, n=3, h_jet=(1.0, 1.9))
 
 # ================================================================== SKATEPARK (inspire de l'image 2), au premier plan a droite
 cx, cz = SK_C; th = TH_SK; r_in, r_out, hl, dk = SK_RIN, SK_ROUT, SK_H, SK_DECK

@@ -164,11 +164,14 @@ for t_end in (TH_SK[0], TH_SK[-1]):
 SK_OCC = np.clip(ramp_m + deck_m + sum(polyR(w_) for w_ in SK_WALLS), 0, 1)     # ce qui cache ce qu'il y a derriere
 SK_SCREEN = np.clip(slab_m + SK_OCC, 0, 1)
 # ---------- fontaines modernes : emprises (pour reserver le sol) ----------
-FN = dict(X0=-2.8, X1=0.8, Z0=11.0, Z1=15.0, h=0.45, c=0.35)          # bassin miroir rectangulaire (premier plan)
-FF = dict(cx=0.3, cz=39.0, R=3.1, r=2.75, h=0.45)                       # bassin rond bas (fond)
-FONT_NEAR = polyR(SL([(FN['X0'], 0, FN['Z0']), (FN['X1'], 0, FN['Z0']), (FN['X1'], FN['h'], FN['Z0']), (FN['X1'], FN['h'], FN['Z1']), (FN['X0'], FN['h'], FN['Z1']), (FN['X0'], FN['h'], FN['Z0'])]))
-_ff = circ_pts(FF['cx'], FF['cz'], FF['R'], 0) + circ_pts(FF['cx'], FF['cz'], FF['R'], FF['h'])
-_m = np.zeros((H, W), np.uint8); cv2.fillConvexPoly(_m, cv2.convexHull(np.round(np.array(_ff)).astype(np.int32)), 255); FONT_FAR = _m.astype(np.float32) / 255
+FN = dict(cx=-1.6, cz=13.2, a=1.75, c=0.32, h=0.45)                       # bassin carre (premier plan)
+FF = dict(cx=0.3, cz=39.0, a=2.9, c=0.30, h=0.45)                         # bassin carre (fond)
+def _fp(F):
+    x0, x1, z0, z1, h = F['cx'] - F['a'], F['cx'] + F['a'], F['cz'] - F['a'], F['cz'] + F['a'], F['h']
+    pts_ = SL([(x0, 0, z0), (x1, 0, z0), (x1, 0, z1), (x0, 0, z1), (x0, h, z0), (x1, h, z0), (x1, h, z1), (x0, h, z1)])
+    m_ = np.zeros((H, W), np.uint8); cv2.fillConvexPoly(m_, cv2.convexHull(np.round(np.array(pts_)).astype(np.int32)), 255); return m_.astype(np.float32) / 255
+FONT_NEAR = _fp(FN)
+FONT_FAR = _fp(FF)
 dark *= 1 - cv2.dilate(SK_OCC, np.ones((5, 5), np.uint8))                          # traits caches par la rampe (tronc, etc.)
 
 # ---------- coordonnees du sol (inverse de la perspective) : pour les dalles et les ombres tachetees ----------
