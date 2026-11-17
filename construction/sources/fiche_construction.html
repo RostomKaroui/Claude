@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Construction générale · fiche de révision</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("../../sociologie-goffman/sources/fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("../../sociologie-goffman/sources/fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("../../sociologie-goffman/sources/fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("../../sociologie-goffman/sources/fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8;
+    --fo: #7C5A3A; --sv: #1F5F8B; --to: #B3261E; --sh: #2E7D4F; --ou: #B7791F; --c: #374151;
+  }
+  @page { size: A4; margin: 12mm 14mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 9.6pt; line-height: 1.4; color: var(--encre); }
+  b { font-weight: 800; }
+
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 7px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.6pt; letter-spacing: .2em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 25pt; line-height: 1.05; margin-top: 3px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 11pt; color: var(--gris); text-align: right; max-width: 70mm; line-height: 1.3; }
+
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 15pt; color: var(--c); margin: 2px 0 7px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 10pt; color: #fff; background: var(--c); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+
+  .familles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 10px; }
+  .familles div { border-radius: 6px; color: #fff; padding: 6px 8px; font-size: 8.4pt; line-height: 1.3; }
+  .familles b { display: block; font-size: 9.4pt; }
+  .familles .n { font-size: 15pt; font-weight: 800; float: right; line-height: 1; opacity: .9; }
+
+  .fam { border: 1px solid var(--filet); border-radius: 7px; overflow: hidden; break-inside: avoid; margin-bottom: 8px; }
+  .fam .t { color: #fff; font-weight: 800; font-size: 9.6pt; padding: 4px 9px; letter-spacing: .03em; }
+  .fam table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .fam td { padding: 3px 8px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  .fam tr:last-child td { border-bottom: none; }
+  .fam td.no { width: 26px; text-align: center; }
+  .fam td.no span { display: inline-block; width: 19px; height: 19px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 8pt; line-height: 19px; }
+  .fam td.nom { font-weight: 800; white-space: nowrap; width: 34%; }
+  .fo .t, .fo .no span { background: var(--fo); } .fo .nom { color: var(--fo); }
+  .sv .t, .sv .no span { background: var(--sv); } .sv .nom { color: var(--sv); }
+  .to .t, .to .no span { background: var(--to); } .to .nom { color: var(--to); }
+  .sh .t, .sh .no span { background: var(--sh); } .sh .nom { color: var(--sh); }
+  .ou .t, .ou .no span { background: var(--ou); } .ou .nom { color: var(--ou); }
+
+  .cote { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .figure { border: 1px solid var(--filet); border-radius: 7px; padding: 6px; background: #fafbfc; break-inside: avoid; margin-bottom: 8px; }
+  .figure svg { display: block; margin: 0 auto; }
+  .figure p { font-size: 8.4pt; color: var(--gris); text-align: center; margin-top: 2px; }
+
+  .principe { background: #f1f3f5; border-left: 4px solid var(--c); padding: 7px 11px; font-size: 10.4pt; margin-bottom: 8px; }
+  .charges { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .charges div { border: 1px solid var(--filet); border-top: 4px solid var(--c); border-radius: 6px; padding: 6px 9px; font-size: 9pt; break-inside: avoid; }
+  .charges b.tt { display: block; font-size: 10pt; margin-bottom: 1px; }
+  .charges .ex { color: #4b5560; }
+  .essentiel { border: 2px solid var(--encre); border-radius: 8px; padding: 7px 12px 5px; background: #f7f8f9; break-inside: avoid; margin-top: 9px; }
+  .essentiel h4 { font-size: 8.4pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 5px; }
+  .essentiel li { margin: 0 0 3px 14px; }
+  .saut { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <div>
+    <div class="kicker" style="letter-spacing:.14em">CONSTRUCTION GÉNÉRALE · 1RE ANNÉE ARCHI · ESAD TUNIS</div>
+    <h1>Fiche de révision</h1>
+  </div>
+  <div class="sous" style="max-width:58mm">Les éléments du bâtiment et le cheminement des charges</div>
+</div>
+
+<h2><span class="num">1</span>Les éléments du bâtiment : 28 éléments, 5 familles</h2>
+<div class="familles">
+  <div style="background:var(--fo)"><span class="n">7</span><b>Fondations &amp; infrastructure</b>sous le sol</div>
+  <div style="background:var(--sv)"><span class="n">4</span><b>Structure verticale</b>murs et poteaux</div>
+  <div style="background:var(--sh)"><span class="n">5</span><b>Structure horizontale</b>dalles et poutres</div>
+  <div style="background:var(--to)"><span class="n">4</span><b>Toiture &amp; couronnement</b>le haut du bâtiment</div>
+  <div style="background:var(--ou)"><span class="n">8</span><b>Ouvertures (baies)</b>portes et fenêtres</div>
+</div>
+
+<div class="cote">
+  <div>
+    <div class="fam fo"><div class="t">FONDATIONS &amp; INFRASTRUCTURE</div><table>
+      <tr><td class="no"><span>12</span></td><td class="nom">Semelle filante</td><td>fondation <b>continue</b> sous un mur</td></tr>
+      <tr><td class="no"><span>17</span></td><td class="nom">Semelle isolée</td><td>fondation <b>ponctuelle</b> sous un poteau</td></tr>
+      <tr><td class="no"><span>25</span></td><td class="nom">Dallage</td><td>dalle posée directement sur le sol</td></tr>
+      <tr><td class="no"><span>26</span></td><td class="nom">Forme ou hérisson</td><td>couche de pierres sous le dallage (contre l'humidité)</td></tr>
+      <tr><td class="no"><span>27</span></td><td class="nom">Mur de soubassement</td><td>partie basse du mur, entre fondation et rez-de-chaussée</td></tr>
+      <tr><td class="no"><span>28</span></td><td class="nom">Drainage</td><td>drain qui évacue l'eau autour des fondations</td></tr>
+      <tr><td class="no"><span>20</span></td><td class="nom">Mur de soutènement</td><td>mur qui <b>retient la terre</b></td></tr>
+    </table></div>
+    <div class="fam sv"><div class="t">STRUCTURE VERTICALE</div><table>
+      <tr><td class="no"><span>4</span></td><td class="nom">Plein mur</td><td>partie de mur sans ouverture</td></tr>
+      <tr><td class="no"><span>18</span></td><td class="nom">Poteau en BA</td><td>élément vertical porteur en béton armé</td></tr>
+      <tr><td class="no"><span>13</span></td><td class="nom">Chaînage vertical</td><td>raidisseur en BA dans la maçonnerie</td></tr>
+      <tr><td class="no"><span>24</span></td><td class="nom">Chaîne d'angle</td><td>renfort à l'angle de deux murs</td></tr>
+    </table></div>
+  </div>
+  <div>
+    <div class="figure"><svg id="fig-fond" width="330" height="205" viewBox="0 0 330 205"></svg><p>Coupe sur une fondation (semelle filante).</p></div>
+    <div class="fam sh"><div class="t">STRUCTURE HORIZONTALE</div><table>
+      <tr><td class="no"><span>5</span></td><td class="nom">Dalle</td><td>plancher en béton armé</td></tr>
+      <tr><td class="no"><span>19</span></td><td class="nom">Poutre en BA</td><td>porte la dalle, transmet aux poteaux</td></tr>
+      <tr><td class="no"><span>22</span></td><td class="nom">Chaînage horizontal</td><td>ceinture en BA qui relie les murs</td></tr>
+      <tr><td class="no"><span>3</span></td><td class="nom">Balcon</td><td>dalle en saillie (porte-à-faux)</td></tr>
+      <tr><td class="no"><span>14</span></td><td class="nom">Trémie</td><td>trou dans une dalle (escalier, gaine)</td></tr>
+    </table></div>
+    <div class="fam to"><div class="t">TOITURE &amp; COURONNEMENT</div><table>
+      <tr><td class="no"><span>1</span></td><td class="nom">Pignon</td><td>haut de mur triangulaire qui suit la pente du toit</td></tr>
+      <tr><td class="no"><span>2</span></td><td class="nom">Corniche</td><td>saillie en haut de façade, éloigne l'eau de pluie</td></tr>
+      <tr><td class="no"><span>23</span></td><td class="nom">Chaînage rampant</td><td>chaînage incliné qui suit le pignon</td></tr>
+      <tr><td class="no"><span>21</span></td><td class="nom">Tablette couvertine</td><td>protection posée sur le dessus d'un mur</td></tr>
+    </table></div>
+  </div>
+</div>
+
+<div class="cote saut" style="align-items:center">
+  <div>
+    <div class="fam ou"><div class="t">OUVERTURES (BAIES)</div><table>
+      <tr><td class="no"><span>16</span></td><td class="nom">Linteau en BA</td><td>poutre au-dessus de la baie</td></tr>
+      <tr><td class="no"><span>6</span></td><td class="nom">Jambage</td><td>montant de mur de chaque côté de la baie</td></tr>
+      <tr><td class="no"><span>11</span></td><td class="nom">Tableau</td><td>face latérale de la baie (l'épaisseur du jambage)</td></tr>
+      <tr><td class="no"><span>9</span></td><td class="nom">Appui</td><td>rebord bas de la fenêtre, évacue l'eau</td></tr>
+      <tr><td class="no"><span>10</span></td><td class="nom">Allège</td><td>partie de mur sous la fenêtre</td></tr>
+      <tr><td class="no"><span>8</span></td><td class="nom">Trumeau</td><td>partie de mur entre deux baies</td></tr>
+      <tr><td class="no"><span>7</span></td><td class="nom">Meneau</td><td>montant vertical qui divise une baie</td></tr>
+      <tr><td class="no"><span>15</span></td><td class="nom">Seuil</td><td>partie basse d'une porte, au sol</td></tr>
+    </table></div>
+  </div>
+  <div>
+    <div class="figure"><svg id="fig-baies" width="330" height="300" viewBox="0 0 330 300"></svg><p>Façade : le vocabulaire des ouvertures.</p></div>
+  </div>
+</div>
+
+<h2 style="margin-top:6px"><span class="num">2</span>Le cheminement des charges : du toit jusqu'au sol</h2>
+<p class="principe"><b>Principe :</b> chaque élément <b>porte ce qui est au-dessus de lui</b> et le <b>transmet à ce qui est en dessous</b>.</p>
+<div class="cote" style="grid-template-columns: 1.1fr 1fr; align-items: center;">
+  <div class="figure" style="margin:0"><svg id="fig-charges" width="350" height="250" viewBox="0 0 350 250"></svg></div>
+  <div>
+    <p style="font-weight:800;margin-bottom:5px">Quelles charges un bâtiment doit-il porter ?</p>
+    <div class="charges" style="grid-template-columns: 1fr;">
+      <div><b class="tt">Charges permanentes</b><span class="ex">le poids propre, toujours présent : murs, dalles, poutres, revêtements, cloisons.</span></div>
+      <div><b class="tt">Charges d'exploitation</b><span class="ex">liées à l'usage : personnes, meubles, équipements.</span></div>
+      <div><b class="tt">Charges climatiques</b><span class="ex">la neige, le vent.</span></div>
+      <div><b class="tt">Actions accidentelles</b><span class="ex">séisme, choc de véhicule, explosion, incendie.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="essentiel">
+  <h4>L'essentiel à savoir par cœur</h4>
+  <ul>
+    <li>28 éléments en <b>5 familles</b> : fondations, structure verticale, structure horizontale, toiture, ouvertures.</li>
+    <li>Semelle <b>filante</b> = sous un <b>mur</b> ; semelle <b>isolée</b> = sous un <b>poteau</b>.</li>
+    <li>Une baie : <b>linteau</b> en haut, <b>jambages</b> sur les côtés, <b>appui</b> (fenêtre) ou <b>seuil</b> (porte) en bas ; <b>allège</b> sous la fenêtre, <b>trumeau</b> entre deux baies.</li>
+    <li>Cheminement : <b>toiture → dalle → poutre → poteau / mur → fondation → sol</b>.</li>
+    <li>4 types de charges : <b>permanentes</b>, <b>d'exploitation</b>, <b>climatiques</b>, <b>accidentelles</b>.</li>
+  </ul>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const ENCRE = "#1f2328", FO = "#7C5A3A", SV = "#1F5F8B", TO = "#B3261E", SH = "#2E7D4F", OU = "#B7791F";
+function el(p, n, a = {}, t) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t !== undefined) e.textContent = t; p.appendChild(e); return e; }
+const txt = (g, x, y, t, a = {}) => el(g, "text", { x, y, "font-family": "Inter", "font-size": 9.5, fill: ENCRE, ...a }, t);
+function num(g, x, y, n, c) { el(g, "circle", { cx: x, cy: y, r: 9, fill: c, stroke: "#fff", "stroke-width": 1.5 }); txt(g, x, y + 3.3, n, { "text-anchor": "middle", "font-size": 8, "font-weight": 800, fill: "#fff" }); }
+function lien(g, a, b) { el(g, "line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: "#8a929b", "stroke-width": 0.9 }); }
+function hachures(g, id, c) {
+  const d = el(g, "defs");
+  const p = el(d, "pattern", { id, width: 7, height: 7, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
+  el(p, "rect", { width: 7, height: 7, fill: "#fff" }); el(p, "line", { x1: 0, y1: 0, x2: 0, y2: 7, stroke: c, "stroke-width": 1.4 });
+}
+
+/* coupe sur fondation */
+(() => {
+  const g = document.getElementById("fig-fond");
+  hachures(g, "beton", "#9aa1a9");
+  const sol = 95;
+  el(g, "rect", { x: 0, y: sol, width: 330, height: 110, fill: "#e9dcc9" });       // terre
+  el(g, "line", { x1: 0, y1: sol, x2: 330, y2: sol, stroke: FO, "stroke-width": 2 });
+  // hérisson + dallage (intérieur, à droite)
+  el(g, "rect", { x: 150, y: sol - 6, width: 180, height: 22, fill: "#cfc6b8" });
+  for (let x = 156; x < 330; x += 11) el(g, "circle", { cx: x, cy: sol + 5, r: 4, fill: "#9c8f7c" });
+  el(g, "rect", { x: 150, y: sol - 18, width: 180, height: 12, fill: "url(#beton)", stroke: ENCRE, "stroke-width": 1 });
+  // mur + soubassement
+  el(g, "rect", { x: 110, y: 6, width: 40, height: sol - 24, fill: "#f3f0ea", stroke: ENCRE, "stroke-width": 1.2 });
+  el(g, "rect", { x: 110, y: sol - 18, width: 40, height: 80, fill: "url(#beton)", stroke: ENCRE, "stroke-width": 1.2 });
+  // semelle filante
+  el(g, "rect", { x: 82, y: sol + 62, width: 96, height: 28, fill: "url(#beton)", stroke: ENCRE, "stroke-width": 1.4 });
+  // drainage
+  el(g, "rect", { x: 40, y: sol + 40, width: 40, height: 50, fill: "#d8d2c6" });
+  el(g, "circle", { cx: 60, cy: sol + 72, r: 8, fill: "#fff", stroke: SV, "stroke-width": 2 });
+  // repères
+  num(g, 226, 172, "12", FO); lien(g, [217, 172], [178, 170]);
+  num(g, 36, 50, "27", FO); lien(g, [45, 55], [110, 100]);
+  num(g, 300, 66, "25", FO); lien(g, [292, 70], [270, sol - 12]);
+  num(g, 300, 128, "26", FO); lien(g, [292, 124], [270, sol + 5]);
+  num(g, 22, 160, "28", FO); lien(g, [30, 156], [52, 166]);
+  txt(g, 172, 30, "mur", { "font-size": 9, fill: "#6b737c" });
+  txt(g, 214, sol - 24, "intérieur", { "font-size": 9, fill: "#6b737c" });
+  txt(g, 4, sol - 6, "terrain naturel", { "font-size": 9, fill: "#6b737c" });
+})();
+
+/* façade : vocabulaire des baies */
+(() => {
+  const g = document.getElementById("fig-baies");
+  hachures(g, "beton2", "#9aa1a9");
+  el(g, "rect", { x: 10, y: 10, width: 310, height: 262, fill: "#f3f0ea", stroke: ENCRE, "stroke-width": 1.4 });
+  el(g, "rect", { x: 0, y: 272, width: 330, height: 24, fill: "#e9dcc9" });
+  // fenêtre 1 (avec meneau)
+  const fen = (x, meneau) => {
+    el(g, "rect", { x: x - 8, y: 58, width: 96, height: 14, fill: "url(#beton2)", stroke: ENCRE, "stroke-width": 1 }); // linteau
+    el(g, "rect", { x, y: 72, width: 80, height: 86, fill: "#cfe3ef", stroke: ENCRE, "stroke-width": 1.2 });
+    el(g, "rect", { x, y: 72, width: 6, height: 86, fill: "#b9b2a6" }); // tableau (épaisseur)
+    if (meneau) el(g, "rect", { x: x + 38, y: 72, width: 5, height: 86, fill: "#6b5a46" });
+    el(g, "rect", { x: x - 6, y: 158, width: 92, height: 7, fill: "#8d8578", stroke: ENCRE, "stroke-width": 0.8 }); // appui
+  };
+  fen(36, true); fen(196, false);
+  // porte (au centre-bas) : seuil
+  el(g, "rect", { x: 132, y: 186, width: 66, height: 12, fill: "url(#beton2)", stroke: ENCRE, "stroke-width": 1 });
+  el(g, "rect", { x: 140, y: 198, width: 50, height: 74, fill: "#8a6a49", stroke: ENCRE, "stroke-width": 1.2 });
+  el(g, "rect", { x: 136, y: 268, width: 58, height: 5, fill: "#5f574b" });
+  // repères
+  num(g, 300, 40, "16", OU); lien(g, [292, 44], [270, 62]);
+  num(g, 24, 214, "6", OU); lien(g, [24, 205], [32, 140]);
+  num(g, 70, 40, "11", OU); lien(g, [64, 47], [40, 90]);
+  num(g, 300, 186, "9", OU); lien(g, [291, 182], [270, 162]);
+  num(g, 236, 214, "10", OU); lien(g, [236, 205], [236, 186]);
+  num(g, 160, 120, "8", OU); lien(g, [160, 129], [160, 150]);
+  num(g, 98, 40, "7", OU); lien(g, [98, 49], [77, 100]);
+  num(g, 215, 286, "15", OU); lien(g, [206, 284], [194, 271]);
+  txt(g, 160, 168, "trumeau", { "text-anchor": "middle", "font-size": 8.5, fill: "#6b737c" });
+  txt(g, 236, 230, "allège", { "text-anchor": "middle", "font-size": 8.5, fill: "#6b737c" });
+})();
+
+/* cheminement des charges : portique */
+(() => {
+  const g = document.getElementById("fig-charges");
+  hachures(g, "beton3", "#9aa1a9");
+  const fl = (x, y1, y2, c, w = 2) => { el(g, "line", { x1: x, y1, x2: x, y2: y2 - 6, stroke: c, "stroke-width": w }); el(g, "polygon", { points: `${x},${y2} ${x - 4.5},${y2 - 8} ${x + 4.5},${y2 - 8}`, fill: c }); };
+  // sol
+  el(g, "rect", { x: 0, y: 190, width: 350, height: 60, fill: "#e9dcc9" });
+  // charges sur la dalle
+  for (let x = 70; x <= 280; x += 30) fl(x, 14, 44, TO, 2);
+  txt(g, 175, 10, "charges (G, Q, neige, vent…)", { "text-anchor": "middle", "font-size": 8.5, "font-weight": 800, fill: TO });
+  // dalle + poutre
+  el(g, "rect", { x: 50, y: 46, width: 250, height: 12, fill: "url(#beton3)", stroke: SH, "stroke-width": 1.5 });
+  el(g, "rect", { x: 66, y: 58, width: 218, height: 18, fill: "#dcebdf", stroke: SH, "stroke-width": 1.5 });
+  // poteaux
+  el(g, "rect", { x: 66, y: 76, width: 22, height: 128, fill: "#dbe7f0", stroke: SV, "stroke-width": 1.5 });
+  el(g, "rect", { x: 262, y: 76, width: 22, height: 128, fill: "#dbe7f0", stroke: SV, "stroke-width": 1.5 });
+  // semelles
+  el(g, "rect", { x: 44, y: 204, width: 66, height: 20, fill: "url(#beton3)", stroke: FO, "stroke-width": 1.5 });
+  el(g, "rect", { x: 240, y: 204, width: 66, height: 20, fill: "url(#beton3)", stroke: FO, "stroke-width": 1.5 });
+  // flux
+  el(g, "line", { x1: 170, y1: 67, x2: 98, y2: 67, stroke: SH, "stroke-width": 2 }); el(g, "polygon", { points: "92,67 100,63 100,71", fill: SH });
+  el(g, "line", { x1: 180, y1: 67, x2: 252, y2: 67, stroke: SH, "stroke-width": 2 }); el(g, "polygon", { points: "258,67 250,63 250,71", fill: SH });
+  fl(77, 82, 198, SV); fl(273, 82, 198, SV);
+  [52, 77, 102, 248, 273, 298].forEach((x) => fl(x, 226, 244, FO, 1.6));
+  // étiquettes
+  const et = (x, y, t, c) => txt(g, x, y, t, { "font-size": 9, "font-weight": 800, fill: c });
+  et(116, 128, "1. dalle", SH); et(116, 142, "2. poutre", SH); et(116, 156, "3. poteaux / murs", SV); et(116, 170, "4. fondations", FO); et(116, 184, "5. sol", FO);
+})();
+</script>
+</body>
+</html>
