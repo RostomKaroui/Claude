@@ -5,8 +5,7 @@ def orig_ellipse(c, ax, ay, n=60, a0=0, a1=360):
 # --- 1) pavés en perspective (légers), hors fontaines / banc / plateforme
 occ = np.zeros((H, W), np.float32)
 for c, ax, ay in (((752, 1858), 225, 118), ((812, 1208), 140, 66)): occ = np.maximum(occ, ellipse((c[0], c[1]), (ax, ay)))
-occ = np.maximum(occ, cv2.dilate(slab_m, np.ones((9, 9), np.uint8))); occ = np.maximum(occ, cv2.dilate(polyR(upF + loF[::-1] + base_front), np.ones((15, 15), np.uint8)))
-occ = np.maximum(occ, cv2.dilate((dark > 0.35).astype(np.float32), np.ones((21, 21), np.uint8)) * 0)  # (les traits existants restent visibles : pas de masque)
+occ = np.maximum(occ, cv2.dilate(SK_SCREEN, np.ones((9, 9), np.uint8))); occ = np.maximum(occ, cv2.dilate(BENCH_OCC, np.ones((9, 9), np.uint8)))
 allow = ground * (1 - np.clip(occ, 0, 1)); allow = cv2.GaussianBlur(allow, (0, 0), 2)
 for X in np.arange(-13, 13.1, 1.4):
     stroke(SL([(X, 0, Z) for Z in np.geomspace(8.2, 80, 26)]), p=0.17, w=1.5, wob=0.9, over=0, mask=allow)
@@ -26,6 +25,7 @@ for (x0, y0, x1, y1) in ((226, 1060, 258, 1390), (1255, 1160, 1285, 1520), (1112
     for k in range(3):
         o = rng.uniform(0.2, 0.8); xa = x0 + (x1 - x0) * 0 + (x1 - x0 + 1e-6) * 0
         stroke(oP([(x0 + (k + 1) * 7, y0), (x0 + (k + 1) * 7 + rng.uniform(-4, 4), (y0 + y1) / 2), (x1 - (3 - k) * 4, y1)]), p=0.32, w=1.4, wob=1.2, over=0)
+for xl in (1107, 1136): stroke(oP([(xl, 1235), (xl - 1, 1268)]), p=0.7, w=2.0, wob=0.4, over=0)
 # ombrage graphite du feuillage (côté ombre) : hachures courtes obliques
 hatch(np.clip(ombre_f, 0, 1) * (ombre_f > 0.45), ang=-62, gap=8, p=0.30, w=1.3)
 # --- 3) tour de l'horloge : cadran, joints de pierre, fenetres

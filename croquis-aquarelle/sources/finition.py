@@ -1,6 +1,6 @@
 # ===== crayon par-dessus l'aquarelle, marges, export =====
 graphite = np.array([0.24, 0.25, 0.30], np.float32)
-a = np.clip(dark * 0.9, 0, 1)
+a = np.clip(dark * 0.72, 0, 1)   # crayon plus discret, comme dans ton exemple
 canvas = canvas * (1 - a[..., None] * (1 - graphite))
 canvas = np.clip(canvas, 0, 1)
 out = (canvas * 255).astype(np.uint8)
