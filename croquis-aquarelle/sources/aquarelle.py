@@ -50,23 +50,30 @@ def ellipse(c, ax, ang=0):
     cv2.ellipse(m, (int(cx), int(cy)), (int(ax[0] * 1.5), int(ax[1] * 1.5)), ang, 0, 360, 255, -1)
     return m.astype(np.float32) / 255
 def roughen(m, amp=7, sig=18):
-    dx = cv2.GaussianBlur(rng.standard_normal((H, W)).astype(np.float32), (0,0), sig); dx *= amp / (dx.std() + 1e-6)
-    dy = cv2.GaussianBlur(rng.standard_normal((H, W)).astype(np.float32), (0,0), sig); dy *= amp / (dy.std() + 1e-6)
-    gx, gy = np.meshgrid(np.arange(W, dtype=np.float32), np.arange(H, dtype=np.float32))
+    hh, ww = m.shape
+    dx = cv2.GaussianBlur(rng.standard_normal((hh, ww)).astype(np.float32), (0,0), sig); dx *= amp / (dx.std() + 1e-6)
+    dy = cv2.GaussianBlur(rng.standard_normal((hh, ww)).astype(np.float32), (0,0), sig); dy *= amp / (dy.std() + 1e-6)
+    gx, gy = np.meshgrid(np.arange(ww, dtype=np.float32), np.arange(hh, dtype=np.float32))
     return cv2.remap(m, gx + dx, gy + dy, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
 def wash(mask, color, k=0.8, edge=0.5, var=0.35, rough=7, soft=1.4, gran=0.35):
-    """color = transmittance du pigment (rgb 0..1) ; k = intensite."""
-    m = roughen(mask, rough) if rough else mask
+    """color = transmittance du pigment (rgb 0..1) ; k = intensite. Travaille sur la zone utile (rapide)."""
+    global canvas
+    ys, xs = np.nonzero(mask > 0.004)
+    if len(xs) == 0: return
+    pad = int(rough * 3 + soft * 4 + 24)
+    x0, x1 = max(xs.min() - pad, 0), min(xs.max() + pad + 1, W); y0, y1 = max(ys.min() - pad, 0), min(ys.max() + pad + 1, H)
+    m = mask[y0:y1, x0:x1]
+    m = roughen(m, rough) if rough else m
     m = cv2.GaussianBlur(m, (0,0), soft)
     inner = cv2.GaussianBlur(m, (0,0), 7)
-    ridge = np.clip(m - inner, 0, 1) * edge * 3.2          # pigment qui se depose au bord
-    v = 1 + var * (0.6 * lo1 + 0.3 * lo2 + 0.2 * lo3)
-    g = 1 + gran * 0.45 * tooth
-    a = np.clip(m * k * v * g + ridge * k, 0, 1)
+    ridge = np.clip(m - inner, 0, 1) * edge * 3.2
+    v = 1 + var * (0.6 * lo1[y0:y1, x0:x1] + 0.3 * lo2[y0:y1, x0:x1] + 0.2 * lo3[y0:y1, x0:x1])
+    gg = 1 + gran * 0.45 * tooth[y0:y1, x0:x1]
+    a = np.clip(m * k * v * gg + ridge * k, 0, 1)
     col = np.array(color, np.float32) if np.ndim(color) == 1 else color
     if col.ndim == 1: col = col[None, None, :]
-    global canvas
-    canvas = canvas * (1 - a[..., None] * (1 - col))
+    elif col.ndim == 3 and col.shape[0] == H: col = col[y0:y1, x0:x1]
+    canvas[y0:y1, x0:x1] = canvas[y0:y1, x0:x1] * (1 - a[..., None] * (1 - col))
 def grad_v(y0, y1, c0, c1):
     t = np.clip((np.arange(H, dtype=np.float32)[:, None] - Y(y0)) / (Y(y1) - Y(y0)), 0, 1)[..., None]
     return np.array(c0, np.float32) * (1 - t) + np.array(c1, np.float32) * t
