@@ -121,6 +121,9 @@ ERASE = [[(140,1412),(240,1405),(308,1498),(304,1532),(208,1612),(140,1594)],
          [(1185,1512),(1252,1512),(1252,1640),(1185,1640)]]
 erase_m = np.zeros((H, W), np.float32)
 for pts in ERASE: erase_m = np.maximum(erase_m, poly(pts))
+# anciennes fontaines (remplacees par deux fontaines modernes)
+erase_m = np.maximum(erase_m, np.maximum(ellipse((752,1858), (218,112)), box(630,1595,890,1785)))
+erase_m = np.maximum(erase_m, np.maximum(ellipse((812,1205), (138,64)), box(735,1010,895,1180)))
 dark *= 1 - cv2.GaussianBlur(erase_m, (0,0), 1.5)
 
 # ---------- zones ----------
@@ -140,7 +143,6 @@ ground = poly([(728,935),(892,935),(1010,1095),(1100,1235),(1240,1560),(1452,195
 stripL = poly([(55,1040),(300,1075),(520,1185),(280,1420),(95,1665),(55,1955)])
 stripR = poly([(1100,1235),(1240,1560),(1452,1955),(1452,1130),(1230,1130)])
 sky = poly([(156,168),(1419,174),(1419,935),(156,935)]) * (1 - tower)
-FONT_NEAR = ellipse((752,1858), (205,102)); FONT_FAR = ellipse((812,1208), (128,56))
 
 # ---------- skatepark : emprise (partagee par la peinture de base et les ajouts) ----------
 SK_C, SK_RIN, SK_ROUT, SK_H, SK_DECK = (3.6, 14.2), 2.0, 2.9, 1.2, 0.7
@@ -161,6 +163,12 @@ for t_end in (TH_SK[0], TH_SK[-1]):
                         (_cx + (SK_ROUT + SK_DECK) * np.cos(t_end), SK_H, _cz + (SK_ROUT + SK_DECK) * np.sin(t_end)), (_cx + (SK_ROUT + SK_DECK) * np.cos(t_end), 0, _cz + (SK_ROUT + SK_DECK) * np.sin(t_end))]))
 SK_OCC = np.clip(ramp_m + deck_m + sum(polyR(w_) for w_ in SK_WALLS), 0, 1)     # ce qui cache ce qu'il y a derriere
 SK_SCREEN = np.clip(slab_m + SK_OCC, 0, 1)
+# ---------- fontaines modernes : emprises (pour reserver le sol) ----------
+FN = dict(X0=-2.8, X1=0.8, Z0=11.0, Z1=15.0, h=0.45, c=0.35)          # bassin miroir rectangulaire (premier plan)
+FF = dict(cx=0.3, cz=39.0, R=3.1, r=2.75, h=0.45)                       # bassin rond bas (fond)
+FONT_NEAR = polyR(SL([(FN['X0'], 0, FN['Z0']), (FN['X1'], 0, FN['Z0']), (FN['X1'], FN['h'], FN['Z0']), (FN['X1'], FN['h'], FN['Z1']), (FN['X0'], FN['h'], FN['Z1']), (FN['X0'], FN['h'], FN['Z0'])]))
+_ff = circ_pts(FF['cx'], FF['cz'], FF['R'], 0) + circ_pts(FF['cx'], FF['cz'], FF['R'], FF['h'])
+_m = np.zeros((H, W), np.uint8); cv2.fillConvexPoly(_m, cv2.convexHull(np.round(np.array(_ff)).astype(np.int32)), 255); FONT_FAR = _m.astype(np.float32) / 255
 dark *= 1 - cv2.dilate(SK_OCC, np.ones((5, 5), np.uint8))                          # traits caches par la rampe (tronc, etc.)
 
 # ---------- coordonnees du sol (inverse de la perspective) : pour les dalles et les ombres tachetees ----------

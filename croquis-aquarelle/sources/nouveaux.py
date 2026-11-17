@@ -150,6 +150,127 @@ def poubelle(X, Z, r=0.24, h=0.9):
     stroke([tuple(c0 + [r * k_ * np.cos(t), r * k_ * 0.3 * np.sin(t)]) for t in np.linspace(0, np.pi, 12)], p=0.7, w=1.5, wob=0.2, over=0)
     ombre_lilas(ellipse_r(c0 + [-0.35 * k_, 0], 0.5 * k_, 0.12 * k_), 0.4)
 
+
+# ================================================================== FONTAINES MODERNES
+def jet(X, Yb, Z, Hj):
+    """Jet d'eau : colonne fine et translucide qui retombe en gerbe (parabole) dans le bassin."""
+    k_ = px_m(Z); b0, t0 = np.array(S(X, Yb, Z)), np.array(S(X, Yb + Hj, Z)); w = max(1.4, 0.035 * k_)
+    col = band_mask([b0, t0], w * 3.0)
+    wash(col, (0.70, 0.86, 0.96), k=0.45, edge=0.4, var=0.3, rough=0.8, soft=1.2)
+    lift(band_mask([b0 + [w * 0.4, 0], t0 + [w * 0.4, 0]], w * 0.9), 0.75, soft=0.7)
+    for sg in (-1, 1):
+        for sp_ in (0.22, 0.34):
+            arc = [S(X + sg * sp_ * t, Yb + Hj * (1 - t * t) + 0.12 * t * (1 - t), Z) for t in np.linspace(0, 1, 14)]
+            wash(band_mask(arc, max(1.5, w * 1.6)), (0.70, 0.86, 0.96), k=0.38, edge=0.3, var=0.3, rough=0.6, soft=1.0)
+            if k_ > 18: stroke(arc, p=0.30, w=1.1, wob=0.3, over=0)
+    wash(ellipse_r(b0, 0.36 * k_, 0.08 * k_), (0.75, 0.90, 0.97), k=0.45, edge=0.3, var=0.3, rough=1, soft=1.2)
+    if k_ > 18:
+        stroke([tuple(b0 + [-w * 0.6, 0]), tuple(t0 + [-w * 0.4, 0])], p=0.32, w=1.1, wob=0.3, over=0)
+        stroke([tuple(b0 + [0.36 * k_ * np.cos(a), 0.08 * k_ * np.sin(a)]) for a in np.linspace(0.15, np.pi - 0.15, 12)], p=0.32, w=1.1, wob=0.3, over=0)
+
+def fontaine_far():
+    cx_, cz_, R, r, h = FF['cx'], FF['cz'], FF['R'], FF['r'], FF['h']
+    ob, ot, it_, wt = circ_pts(cx_, cz_, R, 0), circ_pts(cx_, cz_, R, h), circ_pts(cx_, cz_, r, h), circ_pts(cx_, cz_, r, h - 0.08)
+    k_ = px_m(cz_); ccx = S(cx_, 0, cz_)[0]
+    ombre_lilas(ellipse_r(np.array(S(cx_ - 1.0, 0, cz_)), (R + 0.6) * k_, (R + 0.6) * k_ * 0.18), 0.45)
+    wash(FONT_FAR, (0.82, 0.82, 0.93), k=0.75, edge=0.5, var=0.3, rough=1.5)
+    wash(FONT_FAR * (xx < ccx), (0.66, 0.64, 0.84), k=0.45, edge=0.0, var=0.2, rough=1.5)
+    wash(polyR(ot) * (1 - polyR(it_)), (0.96, 0.95, 0.93), k=0.45, edge=0.3, var=0.2, rough=1)
+    wm = polyR(wt); wash(wm, (0.42, 0.80, 0.84), k=0.85, edge=0.5, var=0.35, rough=1.5, brush=0, dry=0.2)
+    yc = S(cx_, h, cz_)[1]; wash(wm * (yy < yc), (0.30, 0.62, 0.74), k=0.40, edge=0.0, var=0.3, rough=1.5)
+    wash(band_mask(ob[: len(ob) // 2 + 1], max(2, 0.08 * k_)), (0.99, 0.86, 0.45), k=0.8, edge=0.0, var=0.1, rough=0.5, soft=1)
+    poly_stroke(ot, p=0.85, w=1.8, wob=0.4); poly_stroke(it_, p=0.7, w=1.5, wob=0.4); stroke(ob[: len(ob) // 2 + 1], p=0.8, w=1.7, wob=0.4)
+    i0 = int(np.argmin([q[0] for q in ot])); i1 = int(np.argmax([q[0] for q in ot]))
+    for i_ in (i0, i1): stroke([ot[i_], ob[i_]], p=0.8, w=1.6, wob=0.2, over=0)
+    jets = [(cx_ + 1.6 * np.cos(a), cz_ + 1.6 * np.sin(a), 1.1) for a in np.linspace(0, 2 * np.pi, 8, endpoint=False)] + [(cx_, cz_, 2.4)]
+    for X, Z, Hj in sorted(jets, key=lambda t: -t[1]): jet(X, h - 0.08, Z, Hj)
+
+def fontaine_near():
+    X0, X1, Z0, Z1, h, c = FN['X0'], FN['X1'], FN['Z0'], FN['Z1'], FN['h'], FN['c']
+    k_ = px_m((Z0 + Z1) / 2)
+    ombre_lilas(polyR(SL([(X0 - 0.7, 0, Z0 + .1), (X0, 0, Z0 + .1), (X0, 0, Z1 + .2), (X0 - 0.7, 0, Z1 + .2)])), 0.5)
+    front = SL([(X0, 0, Z0), (X1, 0, Z0), (X1, h, Z0), (X0, h, Z0)])
+    otop = SL([(X0, h, Z0), (X1, h, Z0), (X1, h, Z1), (X0, h, Z1)]); itop = SL([(X0 + c, h, Z0 + c), (X1 - c, h, Z0 + c), (X1 - c, h, Z1 - c), (X0 + c, h, Z1 - c)])
+    wat = SL([(X0 + c, h - .08, Z0 + c), (X1 - c, h - .08, Z0 + c), (X1 - c, h - .08, Z1 - c), (X0 + c, h - .08, Z1 - c)])
+    wash(polyR(front), (0.78, 0.78, 0.91), k=0.80, edge=0.5, var=0.3, rough=1.2, brush=0, dry=0.2)
+    wash(polyR(otop) * (1 - polyR(itop)), (0.96, 0.95, 0.93), k=0.50, edge=0.4, var=0.3, rough=1.2)
+    wm = polyR(wat); wash(wm, (0.42, 0.80, 0.84), k=0.88, edge=0.5, var=0.35, rough=1.5, brush=0, bstr=0.3, dry=0.2)
+    yb, yt = max(q[1] for q in wat), min(q[1] for q in wat)
+    wash(wm * np.clip((yb - yy) / (yb - yt + 1), 0, 1) ** 1.3, (0.28, 0.58, 0.72), k=0.55, edge=0.0, var=0.3, rough=1.5)
+    lift(wm * (STK[0] > 1.7) * (lo2 > -0.2), 0.7, soft=1.0)                         # reflets horizontaux
+    led = SL([(X0 + .05, h - .07, Z0 - .002), (X1 - .05, h - .07, Z0 - .002)])
+    wash(band_mask(led, max(3, 0.05 * k_)), (0.99, 0.86, 0.45), k=0.9, edge=0.0, var=0.1, rough=0.5, soft=1.2)
+    poly_stroke(front, p=0.9, w=2.2, wob=0.5); poly_stroke(otop, p=0.85, w=2.0, wob=0.5); poly_stroke(itop, p=0.75, w=1.8, wob=0.5)
+    stroke(wat[2:] + wat[:1], p=0.4, w=1.3, wob=0.4, over=0)
+    grille = [(X, Z, hj) for Z in (Z0 + 1.3, Z1 - 1.3) for X, hj in zip(np.linspace(X0 + 0.75, X1 - 0.75, 4), (1.0, 1.35, 1.35, 1.0))]
+    for X, Z, hj in sorted(grille, key=lambda t: -t[1]): jet(X, h - .08, Z, hj)
+
+# ================================================================== VEGETATION : massifs fleuris en bordure + buissons sous les arbres
+VEG_OCC = np.zeros((H, W), np.float32)
+FLEURS = [(0.95, 0.42, 0.68), (0.74, 0.62, 0.95), (0.99, 0.86, 0.30), (0.99, 0.58, 0.42), (0.98, 0.98, 0.96)]
+def massif(plantes, base_col=(0.60, 0.80, 0.46), dark_col=(0.22, 0.52, 0.44), fleur_p=0.55):
+    """plantes = liste (X, Z, r). Peint en couches (comme a l'aquarelle) puis contours au crayon."""
+    global VEG_OCC
+    mA, mB, hi, sh, fl = [np.zeros((H, W), np.uint8) for _ in range(5)]
+    flc = {i: np.zeros((H, W), np.uint8) for i in range(len(FLEURS))}
+    arcs = []
+    for i, (X, Z, r) in enumerate(sorted(plantes, key=lambda t: -t[1])):
+        k_ = px_m(Z); c = np.array(S(X, r * 0.85, Z)); rr = r * k_
+        if rr < 1.5: continue
+        cv2.circle(mA if i % 2 else mB, (int(c[0]), int(c[1])), int(rr), 255, -1)
+        cv2.circle(hi, (int(c[0] + rr * .30), int(c[1] - rr * .30)), int(rr * .55), 255, -1)
+        cv2.ellipse(sh, (int(c[0] - rr * .25), int(c[1] + rr * .30)), (int(rr * .75), int(rr * .55)), 0, 0, 360, 255, -1)
+        if rng.uniform() < fleur_p:
+            fc = int(rng.integers(0, len(FLEURS)))
+            for _ in range(int(6 + rr / 3)):
+                a, d = rng.uniform(0, 2 * np.pi), rng.uniform(0, 0.85) * rr
+                cv2.circle(flc[fc], (int(c[0] + d * np.cos(a)), int(c[1] - abs(d * np.sin(a)) * 0.8)), max(2, int(rr * rng.uniform(0.10, 0.17))), 255, -1)
+        if rr > 7: arcs.append((c, rr))
+    f = lambda m: m.astype(np.float32) / 255
+    allm = np.clip(f(mA) + f(mB), 0, 1)
+    wash(f(mA), base_col, k=0.85, edge=0.5, var=0.45, rough=2.5, brush=35, dry=0.2)
+    wash(f(mB), tuple(np.clip(np.array(base_col) * 0.85 + 0.08, 0, 1)), k=0.85, edge=0.5, var=0.45, rough=2.5, brush=-35, dry=0.2)
+    wash(f(hi) * allm, (0.86, 0.92, 0.48), k=0.55, edge=0.2, var=0.4, rough=2)
+    wash(f(sh) * allm, dark_col, k=0.55, edge=0.4, var=0.4, rough=2, dry=0.2)
+    for i, m_ in flc.items():
+        if i == 4: lift(f(m_) * allm, 0.9, soft=0.6)
+        else: lift(f(m_) * allm, 0.7, soft=0.6); wash(f(m_) * allm, FLEURS[i], k=0.95, edge=0.35, var=0.3, rough=0.8, soft=0.7)
+    for c, rr in arcs:
+        a0 = rng.uniform(0, 1.0)
+        stroke([(c[0] + rr * np.cos(a), c[1] + rr * np.sin(a)) for a in np.linspace(np.pi * (0.9 + a0 * 0.2), np.pi * (2.15 + a0 * 0.2), 14)], p=0.55, w=1.6, wob=0.9, over=0)
+    hatch(allm * f(sh), ang=-55, gap=6, p=0.28, w=1.1)
+    VEG_OCC = np.maximum(VEG_OCC, allm)
+def libre(Z, zones, marge):
+    return all(not (a - marge <= Z <= b + marge) for a, b in zones)
+# bordures plantees le long de l'allee (avec des trouees pour les bancs, lampadaires et poubelles)
+bancsG = [(15.6, 18.6), (28.0, 31.0), (42.0, 45.0), (70.0, 73.0)]
+objD = [(22.5, 25.5), (32.5, 35.5), (21.0, 21.0), (30.8, 30.8), (26.6, 26.6), (36.6, 36.6)]
+bord = []
+Z = 12.2
+while Z < 125:
+    st = max(0.42, Z * 0.028)
+    if libre(Z, bancsG, 0.7):
+        for dx in (-0.17, 0.17): bord.append((-5.45 + dx + rng.uniform(-.05, .05), Z + (st / 2 if dx > 0 else 0), rng.uniform(0.30, 0.42)))
+    if Z > 20.0 and libre(Z, objD, 0.65):
+        for dx in (-0.17, 0.17): bord.append((5.05 + dx + rng.uniform(-.05, .05), Z + (st / 2 if dx > 0 else 0), rng.uniform(0.30, 0.42)))
+    Z += st
+# buissons fleuris sous les arbres (bougainvilliers, lauriers-roses...), plus etendus
+evit = [(14.2, 15.6), (22.4, 26.0), (37.6, 39.2), (60.0, 66.0)]                 # lampadaires, poubelles et pergola existants
+sousG, sousD = [], []
+Z = 13.5
+while Z < 115:
+    st = max(0.8, Z * 0.05)
+    if libre(Z, evit, 0.3): sousG.append((rng.uniform(-10.5, -7.6), Z, rng.uniform(0.45, 0.75)))
+    sousG.append((rng.uniform(-13.0, -10.8), Z + st / 2, rng.uniform(0.5, 0.8)))
+    if Z > 19.6:
+        sousD.append((rng.uniform(7.0, 9.4), Z, rng.uniform(0.45, 0.75))); sousD.append((rng.uniform(9.6, 12.5), Z + st / 2, rng.uniform(0.5, 0.8)))
+    Z += st
+
+# --- on peint : fontaine du fond, vegetation, puis le mobilier par-dessus
+fontaine_far()
+massif(sousG + sousD, base_col=(0.56, 0.78, 0.46), dark_col=(0.20, 0.50, 0.44), fleur_p=0.8)
+massif(bord, fleur_p=0.85)
+
 # ================================================================== MOBILIER LE LONG DES ALLEES
 # (du plus loin au plus proche pour que les objets proches recouvrent les lointains)
 banc_ondule(-6.6, 70.0, side=-1); banc_ondule(-6.4, 42.0, side=-1)
@@ -158,11 +279,13 @@ banc_ondule(-6.6, 28.0, side=-1)
 poubelle(5.7, 26.6); banc_ondule(6.1, 22.5, side=+1); lampadaire(5.95, 21.0, dirx=-1)
 banc_ondule(-6.4, 15.6, side=-1)
 # promeneurs
-for (X, Z, ch, pa, sx_, t_) in ((-4.2, 58, (0.85, 0.50, 0.40), (0.35, 0.40, 0.60), "h", 1.0), (3.9, 64, (0.35, 0.50, 0.75), (0.30, 0.30, 0.38), "f", 1.0),
-                                (-3.6, 76, (0.95, 0.78, 0.35), (0.35, 0.40, 0.60), "h", 1.0), (4.3, 86, (0.45, 0.65, 0.55), (0.30, 0.32, 0.45), "f", 1.0),
+for (X, Z, ch, pa, sx_, t_) in ((-2.9, 58, (0.85, 0.50, 0.40), (0.35, 0.40, 0.60), "h", 1.0), (2.9, 64, (0.35, 0.50, 0.75), (0.30, 0.30, 0.38), "f", 1.0),
+                                (-2.6, 76, (0.95, 0.78, 0.35), (0.35, 0.40, 0.60), "h", 1.0), (3.0, 86, (0.45, 0.65, 0.55), (0.30, 0.32, 0.45), "f", 1.0),
                                 (-2.75, 25.8, (0.88, 0.56, 0.46), (0.32, 0.38, 0.58), "h", 1.0), (-1.84, 25.6, (0.34, 0.50, 0.74), (0.26, 0.28, 0.36), "f", 0.96),
                                 (2.91, 23.6, (0.46, 0.66, 0.56), (0.30, 0.36, 0.55), "h", 1.0), (3.6, 23.4, (0.96, 0.76, 0.32), (0.36, 0.44, 0.66), "h", 0.62)):
     personne3d(X, 0, Z, ch, pa, pose="debout", bras="marche", sexe=sx_, taille=t_)
+
+fontaine_near()
 
 # ================================================================== SKATEPARK (inspire de l'image 2), au premier plan a droite
 cx, cz = SK_C; th = TH_SK; r_in, r_out, hl, dk = SK_RIN, SK_ROUT, SK_H, SK_DECK

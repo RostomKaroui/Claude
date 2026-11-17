@@ -69,21 +69,7 @@ wash(tower * (yy < Y(692)), (0.96, 0.76, 0.24), k=0.95, edge=0.5, var=0.2, rough
 wash(tower * (yy > Y(862)), (0.95, 0.88, 0.74), k=0.75, edge=0.4, var=0.3, rough=2)
 lift(ellipse((820, 697), (15, 15)), 0.9)
 
-# 8) FONTAINES : pierre claire, eau turquoise vive, reflets blancs, voile des jets
-def fontaine(ring, water, bowl, stem, top, veil):
-    rc_ = P([ring[0]])[0][0]
-    wash(ellipse(*ring), (0.96, 0.90, 0.80), k=0.70, edge=0.55, var=0.3, rough=3, dry=0.3)
-    wash(ellipse(*ring) * (xx < rc_), (0.78, 0.74, 0.90), k=0.45, edge=0.1, var=0.3, rough=3)
-    wash(ellipse(*water), (0.42, 0.78, 0.80), k=0.85, edge=0.55, var=0.4, rough=3, brush=0, dry=0.35)
-    wash(ellipse(*water) * (yy < P([(0, water[0][1])])[0][1]), (0.30, 0.62, 0.72), k=0.45, edge=0.1, var=0.3, rough=3)
-    lift(ellipse(*water) * (fleck > 2.2) * (noise(3) > 0.3), 0.85)
-    for m_ in (poly(stem), ellipse(*bowl), ellipse(*top)):
-        wash(m_, (0.95, 0.89, 0.80), k=0.75, edge=0.5, var=0.2, rough=2)
-        wash(m_ * (xx < rc_), (0.78, 0.74, 0.90), k=0.45, edge=0.1, var=0.2, rough=2)
-    wash(ellipse(bowl[0], (bowl[1][0] * 0.82, bowl[1][1] * 0.7)), (0.45, 0.80, 0.82), k=0.8, edge=0.4, var=0.2, rough=2)
-    wash(ellipse(*veil), (0.82, 0.93, 0.97), k=0.38, edge=0.35, var=0.5, rough=8)
-fontaine(((812,1208),(124,53)), ((812,1203),(108,42)), ((805,1148),(54,18)), [(797,1170),(816,1170),(818,1205),(795,1205)], ((812,1056),(26,9)), ((812,1105),(88,72)))
-fontaine(((752,1858),(200,98)), ((752,1850),(176,80)), ((745,1778),(90,42)), [(716,1818),(776,1818),(782,1895),(712,1895)], ((765,1668),(52,22)), ((755,1705),(118,98)))
+# 8) FONTAINES : remplacees par les fontaines modernes (voir nouveaux.py)
 
 # 9) PERGOLA FLEURIE (bougainvillier) et POUBELLES restantes (bleu tunisien)
 pergola = poly([(95,1288),(245,1285),(248,1405),(95,1405)])
