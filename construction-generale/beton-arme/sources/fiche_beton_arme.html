@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Construction générale · le béton armé</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   démarche du projet */
+    --c2: #B4501E;  /* II  le terrain */
+    --c3: #8C1C13;  /* III l'édifice */
+    --c4: #3C7A3E;  /* IV  charges et fondations */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.6pt; line-height: 1.34; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.05em; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.6pt; font-weight: 800; margin-bottom: 2px; }
+  .s1 .carte h3 { color: var(--c1); } .s2 .carte h3 { color: var(--c2); } .s3 .carte h3 { color: var(--c3); } .s4 .carte h3 { color: var(--c4); }
+  .carte p, .carte li { font-size: 8.7pt; line-height: 1.32; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .alerte { color: var(--rouge); font-weight: 800; }
+
+  /* étapes du projet */
+  .etapes { display: grid; grid-template-columns: 1fr 12px 1fr 12px 1fr 12px 1fr; align-items: stretch; gap: 2px; margin-bottom: 5px; }
+  .etapes .e { background: var(--c1); color: #fff; border-radius: 5px; padding: 3px 6px; font-size: 8.3pt; line-height: 1.27; }
+  .etapes .e b { display: block; font-size: 8.4pt; }
+  .etapes .f { display: grid; place-items: center; font-weight: 800; color: var(--c1); }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.8pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  /* tableau charges */
+  table.ch { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
+  table.ch th { background: var(--c4); color: #fff; text-align: left; padding: 2px 6px; font-size: 7.7pt; letter-spacing: .05em; }
+  table.ch td { padding: 2px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.ch td:first-child { font-weight: 800; color: var(--c4); white-space: nowrap; }
+  table.ch tr:nth-child(even) td { background: #f3f8f3; }
+
+  /* chaîne de charges */
+  .synthese { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 10px 7px; margin-top: 7px; break-inside: avoid; }
+  .synthese h4, .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .fil { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; font-size: 8.4pt; line-height: 1.25; }
+  .fil .e { color: #fff; padding: 4px 4px 4px 12px; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e b { display: block; }
+  .lecon { margin-top: 5px; font-family: "Playfair", serif; font-style: italic; font-size: 11pt; text-align: center; }
+
+  .retenir { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 7px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir dl { font-size: 8.6pt; line-height: 1.3; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 2px; }
+  .notes { margin-top: 7px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 17px; border-bottom: 1px dotted #c4cad1; }
+</style>
+
+<style>
+  .c1 { --t: var(--c1); } .c2 { --t: var(--c2); } .c3 { --t: var(--c3); } .c4 { --t: var(--c4); }
+  .partie { margin-bottom: 5px; }
+  h2 { font-size: 12.5pt; margin: 1px 0 3px; }
+  h2 .num { width: 21px; height: 21px; font-size: 8.6pt; }
+  .def { padding: 2px 7px; margin-bottom: 4px; font-size: 8.4pt; }
+  .carte { padding: 3px 7px 4px; }
+  .carte h3 { font-size: 9pt; margin-bottom: 1px; }
+  .carte p, .carte li { font-size: 8pt; line-height: 1.27; }
+  .carte svg { display: block; width: 100%; height: auto; max-height: 32mm; margin: 0 auto; }
+  .pg2 { break-before: page; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.2pt; }
+  table.t th { background: var(--t); color: #fff; text-align: left; padding: 1.5px 6px; font-size: 7.4pt; letter-spacing: .05em; }
+  table.t td { padding: 1.5px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.t td:first-child { font-weight: 800; color: var(--t); }
+  table.t tr:nth-child(even) td { background: #f8f8f9; }
+  .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .mini { border: 1px solid var(--filet); border-radius: 5px; padding: 2px 4px 3px; background: #fff; break-inside: avoid; }
+  .mini svg { display: block; width: 100%; height: auto; max-height: 14mm; margin: 0 auto; }
+  .mini b { font-size: 8.2pt; display: block; margin-top: 1px; color: var(--t); }
+  .mini span { font-size: 7.5pt; line-height: 1.22; display: block; color: #3a4047; }
+  .ex { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 4px; }
+  .ex div { border-top: 3px solid var(--c1); background: var(--fond); padding: 1px 6px 2px; font-size: 7.7pt; line-height: 1.22; }
+  .ex b:first-child { display: block; font-size: 8.6pt; color: var(--c1); }
+  .tass { border: 1.5px solid var(--rouge); background: #fdf1ef; border-radius: 6px; padding: 2px 8px; font-size: 8pt; margin-bottom: 4px; break-inside: avoid; }
+  .tass b:first-child { color: var(--rouge); letter-spacing: .06em; font-size: 7.4pt; }
+  .num3 { display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 50%; background: var(--c2); color: #fff; font-weight: 800; font-size: 7.4pt; margin-right: 3px; }
+  .legende { font-size: 7.2pt; margin-top: 0; }
+  .carte .pan svg { max-height: 15mm; }
+  .synthese { margin-top: 5px; padding: 4px 9px 5px; }
+  .fil { font-size: 7.9pt; }
+  .fil .e { padding: 3px 3px 3px 11px; }
+  .lecon { font-size: 10pt; margin-top: 3px; }
+  .retenir { margin-top: 5px; gap: 7px; }
+  .retenir > div { padding: 3px 8px; }
+  .retenir dl { font-size: 7.9pt; line-height: 1.25; }
+  svg text { font-family: "Inter", sans-serif; }
+  svg .l { font-size: 8px; fill: #1f2328; font-weight: 600; }
+  svg .lb { font-size: 8px; fill: #1f2328; font-weight: 800; }
+  svg .lg { font-size: 7px; fill: #5f6670; }
+  svg .ld { stroke: #1f2328; stroke-width: .7; fill: none; }
+  svg .bet { fill: #d9dde3; stroke: #5f6670; stroke-width: .8; }
+  svg .acier { stroke: #8C1C13; stroke-width: 1.5; fill: none; }
+  svg .halo { paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+</style>
+
+<style>
+  .carte svg { max-height: 46mm; }
+  .carte p, .carte li { font-size: 8.5pt; }
+  .tag { display: inline-block; background: var(--t); color: #fff; border-radius: 3px; padding: 0 5px; font-weight: 800; font-size: 7.6pt; margin-right: 3px; }
+  .recette { display: grid; grid-template-columns: 5fr 2.2fr 1.5fr 1.3fr; gap: 3px; margin: 3px 0 2px; }
+  .recette div { border-radius: 5px; padding: 3px 6px 4px; color: #fff; font-size: 7.9pt; line-height: 1.25; }
+  .recette div > b:first-child { display: block; font-size: 9pt; }
+  .mini span b { display: inline; font-size: inherit; margin: 0; color: inherit; }
+  .vocab { border-left: 4px solid var(--c1); background: var(--fond); padding: 2px 8px; font-size: 8.2pt; margin-top: 3px; }
+  .vocab b:first-child { font-size: 7.4pt; letter-spacing: .12em; color: var(--c1); }
+  table.t td, table.t th { font-size: 8.3pt; }
+  table.t.big td { padding: 2.5px 6px; }
+  .ico { display: block; margin: 0 auto 1px; max-height: 15mm; width: 100%; }
+  .why { border: 1.5px solid var(--rouge); background: #fdf1ef; border-radius: 6px; padding: 2px 8px; font-size: 8.2pt; margin-top: 3px; }
+  .why b:first-child { color: var(--rouge); font-size: 7.4pt; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#f4eee1"/><line x1="0" y1="0" x2="0" y2="6" stroke="#bfae8f" stroke-width="1"/></pattern>
+  <pattern id="h2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d9c7a3"/><line x1="0" y1="0" x2="0" y2="6" stroke="#9c8660" stroke-width="1"/></pattern>
+  <marker id="fr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker>
+  <marker id="fv" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#3C7A3E"/></marker>
+  <marker id="fk" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1f2328"/></marker>
+  <marker id="fk2" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 z" fill="#1f2328"/></marker>
+</defs></svg>
+
+
+<div class="entete">
+  <div>
+    <div class="kicker">CONSTRUCTION GÉNÉRALE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Le béton armé</h1>
+  </div>
+  <div class="sous">Béton, aciers, armatures, coffrage : de quoi est faite la structure</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>01 · Le principe</b>chacun son rôle</div>
+  <div class="p2"><b>02 · Les constituants</b>granulats, ciment, eau, adjuvants</div>
+  <div class="p3"><b>03 · Les bétons</b>courants et spéciaux</div>
+  <div class="p4"><b>04 · Aciers et armatures</b>types, vocabulaire, stockage</div>
+</div>
+
+<div class="g3" style="margin-bottom:5px">
+  <div class="mini c1"><svg class="ico" viewBox="0 0 120 50"><rect x="14" y="6" width="92" height="38" class="bet"/><circle cx="44.8" cy="13.8" r="1.7" fill="#8e949c"/><circle cx="23.2" cy="26.1" r="1.3" fill="#8e949c"/><circle cx="22.0" cy="25.2" r="0.9" fill="#8e949c"/><circle cx="54.3" cy="11.2" r="0.9" fill="#8e949c"/><circle cx="53.5" cy="35.5" r="1.0" fill="#8e949c"/><circle cx="36.2" cy="29.1" r="2.1" fill="#8e949c"/><circle cx="66.6" cy="21.7" r="2.2" fill="#8e949c"/><circle cx="21.0" cy="36.5" r="1.2" fill="#8e949c"/><circle cx="29.4" cy="12.8" r="1.2" fill="#8e949c"/><circle cx="87.2" cy="14.8" r="1.6" fill="#8e949c"/><circle cx="71.9" cy="20.9" r="1.6" fill="#8e949c"/><circle cx="22.4" cy="10.9" r="1.1" fill="#8e949c"/><circle cx="75.5" cy="22.7" r="1.2" fill="#8e949c"/><circle cx="67.4" cy="23.5" r="1.2" fill="#8e949c"/><circle cx="85.3" cy="31.4" r="1.1" fill="#8e949c"/><circle cx="66.4" cy="25.8" r="2.0" fill="#8e949c"/><circle cx="79.7" cy="18.2" r="2.2" fill="#8e949c"/><circle cx="27.2" cy="22.4" r="1.9" fill="#8e949c"/><circle cx="30.1" cy="24.6" r="0.9" fill="#8e949c"/><circle cx="74.5" cy="33.5" r="1.6" fill="#8e949c"/><circle cx="92.3" cy="19.0" r="1.8" fill="#8e949c"/><circle cx="68.1" cy="27.6" r="1.4" fill="#8e949c"/></svg><b>Le béton</b><span>un mélange de <b>ciment</b>, de <b>granulats</b> et d'<b>eau</b> qui durcit en prenant la forme de son moule</span></div>
+  <div class="mini c1"><svg class="ico" viewBox="0 0 120 50"><g stroke="#8C1C13" stroke-width="2"><line x1="14" y1="12" x2="106" y2="12"/><line x1="14" y1="25" x2="106" y2="25"/><line x1="14" y1="38" x2="106" y2="38"/></g><g stroke="#8C1C13" stroke-width="1.2"><line x1="28" y1="6" x2="28" y2="44"/><line x1="46" y1="6" x2="46" y2="44"/><line x1="64" y1="6" x2="64" y2="44"/><line x1="82" y1="6" x2="82" y2="44"/><line x1="100" y1="6" x2="100" y2="44"/></g></svg><b>Les armatures</b><span>des <b>barres d'acier</b> placées dans le béton, là où il serait étiré</span></div>
+  <div class="mini c1"><svg class="ico" viewBox="0 0 120 50"><rect x="36" y="32" width="48" height="8" class="bet"/><path d="M36,8 V40 H84 V8" fill="none" stroke="#8a6a3a" stroke-width="5"/><g stroke="#8a6a3a" stroke-width="2"><line x1="36" y1="10" x2="22" y2="44"/><line x1="84" y1="10" x2="98" y2="44"/></g></svg><b>Le coffrage</b><span>le <b>moule provisoire</b> qui donne sa forme au béton frais</span></div>
+</div>
+
+<!-- ===================== 01 ===================== -->
+<section class="partie s1 c1">
+  <h2><span class="num">01</span>Le principe : chacun son rôle</h2>
+  <div class="def"><b>Béton armé</b> : matériau composé de <b>béton</b> et d'<b>acier</b>. Le béton résiste à la <b>compression</b>, l'acier à la <b>traction</b>. Nos fondations (semelles, longrines, pré-poteaux, radiers, pieux) sont en béton armé.</div>
+  <div class="fig">
+<svg viewBox="0 0 540 132" role="img" aria-label="Poutre en béton seul et en béton armé">
+  <defs><marker id="fa" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1f2328"/></marker></defs>
+  <text x="6" y="12" class="lb" style="font-size:9px;fill:#fff" opacity="0">.</text>
+  <rect x="4" y="2" width="70" height="14" rx="3" fill="#5f6670"/><text x="39" y="12" font-size="8.4" font-weight="800" fill="#fff" text-anchor="middle">Béton seul</text>
+  <line x1="130" y1="14" x2="130" y2="40" stroke="#c0392b" stroke-width="2" marker-end="url(#fr)"/>
+  <rect x="6" y="42" width="248" height="42" class="bet"/>
+  <circle cx="66.1" cy="48.7" r="1.2" fill="#9aa0a8"/><circle cx="46.5" cy="47.4" r="1.2" fill="#9aa0a8"/><circle cx="231.1" cy="73.8" r="1.6" fill="#9aa0a8"/><circle cx="62.7" cy="64.3" r="1.1" fill="#9aa0a8"/><circle cx="50.8" cy="48.8" r="1.0" fill="#9aa0a8"/><circle cx="233.4" cy="74.8" r="1.6" fill="#9aa0a8"/><circle cx="202.7" cy="52.0" r="1.1" fill="#9aa0a8"/><circle cx="160.7" cy="71.3" r="1.7" fill="#9aa0a8"/><circle cx="222.0" cy="48.1" r="1.4" fill="#9aa0a8"/><circle cx="171.6" cy="63.2" r="1.0" fill="#9aa0a8"/><circle cx="123.6" cy="48.2" r="1.7" fill="#9aa0a8"/><circle cx="218.4" cy="64.7" r="1.1" fill="#9aa0a8"/><circle cx="228.9" cy="65.6" r="1.7" fill="#9aa0a8"/><circle cx="214.2" cy="63.3" r="1.2" fill="#9aa0a8"/><circle cx="153.9" cy="60.5" r="1.0" fill="#9aa0a8"/><circle cx="82.8" cy="74.3" r="0.8" fill="#9aa0a8"/>
+  <g stroke="#c0392b" stroke-width="2" fill="none"><path d="M118,84 l-5,-8 l8,-8 l-6,-8"/><path d="M130,84 l-5,-9 l8,-9 l-6,-9"/><path d="M142,84 l-5,-8 l8,-8 l-6,-8"/></g>
+  <polygon points="22,84 12,98 32,98" fill="#fff" stroke="#5f6670"/><polygon points="238,84 228,98 248,98" fill="#fff" stroke="#5f6670"/>
+  <text x="130" y="112" class="lb" text-anchor="middle" style="font-size:8px">Le dessous s'étire et se fissure :</text><text x="130" y="122" class="lb" text-anchor="middle" style="font-size:8px;fill:#c0392b">la poutre casse.</text>
+
+  <rect x="284" y="2" width="70" height="14" rx="3" fill="#3C7A3E"/><text x="319" y="12" font-size="8.4" font-weight="800" fill="#fff" text-anchor="middle">Béton armé</text>
+  <line x1="408" y1="14" x2="408" y2="40" stroke="#c0392b" stroke-width="2" marker-end="url(#fr)"/>
+  <rect x="286" y="42" width="248" height="42" class="bet"/>
+  <rect x="286" y="42" width="248" height="14" fill="#c4cad2"/>
+  <g stroke="#1f2328" stroke-width="1.2" fill="none" marker-end="url(#fk)"><line x1="308" y1="50" x2="344" y2="50"/><line x1="512" y1="50" x2="476" y2="50"/></g>
+  <text x="410" y="52" class="lb" text-anchor="middle" style="font-size:7.6px">béton comprimé</text>
+  <path d="M292,52 V80 H528 V52" class="acier" stroke-width="2.6"/>
+  <g stroke="#8C1C13" stroke-width="1.2" fill="none" marker-end="url(#fk)"><line x1="344" y1="73" x2="308" y2="73" stroke="#8C1C13"/><line x1="476" y1="73" x2="512" y2="73" stroke="#8C1C13"/></g>
+  <text x="410" y="75" class="lb" text-anchor="middle" style="font-size:7.6px;fill:#8C1C13">acier tendu</text>
+  <polygon points="302,84 292,98 312,98" fill="#fff" stroke="#5f6670"/><polygon points="518,84 508,98 528,98" fill="#fff" stroke="#5f6670"/>
+  <text x="410" y="112" class="lb" text-anchor="middle" style="font-size:8px">L'acier, en bas, reprend l'étirement :</text><text x="410" y="122" class="lb" text-anchor="middle" style="font-size:8px;fill:#3C7A3E">la poutre tient.</text>
+</svg></div>
+  <div class="vocab"><b>VOCABULAIRE</b> &nbsp;<b style="font-size:8.2pt;letter-spacing:0;color:inherit">Compression</b> : effort qui <b>écrase</b>. &nbsp;<b style="font-size:8.2pt;letter-spacing:0;color:inherit">Traction</b> : effort qui <b>étire</b>. Le béton résiste très bien à la première, très mal à la seconde.</div>
+</section>
+
+<!-- ===================== 02 ===================== -->
+<section class="partie s2 c2">
+  <h2><span class="num">02</span>Les constituants du béton</h2>
+  <div class="def"><b>Béton</b> : mélange de <b>granulats</b> (sable et graviers), de <b>liant</b> (le ciment) et d'<b>eau</b>, parfois d'<b>adjuvants</b>, qui <b>durcit en quelques jours</b>.</div>
+  <div class="recette">
+    <div style="background:#7b6a55"><b>Granulats</b>sable, graviers, pierre cassée : le <b>squelette</b> du béton</div>
+    <div style="background:var(--c2)"><b>Ciment</b>le liant : poudre qui <b>fait prise avec l'eau</b></div>
+    <div style="background:#2F4858"><b>Eau</b>déclenche la prise, rend le béton <b>maniable</b></div>
+    <div style="background:#6b7a2a"><b>Adjuvants</b>produits à <b>faible dose</b></div>
+  </div>
+  <p class="gris" style="font-size:7.6pt; margin-bottom:4px">Les largeurs indiquent seulement l'ordre d'importance : les granulats forment l'essentiel du volume.</p>
+
+  <div class="g2">
+    <div class="carte c2"><h3>Les granulats</h3>
+<svg viewBox="0 0 300 92" role="img" aria-label="Sable, gravier, pierre cassée">
+  <g fill="#9aa0a8"><circle cx="8" cy="12" r="1.3"/><circle cx="17" cy="12" r="1.3"/><circle cx="26" cy="12" r="1.3"/><circle cx="35" cy="12" r="1.3"/><circle cx="44" cy="12" r="1.3"/><circle cx="53" cy="12" r="1.3"/><circle cx="62" cy="12" r="1.3"/><circle cx="71" cy="12" r="1.3"/><circle cx="80" cy="12" r="1.3"/><circle cx="89" cy="12" r="1.3"/><circle cx="98" cy="12" r="1.3"/><circle cx="107" cy="12" r="1.3"/><circle cx="116" cy="12" r="1.3"/><circle cx="125" cy="12" r="1.3"/></g>
+  <text x="140" y="15" class="lb" style="font-size:8px">Sable</text><text x="200" y="15" class="l" style="font-size:8px">0/4 ou 0/5</text>
+  <g fill="#b7bcc4" stroke="#7c838c" stroke-width=".6"><circle cx="10" cy="40" r="3"/><circle cx="26" cy="40" r="4"/><circle cx="44" cy="40" r="5"/><circle cx="62" cy="40" r="3.5"/><circle cx="80" cy="40" r="4.5"/><circle cx="98" cy="40" r="5"/></g>
+  <text x="140" y="43" class="lb" style="font-size:8px">Gravier</text><text x="200" y="43" class="l" style="font-size:7.6px">4/8, 8/15, 4/15, 15/25</text>
+  <g fill="#cfd3d9" stroke="#7c838c" stroke-width=".7"><circle cx="14" cy="72" r="8"/><circle cx="40" cy="72" r="10"/><circle cx="70" cy="72" r="13"/><circle cx="102" cy="72" r="9"/></g>
+  <text x="140" y="70" class="lb" style="font-size:8px">Pierre cassée</text><text x="140" y="80" class="l" style="font-size:7.4px">25/40, 40/60, 40/70</text>
+</svg>
+      <p><b>Granulats</b> : grains de pierre de différentes tailles. On les désigne par leur <b>plus petite et leur plus grande dimension</b>, en mm : « <b>4/8</b> » veut dire de 4 à 8 mm.</p>
+      <p style="margin-top:2px"><b>Qualité</b> : <b>durs, compacts, propres</b> ; provenance justifiée par l'entrepreneur.</p></div>
+    <div style="display:grid; gap:5px; align-content:start">
+      <div class="carte c2"><h3><span class="tag">1</span>Liants</h3><p><b>Ciment et chaux</b>, conformes aux règlements en vigueur. Le ciment <b>fait prise avec l'eau</b> et durcit.</p></div>
+      <div class="carte c2"><h3><span class="tag">2</span>Eau de gâchage</h3><p><b>Propre</b>, sans terre ni matière organique, et <b>très peu salée</b> : au plus <b>5 g de sel dissous par litre</b>.</p></div>
+      <div class="carte c2"><h3><span class="tag">3</span>Adjuvants</h3><p>Produits ajoutés à faible dose : <b>accélérateur</b> de prise, <b>retardateur</b> de prise (béton prêt à l'emploi).</p></div>
+    </div>
+  </div>
+  <div class="g2" style="margin-top:5px">
+    <div class="vocab" style="border-color:var(--c2); margin:0"><b style="color:var(--c2)">LA PÂTE DE CIMENT</b><br><b style="font-size:8.2pt;letter-spacing:0;color:inherit">Ciment + eau</b> forment une pâte qui <b>enrobe les granulats</b> et les colle entre eux en durcissant. Le <b>dosage</b> est fixé par un <b>laboratoire agréé</b> avant le début des travaux.</div>
+    <div class="vocab" style="border-color:var(--c2); margin:0"><b style="color:var(--c2)">VOCABULAIRE</b><br><b style="font-size:8.2pt;letter-spacing:0;color:inherit">Gâcher</b> : mélanger avec de l'eau.<br><b style="font-size:8.2pt;letter-spacing:0;color:inherit">Prise</b> : moment où la pâte commence à durcir.</div>
+  </div>
+  <div class="notes"><h4>Mes notes</h4><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div></div>
+</section>
+
+<div class="pg2">
+<!-- ===================== 03 ===================== -->
+<section class="partie s3 c3">
+  <h2><span class="num">03</span>Les bétons courants et spéciaux</h2>
+  <div class="g2">
+    <div>
+      <table class="t big">
+        <tr><th>BÉTON COURANT</th><th>CE QUE C'EST</th><th>OÙ ON L'EMPLOIE</th></tr>
+        <tr><td>De propreté</td><td>maigre, non armé, <b>jamais vibré</b></td><td>fond de fouille</td></tr>
+        <tr><td>Gros béton</td><td>non armé, riche en <b>caillasse</b></td><td>jusqu'au bon sol</td></tr>
+        <tr><td>Banché</td><td>coulé <b>entre deux banches</b></td><td>murs et voiles</td></tr>
+        <tr><td>Armé</td><td>béton + <b>armatures d'acier</b></td><td>toute la structure porteuse</td></tr>
+      </table>
+      <div class="vocab" style="border-color:var(--c3)"><b style="color:var(--c3)">BANCHE</b> &nbsp;Grand <b>panneau de coffrage vertical</b>, en bois ou en métal, que l'on dresse <b>face à face</b> pour couler un mur.</div>
+    </div>
+    <div>
+      <table class="t big">
+        <tr><th>BÉTON SPÉCIAL</th><th>CE QUE C'EST</th><th>USAGE</th></tr>
+        <tr><td>Cellulaire</td><td>plein de <b>bulles d'air</b> : léger, isolant, mais <b>beaucoup moins résistant</b></td><td>forme de pente, rattrapage de niveau</td></tr>
+        <tr><td>Projeté</td><td>projeté par une <b>lance</b> sur une paroi, sans coffrage</td><td>talus, piscines, tunnels</td></tr>
+        <tr><td>Précontraint</td><td>aciers <b>tendus avant mise en charge</b> : le béton reste comprimé</td><td>poutrelles, grandes portées</td></tr>
+        <tr><td>Hautes perf.</td><td>très forte résistance, très peu poreux</td><td>ouvrages très chargés, ponts</td></tr>
+      </table>
+      <div class="why" style="border-color:var(--c3); background:#fbf1ef"><b style="color:var(--c3)">ATTENTION</b> &nbsp;Le béton cellulaire <b>n'est pas un béton de structure</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 04 ===================== -->
+<section class="partie s4 c4">
+  <h2><span class="num">04</span>Les aciers et les armatures</h2>
+  <div class="def"><b>Armature</b> : ensemble des barres d'acier <b>noyées dans le béton</b>. Elles se placent <b>là où le béton serait étiré</b> (voir la poutre, page 1).</div>
+
+  <div class="g2">
+    <div class="carte c4"><h3>Deux familles d'aciers</h3>
+<svg viewBox="0 0 250 78" role="img" aria-label="Acier doux (lisse) et haute adhérence (reliefs)">
+  <rect x="6" y="14" width="150" height="7" rx="3" fill="#7b838d"/>
+  <rect x="6" y="48" width="150" height="9" rx="2" fill="#6a727c"/>
+  <g stroke="#2d3238" stroke-width="1.2"><line x1="12" y1="49" x2="16" y2="56"/><line x1="21" y1="49" x2="25" y2="56"/><line x1="30" y1="49" x2="34" y2="56"/><line x1="39" y1="49" x2="43" y2="56"/><line x1="48" y1="49" x2="52" y2="56"/><line x1="57" y1="49" x2="61" y2="56"/><line x1="66" y1="49" x2="70" y2="56"/><line x1="75" y1="49" x2="79" y2="56"/><line x1="84" y1="49" x2="88" y2="56"/><line x1="93" y1="49" x2="97" y2="56"/><line x1="102" y1="49" x2="106" y2="56"/><line x1="111" y1="49" x2="115" y2="56"/><line x1="120" y1="49" x2="124" y2="56"/><line x1="129" y1="49" x2="133" y2="56"/><line x1="138" y1="49" x2="142" y2="56"/><line x1="147" y1="49" x2="151" y2="56"/></g>
+  <line x1="6" y1="50" x2="156" y2="50" stroke="#2d3238" stroke-width="1.4"/>
+  <text x="164" y="19" class="lb" style="font-size:8px">Acier doux</text><text x="164" y="28" class="lg">lisse · Ø6, Ø8</text>
+  <text x="164" y="52" class="lb" style="font-size:8px">Haute adhérence</text><text x="164" y="61" class="lg">reliefs · T8 à T25</text>
+  <text x="6" y="75" class="lg">Les reliefs « accrochent » le béton.</text>
+</svg>
+      <ul><li><b>Acier doux</b> : barres <b>lisses</b>, de petit diamètre. Repère : <b>Ø</b> (Ø6, Ø8).</li>
+      <li><b>Haute adhérence</b> : barres <b>à reliefs</b> (Tunsid), qui accrochent le béton. Repère : <b>T</b> (T8 à T25).</li></ul>
+      <div class="vocab" style="border-color:var(--c4); margin-top:2px"><b style="color:var(--c4)">LIRE UN REPÈRE</b> &nbsp;« <b>T12</b> » : barre à <b>haute adhérence</b> de <b>12 mm</b> de diamètre.</div></div>
+    <div class="carte c4"><h3>Stocker les aciers</h3>
+<svg viewBox="0 0 250 84" role="img" aria-label="Stocker les aciers sur des madriers">
+  <rect x="0" y="66" width="250" height="18" fill="url(#h)"/>
+  <line x1="0" y1="66" x2="250" y2="66" stroke="#1f2328" stroke-width="1.2"/>
+  <g fill="#b0864f" stroke="#7b5a2c" stroke-width=".8"><rect x="26" y="54" width="12" height="12"/><rect x="90" y="54" width="12" height="12"/><rect x="154" y="54" width="12" height="12"/></g>
+  <g fill="#6a727c"><rect x="14" y="42" width="170" height="3.2" rx="1.5"/><rect x="14" y="46" width="170" height="3.2" rx="1.5"/><rect x="14" y="50" width="170" height="3.2" rx="1.5"/></g>
+  <g stroke="#3C7A3E" stroke-width="1.4" fill="none" marker-end="url(#fv)"><path d="M32,34 V40"/></g>
+  <text x="194" y="48" class="lb" style="font-size:7.6px">sur des</text><text x="194" y="57" class="lb" style="font-size:7.6px">madriers</text>
+  <text x="6" y="14" class="lb" style="font-size:7.6px;fill:#c0392b">jamais en contact direct avec le sol</text>
+  <text x="6" y="26" class="lg">à l'écart de la terre et de l'humidité</text>
+</svg>
+      <ul><li><b>Jamais en contact direct avec le sol</b>.</li><li>Sur des <b>madriers</b>, à l'écart de la terre et de l'humidité.</li><li>Aciers rouillés : <b>bien brossés</b> avant leur mise en place.</li></ul>
+      <div class="why"><b>POURQUOI ?</b> &nbsp;La terre et la rouille <b>empêchent le béton d'adhérer</b> à l'acier ; la rouille <b>gonfle</b> et finit par faire <b>éclater le béton</b>.</div></div>
+  </div>
+
+  <div class="carte c4" style="margin-top:5px"><h3>Le vocabulaire des armatures</h3>
+<svg viewBox="0 0 470 150" role="img" aria-label="Vocabulaire des armatures : poutre continue en élévation et coupe">
+  <rect x="8" y="46" width="30" height="78" class="bet"/><rect x="196" y="46" width="34" height="78" class="bet" opacity="0"/><rect x="366" y="46" width="30" height="78" class="bet"/>
+  <rect x="8" y="30" width="388" height="40" fill="#e9ecef" stroke="#5f6670" stroke-width=".8"/>
+  <rect x="190" y="70" width="30" height="62" class="bet"/>
+  <g stroke="#8C1C13" stroke-width="1" fill="none"><line x1="16.0" y1="36" x2="16.0" y2="64"/><line x1="29.2" y1="36" x2="29.2" y2="64"/><line x1="42.4" y1="36" x2="42.4" y2="64"/><line x1="55.6" y1="36" x2="55.6" y2="64"/><line x1="68.8" y1="36" x2="68.8" y2="64"/><line x1="82.0" y1="36" x2="82.0" y2="64"/><line x1="95.2" y1="36" x2="95.2" y2="64"/><line x1="108.4" y1="36" x2="108.4" y2="64"/><line x1="121.6" y1="36" x2="121.6" y2="64"/><line x1="134.8" y1="36" x2="134.8" y2="64"/><line x1="148.0" y1="36" x2="148.0" y2="64"/><line x1="161.2" y1="36" x2="161.2" y2="64"/><line x1="174.4" y1="36" x2="174.4" y2="64"/><line x1="187.6" y1="36" x2="187.6" y2="64"/><line x1="200.8" y1="36" x2="200.8" y2="64"/><line x1="214.0" y1="36" x2="214.0" y2="64"/><line x1="227.2" y1="36" x2="227.2" y2="64"/><line x1="240.4" y1="36" x2="240.4" y2="64"/><line x1="253.6" y1="36" x2="253.6" y2="64"/><line x1="266.8" y1="36" x2="266.8" y2="64"/><line x1="280.0" y1="36" x2="280.0" y2="64"/><line x1="293.2" y1="36" x2="293.2" y2="64"/><line x1="306.4" y1="36" x2="306.4" y2="64"/><line x1="319.6" y1="36" x2="319.6" y2="64"/><line x1="332.8" y1="36" x2="332.8" y2="64"/><line x1="346.0" y1="36" x2="346.0" y2="64"/><line x1="359.2" y1="36" x2="359.2" y2="64"/><line x1="372.4" y1="36" x2="372.4" y2="64"/><line x1="385.6" y1="36" x2="385.6" y2="64"/></g>
+  <line x1="14" y1="36" x2="390" y2="36" class="acier" stroke-width="1.8"/>
+  <line x1="14" y1="64" x2="390" y2="64" class="acier" stroke-width="2.6"/>
+  <line x1="146" y1="40" x2="266" y2="40" stroke="#1f2328" stroke-width="2.6"/>
+  <g class="acier" stroke-width="1.8"><line x1="197" y1="6" x2="197" y2="128" stroke="#3C7A3E"/><line x1="213" y1="6" x2="213" y2="128" stroke="#3C7A3E"/></g>
+  <g class="ld">
+    <line x1="60" y1="12" x2="80" y2="34"/><line x1="320" y1="14" x2="270" y2="40"/><line x1="150" y1="14" x2="200" y2="14" opacity="0"/>
+    <line x1="70" y1="102" x2="104" y2="66"/><line x1="292" y1="102" x2="262" y2="66"/>
+  </g>
+  <g class="l" style="font-size:7.6px">
+    <text x="4" y="10" style="font-weight:800">Barres de montage, en haut</text>
+    <text x="222" y="12" style="font-weight:800;fill:#3C7A3E">Attentes</text><text x="324" y="12" style="font-weight:800">Chapeaux,</text><text x="324" y="21" style="font-weight:800">au-dessus de l'appui</text>
+    <text x="44" y="112" style="font-weight:800">Barres longitudinales,</text><text x="44" y="121" style="font-weight:800">en bas (traction)</text>
+    <text x="240" y="112" style="font-weight:800">Cadres</text><text x="240" y="121" style="font-weight:800">(armatures transversales)</text>
+    <text x="8" y="144" class="lg">poutre continue, vue en élévation</text>
+  </g>
+  <!-- coupe -->
+  <rect x="418" y="30" width="48" height="66" class="bet"/>
+  <rect x="424" y="36" width="36" height="54" fill="none" stroke="#8C1C13" stroke-width="1.6"/>
+  <path d="M435,36 V82 H449 V36" fill="none" stroke="#8C1C13" stroke-width="1.2"/>
+  <line x1="424" y1="62" x2="460" y2="62" stroke="#8C1C13" stroke-width="1.2"/><path d="M424,62 l-3,-3 M460,62 l3,3" stroke="#8C1C13" stroke-width="1.2"/>
+  <g fill="#1f2328"><circle cx="428" cy="40" r="2.4"/><circle cx="456" cy="40" r="2.4"/><circle cx="428" cy="86" r="2.4"/><circle cx="456" cy="86" r="2.4"/><circle cx="442" cy="86" r="2.4"/></g>
+  <text x="442" y="108" class="lg" text-anchor="middle">coupe</text>
+  <g class="l" style="font-size:7px"><text x="418" y="124" style="font-weight:800">Cadre : entoure</text><text x="418" y="132" style="font-weight:800">toutes les barres</text></g>
+</svg>
+    <p><b>Barres de montage</b> (en haut) et <b>barres longitudinales</b> (en bas, qui reprennent la traction) sont reliées par les <b>cadres</b> (armatures transversales) ; des <b>chapeaux</b> renforcent le dessus de l'appui ; les <b>attentes</b> sont les aciers du poteau laissés en attente. En coupe : le <b>cadre</b> entoure toutes les barres, l'<b>étrier</b> est en U à l'intérieur, l'<b>épingle</b> est une barre droite à crochets.</p></div>
+
+  <div class="synthese" style="margin-top:5px">
+    <h4>Synthèse : du constituant à l'ouvrage</h4>
+    <div class="fil" style="grid-template-columns:repeat(5,1fr)">
+      <div class="e" style="background:#7b6a55"><b>Granulats</b>sable, gravier, pierre</div>
+      <div class="e" style="background:var(--c2)"><b>Ciment + eau</b>pâte qui colle</div>
+      <div class="e" style="background:#a0301f"><b>Béton</b>résiste à la compression</div>
+      <div class="e" style="background:var(--c3)"><b>+ Armatures</b>l'acier reprend la traction</div>
+      <div class="e" style="background:var(--c4)"><b>+ Coffrage</b>donne la forme</div>
+    </div>
+  </div>
+
+  <div class="retenir">
+    <div>
+      <h4>À retenir</h4>
+      <dl>
+        <dt>Béton armé :</dt><dd>béton (compression) + acier (traction).</dd>
+        <dt>Granulats :</dt><dd>sable 0/5, gravier 4/8 à 15/25, pierre cassée 25/40 à 40/70.</dd>
+        <dt>Eau de gâchage :</dt><dd>propre, au plus 5 g de sel par litre.</dd>
+        <dt>Repères :</dt><dd>Ø = acier doux lisse, T = haute adhérence (T12 = 12 mm).</dd>
+        <dt>Stockage :</dt><dd>sur madriers, jamais au sol.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Liant :</dt><dd>ciment ou chaux qui colle les granulats.</dd>
+        <dt>Adjuvant :</dt><dd>produit ajouté à faible dose.</dd>
+        <dt>Banche :</dt><dd>panneau de coffrage vertical.</dd>
+        <dt>Cadre / étrier / épingle :</dt><dd>armatures transversales.</dd>
+        <dt>Attentes :</dt><dd>aciers laissés en attente.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+</div>
+
+</body>
+</html>

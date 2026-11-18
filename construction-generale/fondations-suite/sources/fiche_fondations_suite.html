@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Construction générale · les fondations (suite)</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   démarche du projet */
+    --c2: #B4501E;  /* II  le terrain */
+    --c3: #8C1C13;  /* III l'édifice */
+    --c4: #3C7A3E;  /* IV  charges et fondations */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.6pt; line-height: 1.34; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.05em; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.6pt; font-weight: 800; margin-bottom: 2px; }
+  .s1 .carte h3 { color: var(--c1); } .s2 .carte h3 { color: var(--c2); } .s3 .carte h3 { color: var(--c3); } .s4 .carte h3 { color: var(--c4); }
+  .carte p, .carte li { font-size: 8.7pt; line-height: 1.32; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .alerte { color: var(--rouge); font-weight: 800; }
+
+  /* étapes du projet */
+  .etapes { display: grid; grid-template-columns: 1fr 12px 1fr 12px 1fr 12px 1fr; align-items: stretch; gap: 2px; margin-bottom: 5px; }
+  .etapes .e { background: var(--c1); color: #fff; border-radius: 5px; padding: 3px 6px; font-size: 8.3pt; line-height: 1.27; }
+  .etapes .e b { display: block; font-size: 8.4pt; }
+  .etapes .f { display: grid; place-items: center; font-weight: 800; color: var(--c1); }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.8pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  /* tableau charges */
+  table.ch { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
+  table.ch th { background: var(--c4); color: #fff; text-align: left; padding: 2px 6px; font-size: 7.7pt; letter-spacing: .05em; }
+  table.ch td { padding: 2px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.ch td:first-child { font-weight: 800; color: var(--c4); white-space: nowrap; }
+  table.ch tr:nth-child(even) td { background: #f3f8f3; }
+
+  /* chaîne de charges */
+  .synthese { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 10px 7px; margin-top: 7px; break-inside: avoid; }
+  .synthese h4, .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .fil { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; font-size: 8.4pt; line-height: 1.25; }
+  .fil .e { color: #fff; padding: 4px 4px 4px 12px; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e b { display: block; }
+  .lecon { margin-top: 5px; font-family: "Playfair", serif; font-style: italic; font-size: 11pt; text-align: center; }
+
+  .retenir { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 7px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir dl { font-size: 8.6pt; line-height: 1.3; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 2px; }
+  .notes { margin-top: 7px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 17px; border-bottom: 1px dotted #c4cad1; }
+</style>
+
+<style>
+  .c1 { --t: var(--c1); } .c2 { --t: var(--c2); } .c3 { --t: var(--c3); } .c4 { --t: var(--c4); }
+  .partie { margin-bottom: 5px; }
+  h2 { font-size: 12.5pt; margin: 1px 0 3px; }
+  h2 .num { width: 21px; height: 21px; font-size: 8.6pt; }
+  .def { padding: 2px 7px; margin-bottom: 4px; font-size: 8.4pt; }
+  .carte { padding: 3px 7px 4px; }
+  .carte h3 { font-size: 9pt; margin-bottom: 1px; }
+  .carte p, .carte li { font-size: 8pt; line-height: 1.27; }
+  .carte svg { display: block; width: 100%; height: auto; max-height: 32mm; margin: 0 auto; }
+  .pg2 { break-before: page; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.2pt; }
+  table.t th { background: var(--t); color: #fff; text-align: left; padding: 1.5px 6px; font-size: 7.4pt; letter-spacing: .05em; }
+  table.t td { padding: 1.5px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.t td:first-child { font-weight: 800; color: var(--t); }
+  table.t tr:nth-child(even) td { background: #f8f8f9; }
+  .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .mini { border: 1px solid var(--filet); border-radius: 5px; padding: 2px 4px 3px; background: #fff; break-inside: avoid; }
+  .mini svg { display: block; width: 100%; height: auto; max-height: 14mm; margin: 0 auto; }
+  .mini b { font-size: 8.2pt; display: block; margin-top: 1px; color: var(--t); }
+  .mini span { font-size: 7.5pt; line-height: 1.22; display: block; color: #3a4047; }
+  .ex { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 4px; }
+  .ex div { border-top: 3px solid var(--c1); background: var(--fond); padding: 1px 6px 2px; font-size: 7.7pt; line-height: 1.22; }
+  .ex b:first-child { display: block; font-size: 8.6pt; color: var(--c1); }
+  .tass { border: 1.5px solid var(--rouge); background: #fdf1ef; border-radius: 6px; padding: 2px 8px; font-size: 8pt; margin-bottom: 4px; break-inside: avoid; }
+  .tass b:first-child { color: var(--rouge); letter-spacing: .06em; font-size: 7.4pt; }
+  .num3 { display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 50%; background: var(--c2); color: #fff; font-weight: 800; font-size: 7.4pt; margin-right: 3px; }
+  .legende { font-size: 7.2pt; margin-top: 0; }
+  .carte .pan svg { max-height: 15mm; }
+  .synthese { margin-top: 5px; padding: 4px 9px 5px; }
+  .fil { font-size: 7.9pt; }
+  .fil .e { padding: 3px 3px 3px 11px; }
+  .lecon { font-size: 10pt; margin-top: 3px; }
+  .retenir { margin-top: 5px; gap: 7px; }
+  .retenir > div { padding: 3px 8px; }
+  .retenir dl { font-size: 7.9pt; line-height: 1.25; }
+  svg text { font-family: "Inter", sans-serif; }
+  svg .l { font-size: 8px; fill: #1f2328; font-weight: 600; }
+  svg .lb { font-size: 8px; fill: #1f2328; font-weight: 800; }
+  svg .lg { font-size: 7px; fill: #5f6670; }
+  svg .ld { stroke: #1f2328; stroke-width: .7; fill: none; }
+  svg .bet { fill: #d9dde3; stroke: #5f6670; stroke-width: .8; }
+  svg .acier { stroke: #8C1C13; stroke-width: 1.5; fill: none; }
+  svg .halo { paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+</style>
+
+<style>
+  .carte .fig svg, .carte svg { max-height: 46mm; }
+  .carte p, .carte li { font-size: 8.5pt; }
+  .g3 { gap: 5px; }
+  .cap { font-size: 7.4pt; color: #5f6670; font-style: italic; text-align: center; margin: 0 0 1px; }
+  .corr { border-left: 3px solid var(--rouge); background: #fdf1ef; padding: 1.5px 6px; font-size: 7.9pt; margin-top: 2px; }
+  .corr b:first-child { color: var(--rouge); font-size: 7.2pt; letter-spacing: .08em; }
+  .tag { display: inline-block; background: var(--t); color: #fff; border-radius: 3px; padding: 0 5px; font-weight: 800; font-size: 7.6pt; margin-right: 3px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#f4eee1"/><line x1="0" y1="0" x2="0" y2="6" stroke="#bfae8f" stroke-width="1"/></pattern>
+  <pattern id="h2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d9c7a3"/><line x1="0" y1="0" x2="0" y2="6" stroke="#9c8660" stroke-width="1"/></pattern>
+  <marker id="fr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker>
+  <marker id="fv" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#3C7A3E"/></marker>
+  <marker id="fk" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1f2328"/></marker>
+  <marker id="fk2" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 z" fill="#1f2328"/></marker>
+</defs></svg>
+<div class="entete">
+  <div>
+    <div class="kicker">CONSTRUCTION GÉNÉRALE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Les fondations (suite)</h1>
+  </div>
+  <div class="sous">Réaliser un pieu foré, puis préparer le sol sous la construction</div>
+</div>
+
+<div class="plan">
+  <div class="p4"><b>04 · Le pieu foré</b>implantation, cage, bétonnage</div>
+  <div class="p1"><b>04 · Après le bétonnage</b>recépage, têtes réunies</div>
+  <div class="p2"><b>05 · Sous la construction</b>béton de propreté, hérisson, polyane</div>
+  <div class="p3"><b>05 · La chape armée</b>sol du RDC, accrochée ou non</div>
+</div>
+
+<!-- ===================== 04 ===================== -->
+<section class="partie s4 c4">
+  <h2><span class="num">04</span>Réaliser un pieu foré : trois temps</h2>
+  <div class="def"><b>Pieu foré</b> : on <b>creuse sans refouler le sol</b>, puis on coule le pieu sur place. Chaque pieu est <b>implanté</b> par le topographe, <b>foré</b>, <b>armé</b> puis <b>bétonné</b>.</div>
+
+  <div class="g3">
+    <div class="carte c4"><h3><span class="tag">1</span>Implantation et forage</h3>
+<svg viewBox="0 0 170 150" role="img" aria-label="Forage à la tarière avec tubage">
+  <rect x="0" y="30" width="170" height="120" fill="url(#h)"/>
+  <line x1="0" y1="30" x2="170" y2="30" stroke="#1f2328" stroke-width="1.3"/>
+  <rect x="54" y="30" width="34" height="100" fill="#fff" stroke="#1f2328" stroke-width=".8"/>
+  <rect x="50" y="30" width="4" height="62" fill="#7b838d"/><rect x="88" y="30" width="4" height="62" fill="#7b838d"/>
+  <line x1="71" y1="2" x2="71" y2="126" stroke="#1f2328" stroke-width="3"/>
+  <path d="M56,60 L86,66 M56,72 L86,78 M56,84 L86,90 M56,96 L86,102 M56,108 L86,114 M56,120 L86,126" stroke="#1f2328" stroke-width="2.2" fill="none"/>
+  <path d="M112,30 Q124,8 148,30 Z" fill="#c9a579" stroke="#7a6a4f" stroke-width=".8"/>
+  <g stroke="#3C7A3E" stroke-width="1.6" fill="none" marker-end="url(#fv)"><path d="M92,20 Q104,6 116,18"/></g>
+  <g class="l"><text x="2" y="12">Tarière</text><text x="104" y="52" class="lg">terre extraite</text>
+  <text x="96" y="78" style="font-size:7.4px">tubage (tube</text><text x="96" y="86" style="font-size:7.4px">d'acier) :</text><text x="96" y="94" style="font-size:7.4px">tient les parois</text></g>
+  <g class="ld"><line x1="26" y1="12" x2="48" y2="40"/></g>
+  <text x="2" y="146" class="lb" style="font-size:7px">on note chaque couche et sa profondeur</text>
+</svg>
+      <ul>
+        <li>Le <b>topographe implante</b> chaque pieu.</li>
+        <li><b>Forage à la tarière</b> : elle remonte la terre extraite.</li>
+        <li><b>Tubage</b> : un tube d'acier tient les parois dans les terrains qui <b>s'éboulent</b>.</li>
+        <li>L'outil change selon le sol : on <b>note chaque couche</b> et sa profondeur.</li>
+      </ul></div>
+    <div class="carte c4"><h3><span class="tag">2</span>La cage d'armatures</h3>
+<svg viewBox="0 0 190 150" role="img" aria-label="Cage d armatures dans le forage">
+  <rect x="0" y="34" width="170" height="116" fill="url(#h)"/>
+  <line x1="0" y1="34" x2="170" y2="34" stroke="#1f2328" stroke-width="1.3"/>
+  <rect x="48" y="34" width="46" height="108" fill="#fff" stroke="#1f2328" stroke-width=".8"/>
+  <g class="acier" stroke-width="1.6"><line x1="56" y1="8" x2="56" y2="136"/><line x1="86" y1="8" x2="86" y2="136"/><line x1="64" y1="40" x2="64" y2="136" stroke-width="1"/><line x1="78" y1="40" x2="78" y2="136" stroke-width="1"/></g>
+  <g stroke="#8C1C13" stroke-width="1.1" fill="none"><rect x="54" y="48" width="34" height="3"/><rect x="54" y="68" width="34" height="3"/><rect x="54" y="88" width="34" height="3"/><rect x="54" y="108" width="34" height="3"/><rect x="54" y="128" width="34" height="3"/></g>
+  <g stroke="#1f2328" stroke-width="2.4"><line x1="68" y1="40" x2="68" y2="136" stroke="#3C7A3E"/><line x1="74" y1="40" x2="74" y2="136" stroke="#3C7A3E"/></g>
+  <g fill="#b9bec6" stroke="#5f6670" stroke-width=".8"><rect x="45" y="78" width="7" height="9"/><rect x="90" y="78" width="7" height="9"/><rect x="45" y="118" width="7" height="9"/><rect x="90" y="118" width="7" height="9"/></g>
+  <g class="ld"><line x1="110" y1="16" x2="88" y2="16"/><line x1="112" y1="84" x2="97" y2="84"/><line x1="112" y1="60" x2="75" y2="62"/></g>
+  <g class="l" style="font-size:7.4px"><text x="112" y="14">aciers en attente</text><text x="112" y="22" class="lg">dépassent en tête</text>
+  <text x="112" y="82">cales en béton</text><text x="112" y="90" class="lg">(enrobage des aciers)</text>
+  <text x="112" y="58" style="fill:#3C7A3E">tubes</text><text x="112" y="66" style="fill:#3C7A3E">d'auscultation</text>
+  <text x="2" y="14">cage</text><text x="2" y="22">d'armatures</text></g>
+</svg>
+      <ul>
+        <li>Cage <b>façonnée sur le chantier</b>, puis descendue dans le forage.</li>
+        <li>Les <b>cales en béton</b>, fixées sur la cage, la <b>centrent</b> et garantissent l'<b>enrobage</b> des aciers.</li>
+        <li>Des <b>tubes d'auscultation</b> servent au contrôle ; des <b>aciers en attente</b> dépassent en tête.</li>
+      </ul></div>
+    <div class="carte c4"><h3><span class="tag">3</span>Bétonner au tube plongeur</h3>
+<svg viewBox="0 0 170 150" role="img" aria-label="Bétonnage au tube plongeur en trois temps">
+  <g transform="translate(2,0)"><rect x="0" y="40" width="44" height="84" fill="url(#h)"/><line x1="0" y1="40" x2="44" y2="40" stroke="#1f2328" stroke-width="1.2"/><rect x="10" y="40" width="24" height="80" fill="#fff" stroke="#1f2328" stroke-width=".8"/><rect x="11" y="106" width="22" height="14" fill="#aab0b8"/><circle cx="29.3" cy="116.6" r="1.2" fill="#7c838c"/><circle cx="15.4" cy="115.7" r="2.0" fill="#7c838c"/><circle cx="24.7" cy="111.5" r="1.8" fill="#7c838c"/><circle cx="23.7" cy="113.6" r="1.3" fill="#7c838c"/><circle cx="20.9" cy="112.1" r="2.0" fill="#7c838c"/><rect x="19" y="24" width="6" height="88" fill="#5f6670"/><polygon points="12,24 32,24 25,33 19,33" fill="#8e949c" stroke="#5f6670" stroke-width=".8" transform="translate(0,-9)"/></g><g transform="translate(62,0)"><rect x="0" y="40" width="44" height="84" fill="url(#h)"/><line x1="0" y1="40" x2="44" y2="40" stroke="#1f2328" stroke-width="1.2"/><rect x="10" y="40" width="24" height="80" fill="#fff" stroke="#1f2328" stroke-width=".8"/><rect x="11" y="76" width="22" height="44" fill="#aab0b8"/><circle cx="28.8" cy="85.6" r="2.3" fill="#7c838c"/><circle cx="17.8" cy="96.7" r="2.2" fill="#7c838c"/><circle cx="19.7" cy="98.3" r="1.3" fill="#7c838c"/><circle cx="29.4" cy="116.4" r="1.3" fill="#7c838c"/><circle cx="16.0" cy="97.0" r="1.7" fill="#7c838c"/><rect x="19" y="14" width="6" height="78" fill="#5f6670"/><polygon points="12,14 32,14 25,23 19,23" fill="#8e949c" stroke="#5f6670" stroke-width=".8" transform="translate(0,-9)"/></g><g transform="translate(122,0)"><rect x="0" y="40" width="44" height="84" fill="url(#h)"/><line x1="0" y1="40" x2="44" y2="40" stroke="#1f2328" stroke-width="1.2"/><rect x="10" y="40" width="24" height="80" fill="#fff" stroke="#1f2328" stroke-width=".8"/><rect x="11" y="44" width="22" height="76" fill="#aab0b8"/><circle cx="22.2" cy="88.8" r="1.5" fill="#7c838c"/><circle cx="28.9" cy="98.1" r="2.0" fill="#7c838c"/><circle cx="21.3" cy="105.5" r="2.0" fill="#7c838c"/><circle cx="23.5" cy="54.4" r="1.6" fill="#7c838c"/><circle cx="29.5" cy="86.1" r="1.6" fill="#7c838c"/></g>
+  <g stroke="#1f2328" stroke-width="1.2" fill="none" marker-end="url(#fk)"><line x1="94" y1="30" x2="94" y2="12"/></g>
+  <g stroke="#1f2328" stroke-width="1.2" fill="none" marker-end="url(#fk)"><line x1="150" y1="12" x2="150" y2="26" stroke-dasharray="2 2" opacity="0"/></g>
+  <g font-size="7" font-weight="800" fill="#fff"><circle cx="9" cy="130" r="6" fill="#3C7A3E"/><text x="9" y="133" text-anchor="middle">1</text><circle cx="69" cy="130" r="6" fill="#3C7A3E"/><text x="69" y="133" text-anchor="middle">2</text><circle cx="129" cy="130" r="6" fill="#3C7A3E"/><text x="129" y="133" text-anchor="middle">3</text></g>
+  <g class="l" style="font-size:6.8px"><text x="2" y="146">tube au fond</text><text x="62" y="146">le béton monte</text><text x="122" y="146">tubage retiré</text>
+  </g>
+  
+</svg>
+      <ul>
+        <li>Le <b>tube descend jusqu'au fond</b> : le béton part <b>du bas</b>.</li>
+        <li>Le béton monte ; on <b>remonte le tube</b>, qui <b>reste plongé</b> dans le béton.</li>
+        <li>Pieu rempli jusqu'en haut : le <b>tubage est retiré</b>.</li>
+      </ul>
+      <div class="corr"><b>CORRECTION</b> On coule du <b>béton</b>, pas un « coulis », et <b>jamais en le laissant tomber d'en haut</b>.</div></div>
+  </div>
+
+  <div class="g2" style="margin-top:5px">
+    <div class="carte c4"><h3>Après le bétonnage : le recépage</h3>
+<svg viewBox="0 0 250 112" role="img" aria-label="Recépage de la tête du pieu">
+  <rect x="0" y="50" width="112" height="62" fill="url(#h)"/>
+  <line x1="0" y1="50" x2="112" y2="50" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="76" y="50" width="26" height="62" fill="#aab0b8"/><rect x="76" y="26" width="26" height="24" fill="#d7c3a1" stroke="#7a6a4f" stroke-width=".8"/>
+  <g class="acier" stroke-width="1.8"><line x1="80" y1="6" x2="80" y2="108"/><line x1="98" y1="6" x2="98" y2="108"/><line x1="89" y1="6" x2="89" y2="108" stroke-width="1.2"/></g>
+  <line x1="70" y1="26" x2="108" y2="26" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="4 2"/>
+  <text x="2" y="10" class="lb" style="font-size:7.4px">1 · après coulage :</text><text x="2" y="19" class="lg">les aciers dépassent</text>
+  <text x="2" y="38" class="lb" style="font-size:7px;fill:#c0392b">béton de tête :</text><text x="2" y="46" class="lb" style="font-size:7px;fill:#c0392b">mauvaise qualité</text>
+  <g stroke="#3C7A3E" stroke-width="1.6" fill="none" marker-end="url(#fv)"><path d="M114,56 H134"/></g>
+  <rect x="138" y="50" width="112" height="62" fill="url(#h)"/>
+  <line x1="138" y1="50" x2="250" y2="50" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="214" y="50" width="26" height="62" fill="#aab0b8"/>
+  <g class="acier" stroke-width="1.8"><line x1="218" y1="26" x2="218" y2="108"/><line x1="236" y1="26" x2="236" y2="108"/><line x1="227" y1="26" x2="227" y2="108" stroke-width="1.2"/></g>
+  <rect x="160" y="40" width="22" height="9" fill="#d7c3a1" stroke="#7a6a4f" stroke-width=".8" transform="rotate(-14 171 44)"/>
+  <text x="140" y="10" class="lb" style="font-size:7.4px">2 · recépage :</text><text x="140" y="19" class="lg">on casse le béton de tête,</text><text x="140" y="27" class="lg">on garde les aciers</text>
+  <line x1="196" y1="50" x2="248" y2="50" stroke="#3C7A3E" stroke-width="1.6" stroke-dasharray="4 2"/>
+  <text x="142" y="68" class="lb halo" style="font-size:6.8px;fill:#3C7A3E">niveau du plan</text><text x="142" y="76" class="lb halo" style="font-size:6.8px;fill:#3C7A3E">de fondation</text>
+</svg>
+      <p><b>Recépage</b> : on <b>coupe la tête du pieu</b> au niveau prévu par le <b>plan de fondation</b>, pour <b>éliminer le béton de mauvaise qualité</b>. On casse le béton de tête, on <b>garde les aciers</b>.</p></div>
+    <div class="carte c4"><h3>Pieux et radier : un exemple</h3>
+<svg viewBox="0 0 290 112" role="img" aria-label="Radier général sur pieux">
+  <rect x="0" y="40" width="250" height="72" fill="url(#h)"/>
+  <line x1="0" y1="40" x2="250" y2="40" stroke="#1f2328" stroke-width="1.2"/>
+  <g fill="#aab0b8" stroke="#5f6670" stroke-width=".6"><rect x="36" y="46" width="18" height="62"/><rect x="116" y="46" width="18" height="62"/><rect x="196" y="46" width="18" height="62"/></g>
+  <rect x="14" y="46" width="222" height="4" fill="#d9dde3"/>
+  <rect x="14" y="26" width="222" height="20" class="bet"/>
+  <g class="acier" stroke-width="1.8"><line x1="41" y1="4" x2="41" y2="62"/><line x1="49" y1="4" x2="49" y2="62"/><line x1="121" y1="4" x2="121" y2="62"/><line x1="129" y1="4" x2="129" y2="62"/><line x1="201" y1="4" x2="201" y2="62"/><line x1="209" y1="4" x2="209" y2="62"/></g>
+  <line x1="18" y1="40" x2="232" y2="40" stroke="#8C1C13" stroke-width="1.2"/>
+  <g class="ld"><line x1="238" y1="36" x2="218" y2="36"/><line x1="238" y1="50" x2="226" y2="48"/></g>
+  <text x="240" y="34" class="l" style="font-size:7px">radier</text><text x="240" y="52" class="l" style="font-size:7px">béton de</text><text x="240" y="60" class="l" style="font-size:7px">propreté</text>
+  <text x="125" y="100" class="lb halo" text-anchor="middle" style="font-size:7.4px">têtes de pieux réunies</text>
+</svg>
+      <p><b>À retenir :</b> les têtes de pieux sont <b>toujours réunies</b>, par des <b>longrines</b> ou par un <b>radier général</b>. Le <b>béton de propreté</b> est coulé autour des têtes de pieux, sous le radier (ex. : radier sur pieux, assise d'un minaret).</p></div>
+  </div>
+
+  <div class="synthese" style="margin-top:5px">
+    <h4>Synthèse : la vie d'un pieu foré</h4>
+    <div class="fil" style="grid-template-columns:repeat(6,1fr)">
+      <div class="e" style="background:var(--c1)"><b>Implanter</b>le topographe</div>
+      <div class="e" style="background:var(--c2)"><b>Forer</b>tarière, tubage</div>
+      <div class="e" style="background:#a0301f"><b>Armer</b>cage et cales</div>
+      <div class="e" style="background:var(--c3)"><b>Bétonner</b>tube plongeur</div>
+      <div class="e" style="background:#6b7a2a"><b>Recéper</b>tête coupée</div>
+      <div class="e" style="background:var(--c4)"><b>Réunir</b>longrines / radier</div>
+    </div>
+  </div>
+  <div class="notes"><h4>Mes notes</h4><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div></div>
+</section>
+
+<div class="pg2">
+<!-- ===================== 05 ===================== -->
+<section class="partie s2 c2">
+  <h2><span class="num">05</span>Sous la construction : propreté, hérisson, chape</h2>
+  <div class="def"><b>Ce que l'on coule sur le sol</b> : béton de propreté, hérisson, film polyane et chape armée. Ils préparent le sol <b>propre</b>, <b>sec</b> et <b>plan</b> pour recevoir le bâtiment.</div>
+
+  <div style="display:grid; grid-template-columns: 1.7fr 1fr; gap:8px; align-items:start;">
+    <div class="fig">
+<svg viewBox="0 0 410 190" role="img" aria-label="Coupe : du sol à la chape armée" style="max-height:70mm">
+  <rect x="0" y="62" width="190" height="128" fill="url(#h)"/>
+  <line x1="0" y1="62" x2="130" y2="62" stroke="#1f2328" stroke-width="1.2"/>
+  <text x="6" y="108" class="lb halo" style="font-size:7.6px">Remblai compacté</text>
+  <!-- poteau + pré-poteau -->
+  <rect x="116" y="6" width="12" height="72" class="bet"/><line x1="120" y1="6" x2="120" y2="150" class="acier" stroke-width="1.2"/><line x1="124" y1="6" x2="124" y2="150" class="acier" stroke-width="1.2"/>
+  <rect x="112" y="78" width="20" height="62" class="bet" opacity="0"/>
+  <rect x="116" y="78" width="12" height="62" class="bet"/>
+  <!-- longrine + chape + hérisson -->
+  <rect x="100" y="44" width="44" height="34" class="bet"/>
+  <rect x="144" y="44" width="150" height="14" fill="#cfd4da" stroke="#555c66" stroke-width=".8"/><line x1="146" y1="48" x2="292" y2="48" class="acier" stroke-width=".9"/><line x1="146" y1="54" x2="292" y2="54" class="acier" stroke-width=".9"/>
+  <rect x="144" y="58" width="150" height="24" fill="#ece9e1" stroke="#5f6670" stroke-width=".8"/>
+  <circle cx="212.1" cy="71.1" r="2.2" fill="#9aa0a8"/><circle cx="214.1" cy="70.1" r="1.8" fill="#9aa0a8"/><circle cx="173.6" cy="70.2" r="1.9" fill="#9aa0a8"/><circle cx="261.2" cy="62.7" r="1.5" fill="#9aa0a8"/><circle cx="160.1" cy="75.6" r="1.9" fill="#9aa0a8"/><circle cx="153.0" cy="78.7" r="2.3" fill="#9aa0a8"/><circle cx="241.2" cy="72.1" r="1.3" fill="#9aa0a8"/><circle cx="149.2" cy="70.5" r="1.2" fill="#9aa0a8"/><circle cx="174.4" cy="65.4" r="1.1" fill="#9aa0a8"/><circle cx="213.8" cy="68.9" r="2.1" fill="#9aa0a8"/><circle cx="221.8" cy="72.5" r="1.7" fill="#9aa0a8"/><circle cx="242.4" cy="69.2" r="1.4" fill="#9aa0a8"/><circle cx="290.7" cy="78.9" r="2.1" fill="#9aa0a8"/><circle cx="248.9" cy="66.7" r="1.4" fill="#9aa0a8"/><circle cx="188.6" cy="62.3" r="2.0" fill="#9aa0a8"/><circle cx="204.7" cy="76.2" r="1.6" fill="#9aa0a8"/><circle cx="285.0" cy="76.3" r="1.1" fill="#9aa0a8"/><circle cx="177.2" cy="77.4" r="1.7" fill="#9aa0a8"/><circle cx="288.2" cy="68.2" r="1.2" fill="#9aa0a8"/><circle cx="237.6" cy="75.0" r="1.4" fill="#9aa0a8"/><circle cx="159.5" cy="67.0" r="2.3" fill="#9aa0a8"/><circle cx="256.2" cy="63.1" r="1.4" fill="#9aa0a8"/><circle cx="161.6" cy="62.1" r="2.1" fill="#9aa0a8"/><circle cx="172.6" cy="71.1" r="1.6" fill="#9aa0a8"/><circle cx="174.5" cy="74.2" r="1.3" fill="#9aa0a8"/><circle cx="239.7" cy="63.1" r="1.6" fill="#9aa0a8"/>
+  <!-- semelle + gros béton + sable -->
+  <rect x="100" y="140" width="44" height="12" class="bet"/><path d="M104,146 V150 H140 V146" class="acier" stroke-width="1.1"/>
+  <rect x="94" y="152" width="56" height="26" fill="#e4e6e9" stroke="#5f6670" stroke-width=".8"/>
+  <circle cx="128.1" cy="169.8" r="2.1" fill="#8e949c"/><circle cx="144.1" cy="169.8" r="2.2" fill="#8e949c"/><circle cx="98.5" cy="164.3" r="2.2" fill="#8e949c"/><circle cx="129.4" cy="173.0" r="1.2" fill="#8e949c"/><circle cx="120.5" cy="159.9" r="1.8" fill="#8e949c"/><circle cx="125.7" cy="155.3" r="1.4" fill="#8e949c"/><circle cx="111.0" cy="173.3" r="2.0" fill="#8e949c"/><circle cx="105.0" cy="170.9" r="1.3" fill="#8e949c"/><circle cx="127.9" cy="157.5" r="1.1" fill="#8e949c"/>
+  <rect x="86" y="178" width="72" height="8" fill="#eadfbf" stroke="#9c8660" stroke-width=".8"/>
+  <g class="ld">
+    <line x1="302" y1="14" x2="128" y2="14"/><line x1="302" y1="50" x2="270" y2="50"/><line x1="302" y1="70" x2="270" y2="70"/><line x1="302" y1="96" x2="144" y2="62"/>
+    <line x1="302" y1="116" x2="130" y2="112"/><line x1="302" y1="146" x2="146" y2="146"/><line x1="302" y1="166" x2="150" y2="164"/><line x1="302" y1="184" x2="160" y2="182"/>
+  </g>
+  <g class="l" style="font-size:7.6px"><text x="305" y="17">Poteau, aciers en attente</text><text x="305" y="53" style="font-weight:800;fill:#8C1C13">Chape armée</text><text x="305" y="73" style="font-weight:800">Hérisson</text>
+  <text x="305" y="99">Longrine</text><text x="305" y="119">Pré-poteau</text><text x="305" y="149">Semelle</text><text x="305" y="169">Gros béton</text><text x="305" y="187">Couche de sable</text></g>
+  <text x="212" y="38" class="lb halo" text-anchor="middle" style="font-size:7px;fill:#8C1C13">sol du rez-de-chaussée</text>
+</svg><div class="legende">Coupe : du remblai compacté jusqu'à la chape armée</div></div>
+    <div>
+      <div class="carte c2" style="margin:0 0 4px"><h3>La chape armée, sol du RDC</h3>
+        <p><b>Chape armée</b> : dalle en béton armé de <b>8 à 20 cm</b>, coulée sur le <b>hérisson</b>.</p>
+        <ul><li><b>Une ou deux nappes d'aciers</b>, ou un <b>treillis soudé</b>.</li><li>Elle forme le <b>sol du rez-de-chaussée</b>.</li><li>Ailleurs, on dit « <b>dallage sur terre-plein</b> ».</li></ul></div>
+      <div class="carte c2" style="margin:0"><h3>Le béton de propreté</h3>
+        <p><b>Béton maigre</b>, peu dosé en ciment, étalé en fond de fouille pour une surface <b>plane, propre, non terreuse</b>.</p>
+        <ul><li><b>Le seul béton qu'on ne vibre pas.</b></li><li>Support propre des <b>semelles</b>, <b>longrines</b>, <b>radier</b>.</li><li>On y <b>trace les axes</b> ; il reçoit les <b>cales des aciers</b>.</li></ul></div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-top:5px">
+    <div class="carte c2"><h3>Béton de propreté : où le trouve-t-on ?</h3>
+<svg viewBox="0 0 170 92" role="img" aria-label="Béton de propreté sous une semelle et sous une longrine">
+  <rect x="0" y="30" width="170" height="62" fill="url(#h)"/>
+  <line x1="0" y1="30" x2="170" y2="30" stroke="#1f2328" stroke-width="1.2"/>
+  <rect x="14" y="34" width="62" height="5" fill="#aab0b8" stroke="#5f6670" stroke-width=".6"/>
+  <rect x="94" y="46" width="62" height="5" fill="#aab0b8" stroke="#5f6670" stroke-width=".6"/>
+  <rect x="18" y="14" width="54" height="20" class="bet"/><line x1="22" y1="28" x2="68" y2="28" class="acier" stroke-width="1.6"/>
+  <rect x="98" y="26" width="54" height="20" class="bet"/><line x1="102" y1="40" x2="148" y2="40" class="acier" stroke-width="1.6"/>
+  <g fill="#b9bec6" stroke="#5f6670" stroke-width=".6"><rect x="28" y="30" width="6" height="4"/><rect x="56" y="30" width="6" height="4"/><rect x="108" y="42" width="6" height="4"/><rect x="136" y="42" width="6" height="4"/></g>
+  <g class="ld"><line x1="45" y1="58" x2="45" y2="40"/><line x1="125" y1="70" x2="125" y2="52"/></g>
+  <text x="45" y="68" class="lb" text-anchor="middle" style="font-size:7.2px;fill:#8C1C13">béton de propreté</text><text x="45" y="77" class="lg" text-anchor="middle">5 à 10 cm, non armé</text>
+  <text x="125" y="82" class="lb" text-anchor="middle" style="font-size:7.2px">à différents niveaux</text>
+  <text x="45" y="9" class="lg" text-anchor="middle">semelle</text><text x="125" y="9" class="lg" text-anchor="middle">longrine</text>
+</svg>
+      <p>Couche <b>mince, de 5 à 10 cm environ</b>, <b>non armée</b> : sous les semelles, et sous les longrines à <b>différents niveaux</b> (même au droit d'un <b>joint de dilatation</b>).</p></div>
+    <div class="carte c2"><h3>Le hérisson : deux solutions</h3>
+<svg viewBox="0 0 270 112" role="img" aria-label="Hérisson : gros blocage ou sable de concassage">
+  <text x="2" y="9" class="lb" style="font-size:7.6px;fill:#B4501E">Type 1 · gros blocage</text>
+  <rect x="2" y="28" width="12" height="52" class="bet"/>
+  <rect x="14" y="14" width="116" height="9" fill="#cfd4da" stroke="#555c66" stroke-width=".8"/><line x1="16" y1="18" x2="128" y2="18" class="acier" stroke-width=".9"/>
+  <rect x="14" y="23" width="116" height="32" fill="#ece9e1" stroke="#5f6670" stroke-width=".8"/>
+  <g fill="#d6d0c2" stroke="#6b6558" stroke-width=".8"><rect x="18" y="26" width="9" height="26" rx="3"/><rect x="29" y="28" width="9" height="24" rx="3"/><rect x="40" y="25" width="10" height="27" rx="3"/><rect x="52" y="28" width="9" height="24" rx="3"/><rect x="63" y="26" width="10" height="26" rx="3"/><rect x="75" y="28" width="9" height="24" rx="3"/><rect x="86" y="25" width="10" height="27" rx="3"/><rect x="98" y="28" width="9" height="24" rx="3"/><rect x="109" y="26" width="10" height="26" rx="3"/></g>
+  <rect x="14" y="55" width="116" height="30" fill="url(#h)"/>
+  <text x="2" y="95" class="lg">gros blocs posés debout à la main ;</text><text x="2" y="103" class="lg">vides remplis de pierres cassées</text>
+  <text x="140" y="9" class="lb" style="font-size:7.6px;fill:#B4501E">Type 2 · sable de concassage</text>
+  <rect x="140" y="28" width="12" height="52" class="bet"/>
+  <rect x="152" y="14" width="116" height="9" fill="#cfd4da" stroke="#555c66" stroke-width=".8"/><line x1="154" y1="18" x2="266" y2="18" class="acier" stroke-width=".9"/>
+  <line x1="152" y1="26" x2="268" y2="26" stroke="#2F4858" stroke-width="2"/>
+  <rect x="152" y="27" width="116" height="28" fill="#eadfbf" stroke="#9c8660" stroke-width=".8"/>
+  <circle cx="173.1" cy="45.2" r="1.9" fill="#b79a5e"/><circle cx="207.7" cy="34.8" r="2.1" fill="#b79a5e"/><circle cx="243.9" cy="41.3" r="1.7" fill="#b79a5e"/><circle cx="181.0" cy="30.1" r="1.5" fill="#b79a5e"/><circle cx="219.4" cy="31.5" r="2.1" fill="#b79a5e"/><circle cx="180.5" cy="35.1" r="1.2" fill="#b79a5e"/><circle cx="264.7" cy="46.3" r="2.2" fill="#b79a5e"/><circle cx="222.7" cy="30.7" r="1.5" fill="#b79a5e"/><circle cx="209.7" cy="32.5" r="2.2" fill="#b79a5e"/><circle cx="195.5" cy="33.4" r="2.1" fill="#b79a5e"/><circle cx="168.7" cy="50.4" r="1.6" fill="#b79a5e"/><circle cx="215.7" cy="37.5" r="1.7" fill="#b79a5e"/><circle cx="175.6" cy="30.8" r="2.1" fill="#b79a5e"/><circle cx="180.8" cy="47.2" r="1.4" fill="#b79a5e"/><circle cx="261.6" cy="49.7" r="2.0" fill="#b79a5e"/><circle cx="238.9" cy="42.8" r="2.0" fill="#b79a5e"/><circle cx="168.5" cy="40.5" r="2.1" fill="#b79a5e"/><circle cx="177.1" cy="50.3" r="2.2" fill="#b79a5e"/><circle cx="200.1" cy="38.0" r="1.6" fill="#b79a5e"/><circle cx="197.4" cy="51.9" r="1.6" fill="#b79a5e"/><circle cx="158.0" cy="32.1" r="2.0" fill="#b79a5e"/><circle cx="264.2" cy="40.9" r="1.7" fill="#b79a5e"/><circle cx="215.5" cy="46.5" r="1.4" fill="#b79a5e"/><circle cx="222.0" cy="42.2" r="1.8" fill="#b79a5e"/><circle cx="174.9" cy="33.7" r="1.5" fill="#b79a5e"/><circle cx="257.0" cy="37.6" r="1.8" fill="#b79a5e"/><circle cx="188.7" cy="32.3" r="1.2" fill="#b79a5e"/><circle cx="244.5" cy="47.1" r="1.5" fill="#b79a5e"/><circle cx="230.2" cy="44.9" r="2.2" fill="#b79a5e"/><circle cx="260.4" cy="39.0" r="2.3" fill="#b79a5e"/><rect x="152" y="55" width="116" height="30" fill="url(#h)"/>
+  <text x="258" y="40" class="lb halo" text-anchor="end" style="font-size:7px;fill:#2F4858" opacity="0">.</text>
+  <text x="140" y="95" class="lg">sable compacté, puis film polyane</text><text x="140" y="103" class="lg">(feuille plastique de protection)</text>
+  <text x="262" y="23" class="lg" text-anchor="end" style="fill:#2F4858;font-weight:800" opacity="0">.</text>
+  <g class="ld"><line x1="212" y1="30" x2="258" y2="40" opacity="0"/></g>
+</svg>
+      <p><b>Hérisson</b> : couche de <b>pierres posées à la main</b> sous la chape armée ; il <b>évite les remontées d'humidité</b> du sol.</p></div>
+  </div>
+
+  <div class="g2" style="margin-top:5px">
+    <div class="carte c2"><h3>Hérisson et film polyane sur chantier</h3>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin:2px 0 3px">
+        <div class="mini c2"><b style="font-size:7.8pt">1</b><span>hérisson en <b>gros blocage</b>, entre les longrines</span></div>
+        <div class="mini c2"><b style="font-size:7.8pt">2</b><span><b>sable de concassage</b> entre les longrines</span></div>
+        <div class="mini c2"><b style="font-size:7.8pt">3</b><span><b>compactage</b> à la plaque vibrante</span></div>
+        <div class="mini c2"><b style="font-size:7.8pt">4</b><span><b>rouleau de film polyane</b></span></div>
+      </div>
+      <p>Le <b>film polyane</b> est une feuille plastique de protection : il isole la chape de l'humidité.</p></div>
+    <div class="carte c2"><h3>Chape accrochée ou non accrochée</h3>
+<svg viewBox="0 0 270 96" role="img" aria-label="Chape accrochée ou non accrochée">
+  <text x="2" y="9" class="lb" style="font-size:7.6px;fill:#B4501E">Chape accrochée</text>
+  <rect x="0" y="54" width="128" height="36" fill="url(#h)"/>
+  <rect x="4" y="22" width="16" height="48" class="bet"/><line x1="8" y1="24" x2="8" y2="66" class="acier" stroke-width="1"/>
+  <rect x="4" y="22" width="124" height="14" fill="#cfd4da" stroke="#555c66" stroke-width=".8"/><line x1="6" y1="26" x2="126" y2="26" class="acier" stroke-width=".9"/><line x1="4" y1="36" x2="20" y2="36" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="3 2"/>
+  <rect x="20" y="36" width="108" height="18" fill="#ece9e1" stroke="#5f6670" stroke-width=".8"/><circle cx="46.1" cy="50.5" r="1.3" fill="#9aa0a8"/><circle cx="94.9" cy="40.0" r="1.4" fill="#9aa0a8"/><circle cx="124.9" cy="41.5" r="1.9" fill="#9aa0a8"/><circle cx="69.8" cy="44.4" r="1.7" fill="#9aa0a8"/><circle cx="42.6" cy="49.0" r="1.2" fill="#9aa0a8"/><circle cx="46.9" cy="39.2" r="1.4" fill="#9aa0a8"/><circle cx="64.6" cy="49.8" r="1.6" fill="#9aa0a8"/><circle cx="34.6" cy="42.1" r="2.3" fill="#9aa0a8"/><circle cx="29.4" cy="46.4" r="1.6" fill="#9aa0a8"/><circle cx="90.4" cy="43.1" r="1.9" fill="#9aa0a8"/><circle cx="73.8" cy="46.8" r="2.2" fill="#9aa0a8"/><circle cx="82.3" cy="40.7" r="1.2" fill="#9aa0a8"/><circle cx="119.5" cy="44.9" r="1.3" fill="#9aa0a8"/><circle cx="119.5" cy="45.9" r="2.0" fill="#9aa0a8"/><circle cx="112.9" cy="42.4" r="1.5" fill="#9aa0a8"/><circle cx="112.6" cy="40.6" r="2.0" fill="#9aa0a8"/>
+  <text x="2" y="80" class="lg" style="font-size:6.8px">longrine coulée moins l'épaisseur</text><text x="2" y="88" class="lg" style="font-size:6.8px">de la chape : aciers mariés</text>
+  <text x="26" y="48" class="lb halo" style="font-size:6.6px;fill:#c0392b" opacity="0">.</text>
+  <text x="140" y="9" class="lb" style="font-size:7.6px;fill:#B4501E">Chape non accrochée</text>
+  <rect x="140" y="54" width="130" height="36" fill="url(#h)"/>
+  <rect x="142" y="14" width="16" height="56" class="bet"/>
+  <rect x="158" y="22" width="3" height="14" fill="#e8c547" stroke="#a88a00" stroke-width=".5"/>
+  <rect x="161" y="22" width="107" height="14" fill="#cfd4da" stroke="#555c66" stroke-width=".8"/><line x1="163" y1="26" x2="266" y2="26" class="acier" stroke-width=".9"/>
+  <rect x="158" y="36" width="110" height="18" fill="#ece9e1" stroke="#5f6670" stroke-width=".8"/><circle cx="209.2" cy="43.5" r="1.3" fill="#9aa0a8"/><circle cx="251.1" cy="39.1" r="1.7" fill="#9aa0a8"/><circle cx="254.4" cy="40.0" r="1.8" fill="#9aa0a8"/><circle cx="225.1" cy="39.5" r="1.6" fill="#9aa0a8"/><circle cx="234.2" cy="44.4" r="2.0" fill="#9aa0a8"/><circle cx="177.3" cy="41.9" r="1.2" fill="#9aa0a8"/><circle cx="213.7" cy="50.1" r="1.8" fill="#9aa0a8"/><circle cx="241.5" cy="43.6" r="2.0" fill="#9aa0a8"/><circle cx="171.6" cy="42.5" r="1.9" fill="#9aa0a8"/><circle cx="236.5" cy="44.1" r="1.2" fill="#9aa0a8"/><circle cx="188.7" cy="41.5" r="1.4" fill="#9aa0a8"/><circle cx="245.2" cy="41.4" r="2.2" fill="#9aa0a8"/><circle cx="252.5" cy="39.7" r="1.6" fill="#9aa0a8"/><circle cx="212.1" cy="39.3" r="1.6" fill="#9aa0a8"/><circle cx="255.3" cy="40.3" r="1.8" fill="#9aa0a8"/><circle cx="173.6" cy="45.9" r="2.2" fill="#9aa0a8"/>
+  <text x="164" y="20" class="lb" style="font-size:6.8px;fill:#a88a00">isolant</text>
+  <text x="140" y="80" class="lg" style="font-size:6.8px">longrine coulée en entier ; chape</text><text x="140" y="88" class="lg" style="font-size:6.8px">à part, séparée par un isolant</text>
+</svg>
+      <p><b>Accrochée</b> : longrine et chape <b>font corps</b>. <b>Non accrochée</b> : chape à part, séparée par un <b>isolant</b> (cas des <b>ateliers à machines vibrantes</b>).</p></div>
+  </div>
+
+  <div class="synthese" style="margin-top:5px">
+    <h4>Synthèse : du sol au sol fini du rez-de-chaussée</h4>
+    <div class="fil" style="grid-template-columns:repeat(5,1fr)">
+      <div class="e" style="background:var(--c1)"><b>Remblai</b>compacté</div>
+      <div class="e" style="background:var(--c2)"><b>Hérisson</b>gros blocage ou sable de concassage</div>
+      <div class="e" style="background:#a0301f"><b>Film polyane</b>contre l'humidité</div>
+      <div class="e" style="background:var(--c3)"><b>Chape armée</b>8 à 20 cm</div>
+      <div class="e" style="background:var(--c4)"><b>Sol du RDC</b>dallage sur terre-plein</div>
+    </div>
+  </div>
+
+  <div class="retenir">
+    <div>
+      <h4>À retenir</h4>
+      <dl>
+        <dt>Pieu foré :</dt><dd>implanter, forer, armer, bétonner (tube plongeur), recéper, réunir les têtes.</dd>
+        <dt>Béton de propreté :</dt><dd>5 à 10 cm, non armé, jamais vibré.</dd>
+        <dt>Hérisson :</dt><dd>pierres posées à la main, contre l'humidité.</dd>
+        <dt>Chape armée :</dt><dd>8 à 20 cm, sol du RDC.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Tarière :</dt><dd>outil de forage en hélice.</dd>
+        <dt>Trémie :</dt><dd>entonnoir qui sert à bétonner le pieu.</dd>
+        <dt>Enrobage :</dt><dd>béton qui protège les aciers.</dd>
+        <dt>Recépage :</dt><dd>coupe de la tête du pieu.</dd>
+        <dt>Polyane :</dt><dd>film plastique de protection.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+</div>
+
+</body>
+</html>
