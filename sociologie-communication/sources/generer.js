@@ -12,37 +12,30 @@ const p = (runs, o = {}) => new Paragraph({ spacing: { after: 30, ...sp }, child
 const puce = (runs) => new Paragraph({ numbering: { reference: "p", level: 0 }, spacing: { after: 20, ...sp }, children: runs });
 const B = (t) => r(t, { bold: true });
 
-const etape = (n, t, d, ex) => new Paragraph({ numbering: { reference: "p", level: 0 }, spacing: { after: 20, ...sp }, children: [B(n + " " + t + " : "), r(d + " "), r(ex, { italics: true, color: GRIS })] });
+const para = (runs) => new Paragraph({ alignment: AlignmentType.JUSTIFIED, indent: { firstLine: cm(0.6) }, spacing: { after: 70, ...sp }, children: runs });
+const sous = (t) => new Paragraph({ spacing: { before: 60, after: 30 }, children: [r(t, { bold: true, italics: true, size: 20, color: BLEU })] });
 const enfants = [
   new Paragraph({ spacing: { after: 20 }, children: [r("Sociologie · 1re année Architecture · ESAD Tunis · Rostom Karoui", { size: 16, color: GRIS })] }),
-  new Paragraph({ spacing: { after: 60 }, border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: ROUGE, space: 3 } },
+  new Paragraph({ spacing: { after: 80 }, border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: ROUGE, space: 3 } },
     children: [r("Pourquoi est-il difficile de se comprendre même lorsqu'on parle la même langue ?", { bold: true, size: 26, color: ROUGE })] }),
-  p([B("Idée de départ : "), r("parler la même langue ne suffit pas. Ce sont nos "), B("modes de communication"), r(" qui créent soit le "), B("conflit"), r(", soit la "), B("compréhension, la coopération et l'entraide"), r(". Le but : créer un lien qui n'est pas basé sur la violence.")]),
 
-  titre("1. Qui est Marshall Rosenberg ?"),
-  puce([B("Psychologue américain"), r(" (né en 1934 à Canton, Ohio – mort en 2015), élève de Carl Rogers, le psychologue de l'écoute bienveillante.")]),
-  puce([r("Il grandit à Detroit, dans un quartier marqué par la violence et les émeutes raciales de 1943 : il se demande "), B("pourquoi certains deviennent violents et d'autres restent bienveillants"), r(".")]),
-  puce([r("Il crée la "), B("communication non violente (CNV)"), r(" dans les années 1960-70 et fonde en 1984 le "), B("Center for Nonviolent Communication"), r(". Il l'enseigne dans des écoles, des familles et des zones de conflit.")]),
-  puce([B("Livre principal : "), r("« Les mots sont des fenêtres (ou bien ce sont des murs) », 1999.")]),
+  titre("Introduction"),
+  para([r("Parler la même langue ne garantit pas que l'on se comprenne. Dans une famille, entre amis ou à l'école, des malentendus naissent chaque jour entre des personnes qui utilisent pourtant les mêmes mots. Le problème ne vient donc pas de la langue elle-même, mais des "), B("modes de communication"), r(" que nous adoptons : ils peuvent être à l'origine du "), B("conflit"), r(" ou, au contraire, de la "), B("compréhension, de la coopération et de l'entraide"), r(". Pour comprendre ce phénomène et chercher comment tisser un lien qui ne repose pas sur la violence, nous nous appuierons sur les travaux de Marshall Rosenberg.")]),
 
-  titre("2. Pourquoi on se comprend mal, selon Rosenberg"),
-  p([r("Même en parlant la même langue, on utilise souvent un "), B("langage « chacal »"), r(" qui coupe le lien :")]),
-  puce([B("Juger et étiqueter : "), r("« Tu es égoïste », « Il est nul ».")]),
-  puce([B("Comparer : "), r("« Ton frère, lui, il réussit ».")]),
-  puce([B("Exiger et menacer : "), r("« Fais-le, sinon… ».")]),
-  puce([B("Nier sa responsabilité : "), r("« Je n'ai pas le choix », « C'est à cause de toi ».")]),
-  p([r("→ L'autre entend une "), B("attaque"), r(", il se défend ou contre-attaque : c'est le début du conflit. Les mots deviennent des "), B("murs"), r(".")]),
+  titre("I. Marshall Rosenberg et la communication non violente"),
+  para([r("Marshall Rosenberg est un "), B("psychologue américain"), r(", né en 1934 à Canton, dans l'Ohio, et mort en 2015. Élève de Carl Rogers, connu pour son approche fondée sur l'écoute bienveillante, il grandit à Detroit dans un quartier marqué par la violence. Cette expérience l'amène à se poser une question centrale : "), B("pourquoi certaines personnes deviennent-elles violentes alors que d'autres restent bienveillantes, même dans des situations difficiles ?")]),
+  para([r("Pour y répondre, il développe dans les années 1960 et 1970 la "), B("communication non violente (CNV)"), r(", puis fonde en 1984 le "), B("Center for Nonviolent Communication"), r(". Il diffuse sa méthode dans des écoles, des familles, des entreprises et même des zones de conflit. Son livre principal, "), r("Les mots sont des fenêtres (ou bien ce sont des murs)", { italics: true }), r(" (1999), résume son idée : selon la manière dont nous les utilisons, les mots peuvent rapprocher les personnes ou les séparer.")]),
 
-  titre("3. La solution : la CNV en 4 étapes (le langage « girafe »)"),
-  p([r("La girafe est l'animal terrestre qui a le plus grand cœur et elle voit loin : elle symbolise l'écoute et la bienveillance.", { italics: true, color: GRIS })]),
-  etape("1.", "Observer", "décrire les faits, sans juger.", "« Tu es arrivé 30 minutes après l'heure. »"),
-  etape("2.", "Sentiment", "dire ce que je ressens.", "« Je me sens déçu… »"),
-  etape("3.", "Besoin", "dire le besoin qui se cache derrière.", "« …car j'ai besoin qu'on respecte mon temps. »"),
-  etape("4.", "Demande", "faire une demande claire et réalisable (pas un ordre).", "« La prochaine fois, peux-tu me prévenir ? »"),
-  p([r("Et surtout : "), B("écouter l'autre avec empathie"), r(", en cherchant à son tour son sentiment et son besoin.")]),
+  titre("II. Pourquoi on se comprend mal : le langage « chacal »"),
+  para([r("Pour Rosenberg, nous avons appris très tôt une façon de parler qui coupe le lien avec l'autre. Il la symbolise par le "), B("chacal"), r(". Ce langage consiste d'abord à "), B("juger et étiqueter"), r(" les personnes (« tu es égoïste »), à les "), B("comparer"), r(" (« ton frère, lui, réussit »), à "), B("exiger"), r(" ou menacer (« fais-le, sinon… »), et enfin à "), B("nier sa propre responsabilité"), r(" (« c'est à cause de toi », « je n'ai pas le choix »).")]),
+  para([r("Le message, même exprimé dans une langue commune, est alors reçu comme une "), B("attaque"), r(". Celui qui l'entend ne retient plus le contenu, mais le reproche : il se défend ou contre-attaque, et le conflit commence. Les mots deviennent des "), B("murs"), r(". C'est pourquoi deux personnes peuvent parler longtemps sans jamais se comprendre.")]),
+
+  titre("III. La solution : parler et écouter en « girafe »"),
+  para([r("À l'opposé du chacal, Rosenberg choisit la "), B("girafe"), r(", symbole de l'écoute et de la bienveillance. La communication non violente repose sur "), B("quatre étapes"), r(". Il s'agit d'abord d'"), B("observer"), r(" les faits sans les juger (« tu es arrivé trente minutes après l'heure »), puis d'exprimer son "), B("sentiment"), r(" (« je me sens déçu »), d'identifier le "), B("besoin"), r(" qui se cache derrière ce sentiment (« car j'ai besoin qu'on respecte mon temps ») et enfin de formuler une "), B("demande"), r(" claire et réalisable, qui n'est pas un ordre (« la prochaine fois, peux-tu me prévenir ? »).")]),
+  para([r("Cette démarche ne concerne pas seulement la manière de parler : elle demande aussi d'"), B("écouter l'autre avec empathie"), r(", en cherchant à son tour ce qu'il ressent et ce dont il a besoin. Le même reproche, exprimé ainsi, ne provoque plus de défense : l'autre comprend la situation et peut proposer son aide. La communication devient alors une source de "), B("coopération et d'entraide"), r(".")]),
 
   titre("Conclusion"),
-  p([r("Pour Rosenberg, on ne se comprend pas parce que nos mots "), B("jugent"), r(" au lieu de "), B("décrire"), r(", et "), B("accusent"), r(" au lieu d'"), B("exprimer des besoins"), r(". En changeant notre façon de parler et d'écouter, les mots deviennent des "), B("fenêtres"), r(" : le conflit laisse place à la coopération et à l'entraide.")]),
+  para([r("Il est difficile de se comprendre même en parlant la même langue, car nos mots expriment souvent des "), B("jugements"), r(" plutôt que des faits, et des "), B("accusations"), r(" plutôt que des besoins. Marshall Rosenberg montre qu'en changeant notre manière de parler et d'écouter, les mots cessent d'être des murs pour devenir des "), B("fenêtres"), r(". La communication non violente permet ainsi de créer un lien fondé non plus sur la violence, mais sur la compréhension mutuelle.")]),
   new Paragraph({ spacing: { before: 80 }, children: [r("Sources : Rosenberg, Les mots sont des fenêtres (ou bien ce sont des murs), La Découverte, 1999 · Center for Nonviolent Communication (cnvc.org), biographie du fondateur.", { size: 15, italics: true, color: GRIS })] }),
 ];
 const doc = new Document({
