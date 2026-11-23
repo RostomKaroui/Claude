@@ -1,0 +1,213 @@
+// Fiche A4 : croquis d'apres la PHOTO de l'avenue Habib Bourguiba (avant / apres).
+// 1) la photo est transformee en dessin au crayon (canvas) ; 2) les annotations et les
+// corrections sont dessinees par-dessus a main levee (rough.js, graine fixe), en perspective.
+// Usage : node generer_photo.js  ->  ../Avenue_HB_croquis_photo.pdf (+ .png)
+const path = require("path");
+const fs = require("fs");
+const { chromium } = require("playwright");
+
+const LEG = [
+  ["1", "Éclairage", "Peu de lampadaires, rejetés sur les bords.", "Lampes basses le long des allées."],
+  ["2", "Végétation", "Arbres seulement en bordure, rien au sol.", "Bandes plantées et massifs."],
+  ["3", "Minéralité", "Immense surface dure de pavés.", "Pavés + bandes vertes perméables."],
+  ["4", "Ombrage", "Aucun abri sur l'esplanade.", "Voiles d'ombrage au-dessus des bancs."],
+  ["5", "Places assises", "Aucun banc visible.", "Bancs face à l'allée, sous l'ombre."],
+  ["6", "Poubelles", "Très peu (une ou deux visibles).", "Poubelles à côté de chaque banc."],
+  ["7", "Fraîcheur", "Aucun point d'eau.", "Fontaine / brumisateur."],
+];
+
+const script = `
+const IW = 399, IH = 501, CY = 60, CH = 420;
+const INK = "#23262b", ROUGE = "#c8402f", VERT = "#2f8f5b";
+let SEED = 3;
+const base = { stroke: INK, strokeWidth: 1.3, roughness: 1.5, bowing: 1.4 };
+const o = (x = {}) => ({ ...base, seed: SEED++, ...x });
+const hach = (c, gap = 3, ang = -45, w = 0.9) => ({ fill: c, fillStyle: "hachure", hachureGap: gap, hachureAngle: ang, fillWeight: w });
+// perspective de la photo : horizon y=300, camera a ~1,6 m ; 1 m = (y-300)/1.6 px au niveau y
+const m = (y) => (y - 300) / 1.6;
+const sx = (X, y) => 200 + X * m(y);
+
+function croquisPhoto(canvas, img) {
+  const S = 3, w = IW * S, h = CH * S;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  const src = (c) => c.drawImage(img, 0, CY, IW, CH, 0, 0, w, h);
+  const gris = document.createElement("canvas"); gris.width = w; gris.height = h;
+  const g = gris.getContext("2d"); g.imageSmoothingQuality = "high";
+  g.filter = "grayscale(1) contrast(1.1)"; src(g); g.filter = "none";
+  const flou = document.createElement("canvas"); flou.width = w; flou.height = h;
+  const f = flou.getContext("2d");
+  f.filter = "invert(1) grayscale(1) blur(7px)"; f.drawImage(gris, 0, 0); f.filter = "none";
+  ctx.drawImage(gris, 0, 0);
+  ctx.globalCompositeOperation = "color-dodge"; ctx.drawImage(flou, 0, 0);
+  ctx.globalCompositeOperation = "source-over";
+  // adoucit : on melange avec les tons moyens de la photo (lavis gris crayon)
+  const lav = document.createElement("canvas"); lav.width = w; lav.height = h;
+  const l = lav.getContext("2d"); l.filter = "grayscale(1) blur(2px) contrast(0.8) brightness(1.25)"; src(l); l.filter = "none";
+  ctx.globalCompositeOperation = "multiply"; ctx.globalAlpha = 0.5; ctx.drawImage(lav, 0, 0); ctx.globalAlpha = 1;
+  ctx.fillStyle = "#fbf4e4"; ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 0.14; src(ctx); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+}
+
+function dessiner(svg, apres) {
+  const rc = rough.svg(svg);
+  const add = (n) => { svg.appendChild(n); return n; };
+  const texte = (t, x, y, o2 = {}) => {
+    const e = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    e.setAttribute("x", x); e.setAttribute("y", y); e.setAttribute("font-family", "Caveat");
+    e.setAttribute("font-size", o2.taille || 17); e.setAttribute("font-weight", o2.gras ? 700 : 400);
+    e.setAttribute("fill", o2.couleur || INK); if (o2.ancre) e.setAttribute("text-anchor", o2.ancre);
+    if (o2.rot) e.setAttribute("transform", "rotate(" + o2.rot + " " + x + " " + y + ")");
+    if (o2.halo) { e.setAttribute("stroke", "#fbf4e4"); e.setAttribute("stroke-width", 3.5); e.setAttribute("paint-order", "stroke"); }
+    e.textContent = t; add(e);
+  };
+  const C = apres ? VERT : ROUGE;
+  for (let X = -9; X <= 9; X += 1.5) { const a = [sx(X, 480), 480], b = [sx(X, 306), 306]; add(rc.line(a[0], a[1], b[0], b[1], o({ stroke: "#9a9488", strokeWidth: 0.6, roughness: 1.2, bowing: 1 }))); }
+  [312, 322, 336, 356, 384, 424, 478].forEach((y) => add(rc.line(sx(-9, y), y, sx(9, y), y, o({ stroke: "#9a9488", strokeWidth: 0.6, roughness: 1.2, bowing: 1 }))));
+
+  // ---- objets dessines en perspective (X en metres, y = position au sol dans la photo) ----
+  const ombreSol = (X, y, r) => add(rc.ellipse(sx(X, y), y + 1, 2 * r * m(y), Math.max(4, 0.5 * r * m(y)), o({ ...hach("#44484e", 2, 55, 0.8), stroke: "none", roughness: 1 })));
+  const lampe = (X, y, H = 3.5) => {
+    const x = sx(X, y), k = m(y), top = y - H * k;
+    add(rc.polygon([[x, top], [x - 1.2 * k, y], [x + 1.2 * k, y]], o({ ...hach("#f4cf4a", 3.5, 70, 0.7), stroke: "none", roughness: 1 })));
+    add(rc.line(x, y, x, top, o({ strokeWidth: 1.8, roughness: 0.8 })));
+    add(rc.circle(x, top, Math.max(5, 0.4 * k), o({ fill: "#f4cf4a", fillStyle: "solid", strokeWidth: 1, roughness: 0.7 })));
+  };
+  const banc = (X, y) => {
+    const x = sx(X, y), k = m(y), w = 1.6 * k, hs = 0.45 * k, hd = 0.95 * k;
+    add(rc.rectangle(x - w / 2, y - hs, w, 0.1 * k, o({ ...hach("#a06b3f", 2, 45, 0.9), roughness: 1 })));
+    add(rc.rectangle(x - w / 2, y - hd, w, 0.12 * k, o({ ...hach("#a06b3f", 2, 45, 0.9), roughness: 1 })));
+    add(rc.line(x - w / 2 + 3, y - hs, x - w / 2 + 3, y, o({ strokeWidth: 1.4, roughness: 0.7 })));
+    add(rc.line(x + w / 2 - 3, y - hs, x + w / 2 - 3, y, o({ strokeWidth: 1.4, roughness: 0.7 })));
+  };
+  const poubelle = (X, y) => {
+    const x = sx(X, y), k = m(y), w = 0.45 * k, h = 0.9 * k;
+    add(rc.rectangle(x - w / 2, y - h, w, h, o({ ...hach("#3d8a63", 2, 60, 1), roughness: 1 })));
+    add(rc.line(x - w / 2 - 1.5, y - h - 1, x + w / 2 + 1.5, y - h - 1, o({ strokeWidth: 1.6, roughness: 0.6 })));
+  };
+  const personneAssise = (X, y, couleur) => {
+    const x = sx(X, y), k = m(y);
+    add(rc.circle(x, y - 1.25 * k, 0.24 * k, o({ fill: "#f2cba3", fillStyle: "solid", strokeWidth: 1, roughness: 0.7 })));
+    add(rc.rectangle(x - 0.17 * k, y - 1.1 * k, 0.34 * k, 0.6 * k, o({ ...hach(couleur, 2, 50, 1), strokeWidth: 1, roughness: 0.8 })));
+  };
+  const buisson = (X, y) => { const x = sx(X, y), k = m(y), r = 0.5 * k; add(rc.circle(x, y - r * 0.8, 2 * r, o({ ...hach("#5fae58", 2.4, -45, 1), stroke: "#2c5a32", strokeWidth: 1.1, roughness: 1.3 }))); };
+  const bande = (X1, X2, y1, y2) => add(rc.polygon([[sx(X1, y1), y1], [sx(X2, y1), y1], [sx(X2, y2), y2], [sx(X1, y2), y2]], o({ ...hach("#7fc06f", 3, -45, 1.1), stroke: "#2f7a36", strokeWidth: 1.2, roughness: 1.2 })));
+  const voile = (Xa, Xb, y) => {
+    const k = m(y), xa = sx(Xa, y), xb = sx(Xb, y), H = 3.2 * k;
+    [xa, xb].forEach((x) => add(rc.line(x, y, x, y - H, o({ strokeWidth: 1.5, roughness: 0.7 }))));
+    add(rc.polygon([[xa, y - H], [xb, y - H - 0.25 * k], [xb - (xb - xa) * 0.1, y - H - 0.8 * k], [xa + (xb - xa) * 0.1, y - H - 0.7 * k]], o({ ...hach("#e7a63a", 2.2, 50, 1.1), roughness: 1.2 })));
+  };
+  const fontaine = (X, y) => {
+    const x = sx(X, y), k = m(y), r = 0.9 * k;
+    add(rc.ellipse(x, y - 0.1 * k, 2 * r, 0.7 * r, o({ ...hach("#8fb4cc", 3, 45, 1), roughness: 1.2 })));
+    add(rc.line(x, y - 0.2 * k, x, y - 1.3 * k, o({ stroke: "#2b8fd0", strokeWidth: 2, roughness: 0.8 })));
+    add(rc.curve([[x, y - 1.3 * k], [x - 0.5 * k, y - 1.7 * k], [x - 0.9 * k, y - 1.2 * k], [x - 0.85 * k, y - 0.3 * k]], o({ stroke: "#2b8fd0", strokeWidth: 1.8, roughness: 1 })));
+    add(rc.curve([[x, y - 1.3 * k], [x + 0.5 * k, y - 1.7 * k], [x + 0.9 * k, y - 1.2 * k], [x + 0.85 * k, y - 0.3 * k]], o({ stroke: "#2b8fd0", strokeWidth: 1.8, roughness: 1 })));
+  };
+  const manque = (x, y, w, h, rond) => add(rond ? rc.ellipse(x, y, w, h, o({ stroke: ROUGE, strokeWidth: 1.4, strokeLineDash: [6, 5], roughness: 1.3 })) : rc.rectangle(x, y, w, h, o({ stroke: ROUGE, strokeWidth: 1.4, strokeLineDash: [6, 5], roughness: 1.3 })));
+  const marqueur = (x, y, n) => {
+    add(rc.circle(x, y, 22, o({ fill: C, fillStyle: "solid", stroke: INK, strokeWidth: 1.4, roughness: 1.1 })));
+    texte(String(n), x, y + 6.5, { taille: 19, gras: true, couleur: "#fff", ancre: "middle" });
+  };
+
+  // positions-cles (en metres / sol) reutilisees dans les deux versions
+  const BANCS = [[-2.7, 372], [2.7, 372], [-2.7, 340], [2.7, 340]];
+  const POUBELLES = [[-3.85, 372], [3.85, 372], [-3.85, 340], [3.85, 340]];
+  const LAMPES = [[-3.8, 352], [3.8, 352], [-3.8, 330], [3.8, 330], [-3.8, 317], [3.8, 317]];
+
+  if (!apres) {
+    // zones ou l'amenagement fait defaut (pointilles rouges)
+    [[-3.2, -4.4], [3.2, 4.4]].forEach(([a, b]) => add(rc.polygon([[sx(a, 501), 501], [sx(b, 501), 501], [sx(b, 312), 312], [sx(a, 312), 312]], o({ stroke: ROUGE, strokeWidth: 1.3, strokeLineDash: [6, 5], roughness: 1.3 }))));
+    BANCS.slice(0, 2).forEach(([X, y]) => { const x = sx(X, y), k = m(y); manque(x - 0.9 * k, y - 0.95 * k, 1.8 * k, 0.95 * k); });
+    POUBELLES.slice(0, 2).forEach(([X, y]) => { const x = sx(X, y), k = m(y); manque(x - 0.3 * k, y - 0.95 * k, 0.6 * k, 0.95 * k); });
+    const kf = m(352); manque(sx(-1.0, 352) - 1.0 * kf, 352 - 1.9 * kf, 2.0 * kf, 2.0 * kf, true);
+    marqueur(58, 236, 1); marqueur(372, 330, 2); marqueur(200, 455, 3); marqueur(322, 192, 4); marqueur(78, 322, 5); marqueur(372, 398, 6); marqueur(138, 332, 7);
+    texte("une immense esplanade nue :", 12, 84, { couleur: ROUGE, taille: 20, rot: -2, halo: true });
+    texte("ni banc, ni abri, ni eau", 12, 106, { couleur: ROUGE, taille: 20, rot: -2, halo: true });
+    texte("très peu de poubelles", 235, 440, { couleur: ROUGE, taille: 17, rot: -2, halo: true });
+    texte("éclairage rare, sur les bords", 14, 470, { couleur: ROUGE, taille: 17, rot: -1, halo: true });
+  } else {
+    // du plus loin au plus proche
+    const items = [];
+    LAMPES.forEach(([X, y]) => items.push([y, () => { ombreSol(X, y, 1.2); lampe(X, y); }]));
+    [[-3.8, 322], [3.8, 322], [-3.8, 356], [3.8, 356], [-3.8, 392], [3.8, 392], [-3.8, 410], [3.8, 410]].forEach(([X, y]) => items.push([y - 1, () => buisson(X, y)]));
+    BANCS.forEach(([X, y], i) => items.push([y, () => { ombreSol(X, y, 1.1); banc(X, y); if (i < 2) personneAssise(X + (i ? -0.3 : 0.3), y - 0.1, i ? "#4a6fa5" : "#b5513a"); }]));
+    POUBELLES.forEach(([X, y]) => items.push([y, () => poubelle(X, y)]));
+    items.push([352, () => { ombreSol(-1.0, 352, 1.0); fontaine(-1.0, 352); }]);
+    bande(-3.2, -4.4, 501, 312); bande(3.2, 4.4, 501, 312);
+    items.sort((a, b) => a[0] - b[0]).forEach(([, f]) => f());
+    voile(-3.4, -2.0, 362); voile(2.0, 3.4, 362);
+    marqueur(58, 236, 1); marqueur(372, 330, 2); marqueur(200, 455, 3); marqueur(322, 192, 4); marqueur(78, 322, 5); marqueur(372, 398, 6); marqueur(138, 332, 7);
+    texte("bancs, ombre, lumière douce,", 12, 84, { couleur: VERT, taille: 20, rot: -2, halo: true });
+    texte("verdure et eau : on peut rester", 12, 106, { couleur: VERT, taille: 20, rot: -2, halo: true });
+  }
+  add(rc.rectangle(2, CY + 2, IW - 4, CH - 4, o({ strokeWidth: 2, roughness: 1.4, stroke: INK })));
+}
+
+const charger = (src) => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
+document.fonts.ready.then(() => charger("photo/avenue.jpg")).then((img) => {
+  document.querySelectorAll("canvas.croquis").forEach((c) => croquisPhoto(c, img));
+  document.querySelectorAll("svg.dessin").forEach((s) => { SEED = 3; dessiner(s, s.dataset.apres === "1"); });
+  document.querySelectorAll("svg.trait").forEach((s, i) => {
+    const rc = rough.svg(s); const w = +s.getAttribute("data-w"), h = +s.getAttribute("data-h");
+    s.appendChild(rc.line(2, h / 2, w - 2, h / 2, { stroke: s.dataset.c || "#23262b", strokeWidth: +(s.dataset.sw || 1.4), roughness: 1.8, bowing: 2, seed: 100 + i }));
+  });
+  document.body.dataset.pret = "1";
+});
+`;
+
+const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>
+@font-face { font-family: "Caveat"; font-weight: 400; src: url("fonts/caveat-latin-400-normal.woff2"); }
+@font-face { font-family: "Caveat"; font-weight: 700; src: url("fonts/caveat-latin-700-normal.woff2"); }
+@font-face { font-family: "Patrick"; font-weight: 400; src: url("fonts/patrick-hand-latin-400-normal.woff2"); }
+@page { size: A4 landscape; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 297mm; height: 210mm; font-family: "Patrick", cursive; color: #23262b; background: #fbf8f0; padding: 5mm 9mm 3mm; display: flex; flex-direction: column; overflow: hidden; }
+header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1mm; }
+h1 { font-family: "Caveat", cursive; font-weight: 700; font-size: 23pt; line-height: .95; }
+header p { font-size: 10.5pt; color: #555; text-align: right; line-height: 1.25; }
+.trait { display: block; width: 100%; height: 3mm; }
+.corps { display: grid; grid-template-columns: 138mm 138mm; gap: 3mm; margin-top: 2mm; }
+.legende { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2.5mm; margin-top: 2.5mm; }
+.cadre { position: relative; line-height: 0; width: 138mm; }
+.cadre canvas, .cadre svg.dessin { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.cadre .cale { display: block; width: 100%; aspect-ratio: 399 / 420; }
+.etiquette { position: absolute; z-index: 3; right: 2.5mm; bottom: 2.5mm; font: 700 16pt "Caveat"; padding: 0 3mm; color: #fff; line-height: 1.25; transform: rotate(-1.5deg); border-radius: 2mm; }
+.avant .etiquette { background: #c8402f; } .apres .etiquette { background: #2f8f5b; }
+aside { display: flex; flex-direction: column; min-width: 0; }
+aside h2 { font-family: "Caveat"; font-weight: 700; font-size: 16pt; line-height: 1; margin-bottom: 1mm; text-align: center; }
+.ligne { display: grid; grid-template-columns: 6.5mm 1fr; gap: 1.5mm; padding: 0; }
+.num { width: 6mm; height: 6mm; border: .5mm solid #23262b; border-radius: 50%; font: 700 11pt "Caveat"; display: flex; align-items: center; justify-content: center; transform: rotate(-4deg); }
+.ligne b { font-family: "Caveat"; font-size: 13pt; font-weight: 700; display: block; line-height: 1; margin-bottom: .3mm; }
+.ligne div { font-size: 8pt; line-height: 1.2; }
+.x { color: #c8402f; font-weight: 700; } .v { color: #2f8f5b; font-weight: 700; }
+.pied { font-size: 8pt; color: #555; margin-top: 1.5mm; line-height: 1.25; }
+</style></head><body>
+<header><h1>Avenue Habib Bourguiba (Tunis) :<br>ce qui manque, et ce qu'on corrige</h1>
+<p>Sociologie · 1re année Architecture · ESAD Tunis<br>Croquis d'après photo · Nom : ____________</p></header>
+<svg class="trait" data-w="1000" data-h="12" viewBox="0 0 1000 12" preserveAspectRatio="none" data-sw="2.2"></svg>
+<div class="corps">
+ <div class="cadre avant"><span class="cale"></span><canvas class="croquis"></canvas><svg class="dessin" data-apres="0" viewBox="0 60 399 420"></svg><span class="etiquette">AVANT : l'existant</span></div>
+
+ <div class="cadre apres"><span class="cale"></span><canvas class="croquis"></canvas><svg class="dessin" data-apres="1" viewBox="0 60 399 420"></svg><span class="etiquette">APRÈS : notre proposition</span></div>
+</div>
+<div class="legende">
+ ${LEG.map(([n, t, a, b]) => `<div class="ligne"><span class="num">${n}</span><div><b>${t}</b><span class="x">✗ </span>${a}<br><span class="v">✓ </span>${b}</div></div>`).join("")}
+</div>
+<p class="pied">Base : photo de l'avenue Habib Bourguiba (vue vers la tour de l'horloge), transformée en croquis au crayon. Pointillés rouges : endroits où l'aménagement fait défaut. Les numéros de « Après » reprennent ceux de « Avant ».</p>
+<script src="vendor/rough.js"></script><script>${script}</script></body></html>`;
+
+(async () => {
+  const dir = path.join(__dirname, "..");
+  fs.writeFileSync(path.join(__dirname, "croquis_photo.html"), html);
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1123, height: 794 }, deviceScaleFactor: 2 });
+  page.on("pageerror", (e) => console.log("ERREUR PAGE:", e.message));
+  page.on("console", (m) => { if (m.type() === "error") console.log("CONSOLE:", m.text()); });
+  await page.goto("file://" + path.join(__dirname, "croquis_photo.html"));
+  await page.waitForFunction(() => document.body.dataset.pret === "1", null, { timeout: 30000 });
+  await page.pdf({ path: path.join(dir, "Avenue_HB_croquis_photo.pdf"), format: "A4", landscape: true, printBackground: true, preferCSSPageSize: true });
+  await page.screenshot({ path: path.join(dir, "Avenue_HB_croquis_photo.png") });
+  await browser.close();
+  console.log("OK");
+})();

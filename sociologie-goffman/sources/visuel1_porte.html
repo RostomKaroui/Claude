@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Visuel 1 · Une porte, deux personnages</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --rouge: #8C1C13; --encre: #1f1f1f; --gris: #6b6b6b; --ardoise: #2F4858;
+    --creme: #FBF6EC;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1400px; height: 990px; background: var(--creme); }
+  body { font-family: "Inter", sans-serif; color: var(--encre); padding: 34px 40px 26px; display: flex; flex-direction: column; }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 3px solid var(--rouge); padding-bottom: 10px; }
+  .kicker { font-weight: 800; font-size: 15px; letter-spacing: .22em; color: var(--rouge); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 50px; line-height: 1.05; margin-top: 4px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 21px; color: var(--gris); text-align: right; max-width: 470px; line-height: 1.3; }
+
+  svg { display: block; margin-top: 14px; }
+  .txt-zone { font-family: "Playfair", serif; font-weight: 700; font-size: 38px; }
+  .txt-sous { font-family: "Inter", sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; }
+  .txt-note { font-family: "Inter", sans-serif; font-weight: 600; font-size: 15px; }
+
+  .bandeau { display: grid; grid-template-columns: 1fr 260px 1fr; gap: 0; margin-top: 18px; }
+  .col { padding: 16px 20px 16px; }
+  .col h2 { font-weight: 800; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 6px; }
+  .col ul { list-style: none; }
+  .col li { font-size: 19.5px; line-height: 1.42; padding-left: 18px; position: relative; }
+  .col li::before { content: ""; position: absolute; left: 0; top: .55em; width: 8px; height: 8px; background: currentColor; }
+  .scene { color: var(--rouge); border-top: 5px solid var(--rouge); background: #F6E7DF; }
+  .scene li { color: var(--encre); } .scene li::before { color: var(--rouge); }
+  .coulisses { color: var(--ardoise); border-top: 5px solid var(--ardoise); background: #E4EBEE; }
+  .coulisses li { color: var(--encre); } .coulisses li::before { color: var(--ardoise); }
+  .seuil { border-top: 5px solid var(--encre); background: #fff; color: var(--encre); text-align: center; padding: 12px 14px; }
+  .seuil p { font-size: 17.5px; line-height: 1.38; }
+  em.q { font-family: "Playfair", serif; font-style: italic; font-size: 1.08em; }
+
+  footer { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; gap: 30px; }
+  .citation { font-family: "Playfair", serif; font-style: italic; font-size: 26px; }
+  .source { font-size: 13.5px; color: var(--gris); text-align: right; white-space: nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="kicker">VISUEL 1 · GOFFMAN, SCÈNE ET COULISSES</div>
+    <h1>Une porte, deux personnages</h1>
+  </div>
+  <div class="sous">Le serveur décrit par George Orwell (1933) et cité par Erving Goffman</div>
+</header>
+
+<svg id="coupe" width="1320" height="560" viewBox="0 0 1320 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="papier" width="26" height="26" patternUnits="userSpaceOnUse">
+      <rect width="26" height="26" fill="#F7EEDC"/>
+      <rect x="0" width="9" height="26" fill="#F1E3C8"/>
+    </pattern>
+    <pattern id="carreaux" width="30" height="30" patternUnits="userSpaceOnUse">
+      <rect width="30" height="30" fill="#F4F7F8"/>
+      <path d="M30 0H0V30" fill="none" stroke="#C9D3D8" stroke-width="2"/>
+    </pattern>
+    <pattern id="tapis" width="16" height="10" patternUnits="userSpaceOnUse">
+      <rect width="16" height="10" fill="#2F5D50"/>
+      <circle cx="8" cy="5" r="2" fill="#C9A84A"/>
+    </pattern>
+    <marker id="fleche" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#1f1f1f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== SALLE (scène) ===== -->
+  <rect x="42" y="42" width="608" height="468" fill="url(#papier)"/>
+  <rect x="42" y="390" width="608" height="120" fill="#EAD7B5"/>
+  <rect x="42" y="386" width="608" height="6" fill="#C9A86A"/>
+  <!-- tableau au mur -->
+  <rect x="96" y="196" width="150" height="112" fill="#B8913A"/>
+  <rect x="106" y="206" width="130" height="92" fill="#DDE6D4"/>
+  <path d="M106 298 L150 248 L182 276 L206 256 L236 290 L236 298 Z" fill="#9DB28A"/>
+  <circle cx="208" cy="230" r="10" fill="#F0D58A"/>
+  <!-- lustre -->
+  <g id="lustre" stroke="#B8913A" stroke-width="3" fill="none">
+    <line x1="470" y1="42" x2="470" y2="96"/>
+    <path d="M426 112 Q470 140 514 112"/>
+    <path d="M440 108 Q470 128 500 108"/>
+    <line x1="426" y1="112" x2="426" y2="100"/><line x1="514" y1="112" x2="514" y2="100"/>
+    <line x1="470" y1="96" x2="470" y2="130"/>
+  </g>
+  <g fill="#F2C14E"><circle cx="426" cy="96" r="5"/><circle cx="514" cy="96" r="5"/><circle cx="470" cy="92" r="5"/><circle cx="440" cy="102" r="4"/><circle cx="500" cy="102" r="4"/></g>
+  <!-- tapis -->
+  <rect x="42" y="500" width="608" height="10" fill="url(#tapis)"/>
+
+  <!-- client assis -->
+  <g id="client"></g>
+  <!-- table nappée -->
+  <line x1="168" y1="455" x2="168" y2="508" stroke="#5a4632" stroke-width="6"/>
+  <line x1="312" y1="455" x2="312" y2="508" stroke="#5a4632" stroke-width="6"/>
+  <path d="M150 428 L330 428 L340 478 L140 478 Z" fill="#ffffff" stroke="#d8cfc0" stroke-width="2"/>
+  <ellipse cx="270" cy="424" rx="24" ry="5" fill="#ffffff" stroke="#b9b0a0" stroke-width="2"/>
+  <path d="M206 404 Q214 420 222 404 Z" fill="#E9D7DA" stroke="#9a8f80" stroke-width="1.5"/>
+  <line x1="214" y1="414" x2="214" y2="426" stroke="#9a8f80" stroke-width="2"/>
+  <line x1="207" y1="427" x2="221" y2="427" stroke="#9a8f80" stroke-width="2"/>
+
+  <!-- serveur « en scène » -->
+  <g id="serveurScene"></g>
+
+  <text x="70" y="104" class="txt-zone" fill="#8C1C13">Salle = la scène</text>
+  <text x="72" y="134" class="txt-sous" fill="#8C1C13">région antérieure</text>
+
+  <!-- ===== CUISINE (coulisses) ===== -->
+  <rect x="672" y="42" width="606" height="468" fill="#E3E9EC"/>
+  <rect x="672" y="330" width="606" height="180" fill="url(#carreaux)"/>
+  <!-- étagère + assiettes -->
+  <line x1="1080" y1="250" x2="1262" y2="250" stroke="#5B6770" stroke-width="6"/>
+  <g fill="#ffffff" stroke="#9AA6AD" stroke-width="2">
+    <rect x="1094" y="214" width="56" height="8" rx="4"/><rect x="1094" y="224" width="56" height="8" rx="4"/><rect x="1094" y="234" width="56" height="8" rx="4"/>
+    <rect x="1170" y="204" width="20" height="40" rx="3"/><rect x="1196" y="204" width="20" height="40" rx="3"/><rect x="1222" y="214" width="20" height="30" rx="3"/>
+  </g>
+  <!-- hotte -->
+  <path d="M1030 150 L1220 150 L1250 196 L1000 196 Z" fill="#AEB9C0"/>
+  <!-- fourneau -->
+  <rect x="1000" y="420" width="250" height="90" fill="#5B6770"/>
+  <rect x="1020" y="440" width="96" height="56" fill="#4A555D" stroke="#7d8a93" stroke-width="3"/>
+  <rect x="1134" y="440" width="96" height="56" fill="#4A555D" stroke="#7d8a93" stroke-width="3"/>
+  <rect x="996" y="412" width="258" height="10" fill="#3E474E"/>
+  <!-- casseroles -->
+  <rect x="1030" y="372" width="70" height="40" fill="#8A969E"/><rect x="1022" y="372" width="86" height="7" fill="#6F7B83"/>
+  <rect x="1150" y="360" width="62" height="52" fill="#8A969E"/><rect x="1142" y="360" width="78" height="7" fill="#6F7B83"/>
+  <g fill="none" stroke="#9AA6AD" stroke-width="3" stroke-linecap="round">
+    <path d="M1050 362 q-8 -12 0 -24 q8 -12 0 -24"/><path d="M1078 362 q-8 -12 0 -24 q8 -12 0 -24"/>
+    <path d="M1170 350 q-8 -12 0 -24 q8 -12 0 -24"/><path d="M1196 350 q-8 -12 0 -24 q8 -12 0 -24"/>
+  </g>
+  <!-- bouteille cassée -->
+  <g fill="#3E7D4F">
+    <path d="M846 506 l10 -14 l6 12 z"/><path d="M866 508 l14 -8 l2 8 z"/><path d="M832 508 l6 -9 l7 9 z"/>
+    <path d="M884 506 l4 -16 l8 4 l-2 12 z"/>
+  </g>
+  <path d="M836 509 Q870 500 900 509 Z" fill="#7A1F2B" opacity=".75"/>
+
+  <!-- serveur « en coulisses » et commis -->
+  <g id="serveurCoulisses"></g>
+  <g id="commis"></g>
+  <!-- bulle -->
+  <path d="M874 230 h112 a14 14 0 0 1 14 14 v32 a14 14 0 0 1 -14 14 h-80 l-60 42 l30 -42 h-2 a14 14 0 0 1 -14 -14 v-32 a14 14 0 0 1 14 -14 z" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+  <text x="930" y="270" text-anchor="middle" font-family="Inter" font-weight="800" font-size="26" fill="#8C1C13">#@!%&amp;!</text>
+
+  <text x="1250" y="104" text-anchor="end" class="txt-zone" fill="#2F4858">Cuisine = les coulisses</text>
+  <text x="1250" y="134" text-anchor="end" class="txt-sous" fill="#2F4858">région postérieure</text>
+
+  <!-- ===== STRUCTURE (poché de coupe) ===== -->
+  <rect x="20" y="20" width="1280" height="22" fill="#262626"/>
+  <rect x="20" y="510" width="1280" height="26" fill="#262626"/>
+  <rect x="20" y="20" width="22" height="516" fill="#262626"/>
+  <rect x="1278" y="20" width="22" height="516" fill="#262626"/>
+  <rect x="650" y="42" width="22" height="236" fill="#262626"/>
+  <!-- porte battante entrouverte, avec hublot -->
+  <path d="M650 278 L708 292 L708 498 L650 510 Z" fill="#C8A27A" stroke="#7a5a3a" stroke-width="3"/>
+  <ellipse cx="680" cy="350" rx="11" ry="18" fill="#DCEAF0" stroke="#7a5a3a" stroke-width="3"/>
+  <g fill="none" stroke="#1f1f1f" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round">
+    <path d="M716 300 Q736 400 716 496"/><path d="M732 312 Q752 400 732 486"/>
+  </g>
+
+  <!-- étiquette « la porte » -->
+  <rect x="600" y="236" width="122" height="34" rx="17" fill="#1f1f1f"/>
+  <text x="661" y="259" text-anchor="middle" font-family="Inter" font-weight="800" font-size="15" letter-spacing="2.5" fill="#ffffff">LA PORTE</text>
+
+  <!-- même homme : flèche cuisine -> salle -->
+  <path d="M790 222 C 740 150, 600 150, 548 262" fill="none" stroke="#1f1f1f" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#fleche)"/>
+  <rect x="536" y="98" width="256" height="62" rx="10" fill="#FBF6EC" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="664" y="123" text-anchor="middle" font-family="Playfair" font-style="italic" font-size="21" fill="#1f1f1f">le même homme,</text>
+  <text x="664" y="148" text-anchor="middle" font-family="Playfair" font-style="italic" font-size="21" fill="#1f1f1f">deux secondes plus tard</text>
+</svg>
+
+<div class="bandeau">
+  <div class="col scene">
+    <h2>Côté salle · on joue le rôle</h2>
+    <ul>
+      <li>Dos droit, gestes lents, sourire, voix douce</li>
+      <li>Tenue impeccable, serviette sur le bras</li>
+      <li><em class="q">« Il glisse sur le tapis avec un air solennel de prêtre. »</em></li>
+    </ul>
+  </div>
+  <div class="col seuil">
+    <h2>Le seuil</h2>
+    <p>Une porte <em class="q">« à peu près insonorisée »</em> bloque la vue <b>et</b> le son : la « barrière à la perception » de Goffman.</p>
+  </div>
+  <div class="col coulisses">
+    <h2>Côté cuisine · on tombe le masque</h2>
+    <ul>
+      <li>Épaules relâchées, poing levé, jurons</li>
+      <li>Il hurle sur le commis qui a cassé une bouteille</li>
+      <li><em class="q">« La saleté, la hâte et l'irritation »</em></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <div class="citation">« Au moment où il passe la porte, un brusque changement s'opère en lui. »</div>
+  <div class="source">G. Orwell, <i>Dans la dèche à Paris et à Londres</i>, 1933<br>cité par E. Goffman · coupe schématique, dessin original</div>
+</footer>
+
+<script>
+  // Pictogrammes : articulations en coordonnées locales (pieds = origine, y vers le haut négatif)
+  const NS = "http://www.w3.org/2000/svg";
+  function el(parent, name, attrs) {
+    const e = document.createElementNS(NS, name);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  }
+  function membre(g, pts, w, c) {
+    el(g, "polyline", { points: pts.map(p => p.join(",")).join(" "), fill: "none", stroke: c, "stroke-width": w, "stroke-linecap": "round", "stroke-linejoin": "round" });
+  }
+  function personnage(id, x, y, J, couleur, extra) {
+    const g = el(document.getElementById(id), "g", { transform: `translate(${x} ${y})` });
+    membre(g, [J.hanche, J.genouG, J.piedG, J.orteilG], 15, couleur);
+    membre(g, [J.hanche, J.genouD, J.piedD, J.orteilD], 15, couleur);
+    membre(g, [J.cou, J.hanche], 34, couleur);
+    membre(g, [J.epauleA, J.coudeA, J.mainA], 13, couleur);
+    membre(g, [J.epauleB, J.coudeB, J.mainB], 13, couleur);
+    el(g, "circle", { cx: J.tete[0], cy: J.tete[1], r: J.r || 16, fill: couleur });
+    if (extra) extra(g);
+    return g;
+  }
+  const ROUGE = "#8C1C13", GRISF = "#4A4A4A";
+
+  // 1. client assis (regarde vers la droite)
+  personnage("client", 0, 0, {
+    hanche: [118, 452], genouG: [170, 452], piedG: [174, 508], orteilG: [190, 508],
+    genouD: [166, 456], piedD: [170, 508], orteilD: [186, 508],
+    cou: [122, 384], epauleA: [124, 392], coudeA: [146, 424], mainA: [176, 420],
+    epauleB: [120, 392], coudeB: [138, 426], mainB: [164, 428], tete: [128, 362], r: 15,
+  }, GRISF, g => {
+    el(g, "polyline", { points: "92,368 98,456 146,456", fill: "none", stroke: "#5a4632", "stroke-width": 6, "stroke-linejoin": "round" });
+    el(g, "line", { x1: 98, y1: 456, x2: 98, y2: 508, stroke: "#5a4632", "stroke-width": 6 });
+    el(g, "line", { x1: 140, y1: 456, x2: 140, y2: 508, stroke: "#5a4632", "stroke-width": 6 });
+  });
+
+  // 2. serveur en scène (droit, plateau levé, serviette ; regarde vers la gauche)
+  personnage("serveurScene", 520, 508, {
+    hanche: [0, -98], genouG: [-4, -50], piedG: [-5, -4], orteilG: [-20, -4],
+    genouD: [6, -50], piedD: [8, -4], orteilD: [-6, -4],
+    cou: [0, -160], epauleA: [6, -150], coudeA: [28, -122], mainA: [30, -170],
+    epauleB: [-6, -150], coudeB: [-18, -116], mainB: [-42, -114], tete: [-3, -184],
+  }, ROUGE, g => {
+    el(g, "path", { d: "M-8 -160 L0 -155 L-8 -150 Z M8 -160 L0 -155 L8 -150 Z", fill: "#ffffff" });
+    el(g, "rect", { x: -40, y: -114, width: 14, height: 34, fill: "#ffffff", stroke: "#d2c8b8", "stroke-width": 1.5 });
+    el(g, "line", { x1: -6, y1: -176, x2: 66, y2: -176, stroke: "#8E979D", "stroke-width": 6, "stroke-linecap": "round" });
+    el(g, "path", { d: "M8 -178 A22 22 0 0 1 52 -178 Z", fill: "#C3CBD0", stroke: "#8E979D", "stroke-width": 2 });
+    el(g, "circle", { cx: 30, cy: -203, r: 4, fill: "#8E979D" });
+  });
+
+  // 3. serveur en coulisses (avachi, poing levé ; regarde vers la droite)
+  personnage("serveurCoulisses", 772, 508, {
+    hanche: [0, -92], genouG: [-12, -48], piedG: [-18, -4], orteilG: [-2, -4],
+    genouD: [16, -48], piedD: [24, -4], orteilD: [40, -4],
+    cou: [28, -150], epauleA: [30, -144], coudeA: [56, -172], mainA: [46, -212],
+    epauleB: [24, -140], coudeB: [18, -106], mainB: [14, -76], tete: [40, -170],
+  }, ROUGE, g => {
+    el(g, "circle", { cx: 45, cy: -216, r: 9, fill: ROUGE });
+    el(g, "rect", { x: 6, y: -78, width: 16, height: 36, fill: "#ffffff", stroke: "#b9c2c7", "stroke-width": 1.5, transform: "rotate(-6 14 -78)" });
+  });
+
+  // 4. commis (tête basse ; regarde vers la gauche)
+  personnage("commis", 948, 508, {
+    hanche: [0, -86], genouG: [-3, -44], piedG: [-4, -4], orteilG: [-18, -4],
+    genouD: [5, -44], piedD: [6, -4], orteilD: [-8, -4],
+    cou: [-8, -140], epauleA: [-6, -134], coudeA: [-16, -104], mainA: [-10, -84],
+    epauleB: [-10, -134], coudeB: [-22, -104], mainB: [-14, -84], tete: [-20, -152], r: 14,
+  }, GRISF, g => {
+    el(g, "path", { d: "M-14 -128 L14 -128 L16 -60 L-16 -60 Z", fill: "#ffffff", opacity: .9 });
+  });
+</script>
+</body>
+</html>
