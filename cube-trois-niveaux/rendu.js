@@ -12,7 +12,7 @@ const { chromium } = require('playwright'); const path = require('path');
   const url = 'file://' + path.resolve(__dirname, 'index.html');
   for (const id of ['projectif', 'metrique', 'topologique']) {
     await p.goto(url + '#' + id); await p.waitForTimeout(1500);
-    for (const n of [0, 2, 5]) { await p.evaluate(n => aller(n), n); await p.waitForTimeout(700); await (await p.$('.atelier')).screenshot({ path: path.join(out, `${id}-${n + 1}.png`) }); }
+    for (const n of [0, 2, 5]) { await p.evaluate(n => aller(n), n); await p.waitForTimeout(1300); await (await p.$(".atelier")).screenshot({ path: path.join(out, `${id}-${n + 1}.png`) }); }
     await (await p.$('#gabarits')).screenshot({ path: path.join(out, `${id}-gabarits.png`) });
   }
   await p.goto(url + '#projectif'); await p.waitForTimeout(1200); await p.screenshot({ path: path.join(out, 'page.png'), fullPage: false });

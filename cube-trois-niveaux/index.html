@@ -270,7 +270,7 @@ const metrique = {
 const PIV = 30;
 const topologique = {
   id: "topologique", titre: "L'enveloppe ouverte", niveau: "Espace topologique",
-  idee: `On part de l'<b>enveloppe</b> : les 6 faces du cube. Le sol et un côté restent intacts (la continuité). Les quatre autres subissent chacune une opération : le côté droit est <b>percé</b>, le toit <b>glisse</b> de 2,5 cm vers l'arrière, la face arrière perd sa moitié haute et <b>recule</b> de 2,5 cm, la face avant <b>pivote</b> de 30° comme une porte. L'intérieur et l'extérieur se mélangent.`,
+  idee: `On part de l'<b>enveloppe</b> : les 6 faces du cube. Le sol et un côté restent intacts (la continuité). Les quatre autres subissent chacune une opération : le côté droit est <b>percé</b>, le toit <b>recule</b> et laisse une bande de ciel de 2,5 cm devant, la face arrière perd sa moitié haute et <b>recule</b> de 2,5 cm, la face avant <b>pivote</b> de 30° vers l'intérieur comme une porte. Tout reste dans le cube de 10 × 10 × 10 : l'intérieur et l'extérieur se mélangent sans sortir de la limite.`,
   ops: ["enveloppe", "continuité / rupture", "ouverture", "intérieur / extérieur", "déplacer · éliminer · pivoter"],
   camera: [1.05, 0.8, 1.15],
   pieces: [
@@ -282,9 +282,9 @@ const topologique = {
       g: { w: 10, h: 9.6, contour: rect(10, 9.6), trous: [rect(1, 6, 4.5, 1.8)], cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7], [[0, 1.8], [4.5, 1.8], "4,5", 0.4], [[5.5, 1.8], [5.5, 7.8], "6", -0.5], [[4.5, 7.8], [5.5, 7.8], "1", 0.4]] } },
     { id: "arriere", nom: "Face arrière (moitié)", nb: 1, taille: "9,6 × 4,8", note: "la moitié haute est éliminée ; reculée de 2,5 vers l'intérieur",
       g: { w: 9.6, h: 4.8, contour: rect(9.6, 4.8), pointilles: [rect(9.6, 4.8, 0, 4.8)], cotes: [[[0, 0], [9.6, 0], "9,6", -0.7], [[0, 0], [0, 4.8], "4,8", 0.7]], textes: [[2.4, 7.3, "moitié éliminée", "petit"]], hVue: 9.6 } },
-    { id: "toit", nom: "Toit", nb: 1, taille: "10 × 10", note: "glisse de 2,5 vers l'arrière : 2,5 de vide devant, 2,5 en saillie derrière",
-      g: { w: 10, h: 10, contour: rect(10, 10), cons: [[[0, 7.5], [10, 7.5]]], cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 7.5], "7,5", 0.7], [[0, 7.5], [0, 10], "2,5", 0.7]], textes: [[10.2, 3.6, "posé", "petit"], [10.2, 8.6, "saillie", "petit"]] } },
-    { id: "avant", nom: "Face avant (porte)", nb: 1, taille: "9,6 × 9,6", note: "pivote de 30° autour de son arête gauche",
+    { id: "toit", nom: "Toit (raccourci)", nb: 1, taille: "10 × 7,5", note: "couvre seulement les 7,5 cm du fond : 2,5 de vide devant",
+      g: { w: 10, h: 7.5, contour: rect(10, 7.5), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 7.5], "7,5", 0.7]] } },
+    { id: "avant", nom: "Face avant (porte)", nb: 1, taille: "9,6 × 9,6", note: "pivote de 30° vers l'intérieur, autour de son arête gauche",
       g: { w: 9.6, h: 9.6, contour: rect(9.6, 9.6), cotes: [[[0, 0], [9.6, 0], "9,6", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[0.25, 4.8, "charnière", "petit"]] } },
   ],
   etapes: [
@@ -296,19 +296,19 @@ const topologique = {
       texte: `Découpe la fente de 1 × 6 au milieu du côté droit (à 4,5 du bord, 1,8 du bas), puis colle-le sur le bord droit du sol. La fente coupe la paroi en deux : la limite devient discontinue. <em>fente 1 × 6</em>` },
     { titre: "La face arrière : éliminer et reculer", montre: ["arriere"],
       texte: `Garde seulement la moitié basse de la face arrière (9,6 × 4,8) et colle-la entre les deux côtés, <b>2,5 cm plus à l'intérieur</b> (sur ton repère). Le haut de l'arrière est vide : l'intérieur s'ouvre. <em>9,6 × 4,8 · recul 2,5</em>` },
-    { titre: "Le toit : glisser", montre: ["toit"],
-      texte: `Pose le toit sur les deux côtés en le faisant <b>glisser de 2,5 cm vers l'arrière</b> : une bande de ciel s'ouvre devant, et le toit dépasse derrière, au-dessus de la face reculée. Colle-le sur les 7,5 cm d'appui. <em>appui 7,5 · saillie 2,5</em>` },
+    { titre: "Le toit : reculer", montre: ["toit"],
+      texte: `Le toit ne fait que <b>10 × 7,5</b>. Pose-le sur les deux côtés, <b>au ras du fond</b> : une bande de ciel de 2,5 cm s'ouvre devant. Rien ne dépasse du cube. <em>toit 10 × 7,5 · vide 2,5 devant</em>` },
     { titre: "La face avant : pivoter", montre: ["avant"],
-      texte: `Colle la face avant (9,6 × 9,6) par son arête gauche contre le côté gauche, posée sur le sol, puis ouvre-la de <b>30°</b> vers l'extérieur (rapporteur ou triangle 30°/60°). La limite tourne : la porte relie dedans et dehors. <em>pivot 30°</em>` },
+      texte: `Colle la face avant (9,6 × 9,6) par son arête gauche contre le côté gauche, posée sur le sol, puis tourne-la de <b>30°</b> vers l'intérieur (rapporteur ou triangle 30°/60°). La limite rentre dans le cube : la porte relie dedans et dehors sans sortir des 10 × 10. <em>pivot 30° vers l'intérieur</em>` },
   ],
   construire(A) {
     A.plaque("sol", rect(10, 10), [], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
     A.plaque("gauche", rect(10, 9.6), [], [0, 0, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
     A.plaque("droite", rect(10, 9.6), [rect(1, 6, 4.5, 1.8)], [10 - T, 0, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
     A.plaque("arriere", rect(9.6, 4.8), [], [T, 7.5 - T, T], [1, 0, 0], [0, 0, 1], [0, 1, 0], T);
-    A.plaque("toit", rect(10, 10), [], [0, 2.5, 10 - T], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("toit", rect(10, 7.5), [], [0, 2.5, 10 - T], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
     const c = Math.cos(rad(PIV)), s = Math.sin(rad(PIV));
-    A.plaque("avant", rect(9.6, 9.6), [], [T, 0, T], [c, -s, 0], [0, 0, 1], [s, c, 0], T);
+    A.plaque("avant", rect(9.6, 9.6), [], [T, 0, T], [c, s, 0], [0, 0, 1], [-s, c, 0], T);
   },
 };
 // ---------- où poser chaque pièce : repères affichés dans la 3D (txt, ligne, cote, arc) + une phrase
@@ -351,10 +351,10 @@ const OU = {
       notes: [txt([9.9, 5, 10.4], "bord droit"), txt([11.2, 5, 5], "fente"), cote([10.6, 0, 2], [10.6, 4.5, 2], "4,5")] },
     { ou: "debout sur la ligne tracée à 2,7 du fond, entre les deux côtés : elle est 2,5 cm à l'intérieur du cube. Seulement la moitié basse (4,8 cm de haut).",
       notes: [cote([5, 7.5, 5.4], [5, 10, 5.4], "recul 2,5"), txt([5, 7.4, 2.4], "4,8 de haut")] },
-    { ou: "posé sur le haut des deux côtés, poussé vers l'arrière : 2,5 cm de vide au-dessus du devant, et 2,5 cm qui dépassent au-dessus du fond.",
-      notes: [cote([11, 0, 10.3], [11, 2.5, 10.3], "2,5 vide"), cote([11, 10, 10.3], [11, 12.5, 10.3], "2,5 dépasse")] },
-    { ou: "devant, son arête gauche collée contre le bout du côté gauche, posée sur le sol, puis ouverte de 30° vers l'extérieur comme une porte.",
-      notes: [arc([0.2, 0, 0.4], 4.5, -30, 0, "30°"), txt([0.2, -0.4, 10.3], "charnière collée")] },
+    { ou: "posé sur le haut des deux côtés, son bord arrière au ras du fond du cube : il reste 2,5 cm de vide au-dessus du devant.",
+      notes: [cote([11, 0, 10.3], [11, 2.5, 10.3], "2,5 vide"), cote([11, 2.5, 10.3], [11, 10, 10.3], "toit 7,5"), txt([5, 10, 10.8], "au ras du fond")] },
+    { ou: "devant, son arête gauche collée contre le bout du côté gauche, posée sur le sol, puis tournée de 30° vers l'intérieur du cube, comme une porte qu'on pousse.",
+      notes: [arc([0.2, 0, 0.4], 4.5, 0, 30, "30°"), txt([0.2, -0.4, 10.3], "charnière collée")] },
   ],
 };
 for (const [k, liste] of Object.entries(OU)) liste.forEach((o, i) => Object.assign({ projectif, metrique, topologique }[k].etapes[i], o));
