@@ -36,6 +36,12 @@ p { margin: 0; }
 .atelier { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (max-width: 860px) { .atelier { grid-template-columns: 1fr; } }
 .vue { background: var(--carte); border: 1px solid var(--ligne); border-radius: 8px; overflow: hidden; display: grid; }
+.ecran { position: relative; }
+.etiquettes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.etiquettes span { position: absolute; transform: translate(-50%, -50%); font-family: var(--f-tech); font-size: 12px; font-weight: 600; line-height: 1.2; white-space: nowrap;
+  background: var(--carte); color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 2px 6px; }
+.etiquettes span.cote { background: var(--accent); color: var(--carte); }
+.ou { font-family: var(--f-tech); font-size: 13px; color: var(--accent); background: var(--accent-doux); border-radius: 6px; padding: 8px 10px; margin-top: 6px; display: block; }
 #scene { width: 100%; aspect-ratio: 4 / 3; display: block; background: var(--scene); touch-action: none; }
 .commandes { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--ligne); flex-wrap: wrap; }
 button { font-family: var(--f-tech); font-size: 13px; border: 1px solid var(--ligne); background: var(--carte); color: var(--encre); padding: 7px 12px; border-radius: 6px; cursor: pointer; }
@@ -110,14 +116,16 @@ body.mode-gabarits .imprime { display: block; background: #fff; color: #000; }
 
   <div class="atelier">
     <div class="vue">
-      <canvas id="scene" aria-label="Maquette en 3D, à faire tourner"></canvas>
+      <div class="ecran"><canvas id="scene" aria-label="Maquette en 3D, à faire tourner"></canvas><div class="etiquettes" id="etiquettes" aria-hidden="true"></div></div>
       <div class="commandes">
         <span class="compte" id="compte">1 / 6</span>
         <button id="prec" type="button">← Étape précédente</button>
         <button id="suiv" type="button" class="plein">Étape suivante →</button>
+        <button id="dessus" type="button" aria-pressed="false">Vue de dessus</button>
         <button id="cube" type="button" aria-pressed="true">Cube de 10 cm</button>
+        <button id="rejouer" type="button">Revoir la pose</button>
       </div>
-      <p class="aide">glisser : tourner · molette ou pincer : zoom · clic droit : déplacer · en bleu, les pièces de l'étape</p>
+      <p class="aide">glisser : tourner · molette ou pincer : zoom · clic droit : déplacer · en bleu, la pièce de l'étape, qui descend à sa place · les étiquettes disent où la poser</p>
     </div>
     <div class="cote-droit">
       <div class="idee" id="idee"></div>
@@ -303,6 +311,53 @@ const topologique = {
     A.plaque("avant", rect(9.6, 9.6), [], [T, 0, T], [c, -s, 0], [0, 0, 1], [s, c, 0], T);
   },
 };
+// ---------- où poser chaque pièce : repères affichés dans la 3D (txt, ligne, cote, arc) + une phrase
+const txt = (p, s) => ({ t: "txt", p, s }), ligne = (a, b) => ({ t: "ligne", a, b }), cote = (a, b, s) => ({ t: "cote", a, b, s }), arc = (c, r, a0, a1, s) => ({ t: "arc", c, r, a0, a1, s });
+const OU = {
+  projectif: [
+    { ou: "à plat sur la table. Les 2 diagonales se croisent au centre (5 ; 5). Les 4 petits carrés de 0,5 dans les coins sont la place des arêtes.",
+      notes: [ligne([0, 0, 0.22], [10, 10, 0.22]), ligne([10, 0, 0.22], [0, 10, 0.22]), txt([5, 5, 0.6], "centre"), txt([0.25, 0.25, 0.6], "coin 0,5"), cote([0, -1, 0.2], [10, -1, 0.2], "10"), cote([11, 0, 0.2], [11, 10, 0.2], "10")] },
+    { ou: "debout sur le point du centre, bien verticale. Les traits sur la pique montrent où iront les 4 carrés : 2, 4, 6 et 8 cm au-dessus de la table.",
+      notes: [txt([5, 5, 10.6], "au centre"), ...[2, 4, 6, 8].flatMap(h => [ligne([4.4, 5, h], [5.6, 5, h]), txt([7, 5, h], h + " cm")]), cote([11, 5, 0], [11, 5, 9.8], "9,6 + socle")] },
+    { ou: "une arête dans chaque coin du socle, sur les carrés de 0,5 tracés à l'étape 1, bien d'équerre (vérifie avec l'équerre).",
+      notes: [[0.25, 0.25], [9.75, 0.25], [9.75, 9.75], [0.25, 9.75]].map(([x, y]) => txt([x, y, 10.4], "coin")).concat([cote([10.8, 0, 0.2], [10.8, 0, 9.8], "9,6")]) },
+    { ou: "le 1er carré est enfilé sur la pique, ses côtés parallèles au socle, son dessous à 2 cm de la table. Le 2e, au-dessus, est tourné de 15°, son dessous à 4 cm.",
+      notes: [cote([11, 5, 0], [11, 5, 2], "2 cm"), cote([12.2, 5, 0], [12.2, 5, 4], "4 cm"), txt([5, 1.2, 2.2], "0° : aligné"), arc([5, 5, 4.25], 3.9, 0, 15, "15°")] },
+    { ou: "le 3e carré tourné de 30°, son dessous à 6 cm ; le 4e tourné de 45° (ses pointes visent le milieu des côtés du cube), son dessous à 8 cm.",
+      notes: [cote([11, 5, 0], [11, 5, 6], "6 cm"), cote([12.2, 5, 0], [12.2, 5, 8], "8 cm"), arc([5, 5, 6.25], 3.9, 0, 30, "30°"), arc([5, 5, 8.25], 3.9, 0, 45, "45°")] },
+    { ou: "posé à plat sur le haut des 4 arêtes, ses coins au-dessus des coins du socle. La maquette fait alors 10 cm de haut.",
+      notes: [txt([5, -0.2, 10.6], "posé sur les 4 arêtes"), cote([10.8, 0, 0], [10.8, 0, 10], "10")] },
+  ],
+  metrique: [
+    { ou: "rien à poser : trace la trame sur chaque plaque, des lignes tous les 2,5 cm (le cube est divisé en 4 × 4 × 4 modules).",
+      notes: [cote([0, -1, 0], [2.5, -1, 0], "2,5"), cote([-1, 0, 0], [-1, 0, 2.5], "2,5"), txt([5, -1.5, 10.6], "module = 2,5 = 1/4 de 10")] },
+    { seul: ["A0"], ou: "exemple avec la plaque A0 : 4 colonnes, de 10, 10, 7,5 et 7,5 cm de haut. Les marches tombent à 2,6 · 5,1 · 7,6 du bord. Chaque plaque a son tableau de hauteurs.",
+      notes: [txt([1.3, 0, 10.6], "10"), txt([3.8, 0, 10.6], "10"), txt([6.3, 0, 8.1], "7,5"), txt([8.8, 0, 8.1], "7,5"), cote([0, -1, 0], [10, -1, 0], "10")] },
+    { seul: ["A0"], ou: "les fentes de 0,2 sont aux 5 endroits où une plaque B la croise : 0,1 · 2,5 · 5 · 7,5 · 9,9. Plaques A : fentes par le bas, jusqu'à la moitié de la hauteur.",
+      notes: [...[0.1, 2.5, 5, 7.5, 9.9].map(x => txt([x, -0.3, -0.6], String(x).replace(".", ","))), txt([5, -0.3, 2.6], "fentes par le bas")] },
+    { ou: "les 5 plaques B debout, parallèles, fentes vers le haut, à 0 · 2,5 · 5 · 7,5 · 10 cm l'une de l'autre (B0 du côté le plus haut). Tiens-les droites avec des livres ou de la pâte adhésive.",
+      notes: [0, 1, 2, 3, 4].map(n => txt([POS[n], 1.2, PROFILS[n][0] * MOD + 0.7], "B" + n)).concat([cote([0, -1, 0], [10, -1, 0], "10 : une plaque tous les 2,5")]) },
+    { ou: "A0 et A1 descendent par-dessus, en travers des B, fentes vers le bas : chaque fente de A s'emboîte dans une fente de B.",
+      notes: [0, 1].map(m => txt([1.2, POS[m], PROFILS[m][0] * MOD + 0.7], "A" + m)) },
+    { ou: "A2, A3 et A4 de la même façon, dans l'ordre, jusqu'au bord où le cube ne fait plus qu'un module (2,5 cm).",
+      notes: [2, 3, 4].map(m => txt([1.2, POS[m], PROFILS[m][0] * MOD + 0.7], "A" + m)).concat([txt([9, 9, 3.2], "2,5 : un module")]) },
+  ],
+  topologique: [
+    { ou: "à plat. Trace 3 repères : une bande de 0,2 le long des bords gauche et droit (place des côtés) et une ligne à 2,7 cm du fond (place de la face arrière).",
+      notes: [ligne([0.2, 0, 0.22], [0.2, 10, 0.22]), ligne([9.8, 0, 0.22], [9.8, 10, 0.22]), ligne([0.2, 7.3, 0.22], [9.8, 7.3, 0.22]), cote([11, 7.3, 0.2], [11, 10, 0.2], "2,7"), txt([5, 0.8, 0.6], "devant"), txt([5, 9.3, 0.6], "fond")] },
+    { ou: "debout sur le bord gauche du sol, sur toute sa longueur, collé sur le sol (pas à côté).",
+      notes: [txt([0.1, 5, 10.4], "bord gauche"), cote([-1, 0, 0.2], [-1, 0, 9.8], "9,6")] },
+    { ou: "debout sur le bord droit du sol, la fente au milieu (à 4,5 du devant et 1,8 au-dessus du sol).",
+      notes: [txt([9.9, 5, 10.4], "bord droit"), txt([11.2, 5, 5], "fente"), cote([10.6, 0, 2], [10.6, 4.5, 2], "4,5")] },
+    { ou: "debout sur la ligne tracée à 2,7 du fond, entre les deux côtés : elle est 2,5 cm à l'intérieur du cube. Seulement la moitié basse (4,8 cm de haut).",
+      notes: [cote([5, 7.5, 5.4], [5, 10, 5.4], "recul 2,5"), txt([5, 7.4, 2.4], "4,8 de haut")] },
+    { ou: "posé sur le haut des deux côtés, poussé vers l'arrière : 2,5 cm de vide au-dessus du devant, et 2,5 cm qui dépassent au-dessus du fond.",
+      notes: [cote([11, 0, 10.3], [11, 2.5, 10.3], "2,5 vide"), cote([11, 10, 10.3], [11, 12.5, 10.3], "2,5 dépasse")] },
+    { ou: "devant, son arête gauche collée contre le bout du côté gauche, posée sur le sol, puis ouverte de 30° vers l'extérieur comme une porte.",
+      notes: [arc([0.2, 0, 0.4], 4.5, -30, 0, "30°"), txt([0.2, -0.4, 10.3], "charnière collée")] },
+  ],
+};
+for (const [k, liste] of Object.entries(OU)) liste.forEach((o, i) => Object.assign({ projectif, metrique, topologique }[k].etapes[i], o));
 const MAQUETTES = { projectif, metrique, topologique };
 
 // =========================================================================== gabarits (SVG, unités = cm)
@@ -389,19 +444,78 @@ function demarrer3D() {
     racine.clear(); objets = {}; M.construire(A);
     const d = new THREE.Vector3(...M.camera).normalize().multiplyScalar(34); camera.position.set(d.x, 4.5 + d.y, d.z); controls.target.set(0, 4.5, 0); controls.update();
   }
-  function montrer(M, n) {
-    const faites = new Set(), actives = new Set(M.etapes[n].montre);
-    for (let i = 0; i <= n; i++) M.etapes[i].montre.forEach(k => faites.add(k));
+  // repères de l'étape : traits et cotes en bleu dans la 3D, étiquettes en HTML par-dessus
+  const notes3D = new THREE.Group(); scene.add(notes3D);
+  const matNote = new THREE.LineBasicMaterial({ color: 0x2f4fb3, depthTest: false, transparent: true });
+  let etiquettes = [];
+  const trait = (a, b) => { const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([V(...a), V(...b)]), matNote); l.renderOrder = 5; notes3D.add(l); };
+  function poserNotes(liste) {
+    notes3D.clear(); etiquettes = []; const box = $("etiquettes"); box.innerHTML = "";
+    const lab = (p, t, cl) => { const el = document.createElement("span"); el.textContent = t; if (cl) el.className = cl; box.appendChild(el); etiquettes.push({ p: V(...p), el }); };
+    for (const n of liste || []) {
+      if (n.t === "txt") lab(n.p, n.s);
+      else if (n.t === "ligne") trait(n.a, n.b);
+      else if (n.t === "cote") { trait(n.a, n.b); const d = [n.b[0] - n.a[0], n.b[1] - n.a[1], n.b[2] - n.a[2]];
+        const e = Math.abs(d[2]) > 1e-6 ? [0.3, 0, 0] : (Math.abs(d[0]) > Math.abs(d[1]) ? [0, 0, 0.3] : [0, 0, 0.3]);
+        for (const q of [n.a, n.b]) trait([q[0] - e[0], q[1] - e[1], q[2] - e[2]], [q[0] + e[0], q[1] + e[1], q[2] + e[2]]);
+        lab([(n.a[0] + n.b[0]) / 2, (n.a[1] + n.b[1]) / 2, (n.a[2] + n.b[2]) / 2], n.s, "cote"); }
+      else if (n.t === "arc") { const pts = []; for (let i = 0; i <= 24; i++) { const a = rad(n.a0 + (n.a1 - n.a0) * i / 24); pts.push([n.c[0] + n.r * Math.cos(a), n.c[1] + n.r * Math.sin(a), n.c[2]]); }
+        for (let i = 0; i < 24; i++) trait(pts[i], pts[i + 1]);
+        for (const a of [n.a0, n.a1]) trait(n.c, [n.c[0] + (n.r + 0.6) * Math.cos(rad(a)), n.c[1] + (n.r + 0.6) * Math.sin(rad(a)), n.c[2]]);
+        const am = rad((n.a0 + n.a1) / 2); lab([n.c[0] + (n.r + 1.3) * Math.cos(am), n.c[1] + (n.r + 1.3) * Math.sin(am), n.c[2]], n.s, "cote"); }
+    }
+  }
+  function placerEtiquettes() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    for (const { p, el } of etiquettes) { const q = p.clone().project(camera); el.style.left = ((q.x + 1) / 2 * w) + "px"; el.style.top = ((1 - q.y) / 2 * h) + "px"; el.style.display = q.z < 1 ? "" : "none"; }
+  }
+  const lent = matchMedia("(prefers-reduced-motion: reduce)");
+  let descente = null;
+  function baseY(m) { return m.matrixAutoUpdate ? m.position.y : m.matrix.elements[13]; }
+  function fixeY(m, y) { if (m.matrixAutoUpdate) m.position.y = y; else m.matrix.elements[13] = y; }
+  function animer(ms) {
+    if (descente) for (const m of descente.ms) fixeY(m, m.userData.y0);
+    descente = null;
+    if (lent.matches || !ms.length) return;
+    for (const m of ms) if (m.userData.y0 === undefined) m.userData.y0 = baseY(m);
+    descente = { ms, t0: performance.now() };
+  }
+  let derniere = null;
+  function montrer(M, n, rejouer) {
+    const E = M.etapes[n];
+    const faites = new Set(), actives = new Set(E.montre.length ? E.montre : (E.seul || []));
+    if (E.seul) E.seul.forEach(k => faites.add(k));
+    else for (let i = 0; i <= n; i++) M.etapes[i].montre.forEach(k => faites.add(k));
+    const nouvelles = [];
     for (const [id, ms] of Object.entries(objets)) for (const m of ms) {
+      if (m.userData.y0 !== undefined) fixeY(m, m.userData.y0);
       m.visible = faites.has(id);
       if (!m.userData.bois) m.material = actives.has(id) ? matActif : matCarton;
       else m.material = actives.has(id) ? matActif : matBois;
+      if (actives.has(id) && E.montre.includes(id)) nouvelles.push(m);
     }
-    trame.visible = !!M.etapes[n].trame || (M.id === "metrique" && n < 3);
+    trame.visible = !!E.trame;
+    poserNotes(E.notes);
+    const cle = M.id + n;
+    if (rejouer || derniere !== cle) animer(nouvelles);
+    derniere = cle;
+  }
+  let vueDessus = false;
+  function dessus(oui, M) {
+    vueDessus = oui;
+    if (oui) { camera.position.set(0.01, 40, 0.01); controls.target.set(0, 0, 0); }
+    else { const d = new THREE.Vector3(...M.camera).normalize().multiplyScalar(34); camera.position.set(d.x, 4.5 + d.y, d.z); controls.target.set(0, 4.5, 0); }
+    controls.update();
   }
   function taille() { const w = canvas.clientWidth, h = canvas.clientHeight; if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); } }
-  (function boucle() { requestAnimationFrame(boucle); taille(); controls.update(); renderer.render(scene, camera); })();
-  return { construire, montrer, fantome };
+  (function boucle() {
+    requestAnimationFrame(boucle); taille(); controls.update();
+    if (descente) { const k = Math.min(1, (performance.now() - descente.t0) / 900), off = 4 * Math.pow(1 - k, 3);
+      for (const m of descente.ms) fixeY(m, m.userData.y0 + off);
+      if (k >= 1) descente = null; }
+    renderer.render(scene, camera); placerEtiquettes();
+  })();
+  return { construire, montrer, fantome, dessus };
 }
 
 // =========================================================================== page
@@ -409,11 +523,11 @@ function afficher() {
   const M = MAQUETTES[actuel];
   document.querySelectorAll(".onglets a").forEach(a => a.setAttribute("aria-current", a.id === "o-" + actuel ? "page" : "false"));
   $("idee").innerHTML = `<span class="sur">${M.niveau}</span><h2>${M.titre}</h2><p>${M.idee}</p><div class="ops">${M.ops.map(o => `<span>${o}</span>`).join("")}</div>`;
-  $("etapes").innerHTML = M.etapes.map((e, i) => `<li><button type="button" data-i="${i}"><span class="n">${i + 1}</span><span class="t"><b>${e.titre}</b><span class="det">${e.texte}</span></span></button></li>`).join("");
+  $("etapes").innerHTML = M.etapes.map((e, i) => `<li><button type="button" data-i="${i}"><span class="n">${i + 1}</span><span class="t"><b>${e.titre}</b><span class="det">${e.texte}${e.ou ? `<span class="ou">Où la poser : ${e.ou}</span>` : ""}</span></span></button></li>`).join("");
   $("etapes").querySelectorAll("button").forEach(b => b.addEventListener("click", () => aller(+b.dataset.i)));
   $("tableau").innerHTML = `<thead><tr><th>Pièce</th><th>Nombre</th><th>Mesures (cm)</th><th>Ce qu'elle fait</th></tr></thead><tbody>${M.pieces.map(p => `<tr><td><b>${p.nom}</b></td><td class="num">${p.nb}</td><td class="num">${p.taille}</td><td>${p.note}</td></tr>`).join("")}</tbody>`;
   $("gabarits").innerHTML = M.pieces.filter(p => p.g).map(p => `<figure><figcaption><b>${p.nom}</b> · ${p.taille} cm${p.nb > 1 ? ` · à découper ${p.nb} fois` : ""}</figcaption>${svgPiece(p.g, false)}</figure>`).join("");
-  if (scene3d) scene3d.construire(M);
+  if (scene3d) { scene3d.construire(M); const b = $("dessus"); b.setAttribute("aria-pressed", "false"); b.textContent = "Vue de dessus"; }
   aller(Math.min(etape, M.etapes.length - 1));
 }
 function aller(n) {
@@ -425,6 +539,8 @@ function aller(n) {
 }
 $("prec").addEventListener("click", () => aller(etape - 1));
 $("suiv").addEventListener("click", () => aller(etape + 1));
+$("dessus").addEventListener("click", e => { if (!scene3d) return; const oui = e.currentTarget.getAttribute("aria-pressed") !== "true"; e.currentTarget.setAttribute("aria-pressed", String(oui)); e.currentTarget.textContent = oui ? "Vue 3D" : "Vue de dessus"; scene3d.dessus(oui, MAQUETTES[actuel]); });
+$("rejouer").addEventListener("click", () => { if (scene3d) scene3d.montrer(MAQUETTES[actuel], etape, true); });
 $("cube").addEventListener("click", e => { if (!scene3d) return; scene3d.fantome.visible = !scene3d.fantome.visible; e.currentTarget.setAttribute("aria-pressed", String(scene3d.fantome.visible)); });
 function route() {
   const h = location.hash.replace("#", "");
