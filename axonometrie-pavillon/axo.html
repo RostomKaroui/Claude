@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Axonométrie du pavillon</title>
+<!-- Axonométrie militaire 30° / 60° du pavillon (même géométrie que maquette-pavillon), à l'échelle de la feuille.
+     Rendu : chaque face reçoit un numéro de plan ; un trait est dessiné là où le numéro change (arêtes vraies, parties cachées supprimées). -->
+<script src="three-0.128.0.min.js"></script>
+<style>
+@page { size: 210mm 297mm; margin: 0; }
+html, body { margin: 0; background: #fff; font-family: "IBM Plex Mono", "DejaVu Sans Mono", monospace; color: #222; }
+.page { width: 210mm; height: 297mm; position: relative; overflow: hidden; }
+#dessin { position: absolute; }
+#dessin img, #dessin svg { position: absolute; left: 0; top: 0; }
+.cart { position: absolute; left: 10mm; right: 10mm; bottom: 8mm; font-size: 7.5pt; line-height: 1.35; display: flex; justify-content: space-between; border-top: 0.25mm solid #222; padding-top: 1.5mm; }
+.cart b { font-family: "DejaVu Sans", Arial, sans-serif; }
+</style></head>
+<body>
+<div class="page"><div id="dessin"></div>
+  <div class="cart"><div><b>Pavillon · axonométrie 30° / 60°</b><br>plan 11,1 × 8,6 cm · hauteurs 9,4 et 8,5 cm · murs 0,4 cm</div>
+  <div style="text-align:right">imprimer à 100 % (taille réelle)<br>la règle grise fait 5 cm</div></div>
+</div>
+<script>
+// ------------------------------------------------------------------ mesures (mm), données par la feuille
+const M = { L: 111, D: 86, Hg: 94, Hp: 85 };
+const e = 4;                                   // épaisseur des murs (0,4 cm, comme sur le plan)
+const L = M.L, D = M.D, A = D - 2 * e, Lm = 2 * e + A, Hm = M.Hg, Ha = M.Hp;
+const p = M.Hg - M.Hp;                         // acrotère : la dalle de toit est 9 mm sous le haut des murs
+const Ar = D * 50 / 54;                        // ouvertures : mêmes proportions que la maquette
+const R5 = v => Math.round(v * 2) / 2, Rw = v => 2 * Math.round(v / 2);
+const xa = R5((Lm + L - e) / 2);
+const arc = (cx, w, v0, top) => ({ type: "arc", cx: R5(cx), w: Rw(w), v0: R5(v0), top: R5(top) });
+const rect = (cx, w, v0, v1) => ({ type: "rect", cx: R5(cx), w: Rw(w), v0: R5(v0), v1: R5(v1) });
+const fenS = arc(Lm / 2, 0.66 * Ar, 0.06 * Ar, 0.78 * Ar), fente = rect(xa, 0.14 * Ar, 0.26 * Ar, 0.78 * Ar);
+const fenN = rect(Lm / 2, 0.40 * Ar, 0.36 * Ar, 0.74 * Ar), fenO = arc(A / 2, 0.68 * Ar, 0.06 * Ar, 0.78 * Ar);
+const passage = arc(A / 2, 0.66 * Ar, 0, 0.78 * Ar);
+const porte = 2 * Math.round(0.13 * Ar), imposte = 2 * Math.round(0.09 * Ar), hp = Math.round(0.56 * Ar), poteau = 2;
+const ouvCloison = [rect(A / 2, porte, 0, hp), rect(A / 2 - porte / 2 - poteau - imposte / 2, imposte, 0, hp), rect(A / 2 + porte / 2 + poteau + imposte / 2, imposte, 0, hp)];
+const longue = [[0, 0], [L, 0], [L, Ha], [Lm, Ha], [Lm, Hm], [0, Hm]];
+function trou(o, n = 40) {
+  if (o.type === "rect") { const x0 = o.cx - o.w / 2, x1 = o.cx + o.w / 2; return [[x0, o.v0], [x1, o.v0], [x1, o.v1], [x0, o.v1]]; }
+  const r = o.w / 2, s = o.top - r, pts = [[o.cx - r, o.v0], [o.cx + r, o.v0]];
+  for (let i = 0; i <= n; i++) { const t = Math.PI * i / n; pts.push([o.cx + r * Math.cos(t), s + r * Math.sin(t)]); }
+  return pts;
+}
+// les ouvertures qui touchent le bas d'un mur sont découpées dans le contour (comme dans la maquette)
+function decoupe(contour, trous) {
+  const bas = trous.filter(o => o.v0 === 0).sort((a, b) => a.cx - b.cx), hauts = trous.filter(o => o.v0 > 0).map(o => trou(o));
+  if (!bas.length) return { c: contour, h: hauts };
+  const out = [[0, 0]];
+  for (const o of bas) {
+    const x0 = o.cx - o.w / 2, x1 = o.cx + o.w / 2;
+    out.push([x0, 0]);
+    if (o.type === "rect") out.push([x0, o.v1], [x1, o.v1]);
+    else { const r = o.w / 2, sp = o.top - r, n = 40; for (let i = n; i >= 0; i--) { const t = Math.PI * i / n; out.push([o.cx + r * Math.cos(t), sp + r * Math.sin(t)]); } }
+    out.push([x1, 0]);
+  }
+  return { c: out.concat(contour.slice(1)), h: hauts };
+}
+// ------------------------------------------------------------------ projection : axonométrie militaire 30° / 60°
+// coin nord-est en bas ; la façade nord monte à 60° vers la droite, la façade est à 30° vers la gauche
+const c60 = 0.5, s60 = Math.sqrt(3) / 2;
+const U = (x, y, z) => c60 * (L - x) - s60 * (D - y);
+const Vv = (x, y, z) => s60 * (L - x) + c60 * (D - y) + z;
+const P = (x, y, z) => [U(x, y, z), Vv(x, y, z)];
+
+// ------------------------------------------------------------------ géométrie : faces triangulées avec un numéro de « surface »
+const pos = [], ids = [];
+let nId = 1; const plans = new Map();
+function idPlan(n, a) {                          // même plan (normale + position) = même numéro : pas de trait entre deux pièces alignées
+  const k = n.map(v => Math.round(v * 1000)).join(",") + "|" + Math.round(a * 20);
+  if (!plans.has(k)) plans.set(k, nId++);
+  return plans.get(k);
+}
+function tri(a, b, c, id) { pos.push(...a, ...b, ...c); for (let i = 0; i < 3; i++) ids.push(id); }
+function planDe(a, b, c) {
+  const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], v = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+  let n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+  const l = Math.hypot(...n); n = n.map(x => x / l);
+  if (n[0] < -1e-9 || (Math.abs(n[0]) < 1e-9 && (n[1] < -1e-9 || (Math.abs(n[1]) < 1e-9 && n[2] < 0)))) n = n.map(x => -x);
+  return [n, n[0] * a[0] + n[1] * a[1] + n[2] * a[2]];
+}
+// plaque : contour 2D (u, v) avec trous, posée en o, u le long de du, v le long de dv, épaisseur t le long de dn
+function plaque(contour, trous, o, du, dv, dn, t) {
+  const W = (u, v, w) => [o[0] + u * du[0] + v * dv[0] + w * dn[0], o[1] + u * du[1] + v * dv[1] + w * dn[1], o[2] + u * du[2] + v * dv[2] + w * dn[2]];
+  const v2 = l => l.map(([u, v]) => new THREE.Vector2(u, v));
+  const faces = THREE.ShapeUtils.triangulateShape(v2(contour), trous.map(v2));
+  const tous = contour.concat(...trous);
+  for (const w of [0, t]) for (const f of faces) {
+    const [a, b, c] = f.map(i => W(tous[i][0], tous[i][1], w)); const [n, d] = planDe(a, b, c); tri(a, b, c, idPlan(n, d));
+  }
+  // côtés : les segments qui tournent de moins de 25° forment une seule surface (l'intrados d'un arc)
+  for (const poly of [contour, ...trous]) {
+    const n = poly.length, dir = i => { const a = poly[i], b = poly[(i + 1) % n]; return Math.atan2(b[1] - a[1], b[0] - a[0]); };
+    const lisse = i => { let d = Math.abs(dir(i) - dir((i + n - 1) % n)); d = Math.min(d, 2 * Math.PI - d); return d < 25 * Math.PI / 180; };
+    let chaine = 0;
+    for (let i = 0; i < n; i++) {
+      const a = poly[i], b = poly[(i + 1) % n];
+      if (Math.hypot(b[0] - a[0], b[1] - a[1]) < 1e-6) continue;
+      const q = [W(a[0], a[1], 0), W(b[0], b[1], 0), W(b[0], b[1], t), W(a[0], a[1], t)];
+      const courbe = lisse(i) || lisse((i + 1) % n);
+      let id;
+      if (courbe) { if (!lisse(i) || !chaine) chaine = nId++; id = chaine; }
+      else { chaine = 0; const [nn, d] = planDe(q[0], q[1], q[2]); id = idPlan(nn, d); }
+      tri(q[0], q[1], q[2], id); tri(q[0], q[2], q[3], id);
+    }
+  }
+}
+const H = (o) => decoupe(o.c, o.t);
+function mur(contour, trs, o, du, dv, dn) { const r = decoupe(contour, trs); plaque(r.c, r.h, o, du, dv, dn, e); }
+// murs (x est, y nord, z haut) : les deux longs murs vont d'un bout à l'autre
+mur(longue, [fenS, fente], [0, e, 0], [1, 0, 0], [0, 0, 1], [0, -1, 0]);                 // façade sud (2)
+mur(longue, [fenN, fente], [0, D, 0], [1, 0, 0], [0, 0, 1], [0, -1, 0]);                 // façade nord (4)
+mur([[0, 0], [A, 0], [A, Hm], [0, Hm]], [fenO], [e, D - e, 0], [0, -1, 0], [0, 0, 1], [-1, 0, 0]);          // façade ouest (3)
+mur([[0, 0], [A, 0], [A, Hm], [0, Hm]], ouvCloison, [2 * e + A, D - e, 0], [0, -1, 0], [0, 0, 1], [-1, 0, 0]); // cloison
+mur([[0, 0], [A, 0], [A, Ha], [0, Ha]], [passage], [L, D - e, 0], [0, -1, 0], [0, 0, 1], [-1, 0, 0]);       // façade est (1)
+// sols intérieurs (même numéro que le sol : pas de trait, sauf au pied des murs)
+const SOL = nId++;
+for (const [x0, y0, x1, y1] of [[0, 0, L, D]]) { tri([x0, y0, 0], [x1, y0, 0], [x1, y1, 0], SOL); tri([x0, y0, 0], [x1, y1, 0], [x0, y1, 0], SOL); }
+plaque([[0, 0], [A, 0], [A, A], [0, A]], [], [e, e, Hm - p - e], [1, 0, 0], [0, 1, 0], [0, 0, 1], e);     // dalle de toit, sous l'acrotère
+
+// ------------------------------------------------------------------ rendu des numéros, puis détection des traits
+const K = 14;                                    // pixels par mm
+let umin = 1e9, umax = -1e9, vmin = 1e9, vmax = -1e9;
+for (let i = 0; i < pos.length; i += 3) { const [u, v] = P(pos[i], pos[i + 1], pos[i + 2]); umin = Math.min(umin, u); umax = Math.max(umax, u); vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); }
+const marge = 6; umin -= marge; umax += marge; vmin -= marge; vmax += marge;
+const Wpx = Math.ceil((umax - umin) * K), Hpx = Math.ceil((vmax - vmin) * K);
+const geo = new THREE.BufferGeometry();
+const xyz = new Float32Array(pos.length), col = new Float32Array(pos.length);
+for (let i = 0, j = 0; i < pos.length; i += 3, j++) {
+  const x = pos[i], y = pos[i + 1], z = pos[i + 2];
+  xyz[i] = (U(x, y, z) - umin) / (umax - umin) * 2 - 1;
+  xyz[i + 1] = (Vv(x, y, z) - vmin) / (vmax - vmin) * 2 - 1;
+  xyz[i + 2] = (Math.sqrt(3) * (L - x) + (D - y) - 2 * z) / 600;    // profondeur : plus loin = plus grand
+  const id = ids[j]; col[i] = (id & 255) / 255; col[i + 1] = ((id >> 8) & 255) / 255; col[i + 2] = ((id >> 16) & 255) / 255;
+}
+geo.setAttribute("position", new THREE.BufferAttribute(xyz, 3)); geo.setAttribute("couleur", new THREE.BufferAttribute(col, 3));
+const mat = new THREE.ShaderMaterial({ side: THREE.DoubleSide,
+  vertexShader: "attribute vec3 couleur; varying vec3 c; void main(){ c = couleur; gl_Position = vec4(position, 1.0); }",
+  fragmentShader: "varying vec3 c; void main(){ gl_FragColor = vec4(c, 1.0); }" });
+const scene = new THREE.Scene(); scene.add(new THREE.Mesh(geo, mat)); scene.background = new THREE.Color(0, 0, 0);
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+const cible = new THREE.WebGLRenderTarget(Wpx, Hpx, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+renderer.setRenderTarget(cible); renderer.render(scene, new THREE.Camera());
+const buf = new Uint8Array(Wpx * Hpx * 4); renderer.readRenderTargetPixels(cible, 0, 0, Wpx, Hpx, buf);
+const idAt = (x, y) => { const k = (y * Wpx + x) * 4; return buf[k] | (buf[k + 1] << 8) | (buf[k + 2] << 16); };
+// un trait où le numéro change ; plus épais quand on passe du pavillon au vide (le contour)
+const fort = new Uint8Array(Wpx * Hpx), fin = new Uint8Array(Wpx * Hpx);
+for (let y = 0; y < Hpx - 1; y++) for (let x = 0; x < Wpx - 1; x++) {
+  const a = idAt(x, y), b = idAt(x + 1, y), c = idAt(x, y + 1);
+  for (const n of [b, c]) if (n !== a) { ((a === 0 || n === 0) ? fort : fin)[y * Wpx + x] = 1; }
+}
+const cv = document.createElement("canvas"); cv.width = Wpx; cv.height = Hpx;
+const g2 = cv.getContext("2d"); g2.fillStyle = "#fff"; g2.fillRect(0, 0, Wpx, Hpx);
+const img = g2.getImageData(0, 0, Wpx, Hpx);
+function epaissir(m, r) {                          // disque de rayon r pixels autour de chaque point du trait
+  const off = []; for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (dx * dx + dy * dy <= r * r + 0.5) off.push([dx, dy]);
+  for (let y = 0; y < Hpx; y++) for (let x = 0; x < Wpx; x++) if (m[y * Wpx + x])
+    for (const [dx, dy] of off) { const X = x + dx, Y = Hpx - 1 - (y + dy); if (X >= 0 && X < Wpx && Y >= 0 && Y < Hpx) { const k = (Y * Wpx + X) * 4; img.data[k] = img.data[k + 1] = img.data[k + 2] = 20; } }
+}
+epaissir(fin, 2); epaissir(fort, 4);             // ≈ 0,3 mm et 0,6 mm
+g2.putImageData(img, 0, 0);
+
+// ------------------------------------------------------------------ mise en page à taille réelle + repères (angles, cotes)
+const Wmm = umax - umin, Hmm = vmax - vmin;
+const ox = (210 - Wmm) / 2, oy = 16;
+const box = document.getElementById("dessin");
+Object.assign(box.style, { left: ox + "mm", top: oy + "mm", width: Wmm + "mm", height: Hmm + "mm" });
+const im = new Image(); im.src = cv.toDataURL("image/png"); im.style.width = Wmm + "mm"; im.style.height = Hmm + "mm"; box.appendChild(im);
+const X = (x, y, z) => U(x, y, z) - umin, Y = (x, y, z) => vmax - Vv(x, y, z);
+const gris = "#8a8a8a", s = [];
+const ln = (a, b, w = 0.18, d = "") => s.push(`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${gris}" stroke-width="${w}" ${d ? `stroke-dasharray="${d}"` : ""}/>`);
+const tx = (q, t, anc = "middle", rot = 0) => s.push(`<text x="${q[0]}" y="${q[1]}" font-size="2.8" fill="${gris}" text-anchor="${anc}" ${rot ? `transform="rotate(${rot} ${q[0]} ${q[1]})"` : ""} font-family="DejaVu Sans Mono, monospace">${t}</text>`);
+const Q = (x, y, z) => [X(x, y, z), Y(x, y, z)];
+// l'horizontale et les angles au coin nord-est
+const NE = Q(L, D, 0);
+ln([NE[0] - 40, NE[1]], [NE[0] + 40, NE[1]], 0.2);
+const arcAng = (r, a0, a1) => { const p0 = [NE[0] + r * Math.cos(a0), NE[1] - r * Math.sin(a0)], p1 = [NE[0] + r * Math.cos(a1), NE[1] - r * Math.sin(a1)];
+  s.push(`<path d="M${p0[0]} ${p0[1]} A ${r} ${r} 0 0 0 ${p1[0]} ${p1[1]}" fill="none" stroke="${gris}" stroke-width="0.2"/>`); };
+arcAng(9, 0, Math.PI / 3); arcAng(9, Math.PI, Math.PI * 5 / 6);
+tx([NE[0] + 12, NE[1] - 3], "60°", "start"); tx([NE[0] - 12, NE[1] - 1.5], "30°", "end");
+// cotes (en cm)
+const cote = (a, b, decal, t) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy), nx = -dy / l * decal, ny = dx / l * decal;
+  const A2 = [a[0] + nx, a[1] + ny], B2 = [b[0] + nx, b[1] + ny]; ln(a, A2, 0.12); ln(b, B2, 0.12); ln(A2, B2, 0.15);
+  const ang = Math.atan2(dy, dx) * 180 / Math.PI, m = [(A2[0] + B2[0]) / 2 + nx * 0.5, (A2[1] + B2[1]) / 2 + ny * 0.5];
+  tx(m, t, "middle", Math.abs(ang) > 90 ? ang + 180 : ang); };
+cote(Q(L, D, 0), Q(0, D, 0), 6, "11,1");
+cote(Q(L, 0, 0), Q(L, D, 0), 6, "8,6");
+cote(Q(0, D, 0), Q(0, D, Hm), 6, "9,4");
+cote(Q(L, 0, 0), Q(L, 0, Ha), -6, "8,5");
+// règle de contrôle : 5 cm
+const rx = -ox + 12, ry = Hmm + 4; ln([rx, ry], [rx + 50, ry], 0.3);
+for (let i = 0; i <= 5; i++) ln([rx + 10 * i, ry - 1.2], [rx + 10 * i, ry + 1.2], 0.2);
+tx([rx + 25, ry - 2], "5 cm");
+box.insertAdjacentHTML("beforeend", `<svg width="${Wmm}mm" height="${Hmm + 10}mm" viewBox="0 0 ${Wmm} ${Hmm + 10}" style="overflow:visible">${s.join("")}</svg>`);
+window.PRET = { Wpx, Hpx, Wmm, Hmm, plans: plans.size, faces: ids.length / 3 };
+</script>
+</body></html>
