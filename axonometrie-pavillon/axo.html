@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><title>Axonométrie du pavillon</title>
+<html lang="fr"><head><meta charset="utf-8"><title>Axonométrie éclatée du pavillon</title>
 <!-- Axonométrie militaire 30° / 60° du pavillon (même géométrie que maquette-pavillon), à l'échelle de la feuille.
      Rendu : chaque face reçoit un numéro de plan ; un trait est dessiné là où le numéro change (arêtes vraies, parties cachées supprimées). -->
 <script src="three-0.128.0.min.js"></script>
@@ -14,7 +14,7 @@ html, body { margin: 0; background: #fff; font-family: "IBM Plex Mono", "DejaVu 
 </style></head>
 <body>
 <div class="page"><div id="dessin"></div>
-  <div class="cart"><div><b>Pavillon · axonométrie 30° / 60°</b><br>plan 11,1 × 8,6 cm · hauteurs 9,4 et 8,5 cm · murs 0,4 cm</div>
+  <div class="cart"><div><b>Pavillon · axonométrie éclatée 30° / 60° (sans le toit)</b><br>plan 11,1 × 8,6 cm · hauteurs 9,4 et 8,5 cm · murs 0,4 cm</div>
   <div style="text-align:right">imprimer à 100 % (taille réelle)<br>la règle grise fait 5 cm</div></div>
 </div>
 <script>
@@ -114,7 +114,7 @@ mur([[0, 0], [A, 0], [A, Ha], [0, Ha]], [passage], [L, D - e, 0], [0, -1, 0], [0
 // sols intérieurs (même numéro que le sol : pas de trait, sauf au pied des murs)
 const SOL = nId++;
 for (const [x0, y0, x1, y1] of [[0, 0, L, D]]) { tri([x0, y0, 0], [x1, y0, 0], [x1, y1, 0], SOL); tri([x0, y0, 0], [x1, y1, 0], [x0, y1, 0], SOL); }
-plaque([[0, 0], [A, 0], [A, A], [0, A]], [], [e, e, Hm - p - e], [1, 0, 0], [0, 1, 0], [0, 0, 1], e);     // dalle de toit, sous l'acrotère
+// axonométrie éclatée : on enlève la dalle de toit pour voir l'intérieur (elle était posée sous l'acrotère, à 0,9 cm sous le haut des murs)
 
 // ------------------------------------------------------------------ rendu des numéros, puis détection des traits
 const K = 14;                                    // pixels par mm
