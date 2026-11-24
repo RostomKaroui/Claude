@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Construction générale · terrassement et chantier</title>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; src: url("fonts/inter-latin-400-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/inter-latin-600-normal.woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 800; src: url("fonts/inter-latin-800-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2"); }
+  @font-face { font-family: "Playfair"; font-weight: 400; font-style: italic; src: url("fonts/playfair-display-latin-400-italic.woff2"); }
+
+  :root {
+    --encre: #1f2328; --gris: #5f6670; --filet: #dfe3e8; --fond: #f6f7f9;
+    --c1: #2F4858;  /* I   démarche du projet */
+    --c2: #B4501E;  /* II  le terrain */
+    --c3: #8C1C13;  /* III l'édifice */
+    --c4: #3C7A3E;  /* IV  charges et fondations */
+    --rouge: #c0392b;
+  }
+  @page { size: A4; margin: 11mm 12mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Inter", sans-serif; font-size: 8.6pt; line-height: 1.34; color: var(--encre); }
+  b, strong { font-weight: 800; }
+  i, em { font-style: italic; }
+  .q { font-family: "Playfair", serif; font-style: italic; font-size: 1.05em; }
+  svg text { font-family: "Inter", sans-serif; }
+
+  /* ---------- en-tête ---------- */
+  .entete { border-bottom: 2.5px solid var(--encre); padding-bottom: 6px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .kicker { font-weight: 800; font-size: 7.2pt; letter-spacing: .1em; color: var(--gris); }
+  h1 { font-family: "Playfair", serif; font-weight: 700; font-size: 23pt; line-height: 1.05; margin-top: 2px; }
+  .sous { font-family: "Playfair", serif; font-style: italic; font-size: 10.5pt; color: var(--gris); text-align: right; max-width: 72mm; line-height: 1.25; }
+
+  .plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 7px; }
+  .plan div { border-radius: 5px; padding: 4px 8px; color: #fff; font-size: 7.8pt; line-height: 1.28; }
+  .plan b { display: block; font-size: 8.3pt; }
+  .p1 { background: var(--c1); } .p2 { background: var(--c2); } .p3 { background: var(--c3); } .p4 { background: var(--c4); }
+
+  /* ---------- parties ---------- */
+  h2 { display: flex; align-items: center; gap: 8px; font-family: "Playfair", serif; font-weight: 700; font-size: 13.5pt; margin: 2px 0 4px; break-after: avoid; }
+  h2 .num { font-family: "Inter", sans-serif; font-weight: 800; font-size: 9.5pt; color: #fff; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .partie { margin-bottom: 7px; }
+  
+  .s1 h2 { color: var(--c1); } .s1 .num { background: var(--c1); }
+  .s2 h2 { color: var(--c2); } .s2 .num { background: var(--c2); }
+  .s3 h2 { color: var(--c3); } .s3 .num { background: var(--c3); }
+  .s4 h2 { color: var(--c4); } .s4 .num { background: var(--c4); }
+
+  .def { border-left: 4px solid; background: var(--fond); padding: 3px 8px; margin-bottom: 5px; break-inside: avoid; }
+  .s1 .def { border-color: var(--c1); } .s2 .def { border-color: var(--c2); } .s3 .def { border-color: var(--c3); } .s4 .def { border-color: var(--c4); }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .carte { border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px 5px; break-inside: avoid; background: #fff; }
+  .carte h3 { font-size: 9.6pt; font-weight: 800; margin-bottom: 2px; }
+  .s1 .carte h3 { color: var(--c1); } .s2 .carte h3 { color: var(--c2); } .s3 .carte h3 { color: var(--c3); } .s4 .carte h3 { color: var(--c4); }
+  .carte p, .carte li { font-size: 8.7pt; line-height: 1.32; }
+  ul { list-style: none; }
+  li { padding-left: 10px; position: relative; margin-bottom: 1px; }
+  li::before { content: ""; position: absolute; left: 1px; top: .5em; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .gris { color: var(--gris); }
+  .alerte { color: var(--rouge); font-weight: 800; }
+
+  /* étapes du projet */
+  .etapes { display: grid; grid-template-columns: 1fr 12px 1fr 12px 1fr 12px 1fr; align-items: stretch; gap: 2px; margin-bottom: 5px; }
+  .etapes .e { background: var(--c1); color: #fff; border-radius: 5px; padding: 3px 6px; font-size: 8.3pt; line-height: 1.27; }
+  .etapes .e b { display: block; font-size: 8.4pt; }
+  .etapes .f { display: grid; place-items: center; font-weight: 800; color: var(--c1); }
+
+  .fig { text-align: center; }
+  .fig svg { display: block; margin: 0 auto; }
+  .legende { font-size: 7.8pt; color: var(--gris); font-style: italic; text-align: center; margin-top: 1px; }
+
+  /* tableau charges */
+  table.ch { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
+  table.ch th { background: var(--c4); color: #fff; text-align: left; padding: 2px 6px; font-size: 7.7pt; letter-spacing: .05em; }
+  table.ch td { padding: 2px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.ch td:first-child { font-weight: 800; color: var(--c4); white-space: nowrap; }
+  table.ch tr:nth-child(even) td { background: #f3f8f3; }
+
+  /* chaîne de charges */
+  .synthese { border: 2px solid var(--encre); border-radius: 8px; padding: 6px 10px 7px; margin-top: 7px; break-inside: avoid; }
+  .synthese h4, .retenir h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
+  .fil { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; font-size: 8.4pt; line-height: 1.25; }
+  .fil .e { color: #fff; padding: 4px 4px 4px 12px; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%, 9px 50%); text-align: center; }
+  .fil .e:first-child { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%); padding-left: 6px; }
+  .fil .e b { display: block; }
+  .lecon { margin-top: 5px; font-family: "Playfair", serif; font-style: italic; font-size: 11pt; text-align: center; }
+
+  .retenir { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 7px; }
+  .retenir > div { border: 1px solid var(--filet); border-radius: 6px; padding: 5px 9px; break-inside: avoid; }
+  .retenir dl { font-size: 8.6pt; line-height: 1.3; }
+  .retenir dt { font-weight: 800; display: inline; margin-right: 4px; }
+  .retenir dd { display: inline; }
+  .retenir dd::after { content: ""; display: block; margin-bottom: 2px; }
+  .notes { margin-top: 7px; border: 1px dashed #b9c0c8; border-radius: 6px; padding: 5px 9px 2px; break-inside: avoid; }
+  .notes h4 { font-size: 7.8pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+  .notes .ligne { height: 17px; border-bottom: 1px dotted #c4cad1; }
+</style>
+
+<style>
+  .c1 { --t: var(--c1); } .c2 { --t: var(--c2); } .c3 { --t: var(--c3); } .c4 { --t: var(--c4); }
+  .partie { margin-bottom: 5px; }
+  h2 { font-size: 12.5pt; margin: 1px 0 3px; }
+  h2 .num { width: 21px; height: 21px; font-size: 8.6pt; }
+  .def { padding: 2px 7px; margin-bottom: 4px; font-size: 8.4pt; }
+  .carte { padding: 3px 7px 4px; }
+  .carte h3 { font-size: 9pt; margin-bottom: 1px; }
+  .carte p, .carte li { font-size: 8pt; line-height: 1.27; }
+  .carte svg { display: block; width: 100%; height: auto; max-height: 32mm; margin: 0 auto; }
+  .pg2 { break-before: page; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.2pt; }
+  table.t th { background: var(--t); color: #fff; text-align: left; padding: 1.5px 6px; font-size: 7.4pt; letter-spacing: .05em; }
+  table.t td { padding: 1.5px 6px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  table.t td:first-child { font-weight: 800; color: var(--t); }
+  table.t tr:nth-child(even) td { background: #f8f8f9; }
+  .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .mini { border: 1px solid var(--filet); border-radius: 5px; padding: 2px 4px 3px; background: #fff; break-inside: avoid; }
+  .mini svg { display: block; width: 100%; height: auto; max-height: 14mm; margin: 0 auto; }
+  .mini b { font-size: 8.2pt; display: block; margin-top: 1px; color: var(--t); }
+  .mini span { font-size: 7.5pt; line-height: 1.22; display: block; color: #3a4047; }
+  .ex { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 4px; }
+  .ex div { border-top: 3px solid var(--c1); background: var(--fond); padding: 1px 6px 2px; font-size: 7.7pt; line-height: 1.22; }
+  .ex b:first-child { display: block; font-size: 8.6pt; color: var(--c1); }
+  .tass { border: 1.5px solid var(--rouge); background: #fdf1ef; border-radius: 6px; padding: 2px 8px; font-size: 8pt; margin-bottom: 4px; break-inside: avoid; }
+  .tass b:first-child { color: var(--rouge); letter-spacing: .06em; font-size: 7.4pt; }
+  .num3 { display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 50%; background: var(--c2); color: #fff; font-weight: 800; font-size: 7.4pt; margin-right: 3px; }
+  .legende { font-size: 7.2pt; margin-top: 0; }
+  .carte .pan svg { max-height: 15mm; }
+  .synthese { margin-top: 5px; padding: 4px 9px 5px; }
+  .fil { font-size: 7.9pt; }
+  .fil .e { padding: 3px 3px 3px 11px; }
+  .lecon { font-size: 10pt; margin-top: 3px; }
+  .retenir { margin-top: 5px; gap: 7px; }
+  .retenir > div { padding: 3px 8px; }
+  .retenir dl { font-size: 7.9pt; line-height: 1.25; }
+  svg text { font-family: "Inter", sans-serif; }
+  svg .l { font-size: 8px; fill: #1f2328; font-weight: 600; }
+  svg .lb { font-size: 8px; fill: #1f2328; font-weight: 800; }
+  svg .lg { font-size: 7px; fill: #5f6670; }
+  svg .ld { stroke: #1f2328; stroke-width: .7; fill: none; }
+  svg .bet { fill: #d9dde3; stroke: #5f6670; stroke-width: .8; }
+  svg .acier { stroke: #8C1C13; stroke-width: 1.5; fill: none; }
+  svg .halo { paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+</style>
+
+<style>
+  .carte svg { max-height: 40mm; }
+  .carte p, .carte li { font-size: 8.5pt; }
+  .mini span b { display: inline; font-size: inherit; margin: 0; color: inherit; }
+  .mini svg { max-height: 26mm; }
+  .vocab { border-left: 4px solid var(--c1); background: var(--fond); padding: 2px 8px; font-size: 8.2pt; margin-top: 3px; }
+  .vocab b:first-child { font-size: 7.4pt; letter-spacing: .12em; color: var(--c1); }
+  .why { border: 1.5px solid var(--rouge); background: #fdf1ef; border-radius: 6px; padding: 2px 8px; font-size: 8.2pt; margin-top: 3px; }
+  .why b:first-child { color: var(--rouge); font-size: 7.4pt; letter-spacing: .08em; }
+  .tag { display: inline-block; background: var(--t); color: #fff; border-radius: 3px; padding: 0 5px; font-weight: 800; font-size: 7.6pt; margin-right: 3px; }
+  .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; }
+  .steps div { display: grid; grid-template-columns: 19px 1fr; gap: 6px; align-items: center; font-size: 8.3pt; line-height: 1.25; }
+  .steps .n { background: var(--c4); color: #fff; font-weight: 800; font-size: 8pt; width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 3px 4px; }
+  .chips span { background: #fbf1ec; border: 1px solid #ecd2c4; color: #6b2d10; border-radius: 10px; padding: 1px 7px; font-size: 8pt; line-height: 1.3; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#f4eee1"/><line x1="0" y1="0" x2="0" y2="6" stroke="#bfae8f" stroke-width="1"/></pattern>
+  <pattern id="h2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d9c7a3"/><line x1="0" y1="0" x2="0" y2="6" stroke="#9c8660" stroke-width="1"/></pattern>
+  <marker id="fr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#c0392b"/></marker>
+  <marker id="fv" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#3C7A3E"/></marker>
+  <marker id="fk" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1f2328"/></marker>
+  <marker id="fk2" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 z" fill="#1f2328"/></marker>
+</defs></svg>
+
+
+<div class="entete">
+  <div>
+    <div class="kicker">CONSTRUCTION GÉNÉRALE · 1RE ANNÉE ARCHITECTURE · ESAD TUNIS</div>
+    <h1>Terrassement et chantier</h1>
+  </div>
+  <div class="sous">Fouiller, remblayer, assécher et organiser avant de fonder</div>
+</div>
+
+<div class="plan">
+  <div class="p1"><b>01 · Les fouilles</b>rigole, tranchée, puits, excavation</div>
+  <div class="p2"><b>02 · Exécution</b>démolir, étayer, décaper</div>
+  <div class="p3"><b>03 · Terres et eau</b>remblai, foisonnement, pente, nappe</div>
+  <div class="p4"><b>04 · Le chantier</b>plan d'occupation, ordre des travaux</div>
+</div>
+
+<!-- ===================== 01 ===================== -->
+<section class="partie s1 c1">
+  <h2><span class="num">01</span>Les différentes fouilles</h2>
+  <div class="def"><b>Fouille</b> : creusement dans le sol. Son nom dépend de sa <b>largeur l</b> et de sa <b>profondeur h</b>. Elle est faite pour y couler les fondations.</div>
+  <div class="g4">
+    <div class="mini c1"><svg viewBox="0 0 120 84" role="img" aria-hidden="true"><rect x="0" y="26" width="120" height="58" fill="url(#h)"/><rect x="45.0" y="26" width="30" height="20" fill="#fff" stroke="#1f2328" stroke-width=".9"/><line x1="0" y1="26" x2="120" y2="26" stroke="#1f2328" stroke-width="1.3"/><line x1="45.0" y1="18" x2="75.0" y2="18" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="60" y="10" class="lb" text-anchor="middle" style="font-size:7.8px">l ≤ 2 m</text><line x1="38.0" y1="26" x2="38.0" y2="46" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="34.0" y="39.0" class="lb" text-anchor="end" style="font-size:7.8px">h ≤ 1 m</text></svg><b>Fouille en rigole</b><span><b>l ≤ 2 m</b> et <b>h ≤ 1 m</b> environ.</span></div>
+    <div class="mini c1"><svg viewBox="0 0 120 84" role="img" aria-hidden="true"><rect x="0" y="26" width="120" height="58" fill="url(#h)"/><rect x="51.0" y="26" width="18" height="50" fill="#fff" stroke="#1f2328" stroke-width=".9"/><line x1="0" y1="26" x2="120" y2="26" stroke="#1f2328" stroke-width="1.3"/><line x1="51.0" y1="18" x2="69.0" y2="18" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="60" y="10" class="lb" text-anchor="middle" style="font-size:7.8px">l &lt; 2 m</text><line x1="44.0" y1="26" x2="44.0" y2="76" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="40.0" y="54.0" class="lb" text-anchor="end" style="font-size:7.8px">h &gt; 1 m</text></svg><b>Fouille en tranchée</b><span><b>1er cas</b> : l &lt; 2 m, alors <b>h &gt; 1 m</b>. <b>2e cas</b> : l &gt; 2 m, alors <b>h &gt; ½ l</b>.</span></div>
+    <div class="mini c1"><svg viewBox="0 0 120 84" role="img" aria-hidden="true"><rect x="0" y="26" width="120" height="58" fill="url(#h)"/><rect x="47.0" y="26" width="26" height="46" fill="#fff" stroke="#1f2328" stroke-width=".9"/><line x1="0" y1="26" x2="120" y2="26" stroke="#1f2328" stroke-width="1.3"/><line x1="47.0" y1="18" x2="73.0" y2="18" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="60" y="10" class="lb" text-anchor="middle" style="font-size:7.8px">l ≈ L</text><line x1="40.0" y1="26" x2="40.0" y2="72" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="36.0" y="52.0" class="lb" text-anchor="end" style="font-size:7.8px">h &gt; 1 m</text><rect x="96" y="30" width="14" height="14" fill="none" stroke="#5f6670"/><text x="103" y="52" class="lg" text-anchor="middle">plan</text></svg><b>Fouille en puits</b><span><b>h &gt; 1 m</b> et la longueur <b>L</b> du même ordre de grandeur que la largeur <b>l</b>.</span></div>
+    <div class="mini c1"><svg viewBox="0 0 120 84" role="img" aria-hidden="true"><rect x="0" y="26" width="120" height="58" fill="url(#h)"/><rect x="11.0" y="26" width="98" height="14" fill="#fff" stroke="#1f2328" stroke-width=".9"/><line x1="0" y1="26" x2="120" y2="26" stroke="#1f2328" stroke-width="1.3"/><line x1="11.0" y1="18" x2="109.0" y2="18" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="60" y="10" class="lb" text-anchor="middle" style="font-size:7.8px">l &gt; 2 m</text><line x1="18.0" y1="26" x2="18.0" y2="40" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="23.0" y="36.0" class="lb" style="font-size:7.8px">h &lt; ½ l</text></svg><b>Pleine masse</b><span>ou <b>excavation superficielle</b> : <b>l &gt; 2 m</b> et <b>h &lt; ½ l</b>.</span></div>
+  </div>
+  <div class="vocab" style="border-color:var(--c1); margin-top:4px"><b>À RETENIR</b> &nbsp;La limite de 2 m sur la largeur sépare les fouilles « étroites » (rigole, tranchée, puits) des fouilles « larges » ; au-delà de 2 m, c'est le rapport <b>h / l</b> qui décide entre tranchée (<b>h &gt; ½ l</b>) et excavation superficielle (<b>h &lt; ½ l</b>).</div>
+</section>
+
+<!-- ===================== 02 ===================== -->
+<section class="partie s2 c2">
+  <h2><span class="num">02</span>Exécution des fouilles : travaux préliminaires</h2>
+  <div class="g3">
+    <div class="carte c2"><h3><span class="tag">1</span>Démolition des constructions existantes</h3>
+<svg viewBox="0 0 150 76" role="img" aria-label="Démolition et étaiement d'un ouvrage voisin">
+  <rect x="0" y="40" width="150" height="36" fill="url(#h)"/>
+  <line x1="0" y1="40" x2="150" y2="40" stroke="#1f2328" stroke-width="1.3"/>
+  <rect x="86" y="6" width="60" height="34" fill="#b9c0c8" stroke="#5f6670"/><text x="116" y="22" class="lb" text-anchor="middle" style="font-size:7.2px">ouvrage</text><text x="116" y="31" class="lb" text-anchor="middle" style="font-size:7.2px">à conserver</text>
+  <rect x="6" y="14" width="44" height="26" fill="#f1c5c0" stroke="#c0392b" stroke-dasharray="3 2"/><text x="28" y="31" class="lb" text-anchor="middle" style="font-size:7px;fill:#c0392b">à démolir</text>
+  <g stroke="#8C1C13" stroke-width="2.6"><line x1="68" y1="40" x2="86" y2="14"/></g>
+  <text x="58" y="56" class="lb" style="font-size:7.2px;fill:#8C1C13">étai</text>
+</svg>
+      <p>À effectuer avec <b>toutes les précautions nécessaires</b> lorsque les parties à démolir sont <b>au voisinage immédiat</b> d'une construction ou de terres à maintenir.</p></div>
+    <div class="carte c2"><h3><span class="tag">2</span>Étaiement préalable</h3>
+      <svg viewBox="0 0 150 76" role="img" aria-label="Étaiement"><rect x="0" y="46" width="150" height="30" fill="url(#h)"/><line x1="0" y1="46" x2="150" y2="46" stroke="#1f2328" stroke-width="1.3"/><rect x="82" y="6" width="60" height="40" fill="#b9c0c8" stroke="#5f6670"/><polygon points="8,46 20,46 20,70 8,70" fill="none"/><polygon points="6,46 82,46 82,60 6,60" fill="#fff" stroke="#1f2328" stroke-width=".9"/><g stroke="#8C1C13" stroke-width="2.6"><line x1="60" y1="60" x2="82" y2="22"/><line x1="40" y1="60" x2="82" y2="30" opacity="0"/></g><text x="112" y="28" class="lb" text-anchor="middle" style="font-size:7.2px">ouvrage</text><text x="112" y="37" class="lb" text-anchor="middle" style="font-size:7.2px">à conserver</text><text x="12" y="38" class="lb" style="font-size:7.2px;fill:#8C1C13">étai</text><text x="10" y="56" class="lg" style="font-size:6.4px">fouille</text></svg>
+      <p>Avant toute fouille <b>contre un ouvrage existant à conserver</b>, on procède, <b>s'il y a lieu</b>, à l'<b>étaiement</b> de cet ouvrage.</p></div>
+    <div class="carte c2"><h3><span class="tag">3</span>Décapage de la terre végétale</h3>
+<svg viewBox="0 0 150 76" role="img" aria-label="Décapage de la terre végétale">
+  <rect x="0" y="40" width="150" height="36" fill="#e9dcc7"/><rect x="0" y="34" width="70" height="6" fill="#6f9a52"/>
+  <polygon points="92,34 138,34 130,16 100,16" fill="#6f9a52" stroke="#4f7339" stroke-width=".8"/>
+  <text x="115" y="30" class="lb" text-anchor="middle" style="font-size:7px;fill:#fff">dépôt</text>
+  <line x1="78" y1="34" x2="78" y2="46" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/><text x="84" y="46" class="lb" style="font-size:7.4px">≥ 20 cm</text>
+  <rect x="70" y="40" width="80" height="2" fill="#fff"/>
+  <text x="4" y="58" class="lg">terre végétale enlevée</text><text x="4" y="67" class="lg">sur l'emprise des fouilles</text>
+</svg>
+      <p>La terre végétale est enlevée sur <b>au moins 20 cm</b> sur l'emprise des fouilles, et <b>mise en dépôt</b> aux emplacements désignés par le <b>M.O.</b> (maître d'ouvrage).</p></div>
+  </div>
+</section>
+
+<!-- ===================== 03 ===================== -->
+<section class="partie s3 c3">
+  <h2><span class="num">03</span>Les terres et l'eau</h2>
+  <div class="g2">
+    <div class="carte c3"><h3>Le remblai</h3>
+<svg viewBox="0 0 250 120" role="img" aria-label="Remblai en couches de 20 cm au plus">
+  <rect x="0" y="40" width="80" height="80" fill="url(#h)"/><rect x="170" y="40" width="80" height="80" fill="url(#h)"/>
+  <polygon points="80,40 170,40 150,112 100,112" fill="#e4cfa8" stroke="#7a6a4f" stroke-width=".9"/>
+  <g stroke="#7a6a4f" stroke-width=".8" fill="none"><line x1="84" y1="57" x2="166" y2="57"/><line x1="88" y1="74" x2="162" y2="74"/><line x1="94" y1="92" x2="156" y2="92"/></g>
+  <g class="lb" style="font-size:7px" text-anchor="middle" fill="#6b5a3e"><text x="125" y="52">4</text><text x="125" y="69">3</text><text x="125" y="86">2</text><text x="125" y="105">1</text></g>
+  <polygon points="40,40 70,12 100,12 80,40" fill="none" stroke="#8a9099" stroke-dasharray="3 2"/><polygon points="170,40 190,12 220,12 250,40" fill="none" stroke="#8a9099" stroke-dasharray="3 2" opacity="0"/>
+  <path d="M86,40 L100,12 H150 L164,40" fill="none" stroke="#8a9099" stroke-dasharray="3 2"/>
+  <text x="125" y="30" class="lg" text-anchor="middle">plate-forme</text>
+  <line x1="178" y1="92" x2="178" y2="75" class="ld" marker-start="url(#fk2)" marker-end="url(#fk)"/>
+  <text x="184" y="86" class="lb" style="font-size:7.4px">≤ 0,20 m</text><text x="184" y="95" class="lg">par couche</text>
+  <g stroke="#3C7A3E" stroke-width="1.6" fill="none" marker-end="url(#fv)"><line x1="56" y1="70" x2="56" y2="86" opacity="0"/><path d="M40,96 Q60,96 76,86"/></g>
+  <text x="2" y="104" class="lb" style="font-size:7.4px;fill:#3C7A3E">compactage</text><text x="2" y="113" class="lg">à chaque couche</text>
+</svg>
+      <p><b>Remblai</b> : ensemble des terres rapportées sur le terrain pour <b>créer une plate-forme</b> ou <b>combler une cavité</b>. Une ou plusieurs couches de sol <b>homogène</b>, en <b>couches horizontales successives</b> de <b>0,20 m au plus</b> avant compression.</p>
+      <div class="why"><b>ATTENTION</b> &nbsp;Un remblai bien fait comprend le <b>chargement</b>, le <b>transport</b>, le <b>déchargement</b>, l'<b>épandage par couche</b> et le <b>compactage</b> suivant le profil prescrit.</div></div>
+    <div class="carte c3"><h3>Le foisonnement</h3>
+<svg viewBox="0 0 300 120" role="img" aria-label="Foisonnement : le volume des terres extraites augmente">
+  <rect x="0" y="70" width="74" height="50" fill="url(#h)"/>
+  <polygon points="74,70 74,120 0,120 0,70" fill="none"/>
+  <polygon points="14,70 62,70 54,98 22,98" fill="#e4cfa8" stroke="#7a6a4f" stroke-width=".9"/>
+  <text x="38" y="86" class="lb" text-anchor="middle" style="font-size:7.4px">V</text>
+  <text x="38" y="112" class="lb" text-anchor="middle" style="font-size:7.4px">en place</text>
+  <text x="92" y="86" class="lb" style="font-size:16px;fill:#8C1C13" text-anchor="middle">→</text>
+  <polygon points="112,106 160,32 208,106" fill="#e8bf8f" stroke="#7a6a4f" stroke-width=".9"/>
+  <polygon points="128,106 160,56 192,106" fill="none" stroke="#8C1C13" stroke-dasharray="3 2"/>
+  <polygon points="160,40 184,20 202,20 200,40" fill="none"/>
+  <text x="160" y="92" class="lb" text-anchor="middle" style="font-size:7.4px">V</text>
+  <path d="M168,46 L174,34 H190 L196,46" fill="#d98b82" stroke="#8C1C13" stroke-width=".9" opacity="0"/>
+  <text x="214" y="64" class="lb" style="font-size:7.4px;fill:#8C1C13">+ vides</text><text x="214" y="73" class="lb" style="font-size:7.4px;fill:#8C1C13">entre les grains</text>
+  <text x="160" y="118" class="lb" text-anchor="middle" style="font-size:7.4px">en tas</text>
+  <text x="2" y="14" class="l" style="font-size:7.6px">Volume des terres extraites</text><text x="2" y="24" class="l" style="font-size:7.6px">&gt; volume de la fouille</text>
+</svg>
+      <p><b>Foisonnement</b> : <b>accroissement du volume apparent</b> des minéraux, consécutif à leur <b>extraction</b> ou à leur <b>manipulation en vrac</b>.</p>
+      <p style="margin-top:2px">Les terres sorties de la fouille occupent <b>plus de volume</b> qu'en place : il faut prévoir des camions et un dépôt plus grands.</p></div>
+  </div>
+</section>
+
+<div class="pg2">
+<section class="partie s3 c3">
+  <h2><span class="num">03</span>Les terres et l'eau (suite)</h2>
+  <div class="g2">
+    <div class="carte c3"><h3>Fondations à niveaux différents : pente 3 pour 2</h3>
+<svg viewBox="0 0 250 124" role="img" aria-label="Pente maximale 3 de base pour 2 de hauteur entre deux semelles">
+  <polygon points="0,100 250,36 250,124 0,124" fill="url(#h)"/><line x1="0" y1="100" x2="250" y2="36" stroke="#1f2328" stroke-width="1.3"/>
+  <rect x="22" y="88" width="34" height="12" class="bet" opacity="0"/>
+  <rect x="26" y="102" width="40" height="8" fill="#d9dde3" stroke="#5f6670" stroke-width=".9" opacity="0"/>
+  <rect x="22" y="104" width="44" height="8" class="bet"/><rect x="36" y="70" width="14" height="34" class="bet"/>
+  <rect x="146" y="64" width="44" height="8" class="bet"/><rect x="160" y="30" width="14" height="34" class="bet"/>
+  <line x1="18" y1="14" x2="204" y2="14" stroke="#1f2328" stroke-width="1.2" stroke-dasharray="6 3"/><line x1="43" y1="14" x2="43" y2="70" stroke="#1f2328" stroke-width="2"/><line x1="167" y1="14" x2="167" y2="30" stroke="#1f2328" stroke-width="2"/>
+  <path d="M66,104 H146 V64 Z" fill="#fdf1ef" stroke="#c0392b" stroke-width="1.4"/>
+  <text x="106" y="117" class="lb" text-anchor="middle" style="font-size:8px;fill:#c0392b">3 (base)</text>
+  <text x="152" y="88" class="lb" style="font-size:8px;fill:#c0392b">2 (hauteur)</text>
+  <text x="196" y="22" class="lg" text-anchor="start">arêtes des semelles</text><text x="196" y="31" class="lg">les plus voisines</text>
+</svg>
+      <p>Les niveaux des fondations successives doivent être tels qu'une <b>pente maximale de 3 de base pour 2 de hauteur</b> relie les <b>arêtes des semelles les plus voisines</b>.</p></div>
+    <div class="carte c3"><h3>Le rabattement de nappe</h3>
+<svg viewBox="0 0 250 124" role="img" aria-label="Rabattement de nappe : pompes à la périphérie de la fouille">
+  <rect x="0" y="24" width="250" height="100" fill="url(#h)"/>
+  <polygon points="82,24 168,24 154,76 96,76" fill="#fff" stroke="#1f2328" stroke-width=".9"/>
+  <line x1="0" y1="24" x2="250" y2="24" stroke="#1f2328" stroke-width="1.3"/>
+  <line x1="0" y1="62" x2="250" y2="62" stroke="#5b8bd1" stroke-width="1.2" stroke-dasharray="5 3"/>
+  <path d="M0,62 C40,62 60,70 80,96 C100,108 150,108 170,96 C190,70 210,62 250,62" fill="none" stroke="#2c5fb3" stroke-width="2.2"/>
+  <g fill="#555c66"><rect x="52" y="6" width="9" height="12"/><rect x="189" y="6" width="9" height="12"/></g>
+  <g stroke="#555c66" stroke-width="2.4"><line x1="56.5" y1="18" x2="56.5" y2="100"/><line x1="193.5" y1="18" x2="193.5" y2="100"/></g>
+  <g stroke="#2c5fb3" stroke-width="1.6" fill="none" marker-end="url(#fk)"><path d="M61,10 H20" stroke="#2c5fb3"/><path d="M198,10 H238" stroke="#2c5fb3"/></g>
+  <text x="22" y="22" class="lg" style="fill:#2c5fb3">évacuation</text><text x="204" y="22" class="lg" style="fill:#2c5fb3">évacuation</text>
+  <text x="125" y="46" class="lb" text-anchor="middle" style="font-size:7.4px;fill:#2c5fb3">fouille au sec</text>
+  <text x="125" y="118" class="lb" text-anchor="middle" style="font-size:7.2px;fill:#2c5fb3">nappe rabattue sous le fond</text>
+  <text x="2" y="58" class="lg" style="fill:#5b8bd1">niveau initial de la nappe</text>
+  <text x="38" y="122" class="lg" opacity="0">.</text>
+  <text x="72" y="36" class="lg" text-anchor="end" opacity="0">.</text>
+  <text x="2" y="40" class="lb" style="font-size:7px">pompes</text>
+</svg>
+      <p>On met en place, <b>à la périphérie du terrassement</b>, un <b>réseau de pompes</b> qui crée une <b>dépression locale</b> dans la <b>nappe phréatique</b> : le niveau de l'eau <b>descend localement</b>, sous le niveau fini du terrassement. Les fouilles se font <b>au sec</b>.</p>
+      <p style="margin-top:2px"><b>Condition</b> : de la <b>place autour de la zone</b> pour le réseau de pompes et d'évacuation.</p></div>
+  </div>
+</section>
+
+<!-- ===================== 04 ===================== -->
+<section class="partie s4 c4">
+  <h2><span class="num">04</span>Le chantier : plan d'occupation et ordre des travaux</h2>
+  <div class="g2">
+    <div class="carte c4"><h3>Que trouve-t-on dans un plan d'occupation de chantier ?</h3>
+      <p style="margin-bottom:3px">Pour que le travail soit <b>efficace</b>, on prévoit un plan qui tient compte de tous les équipements nécessaires, entre autres :</p>
+      <div class="chips">
+        <span>bureaux des intervenants et <b>réunions de chantier</b></span><span><b>axes de circulation</b> des engins et du transport</span>
+        <span><b>dépôts de matériaux périssables</b> (ciment, chaux…)</span><span><b>stockage des aciers</b> et atelier de ferraillage</span>
+        <span>emplacements de la <b>bétonnière</b> ou centrale à béton</span><span>emplacements des <b>produits de carrière</b></span>
+      </div></div>
+    <div class="carte c4"><h3>L'ordre des travaux, de l'analyse au béton</h3>
+      <div class="steps">
+        <div><span class="n">1</span><span><b>Analyse préliminaire</b> : orientation, vents dominants, situation, environnement</span></div>
+        <div><span class="n">6</span><span><b>Traçage</b> des fouilles</span></div>
+        <div><span class="n">2</span><span><b>Levé topographique</b></span></div>
+        <div><span class="n">7</span><span><b>Excavation</b> des fouilles</span></div>
+        <div><span class="n">3</span><span><b>Étude du sol</b> : nature, tolérance, mixte ou homogène</span></div>
+        <div><span class="n">8</span><span><b>Gros béton</b> ou béton de propreté</span></div>
+        <div><span class="n">4</span><span><b>Décapage</b> et dépôt de la terre végétale</span></div>
+        <div><span class="n">9</span><span><b>Report des entraxes</b> sur le béton</span></div>
+        <div><span class="n">5</span><span><b>Chaises</b> : mise en place, puis <b>report des entraxes</b> (chiffres et lettres)</span></div>
+        <div></div>
+      </div></div>
+  </div>
+
+  <div class="synthese" style="margin-top:5px">
+    <h4>Synthèse : du terrain à la fouille prête</h4>
+    <div class="fil" style="grid-template-columns:repeat(6,1fr)">
+      <div class="e" style="background:var(--c1)"><b>Étudier</b>site, levé, sol</div>
+      <div class="e" style="background:var(--c2)"><b>Préparer</b>démolir, étayer, décaper</div>
+      <div class="e" style="background:#a0301f"><b>Tracer</b>chaises, entraxes</div>
+      <div class="e" style="background:var(--c3)"><b>Fouiller</b>rigole, tranchée, puits</div>
+      <div class="e" style="background:#6b7a2a"><b>Assécher</b>nappe rabattue</div>
+      <div class="e" style="background:var(--c4)"><b>Couler</b>gros béton ou propreté</div>
+    </div>
+  </div>
+
+  <div class="retenir">
+    <div>
+      <h4>À retenir</h4>
+      <dl>
+        <dt>Rigole :</dt><dd>l ≤ 2 m, h ≤ 1 m environ.</dd>
+        <dt>Tranchée :</dt><dd>l &lt; 2 m et h &gt; 1 m, ou l &gt; 2 m et h &gt; ½ l.</dd>
+        <dt>Excavation :</dt><dd>l &gt; 2 m et h &lt; ½ l.</dd>
+        <dt>Terre végétale :</dt><dd>enlevée sur 20 cm au moins.</dd>
+        <dt>Remblai :</dt><dd>couches de 0,20 m au plus, compactées.</dd>
+        <dt>Pente entre semelles :</dt><dd>3 de base pour 2 de hauteur au plus.</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>Vocabulaire</h4>
+      <dl>
+        <dt>Entraxe :</dt><dd>distance entre les axes de deux éléments.</dd>
+        <dt>Chaise :</dt><dd>support en bois, placé hors de la fouille, qui porte les fils d'axes.</dd>
+        <dt>Nappe phréatique :</dt><dd>eau souterraine.</dd>
+        <dt>Étayer :</dt><dd>soutenir provisoirement.</dd>
+        <dt>M.O. :</dt><dd>maître d'ouvrage.</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="notes"><h4>Mes notes</h4><div class="ligne"></div><div class="ligne"></div><div class="ligne"></div></div>
+</section>
+</div>
+
+</body>
+</html>
