@@ -14,7 +14,7 @@ html, body { margin: 0; background: #fff; font-family: "IBM Plex Mono", "DejaVu 
 </style></head>
 <body>
 <div class="page"><div id="dessin"></div>
-  <div class="cart"><div><b>Pavillon · axonométrie éclatée 30° / 60° (sans le toit)</b><br>plan 11,1 × 8,6 cm · hauteurs 9,4 et 8,5 cm · murs 0,4 cm</div>
+  <div class="cart"><div><b>Pavillon · axonométrie éclatée 30° / 60° (sans le toit)</b><br>plan 11,1 × 8,6 cm · hauteurs divisées par 2 : 4,7 et 4,25 cm · murs 0,4 cm</div>
   <div style="text-align:right">imprimer à 100 % (taille réelle)<br>la règle grise fait 5 cm</div></div>
 </div>
 <script>
@@ -58,7 +58,8 @@ function decoupe(contour, trous) {
 // coin nord-est en bas ; la façade nord monte à 60° vers la droite, la façade est à 30° vers la gauche
 const c60 = 0.5, s60 = Math.sqrt(3) / 2;
 const U = (x, y, z) => c60 * (L - x) - s60 * (D - y);
-const Vv = (x, y, z) => s60 * (L - x) + c60 * (D - y) + z;
+const KZ = 0.5;                                 // les hauteurs sont divisées par 2 (le plan garde sa taille)
+const Vv = (x, y, z) => s60 * (L - x) + c60 * (D - y) + KZ * z;
 const P = (x, y, z) => [U(x, y, z), Vv(x, y, z)];
 
 // ------------------------------------------------------------------ géométrie : faces triangulées avec un numéro de « surface »
@@ -128,7 +129,7 @@ for (let i = 0, j = 0; i < pos.length; i += 3, j++) {
   const x = pos[i], y = pos[i + 1], z = pos[i + 2];
   xyz[i] = (U(x, y, z) - umin) / (umax - umin) * 2 - 1;
   xyz[i + 1] = (Vv(x, y, z) - vmin) / (vmax - vmin) * 2 - 1;
-  xyz[i + 2] = (Math.sqrt(3) * (L - x) + (D - y) - 2 * z) / 600;    // profondeur : plus loin = plus grand
+  xyz[i + 2] = (Math.sqrt(3) * (L - x) + (D - y) - 2 / KZ * z) / 600;    // profondeur : plus loin = plus grand
   const id = ids[j]; col[i] = (id & 255) / 255; col[i + 1] = ((id >> 8) & 255) / 255; col[i + 2] = ((id >> 16) & 255) / 255;
 }
 geo.setAttribute("position", new THREE.BufferAttribute(xyz, 3)); geo.setAttribute("couleur", new THREE.BufferAttribute(col, 3));
@@ -160,7 +161,7 @@ g2.putImageData(img, 0, 0);
 
 // ------------------------------------------------------------------ mise en page à taille réelle + repères (angles, cotes)
 const Wmm = umax - umin, Hmm = vmax - vmin;
-const ox = (210 - Wmm) / 2, oy = 16;
+const ox = (210 - Wmm) / 2, oy = Math.max(16, (270 - Hmm) / 2);
 const box = document.getElementById("dessin");
 Object.assign(box.style, { left: ox + "mm", top: oy + "mm", width: Wmm + "mm", height: Hmm + "mm" });
 const im = new Image(); im.src = cv.toDataURL("image/png"); im.style.width = Wmm + "mm"; im.style.height = Hmm + "mm"; box.appendChild(im);
@@ -183,8 +184,8 @@ const cote = (a, b, decal, t) => { const dx = b[0] - a[0], dy = b[1] - a[1], l =
   tx(m, t, "middle", Math.abs(ang) > 90 ? ang + 180 : ang); };
 cote(Q(L, D, 0), Q(0, D, 0), 6, "11,1");
 cote(Q(L, 0, 0), Q(L, D, 0), 6, "8,6");
-cote(Q(0, D, 0), Q(0, D, Hm), 6, "9,4");
-cote(Q(L, 0, 0), Q(L, 0, Ha), -6, "8,5");
+cote(Q(0, D, 0), Q(0, D, Hm), 6, "4,7");
+cote(Q(L, 0, 0), Q(L, 0, Ha), -6, "4,25");
 // règle de contrôle : 5 cm
 const rx = -ox + 12, ry = Hmm + 4; ln([rx, ry], [rx + 50, ry], 0.3);
 for (let i = 0; i <= 5; i++) ln([rx + 10 * i, ry - 1.2], [rx + 10 * i, ry + 1.2], 0.2);
