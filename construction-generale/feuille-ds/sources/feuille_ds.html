@@ -11,43 +11,33 @@
 
   :root { --encre:#1f2328; --gris:#5f6670; --filet:#d5d9de; --fond:#f4f5f7;
     --c1:#2F4858; --c2:#B4501E; --c3:#8C1C13; --c4:#3C7A3E; --c5:#5b4a8a; --c6:#7a5b00; }
-  @page { size: A4; margin: 6mm 6mm 6mm; }
+  @page { size: A4; margin: 8mm 8mm 7mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { font-family: "Inter", sans-serif; font-size: 6.6pt; line-height: 1.24; color: var(--encre); }
+  body { font-family: "Inter", sans-serif; font-size: 11.2pt; line-height: 1.32; color: var(--encre); }
   b { font-weight: 800; }
 
-  header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.6px solid var(--encre); padding-bottom: 2px; margin-bottom: 3px; }
-  h1 { font-family: "Playfair", serif; font-size: 13pt; line-height: 1; }
-  header span { font-weight: 800; font-size: 5.6pt; letter-spacing: .12em; color: var(--gris); }
+  header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--encre); padding-bottom: 3px; margin-bottom: 6px; }
+  h1 { font-family: "Playfair", serif; font-size: 16pt; line-height: 1; }
+  header span { font-weight: 800; font-size: 6.4pt; letter-spacing: .12em; color: var(--gris); }
 
-  .cols { columns: 3; column-gap: 4mm; column-rule: 1px solid var(--filet); }
-  section { break-inside: avoid; margin-bottom: 3.2px; }
-  h2 { font-size: 7.6pt; font-weight: 800; color: #fff; padding: 1px 4px; border-radius: 2px; margin-bottom: 1.5px; letter-spacing: .02em; }
+  .cols { columns: 3; column-gap: 5mm; column-rule: 1px solid var(--filet); }
+  section { break-inside: avoid; margin-bottom: 7px; }
+  h2 { font-size: 11.6pt; font-weight: 800; color: #fff; padding: 1.5px 5px; border-radius: 3px; margin-bottom: 3px; }
   .a h2 { background: var(--c1); } .b h2 { background: var(--c2); } .c h2 { background: var(--c3); }
   .d h2 { background: var(--c4); } .e h2 { background: var(--c5); } .f h2 { background: var(--c6); }
-  p { margin-bottom: 1px; }
+  p { margin-bottom: 2px; }
   ul { list-style: none; }
-  li { padding-left: 5px; position: relative; }
+  li { padding-left: 7px; position: relative; margin-bottom: 1.5px; }
   li::before { content: "•"; position: absolute; left: 0; color: var(--gris); }
-  .k { background: #fff3c4; padding: 0 1px; border-radius: 1px; }
+  .k { background: #fff3c4; padding: 0 1.5px; border-radius: 1px; font-weight: 800; }
   .r { color: #b3261e; font-weight: 800; }
-  table { width: 100%; border-collapse: collapse; margin: 1px 0 1.5px; }
-  th { background: var(--fond); text-align: left; font-size: 6.4pt; padding: .5px 2px; border: .5px solid var(--filet); }
-  td { padding: .5px 2px; border: .5px solid var(--filet); vertical-align: top; }
-  .box { border: .8px solid var(--c3); background: #fdf1ef; border-radius: 2px; padding: 1px 3px; margin: 1px 0; }
-  .eq { text-align: center; font-weight: 800; background: var(--fond); border-radius: 2px; padding: .5px; margin: 1px 0; }
-  svg { display: block; width: 100%; height: auto; margin: 1px 0; }
-  svg text { font-family: "Inter", sans-serif; }
-  .foot { border-top: 1px solid var(--filet); margin-top: 2px; padding-top: 1px; font-size: 5.3pt; color: var(--gris); text-align: center; }
+  table { width: 100%; border-collapse: collapse; margin: 2px 0 3px; }
+  th { background: var(--fond); text-align: left; font-size: 7pt; padding: 1px 3px; border: .5px solid var(--filet); }
+  td { padding: 1px 3px; border: .5px solid var(--filet); vertical-align: top; }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <pattern id="h" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f4eee1"/><line x1="0" y1="0" x2="0" y2="5" stroke="#bfae8f" stroke-width=".9"/></pattern>
-  <marker id="fk" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 z" fill="#1f2328"/></marker>
-  <marker id="fk2" markerWidth="5" markerHeight="5" refX="1" refY="2.5" orient="auto"><path d="M5,0 L0,2.5 L5,5 z" fill="#1f2328"/></marker>
-</defs></svg>
 
 <header><h1>Construction générale · feuille de DS</h1><span>1RE ANNÉE ARCHITECTURE · ESAD TUNIS</span></header>
 
@@ -55,158 +45,119 @@
 
 <section class="a">
 <h2>1 · PROJET ET ÉDIFICE</h2>
-<p><b>Étapes :</b> Programme → <b>APS</b> (esquisse, volumes, implantation) → <b>APD</b> (plans précis, coûts, permis) → <b>PE</b> (plans pour l'entreprise).</p>
-<p><b>Édifice</b> = <span class="k">ossature</span> (porte) + <span class="k">enveloppe</span> (ferme) + <span class="k">revêtement</span> (finitions). <b>Infrastructure</b> = sous le sol ; <b>superstructure</b> = au-dessus.</p>
-<p><b>Terrain :</b> adapter la maison au terrain. Relever végétation, vents, <b>réseaux</b> (ONAS eaux usées, STEG élec-gaz, SONEDE eau, PTT télécom), cotes des regards. <b>Levé topo</b> = plan à partir de mesures (théodolite, niveau). <b>Étude géotechnique</b> (sondages) : nature du sol, <b>bon sol</b>, <b>portance</b> (taux de travail), nappe.</p>
+<p><b>APS</b> (esquisse) → <b>APD</b> (plans détaillés, permis) → <b>PE</b> (plans d'exécution).</p>
+<p><b>Édifice</b> = <b>ossature</b> (porte) + <b>enveloppe</b> (ferme) + <b>revêtement</b> (finitions).</p>
+<p><b>Étude géotechnique</b> : nature du sol, <b>bon sol</b>, <b>portance</b>, nappe.</p>
 </section>
 
 <section class="a">
-<h2>2 · CHARGES ET FORCES</h2>
-<table><tr><th>Charge</th><th>Exemples</th><th>Caractère</th></tr>
-<tr><td><b>Permanente</b></td><td>poids propre</td><td>constante</td></tr>
-<tr><td><b>Variable</b></td><td>exploitation (personnes, meubles), climat (vent)</td><td>très variable</td></tr>
-<tr><td><b>Accidentelle</b></td><td>séisme, explosion</td><td>rare, brève</td></tr></table>
-<p><b>Répartition :</b> ponctuelle <b>N</b> · sur une ligne <b>N/m</b> · sur une surface <b>N/m²</b> · sur un volume <b>N/m³</b>.</p>
-<p><b>Sollicitations :</b> <b>compression</b> (écrase, raccourcit) · <b>traction</b> (étire, allonge) · <b>cisaillement</b> (fait glisser, coupe).</p>
-<p><b>Chemin des charges :</b> plancher → poutre → poteau (ou mur) → semelle → sol. Poteau/poutre/plancher/voile/longrine/semelle = ossature ; <b>porte-à-faux</b> = partie qui dépasse des appuis ; <b>linteau</b> = poutre au-dessus d'une ouverture.</p>
-<p><b>Tassement</b> égal = le bâtiment descend d'un bloc ; <b>différentiel</b> = fissures.</p>
-</section>
-
-<section class="b">
-<h2>3 · LES FOUILLES (l = largeur, h = profondeur)</h2>
-<svg viewBox="0 0 300 52" role="img" aria-label="Quatre fouilles">
-  <g stroke="#1f2328" stroke-width=".8">
-    <rect x="0" y="0" width="300" height="0" />
-  </g>
-  <g>
-    <rect x="0" y="14" width="68" height="36" fill="url(#h)"/><rect x="26" y="14" width="16" height="9" fill="#fff" stroke="#1f2328" stroke-width=".7"/><line x1="0" y1="14" x2="68" y2="14" stroke="#1f2328" stroke-width="1"/>
-    <rect x="76" y="14" width="68" height="36" fill="url(#h)"/><rect x="104" y="14" width="9" height="30" fill="#fff" stroke="#1f2328" stroke-width=".7"/><line x1="76" y1="14" x2="144" y2="14" stroke="#1f2328" stroke-width="1"/>
-    <rect x="152" y="14" width="68" height="36" fill="url(#h)"/><rect x="176" y="14" width="18" height="30" fill="#fff" stroke="#1f2328" stroke-width=".7"/><line x1="152" y1="14" x2="220" y2="14" stroke="#1f2328" stroke-width="1"/>
-    <rect x="228" y="14" width="72" height="36" fill="url(#h)"/><rect x="232" y="14" width="64" height="8" fill="#fff" stroke="#1f2328" stroke-width=".7"/><line x1="228" y1="14" x2="300" y2="14" stroke="#1f2328" stroke-width="1"/>
-  </g>
-  <g font-size="6.6" font-weight="800" text-anchor="middle" fill="#1f2328"><text x="34" y="8">RIGOLE</text><text x="110" y="8">TRANCHÉE</text><text x="186" y="8">PUITS</text><text x="264" y="8">PLEINE MASSE</text></g>
-  <g font-size="6" text-anchor="middle" fill="#fff" font-weight="800" opacity="0"><text x="0" y="0">.</text></g>
-  <g font-size="5.8" text-anchor="middle" fill="#1f2328"><text x="34" y="35">l ≤ 2 m</text><text x="34" y="42">h ≤ 1 m</text><text x="82" y="29" text-anchor="start">l &lt; 2 m</text><text x="82" y="36" text-anchor="start">h &gt; 1 m</text><text x="124" y="29" text-anchor="start" opacity="0">.</text><text x="198" y="29" text-anchor="start">h &gt; 1 m</text><text x="198" y="36" text-anchor="start">L ≈ l</text><text x="264" y="34">l &gt; 2 m</text><text x="264" y="42">h &lt; ½ l</text></g>
-</svg>
+<h2>2 · CHARGES</h2>
 <ul>
-<li><b>Rigole :</b> l ≤ 2 m et h ≤ 1 m env. · <b>Tranchée :</b> <u>1er cas</u> l &lt; 2 m → h &gt; 1 m ; <u>2e cas</u> l &gt; 2 m → h &gt; ½ l.</li>
-<li><b>Puits :</b> h &gt; 1 m et longueur L ≈ largeur l. · <b>Pleine masse / excavation superficielle :</b> l &gt; 2 m et h &lt; ½ l (limite l = 2h).</li>
+<li><b>Permanentes</b> : poids propre.</li>
+<li><b>Variables</b> : exploitation, vent.</li>
+<li><b>Accidentelles</b> : séisme, explosion.</li>
 </ul>
-<p><b>Travaux préliminaires :</b> <b>démolition</b> avec précautions près d'un voisin ; <b>étaiement</b> préalable de l'ouvrage à conserver ; <b>décapage</b> de la terre végétale ≥ <span class="k">20 cm</span>, mise en dépôt où désigne le <b>M.O.</b></p>
-<p><b>Fond :</b> dressé horizontal ou par plans successifs ; pente assainissement <span class="k">2 à 5 %</span>. Parois : étayées ou taillées en talus.</p>
+<p><b>Sollicitations :</b> <b>compression</b> (écrase) · <b>traction</b> (étire) · <b>cisaillement</b> (fait glisser).</p>
+<p><b>Chemin des charges :</b> plancher → poutre → poteau → semelle → sol.</p>
+<p><b>Tassement différentiel</b> → fissures.</p>
 </section>
 
 <section class="b">
-<h2>4 · TERRES, EAU, PENTE</h2>
-<p><b>Remblai</b> = terres rapportées (plate-forme ou combler cavité), sol homogène en couches horizontales <span class="k">≤ 0,20 m</span> avant compactage ; comprend chargement, transport, déchargement, épandage par couche, compactage.</p>
-<p><b>Foisonnement</b> = augmentation du volume apparent des terres extraites (vides) ; <span class="r">V extrait &gt; V fouille</span>. <b>V foisonné = V en place × k</b> avec k = argile/limon 1,25 · grave 1,10 · roche altérée 1,30 · sol meuble 1,35.</p>
-<p><b>Pente entre semelles voisines :</b> <span class="k">3 de base pour 2 de hauteur</span> au plus (arêtes les plus voisines). Terrain en pente → redans.</p>
-<p><b>Rabattement de nappe :</b> pompes à la périphérie → dépression locale → nappe sous le fond de fouille → fouille <b>au sec</b> ; il faut de la place pour pompes et évacuation.</p>
+<h2>3 · LES FOUILLES (l largeur, h profondeur)</h2>
+<table>
+<tr><th>Fouille</th><th>Condition</th></tr>
+<tr><td><b>Rigole</b></td><td>l ≤ 2 m et h ≤ 1 m</td></tr>
+<tr><td><b>Tranchée</b></td><td>l &lt; 2 m et h &gt; 1 m, <b>ou</b> l &gt; 2 m et h &gt; ½ l</td></tr>
+<tr><td><b>Puits</b></td><td>h &gt; 1 m et L ≈ l</td></tr>
+<tr><td><b>Pleine masse</b></td><td>l &gt; 2 m et h &lt; ½ l</td></tr>
+</table>
+<p><b>Préliminaires :</b> démolition (précautions) · <b>étaiement</b> · décapage de la terre végétale <span class="k">≥ 20 cm</span>, dépôt choisi par le M.O.</p>
 </section>
 
 <section class="b">
-<h2>5 · CHANTIER ET ORDRE DES TRAVAUX</h2>
-<p><b>Plan d'occupation :</b> bureaux/réunions, axes de circulation, dépôts de matériaux périssables (ciment, chaux), stockage aciers + atelier de ferraillage, bétonnière/centrale, produits de carrière.</p>
-<p><b>Ordre :</b> 1 analyse (orientation, vents) → 2 levé topo → 3 étude du sol → 4 décapage → 5 <b>chaises</b> + report des <b>entraxes</b> (chiffres, lettres) → 6 traçage → 7 excavation → 8 gros béton ou béton de propreté → 9 report des entraxes.</p>
+<h2>4 · TERRES ET EAU</h2>
+<p><b>Remblai</b> : couches de <span class="k">≤ 0,20 m</span>, <b>compactées</b>.</p>
+<p><b>Foisonnement</b> : le volume des terres extraites <span class="r">augmente</span> (vides).</p>
+<p><b>Pente entre semelles</b> : <span class="k">3 de base pour 2 de hauteur</span> au plus.</p>
+<p><b>Rabattement de nappe</b> : pompes autour de la fouille → fouille <b>au sec</b>.</p>
+</section>
+
+<section class="b">
+<h2>5 · ORDRE DES TRAVAUX</h2>
+<p>Analyse → levé topo → étude du sol → décapage → <b>chaises</b> et <b>entraxes</b> → traçage → excavation → gros béton ou béton de propreté.</p>
 </section>
 
 <section class="c">
-<h2>6 · FONDATIONS : RÔLE ET CHOIX</h2>
-<p><b>Fondation</b> : partie de l'ouvrage posée sur le <b>terrain d'assise</b>, qui lui transmet toutes les charges (permanentes + variables). <b>4 fonctions :</b> <b>stabilité</b> (ni glisser ni basculer), <b>résistance</b> (pas de rupture), <b>durabilité</b>, <b>économie</b>.</p>
-<table><tr><th>Sol</th><th>Fondation</th></tr>
-<tr><td>bon sol proche</td><td><b>semelles</b> (superficielles)</td></tr>
-<tr><td>bon sol un peu plus profond</td><td><b>gros béton</b> / puits sous semelle</td></tr>
-<tr><td>médiocre mais homogène, inondable, charges fortes</td><td><b>radier général</b> (surfacique)</td></tr>
-<tr><td>bon sol très profond / ouvrage lourd</td><td><b>pieux</b> (profondes)</td></tr></table>
-<p><b>3 catégories :</b> superficielles · surfaciques (radier) · profondes. Étude du sol par le labo ; l'ingénieur dimensionne ; l'architecte intègre dès l'esquisse.</p>
+<h2>6 · FONDATIONS</h2>
+<p><b>Rôle :</b> transmettre toutes les charges au sol. <b>4 fonctions :</b> stabilité, résistance, durabilité, économie.</p>
+<table>
+<tr><th>Sol</th><th>Fondation</th></tr>
+<tr><td>bon sol proche</td><td><b>semelles</b></td></tr>
+<tr><td>un peu plus profond</td><td><b>gros béton</b> / puits</td></tr>
+<tr><td>médiocre, inondable</td><td><b>radier général</b></td></tr>
+<tr><td>très profond, lourd</td><td><b>pieux</b></td></tr>
+</table>
+<p><b>3 catégories :</b> superficielles · surfaciques (radier) · profondes.</p>
 </section>
 
 <section class="c">
-<h2>7 · FONDATIONS SUPERFICIELLES</h2>
-<p><b>Semelle</b> : socle de béton armé, plus large que ce qu'il porte (<b>empattement</b>), <b>nappe d'aciers en bas, dans les 2 sens</b>, sur béton de propreté.</p>
+<h2>7 · SEMELLES</h2>
 <ul>
-<li><b>Isolée</b> : sous un poteau · <b>Continue</b> : sous 2 poteaux ou plus · <b>Filante</b> : sous mur ou voile (aciers principaux en travers + répartition) · <b>Excentrée</b> : en limite de propriété → semelle qui tourne → <b>longrine de redressement</b> la relie à une semelle intérieure · <b>Charpente métallique</b> : <b>platine</b> + tiges d'ancrage.</li>
-<li><b>Gros béton</b> : béton non armé riche en caillasse, jusqu'au bon sol (en puits sous poteau, en tranchée sous mur) · <b>Redans</b> : gradins horizontaux, aciers continus, jamais de fond incliné.</li>
-<li><b>Longrine</b> (poutre enterrée) : 1 relie les semelles, 2 porte les murs du RDC, 3 redresse les excentrées. <b>Pré-poteau</b> : départ de poteau entre semelle et longrine. <b>Voile</b> : mur plein BA, retient les terres, sur semelle filante.</li>
+<li><b>Isolée</b> sous un poteau · <b>filante</b> sous un mur ou voile · <b>continue</b> sous plusieurs poteaux.</li>
+<li><b>Excentrée</b> (limite de propriété) : <b>longrine de redressement</b>.</li>
+<li><b>Redans</b> : gradins horizontaux en terrain en pente.</li>
+<li><b>Gros béton</b> : non armé, jusqu'au bon sol.</li>
+<li><b>Longrine</b> : relie les semelles et porte les murs du RDC.</li>
 </ul>
-<p><b>Plan de fondation :</b> axes A–E / 1–3, carrés = poteaux, S1/S2 = semelles isolées, <b>L1 (22×50)</b> = longrine 22 large × 50 haut, <b>SC</b> = semelle continue (joint de dilatation).</p>
 </section>
 
 <section class="c">
-<h2>8 · SOUS LA CONSTRUCTION (bas → haut)</h2>
-<p><b>Remblai compacté → couche de sable → gros béton → semelle → pré-poteau → longrine ; entre longrines : hérisson → film polyane → chape armée.</b></p>
+<h2>8 · SOUS LA CONSTRUCTION</h2>
 <ul>
-<li><b>Béton de propreté</b> : béton maigre peu dosé, <span class="k">5 à 10 cm</span>, <b>non armé</b>, <span class="r">jamais vibré</span> ; support propre des semelles/longrines/radier ; on y trace les axes, il reçoit les cales.</li>
-<li><b>Hérisson</b> : pierres posées à la main sous la chape ; <b>évite les remontées d'humidité</b>. <u>Type 1</u> gros blocage (gros blocs debout + pierres cassées) ; <u>Type 2</u> sable de concassage compacté (plaque vibrante) + <b>film polyane</b>.</li>
-<li><b>Chape</b> : béton qui aplanit, nivelle, surface un support (puis carrelage, sol souple, parquet). <b>Chape armée</b> : dalle BA de <span class="k">8 à 20 cm</span> sur le hérisson, 1 ou 2 nappes ou treillis soudé = <b>sol du RDC</b> (ailleurs : « dallage sur terre-plein »).</li>
-<li><b>Accrochée</b> : longrine coulée moins l'épaisseur de la chape, aciers mariés, elles font corps. <b>Non accrochée</b> : chape indépendante des longrines, séparée par un <b>isolant</b> (ateliers à machines vibrantes), 2 ouvrages exécutés l'un après l'autre.</li>
+<li><b>Béton de propreté</b> : <span class="k">5 à 10 cm</span>, non armé, <span class="r">jamais vibré</span>.</li>
+<li><b>Hérisson</b> : pierres posées à la main ; <b>évite l'humidité</b> (+ film polyane).</li>
+<li><b>Chape armée</b> : <span class="k">8 à 20 cm</span>, sol du RDC.</li>
+<li><b>Accrochée</b> : fait corps avec la longrine. <b>Non accrochée</b> : isolant (machines vibrantes).</li>
 </ul>
 </section>
 
 <section class="d">
-<h2>9 · LES PIEUX</h2>
-<p><b>Pieu</b> : poteau BA (ou acier, bois) enfoncé/coulé jusqu'à une <b>couche résistante</b> ; porte par la <b>pointe</b> + le <b>frottement</b>. <b>Foré</b> : <u>ne refoule pas le sol</u> (on extrait la terre puis on bétonne). <b>Battu</b> : refoule le sol (tube enfoncé, bétonné, tube retiré).</p>
-<svg viewBox="0 0 300 62" role="img" aria-label="Pieu foré en 5 temps">
-  <g>
-    <rect x="0" y="20" width="300" height="42" fill="url(#h)"/><line x1="0" y1="20" x2="300" y2="20" stroke="#1f2328" stroke-width="1"/>
-    <g transform="translate(0,0)"><rect x="24" y="8" width="12" height="42" fill="#fff" stroke="#1f2328" stroke-width=".8"/><rect x="21" y="8" width="3" height="34" fill="#7b838d"/><rect x="36" y="8" width="3" height="34" fill="#7b838d"/></g>
-    <g transform="translate(60,0)"><rect x="24" y="20" width="12" height="38" fill="#fff" stroke="#1f2328" stroke-width=".8"/><line x1="30" y1="2" x2="30" y2="54" stroke="#1f2328" stroke-width="2"/><path d="M25,38 L35,40 M25,46 L35,48" stroke="#1f2328" stroke-width="1.3"/></g>
-    <g transform="translate(120,0)"><rect x="24" y="20" width="12" height="38" fill="#fff" stroke="#1f2328" stroke-width=".8"/><rect x="25" y="40" width="10" height="17" fill="#aab0b8"/><line x1="30" y1="8" x2="30" y2="48" stroke="#5f6670" stroke-width="2"/><polygon points="22,2 38,2 33,10 27,10" fill="#8e949c" stroke="#5f6670" stroke-width=".6"/></g>
-    <g transform="translate(180,0)"><rect x="24" y="20" width="12" height="38" fill="#fff" stroke="#1f2328" stroke-width=".8"/><rect x="25" y="32" width="10" height="25" fill="#aab0b8"/><g stroke="#1f2328" stroke-width="1" marker-end="url(#fk)"><line x1="19" y1="14" x2="19" y2="4"/><line x1="41" y1="14" x2="41" y2="4"/></g></g>
-    <g transform="translate(240,0)"><rect x="26" y="20" width="10" height="38" fill="#aab0b8" stroke="#5f6670" stroke-width=".6"/><g stroke="#8C1C13" stroke-width="1"><line x1="28" y1="8" x2="28" y2="55"/><line x1="34" y1="8" x2="34" y2="55"/></g></g>
-  </g>
-  <g font-size="5.6" font-weight="800" text-anchor="middle" fill="#1f2328"><text x="30" y="61">1 fonçage tube</text><text x="90" y="61">2 tarière</text><text x="150" y="61">3 tube plongeur</text><text x="210" y="61">4 extraction tube</text><text x="270" y="61" fill="#3C7A3E">5 pieu fini</text></g>
-</svg>
+<h2>9 · PIEUX FORÉS</h2>
+<p>Le pieu foré <b>ne refoule pas le sol</b> : on extrait la terre, puis on bétonne.</p>
+<p><b>5 phases :</b> implantation · forage · ferraillage · bétonnage · contrôle (<b>auscultation sonique</b>).</p>
+<p><b>Cales</b> : enrobage des aciers. <b>Tube plongeur</b> : on coule du béton, <span class="r">pas un coulis</span>, jamais en le laissant tomber.</p>
+<p><b>Recépage</b> : on coupe la tête du pieu. Les <b>têtes</b> sont réunies par <b>longrines</b> ou <b>radier</b>.</p>
+</section>
+
+<section class="e">
+<h2>10 · BÉTON ARMÉ</h2>
+<p><b>Béton</b> résiste à la <span class="k">compression</span> ; <b>acier</b> à la <span class="k">traction</span> (en bas de la poutre).</p>
+<p><b>Béton</b> = granulats + ciment + eau (+ adjuvants). <b>Coffrage</b> = moule.</p>
+<table>
+<tr><th>Granulat</th><th>mm</th></tr>
+<tr><td><b>Sable</b></td><td>0/4 ou 0/5</td></tr>
+<tr><td><b>Gravier</b></td><td>4/8 · 8/15 · 4/15 · 15/25</td></tr>
+<tr><td><b>Pierre cassée</b></td><td>25/40 · 40/60 · 40/70</td></tr>
+</table>
+<p><b>Eau :</b> propre, <span class="k">≤ 5 g de sel/litre</span>.</p>
+</section>
+
+<section class="f">
+<h2>11 · ACIERS</h2>
 <ul>
-<li><b>5 phases :</b> 1 implantation · 2 forage (ou battage) · 3 ferraillage · 4 bétonnage · 5 contrôle (essais de qualité du béton + <b>auscultation sonique</b> de tous les pieux).</li>
-<li><b>Cage d'armatures</b> façonnée sur chantier, descendue dans le forage ; <b>cales en béton</b> = centrage + enrobage ; <b>tubes d'auscultation</b> ; <b>aciers en attente</b> dépassent en tête.</li>
-<li><b>Bétonnage au tube plongeur</b> (trémie) : tube au fond, béton part du bas, on remonte le tube <u>qui reste plongé</u> dans le béton, puis tubage retiré. <span class="r">On coule du béton, pas un « coulis », et jamais en le laissant tomber d'en haut.</span></li>
-<li><b>Recépage</b> : on coupe la tête du pieu au niveau du plan de fondation (béton de mauvaise qualité), on garde les aciers. <b>Têtes toujours réunies</b> par longrines ou radier général ; béton de propreté sous le radier.</li>
+<li><b>Ø</b> = acier doux, lisse (Ø6, Ø8).</li>
+<li><b>T</b> = haute adhérence, à reliefs (T8 à T25). <span class="k">T12 = 12 mm</span>.</li>
+<li><b>Cadres</b> : armatures transversales. <b>Chapeaux</b> : au-dessus des appuis.</li>
+<li><b>Stockage</b> : sur madriers, jamais au sol.</li>
 </ul>
 </section>
 
-<section class="d">
-<h2>10 · RADIER GÉNÉRAL</h2>
-<p><b>Dalle épaisse BA sous tout le bâtiment.</b> Pour sol médiocre mais homogène, charges fortes, terrain inondable, sous-sol. Moins de tassements différentiels, base rigide. = un <b>plancher retourné</b> : appuis = poteaux/murs, charge = <b>réaction du sol</b>.</p>
-</section>
-
-<section class="e">
-<h2>11 · BÉTON ARMÉ</h2>
-<p><b>Béton armé</b> = béton + acier : le béton résiste à la <span class="k">compression</span>, l'acier à la <span class="k">traction</span>. Poutre : béton comprimé en haut, <b>acier tendu en bas</b> ; béton seul → le dessous s'étire, se fissure, la poutre casse. <b>Coffrage</b> = moule provisoire qui donne la forme au béton frais.</p>
-<p><b>Béton</b> = granulats (sable + graviers, <b>squelette</b>) + liant (<b>ciment</b>, chaux) + eau + adjuvants (faible dose : accélérateur / retardateur de prise), durcit en quelques jours. Ciment + eau = <b>pâte</b> qui enrobe et colle les granulats ; dosage fixé par un <b>labo agréé</b>. <b>Gâcher</b> = mélanger avec l'eau ; <b>prise</b> = début du durcissement.</p>
-<table><tr><th>Granulat</th><th>Taille (mm)</th></tr>
-<tr><td><b>Sable</b></td><td>0/4 ou 0/5</td></tr><tr><td><b>Gravier</b></td><td>4/8, 8/15, 4/15, 15/25</td></tr><tr><td><b>Pierre cassée</b></td><td>25/40, 40/60, 40/70</td></tr></table>
-<p>« 4/8 » = de 4 à 8 mm. Granulats <b>durs, compacts, propres</b>. <b>Eau de gâchage</b> : propre, sans terre ni matière organique, <span class="k">≤ 5 g de sel/litre</span>.</p>
-</section>
-
-<section class="e">
-<h2>12 · TYPES DE BÉTONS</h2>
-<table><tr><th>Courants</th><th>Ce que c'est</th><th>Emploi</th></tr>
-<tr><td>Propreté</td><td>maigre, non armé, jamais vibré</td><td>fond de fouille</td></tr>
-<tr><td>Gros béton</td><td>non armé, riche en caillasse</td><td>jusqu'au bon sol</td></tr>
-<tr><td>Banché</td><td>coulé entre 2 <b>banches</b> (panneaux de coffrage verticaux)</td><td>murs, voiles</td></tr>
-<tr><td>Armé</td><td>béton + armatures</td><td>structure porteuse</td></tr></table>
-<table><tr><th>Spéciaux</th><th>Ce que c'est</th><th>Emploi</th></tr>
-<tr><td>Cellulaire</td><td>bulles d'air, léger, isolant, peu résistant (<span class="r">pas de structure</span>)</td><td>forme de pente</td></tr>
-<tr><td>Projeté</td><td>projeté à la lance, sans coffrage</td><td>talus, piscines, tunnels</td></tr>
-<tr><td>Précontraint</td><td>aciers tendus avant mise en charge</td><td>poutrelles, grandes portées</td></tr>
-<tr><td>Hautes perf.</td><td>très résistant, peu poreux</td><td>ponts</td></tr></table>
-</section>
-
 <section class="f">
-<h2>13 · ACIERS ET ARMATURES</h2>
-<p><b>Armature</b> = barres d'acier noyées dans le béton, là où il serait étiré. <b>Acier doux</b> : lisse, petit diamètre, repère <b>Ø</b> (Ø6, Ø8). <b>Haute adhérence</b> : à reliefs (Tunsid), accroche le béton, repère <b>T</b> (T8 à T25). <span class="k">« T12 » = barre HA de 12 mm</span>.</p>
-<p><b>Vocabulaire (poutre) :</b> <b>barres de montage</b> (haut) · <b>barres longitudinales</b> (bas, traction) · <b>chapeaux</b> (au-dessus de l'appui) · <b>cadres</b> (transversales, entourent toutes les barres) · <b>étrier</b> (en U, intérieur) · <b>épingle</b> (droite à crochets) · <b>attentes</b> (aciers du poteau laissés en attente).</p>
-<p><b>Stockage :</b> jamais au sol ; sur <b>madriers</b>, loin de la terre et de l'humidité ; aciers rouillés bien brossés. <i>Pourquoi :</i> terre et rouille empêchent l'adhérence ; la rouille gonfle et fait éclater le béton.</p>
-</section>
-
-<section class="f">
-<h2>14 · QUALITÉ ET MISE EN PLACE DU BÉTON</h2>
-<p><b>Exigences :</b> béton <b>homogène</b>, granulats <b>correctement enrobés</b> par le liant ; malaxage jusqu'à <b>pâte uniforme</b>. <span class="r">Interdit :</span> béton <b>desséché</b>, <b>insuffisamment malaxé</b> ou <b>ayant commencé sa prise</b> (→ résistance et durabilité compromises).</p>
-<p><b>Coffrages remplis d'un béton :</b> uniforme, homogène, <b>bien compacté</b>, enrobant correctement toutes les armatures, <b>sans nids de graviers, poches d'air ou d'eau</b>. <b>Manipuler avec soin :</b> préserver propreté et position des armatures, éviter déplacement ou déformation du coffrage, garantir résistance et solidité conformes à l'ouvrage.</p>
+<h2>12 · BÉTON : QUALITÉ</h2>
+<p><span class="r">Interdit :</span> béton <b>desséché</b>, <b>insuffisamment malaxé</b> ou <b>ayant commencé sa prise</b>.</p>
+<p>Béton <b>homogène, compacté</b>, sans nids de graviers ni poches d'air, qui <b>enrobe</b> les armatures.</p>
 </section>
 
 </div>
-<div class="foot">Construction générale · feuille de révision pour le DS · tout ce qui a été vu en cours (éléments du bâtiment, terrassement, fondations, chape, pieux, béton armé)</div>
 </body>
 </html>
