@@ -40,6 +40,7 @@ def remplir(img, trou, source, wx=1.0, wy=2.0):
         # on traite plusieurs points du front par tour (les plus prioritaires, assez éloignés entre eux)
         ordre = np.argsort(-(cs[fy, fx] * data))
         pris = []
+        avance = False
         for i in ordre[:60]:
             y, x = front[i]
             if any(abs(y - py) <= 2 * R and abs(x - px) <= 2 * R for py, px in pris): continue
@@ -68,6 +69,9 @@ def remplir(img, trou, source, wx=1.0, wy=2.0):
             lab[y0:y1, x0:x1][inc] = lab[sy:sy + ph, sx:sx + pw][inc]
             conf[y0:y1, x0:x1][inc] = cs[y, x]
             trou[y0:y1, x0:x1][inc] = False
+            avance = True
+        if not avance:              # aucun modèle utilisable autour du front : on s'arrête au lieu de tourner en rond
+            raise ValueError(f"remplissage impossible : aucun modèle utilisable dans la source ({int(trou.sum())} pixels restent à remplir)")
     return np.clip(img, 0, 255).astype(np.uint8)
 
 
