@@ -159,51 +159,63 @@ const rect = (w, h, x = 0, y = 0) => [[x, y], [x + w, y], [x + w, y + h], [x, y 
 const cercle = (cx, cy, r, n = 20) => Array.from({ length: n }, (_, i) => [cx + r * Math.cos(2 * Math.PI * i / n), cy + r * Math.sin(2 * Math.PI * i / n)]);
 const rad = d => d * Math.PI / 180;
 
-// ---------- 1. projectif : un carré qui tourne autour du centre, dans un cube fixe
-const S = 6.3, B = 0.6, W = (S - 3 * B) / 2;     // carré tournant : côté, bande, fenêtre
-const carreTournant = { contour: rect(S, S), trous: [rect(W, W, B, B), rect(W, W, 2 * B + W, B), rect(W, W, B, 2 * B + W), rect(W, W, 2 * B + W, 2 * B + W), cercle(S / 2, S / 2, 0.15)] };
-const ANGLES = [0, 15, 30, 45], HAUTS = [2, 4, 6, 8];
+// ---------- 1. projectif : six faces pareilles (carré + croix des médianes), trois carrés sur pointe qui se croisent au centre
+const BD = 0.8;                                      // largeur de la bande et de la croix
+const PANES = [[BD, 5 - BD / 2], [5 + BD / 2, 10 - BD]];   // les fenêtres, en coordonnées du cube (0 → 10)
+function faceCroix(o0, o1) {                         // fenêtres d'une face dont le bord local commence à o0 (axe u) et o1 (axe v)
+  const t = []; for (const [u0, u1] of PANES) for (const [v0, v1] of PANES) t.push(rect(u1 - u0, v1 - v0, u0 - o0, v0 - o1)); return t;
+}
+const RL = 4.8, C0 = 4.8;                             // demi-diagonale des carrés sur pointe ; centre dans le repère de la plaque
+const losange = [[0, C0], [C0, 0], [2 * C0, C0], [C0, 2 * C0]];
+const losB = [[0, C0], [C0, 0], [2 * C0, C0], [C0 + 0.1, 2 * C0 - 0.1], [C0 + 0.1, C0], [C0 - 0.1, C0], [C0 - 0.1, 2 * C0 - 0.1]];   // fente du haut vers le centre
+const losC = [[0, C0], [C0 - 0.1, 0.1], [C0 - 0.1, C0], [C0 + 0.1, C0], [C0 + 0.1, 0.1], [2 * C0, C0], [C0, 2 * C0]];               // fente du bas vers le centre
+const TRI = 4.7;                                      // les 4 quarts du carré horizontal
+const gFace = (w, h, o0, o1) => ({ w, h, contour: rect(w, h), trous: faceCroix(o0, o1), cons: [[[0, 0], [w, h]], [[w, 0], [0, h]]],
+  cotes: [[[0, 0], [w, 0], fr(w), -0.7], [[0, 0], [0, h], fr(h), 0.7], [[0, h], [BD - o0, h], "0,8", 0.5], [[BD - o0, h], [5 - BD / 2 - o0, h], "3,8", 0.5]] });
 const projectif = {
-  id: "projectif", titre: "Le centre qui tourne", niveau: "Espace projectif",
-  idee: `Le cube reste là, fixe : un socle, quatre arêtes et un cadre en haut. Au centre, une pique verticale porte <b>quatre fois le même carré</b>, tourné de 0°, 15°, 30° puis 45°. En montant, le carré passe de la position du cube (statique) à celle de sa diagonale (dynamique) : on lit le centre, la verticalité et le mouvement.`,
-  ops: ["centralité", "verticalité", "symétrie", "rotation", "statique / dynamique"],
+  id: "projectif", titre: "Le centre dans les trois directions", niveau: "Espace projectif",
+  idee: `La maquette n'a <b>ni haut, ni bas, ni base</b> : on peut la poser sur n'importe quelle face, elle reste la même. Ses <b>six faces</b> sont pareilles : un carré, sa bande et la croix de ses médianes. Le carré du cube se lit donc dans tous les sens. À l'intérieur, <b>trois carrés sur pointe</b> (tournés de 45°), un dans chaque direction, se croisent au <b>centre</b> ; leurs pointes touchent le milieu de chaque face. Le carré droit des faces est <b>statique</b>, le carré sur pointe est <b>dynamique</b> : quand on tourne la maquette, l'un passe toujours dans l'autre.`,
+  ops: ["centralité", "symétrie", "verticalité / horizontalité", "statique / dynamique", "sans base"],
   camera: [1, 0.85, 1.1],
   pieces: [
-    { id: "socle", nom: "Socle", nb: 1, taille: "10 × 10", note: "trace les 2 diagonales : leur croisement est le centre",
-      g: { w: 10, h: 10, contour: rect(10, 10), cons: [[[0, 0], [10, 10]], [[10, 0], [0, 10]]], pts: [[5, 5]], pointilles: [rect(0.5, 0.5), rect(0.5, 0.5, 9.5), rect(0.5, 0.5, 9.5, 9.5), rect(0.5, 0.5, 0, 9.5)],
-        cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 10], "10", 0.7]] } },
-    { id: "pique", nom: "Pique centrale", nb: 1, taille: "Ø 0,3 × 9,6", note: "pique à brochette en bois, collée debout au centre du socle", g: null },
-    { id: "poteaux", nom: "Arête (poteau)", nb: 4, taille: "0,5 × 0,5 × 9,6", note: "2 bandes collées en L : 9,6 × 0,5 et 9,6 × 0,3 (ou une baguette de balsa de 5 mm)",
-      g: { w: 9.6, h: 1.4, contour: rect(9.6, 0.5), autres: [rect(9.6, 0.3, 0, 0.9)], cotes: [[[0, 0], [9.6, 0], "9,6", -0.7]], textes: [[9.8, 0.35, "0,5 (×4)"], [9.8, 1.15, "0,3 (×4)"]] } },
-    { id: "carres", nom: "Carré tournant", nb: 4, taille: "6,3 × 6,3", note: "bande de 0,6 + croix des médianes ; trou Ø 3 mm au centre ; posé à 0°, 15°, 30°, 45°",
-      g: { w: S, h: S, contour: carreTournant.contour, trous: carreTournant.trous.slice(0, 4), cercles: [[S / 2, S / 2, 0.15]], cons: [[[S / 2, 0], [S / 2, S]], [[0, S / 2], [S, S / 2]]],
-        cotes: [[[0, 0], [S, 0], "6,3", -0.7], [[0, 0], [0, S], "6,3", 0.7], [[0, S], [B, S], "0,6", 0.55], [[B, S], [B + W, S], "2,25", 0.55]] } },
-    { id: "anneau", nom: "Cadre du haut", nb: 1, taille: "10 × 10, évidé 9 × 9", note: "bande de 0,5 ; il ferme les 4 arêtes en haut",
-      g: { w: 10, h: 10, contour: rect(10, 10), trous: [rect(9, 9, 0.5, 0.5)], cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 10], [0.5, 10], "0,5", 0.55], [[0.5, 10], [9.5, 10], "9", 0.55]] } },
+    { id: "dessous", nom: "Faces dessus et dessous", nb: 2, taille: "10 × 10", note: "bande 0,8 + croix 0,8 : 4 fenêtres de 3,8", g: gFace(10, 10, 0, 0) },
+    { id: "avant", nom: "Faces avant et arrière", nb: 2, taille: "10 × 9,6", note: "même dessin : bande et croix", g: gFace(10, 9.6, 0, T) },
+    { id: "gauche", nom: "Faces gauche et droite", nb: 2, taille: "9,6 × 9,6", note: "même dessin : bande et croix", g: gFace(9.6, 9.6, T, T) },
+    { id: "losB", nom: "Carré sur pointe A", nb: 1, taille: "6,8 × 6,8 (diagonale 9,6)", note: "debout ; fente de 0,2 du haut jusqu'au centre",
+      g: { w: 9.6, h: 9.6, contour: losB, cons: [[[0, C0], [2 * C0, C0]]], cotes: [[[0, 0], [9.6, 0], "9,6 (diagonale)", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[C0 + 0.3, 7.4, "fente 0,2", "petit"]] } },
+    { id: "losC", nom: "Carré sur pointe B", nb: 1, taille: "6,8 × 6,8 (diagonale 9,6)", note: "debout ; fente de 0,2 du bas jusqu'au centre",
+      g: { w: 9.6, h: 9.6, contour: losC, cons: [[[0, C0], [2 * C0, C0]]], cotes: [[[0, 0], [9.6, 0], "9,6 (diagonale)", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[C0 + 0.3, 2.2, "fente 0,2", "petit"]] } },
+    { id: "triA", nom: "Carré sur pointe C (en 4 quarts)", nb: 4, taille: "triangles 4,7 × 4,7", note: "le carré horizontal, en 4 triangles collés entre A et B",
+      g: { w: TRI, h: TRI, contour: [[0, 0], [TRI, 0], [0, TRI]], cotes: [[[0, 0], [TRI, 0], "4,7", -0.7], [[0, 0], [0, TRI], "4,7", 0.7]], textes: [[0.25, 0.35, "centre", "petit"]] } },
   ],
   etapes: [
-    { titre: "Le socle et son centre", montre: ["socle"],
-      texte: `Découpe le socle 10 × 10. Trace ses deux diagonales au crayon : leur croisement est <b>le centre</b> du cube. Marque aussi les 4 coins de 0,5 × 0,5 où viendront les arêtes. <em>10 × 10 · diagonales = centre</em>` },
-    { titre: "La pique au centre", montre: ["pique"],
-      texte: `Coupe la pique à 9,6 cm. Colle-la debout, bien verticale, sur le centre (vérifie à l'équerre dans deux directions). Marque au crayon les hauteurs 1,8 / 3,8 / 5,8 / 7,8 cm depuis le bas de la pique : ce sont les dessous des carrés, à 2, 4, 6 et 8 cm de la table. <em>pique 9,6 · repères tous les 2 cm</em>` },
-    { titre: "Les quatre arêtes", montre: ["poteaux"],
-      texte: `Colle chaque arête (0,5 × 0,5 × 9,6) dans un coin du socle, bien d'équerre. Ce sont les seules lignes du cube : elles gardent la forme fixe autour du mouvement. <em>4 arêtes de 9,6</em>` },
-    { titre: "Les carrés à 0° et 15°", montre: ["c0", "c1"],
-      texte: `Enfile le premier carré sur la pique, aligné sur le socle (0°), et colle-le sur le repère de 2 cm. Le deuxième, à 4 cm, est tourné de <b>15°</b> : construis 30° avec un triangle équilatéral (compas), puis prends sa moitié (bissectrice). <em>0° à 2 cm · 15° à 4 cm</em>` },
-    { titre: "Les carrés à 30° et 45°", montre: ["c2", "c3"],
-      texte: `Le troisième carré, à 6 cm, est tourné de <b>30°</b>. Le dernier, à 8 cm, est tourné de <b>45°</b> : ses pointes visent le milieu des côtés du cube, comme ses diagonales. Le carré a tourné d'un quart de sa symétrie. <em>30° à 6 cm · 45° à 8 cm</em>` },
-    { titre: "Le cadre du haut", montre: ["anneau"],
-      texte: `Pose le cadre 10 × 10 évidé sur les 4 arêtes et colle-le. Le cube est fermé par ses lignes, ouvert par ses faces : on voit le carré monter et tourner autour du centre. <em>hauteur totale : 10 cm</em>` },
+    { titre: "Les six faces : le carré", montre: [], seul: ["dessous"],
+      texte: `Découpe les 6 faces et, dans chacune, <b>4 fenêtres de 3,8 × 3,8</b> : il reste une bande de 0,8 tout autour et la croix des médianes (0,8) au milieu. Trace d'abord les diagonales : leur croisement est le centre de la croix. <em>2 × (10 × 10) · 2 × (10 × 9,6) · 2 × (9,6 × 9,6)</em>` },
+    { titre: "La face du dessous", montre: ["dessous"],
+      texte: `Pose une face 10 × 10 à plat : elle sert seulement pendant le montage. Une fois fini, la maquette se pose sur n'importe quelle face. <em>10 × 10</em>` },
+    { titre: "Les deux carrés sur pointe debout", montre: ["losB", "losC"],
+      texte: `Emboîte les carrés A et B par leurs fentes (A par le haut, B par le bas) : ils se croisent à angle droit. Pose-les debout, la pointe du bas sur le centre de la croix du dessous. <em>diagonale 9,6 · fentes de 0,2</em>` },
+    { titre: "Le carré horizontal en 4 quarts", montre: ["triA"],
+      texte: `Colle les 4 triangles à mi-hauteur, dans les 4 angles formés par A et B, angle droit au centre. Ensemble, ils dessinent le troisième carré sur pointe, à plat. <em>4 triangles de 4,7</em>` },
+    { titre: "Les quatre côtés", montre: ["avant", "gauche"],
+      texte: `Colle les faces avant et arrière (10 × 9,6) puis gauche et droite (9,6 × 9,6) autour. Chaque pointe des carrés sur pointe touche le centre d'une croix. <em>les pointes au centre des croix</em>` },
+    { titre: "La face du dessus", montre: ["dessus"],
+      texte: `Ferme avec la dernière face 10 × 10. Retourne la maquette dans tous les sens : sur chaque face, le même carré, la même croix, le même carré sur pointe au fond. <em>aucune base · 6 faces pareilles</em>` },
   ],
   construire(A) {
-    A.plaque("socle", rect(10, 10), [], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
-    A.cylindre("pique", 5, 5, T, 10 - T, 0.15);
-    for (const [x, y] of [[0, 0], [9.5, 0], [9.5, 9.5], [0, 9.5]]) A.boite("poteaux", x, y, T, 0.5, 0.5, 10 - 2 * T);
-    ANGLES.forEach((a, k) => {
-      const c = Math.cos(rad(a)), s = Math.sin(rad(a)), ox = 5 - (c * S / 2 - s * S / 2), oy = 5 - (s * S / 2 + c * S / 2);
-      A.plaque("c" + k, carreTournant.contour, carreTournant.trous, [ox, oy, HAUTS[k]], [c, s, 0], [-s, c, 0], [0, 0, 1], T);
-    });
-    A.plaque("anneau", rect(10, 10), [rect(9, 9, 0.5, 0.5)], [0, 0, 10 - T], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("dessous", rect(10, 10), faceCroix(0, 0), [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("dessus", rect(10, 10), faceCroix(0, 0), [0, 0, 10 - T], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("avant", rect(10, 9.6), faceCroix(0, T), [0, 0, T], [1, 0, 0], [0, 0, 1], [0, 1, 0], T);
+    A.plaque("avant", rect(10, 9.6), faceCroix(0, T), [0, 10 - T, T], [1, 0, 0], [0, 0, 1], [0, 1, 0], T);
+    A.plaque("gauche", rect(9.6, 9.6), faceCroix(T, T), [0, T, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
+    A.plaque("gauche", rect(9.6, 9.6), faceCroix(T, T), [10 - T, T, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
+    A.plaque("losB", losB, [], [5 - T / 2, T, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
+    A.plaque("losC", losC, [], [T, 5 - T / 2, T], [1, 0, 0], [0, 0, 1], [0, 1, 0], T);
+    const h = 5 - T / 2, d = T / 2;
+    for (const [sx, sy] of [[1, 1], [-1, 1], [-1, -1], [1, -1]]) {
+      const tri = [[0, 0], [TRI, 0], [0, TRI]].map(([u, v]) => [u, v]);
+      A.plaque("triA", tri, [], [5 + sx * d, 5 + sy * d, h], [sx, 0, 0], [0, sy, 0], [0, 0, 1], T);
+    }
   },
 };
 
@@ -319,18 +331,18 @@ const topologique = {
 const txt = (p, s) => ({ t: "txt", p, s }), ligne = (a, b) => ({ t: "ligne", a, b }), cote = (a, b, s) => ({ t: "cote", a, b, s }), arc = (c, r, a0, a1, s) => ({ t: "arc", c, r, a0, a1, s });
 const OU = {
   projectif: [
-    { ou: "à plat sur la table. Les 2 diagonales se croisent au centre (5 ; 5). Les 4 petits carrés de 0,5 dans les coins sont la place des arêtes.",
-      notes: [ligne([0, 0, 0.22], [10, 10, 0.22]), ligne([10, 0, 0.22], [0, 10, 0.22]), txt([5, 5, 0.6], "centre"), txt([0.25, 0.25, 0.6], "coin 0,5"), cote([0, -1, 0.2], [10, -1, 0.2], "10"), cote([11, 0, 0.2], [11, 10, 0.2], "10")] },
-    { ou: "debout sur le point du centre, bien verticale. Les traits sur la pique montrent où iront les 4 carrés : 2, 4, 6 et 8 cm au-dessus de la table.",
-      notes: [txt([5, 5, 10.6], "au centre"), ...[2, 4, 6, 8].flatMap(h => [ligne([4.4, 5, h], [5.6, 5, h]), txt([7, 5, h], h + " cm")]), cote([11, 5, 0], [11, 5, 9.8], "9,6 + socle")] },
-    { ou: "une arête dans chaque coin du socle, sur les carrés de 0,5 tracés à l'étape 1, bien d'équerre (vérifie avec l'équerre).",
-      notes: [[0.25, 0.25], [9.75, 0.25], [9.75, 9.75], [0.25, 9.75]].map(([x, y]) => txt([x, y, 10.4], "coin")).concat([cote([10.8, 0, 0.2], [10.8, 0, 9.8], "9,6")]) },
-    { ou: "le 1er carré est enfilé sur la pique, ses côtés parallèles au socle, son dessous à 2 cm de la table. Le 2e, au-dessus, est tourné de 15°, son dessous à 4 cm.",
-      notes: [cote([11, 5, 0], [11, 5, 2], "2 cm"), cote([12.2, 5, 0], [12.2, 5, 4], "4 cm"), txt([5, 1.2, 2.2], "0° : aligné"), arc([5, 5, 4.25], 3.9, 0, 15, "15°")] },
-    { ou: "le 3e carré tourné de 30°, son dessous à 6 cm ; le 4e tourné de 45° (ses pointes visent le milieu des côtés du cube), son dessous à 8 cm.",
-      notes: [cote([11, 5, 0], [11, 5, 6], "6 cm"), cote([12.2, 5, 0], [12.2, 5, 8], "8 cm"), arc([5, 5, 6.25], 3.9, 0, 30, "30°"), arc([5, 5, 8.25], 3.9, 0, 45, "45°")] },
-    { ou: "posé à plat sur le haut des 4 arêtes, ses coins au-dessus des coins du socle. La maquette fait alors 10 cm de haut.",
-      notes: [txt([5, -0.2, 10.6], "posé sur les 4 arêtes"), cote([10.8, 0, 0], [10.8, 0, 10], "10")] },
+    { ou: "rien à poser encore : trace et découpe les fenêtres des 6 faces (bande 0,8, croix 0,8, fenêtres 3,8).",
+      notes: [cote([0, -1, 0.2], [0.8, -1, 0.2], "0,8"), cote([0.8, -1, 0.2], [4.6, -1, 0.2], "3,8"), cote([4.6, -1, 0.2], [5.4, -1, 0.2], "0,8"), txt([5, 5, 0.6], "centre")] },
+    { ou: "à plat sur la table, pour le montage seulement.",
+      notes: [txt([5, 5, 0.6], "centre de la croix"), cote([0, -1, 0.2], [10, -1, 0.2], "10")] },
+    { ou: "debout, croisés à angle droit, la pointe du bas posée sur le centre de la croix du dessous. Leurs pointes de côté arrivent à 0,2 des bords.",
+      notes: [txt([5, 5, 10.4], "croisés au centre"), cote([11, 5, 0.2], [11, 5, 9.8], "9,6")] },
+    { ou: "à mi-hauteur (4,9 du bas), dans les 4 angles entre A et B, l'angle droit de chaque triangle collé au centre.",
+      notes: [cote([11, 5, 0], [11, 5, 4.9], "4,9"), txt([7.5, 7.5, 5.4], "quart")] },
+    { ou: "les 4 faces debout autour de la face du dessous : avant et arrière (10 × 9,6) devant et derrière, gauche et droite (9,6 × 9,6) entre elles.",
+      notes: [txt([5, -0.3, 10.4], "avant"), txt([-0.3, 5, 10.4], "gauche")] },
+    { ou: "à plat sur le haut des 4 côtés. La pointe du haut des carrés A et B touche le centre de sa croix.",
+      notes: [txt([5, 5, 10.6], "pointe au centre"), cote([10.8, 0, 0], [10.8, 0, 10], "10")] },
   ],
   metrique: [
     { ou: "rien à poser : trace la trame sur chaque plaque, des lignes tous les 2,5 cm (le cube est divisé en 4 × 4 × 4 modules).",

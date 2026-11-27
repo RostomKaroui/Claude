@@ -116,7 +116,7 @@ window.PLANCHES = (function () {
     topologique: axo([10, 0], [-1, 0], [0, 1]),        // vu de l'avant droit, toit enlevé (axonométrie éclatée)
   };
   const ETAPES = {
-    projectif: [["socle", "pique"], ["socle", "pique", "poteaux", "c0", "c1"], ["socle", "pique", "poteaux", "c0", "c1", "c2", "c3"]],
+    projectif: [["dessous"], ["dessous", "losB", "losC", "triA"], null],
     metrique: [["B0", "B1", "B2", "B3", "B4"], ["B0", "B1", "B2", "B3", "B4", "A0", "A1"], null],
     topologique: [["solA", "solB", "gauche", "droite"], ["solA", "solB", "gauche", "droite", "toit", "bande"], null],
   };

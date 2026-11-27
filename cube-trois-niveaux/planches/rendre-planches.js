@@ -10,17 +10,26 @@ const fr = v => String(Math.round(v * 100) / 100).replace('.', ',');
 function schema(id, M) {
   const B = '#2f4fb3', N = '#1e2322';
   if (id === 'projectif') {
-    const k = 5.4, o = 4, c = o + 5 * k, s = 6.3 * k;
-    let g = `<rect x="${o}" y="${o}" width="${10 * k}" height="${10 * k}" fill="none" stroke="${N}" stroke-width="0.45"/>`;
-    g += `<line x1="${o}" y1="${o}" x2="${o + 10 * k}" y2="${o + 10 * k}" stroke="${B}" stroke-width="0.2" stroke-dasharray="1 0.8"/><line x1="${o + 10 * k}" y1="${o}" x2="${o}" y2="${o + 10 * k}" stroke="${B}" stroke-width="0.2" stroke-dasharray="1 0.8"/>`;
-    [0, 15, 30, 45].forEach((a, i) => { g += `<rect x="${c - s / 2}" y="${c - s / 2}" width="${s}" height="${s}" fill="none" stroke="${N}" stroke-width="${0.25 + i * 0.08}" stroke-opacity="${0.35 + i * 0.2}" transform="rotate(${-a} ${c} ${c})"/>`; });
-    for (const a of [15, 30, 45]) { const r = s / 2 + 3.5 + a / 15 * 0.0, x = c + (s / 2 + 6) * Math.cos(-a * Math.PI / 180), y = c + (s / 2 + 6) * Math.sin(-a * Math.PI / 180); g += `<text x="${x}" y="${y}" font-size="2.6" fill="${B}" text-anchor="middle">${a}°</text>`; }
-    g += `<circle cx="${c}" cy="${c}" r="0.9" fill="${B}"/><text x="${c + 2}" y="${c + 4.5}" font-size="2.4" fill="${B}">centre</text>`;
-    // élévation : la pique et les hauteurs
-    const ex = o + 10 * k + 16, eb = o + 10 * k, hk = 5.4;
-    g += `<line x1="${ex - 8}" y1="${eb}" x2="${ex + 8}" y2="${eb}" stroke="${N}" stroke-width="0.45"/><line x1="${ex}" y1="${eb}" x2="${ex}" y2="${eb - 10 * hk}" stroke="${N}" stroke-width="0.35"/>`;
-    [2, 4, 6, 8].forEach((h, i) => { const y = eb - h * hk; g += `<line x1="${ex - 6}" y1="${y}" x2="${ex + 6}" y2="${y}" stroke="${N}" stroke-width="0.4"/><text x="${ex + 7.5}" y="${y + 0.9}" font-size="2.4" fill="${B}">${h} cm · ${[0, 15, 30, 45][i]}°</text>`; });
-    g += `<text x="${ex - 8}" y="${eb + 4.5}" font-size="2.3" fill="${N}">élévation</text><text x="${o}" y="${o + 10 * k + 4.5}" font-size="2.3" fill="${N}">vue de dessus : le même carré tourne</text>`;
+    // la face vue de front : carré, bande, croix, et au fond le carré sur pointe (le même sur les 6 faces)
+    const face = (o, oy, k, fin) => {
+      let g = `<rect x="${o}" y="${oy}" width="${10 * k}" height="${10 * k}" fill="none" stroke="${N}" stroke-width="${fin ? 0.3 : 0.45}"/>`;
+      for (const [a0, a1] of [[0.8, 4.6], [5.4, 9.2]]) for (const [b0, b1] of [[0.8, 4.6], [5.4, 9.2]])
+        g += `<rect x="${o + a0 * k}" y="${oy + b0 * k}" width="${(a1 - a0) * k}" height="${(b1 - b0) * k}" fill="none" stroke="${N}" stroke-width="${fin ? 0.2 : 0.3}"/>`;
+      const c = 5 * k, r = 4.8 * k;
+      g += `<polygon points="${o + c},${oy + c - r} ${o + c + r},${oy + c} ${o + c},${oy + c + r} ${o + c - r},${oy + c}" fill="${B}" fill-opacity="0.10" stroke="${B}" stroke-width="${fin ? 0.25 : 0.35}"/>`;
+      return g;
+    };
+    const k = 5.4, o = 4;
+    let g = face(o, o, k, false);
+    g += `<circle cx="${o + 5 * k}" cy="${o + 5 * k}" r="0.9" fill="${B}"/><text x="${o + 5 * k + 2}" y="${o + 5 * k - 2}" font-size="2.4" fill="${B}">centre</text>`;
+    g += `<text x="${o + 5 * k}" y="${o + 0.2 * k - 1.2}" font-size="2.3" fill="${B}" text-anchor="middle">45°</text>`;
+    g += `<text x="${o}" y="${o + 10 * k + 4.5}" font-size="2.3" fill="${N}">une face (les 6 sont pareilles)</text>`;
+    const x2 = o + 10 * k + 10, k2 = 1.6;
+    ['posée sur une face', 'retournée', 'tournée de côté'].forEach((t, i) => {
+      const y = o + i * (10 * k2 + 3);
+      g += face(x2, y, k2, true) + `<text x="${x2 + 10 * k2 + 3}" y="${y + 5 * k2 + 1}" font-size="2.4" fill="${N}">${t}</text>`;
+    });
+    g += `<text x="${x2}" y="${o + 10 * k + 4.5}" font-size="2.3" fill="${B}">même vue : sans base</text>`;
     return { w: 118, h: 64, g };
   }
   if (id === 'metrique') {
@@ -46,7 +55,7 @@ function schema(id, M) {
 }
 
 const CAPTIONS = {
-  projectif: ['le socle, son centre, la pique', 'les arêtes, les carrés à 0° et 15°', 'les carrés à 30° et 45°'],
+  projectif: ['la face du dessous', 'les 3 carrés sur pointe au centre', 'les 6 faces : le cube fermé'],
   metrique: ['les 5 plaques B, tous les 2,5 cm', 'A0 et A1 : le cube entier', 'A2 à A4 : la soustraction'],
   topologique: ['le sol séparé, les deux côtés', 'le toit et la bande remontée', "l'arrière pivotée : la fente"],
 };
