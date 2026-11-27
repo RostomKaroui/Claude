@@ -1,0 +1,25 @@
+@page { size: 420mm 297mm; margin: 0; }
+html, body { margin: 0; background: #fff; color: #1e2322; font-family: "DejaVu Sans", Arial, sans-serif; }
+.planche { width: 420mm; height: 297mm; box-sizing: border-box; padding: 11mm 12mm; display: grid; grid-template-rows: auto 1fr; gap: 6mm; overflow: hidden; break-after: page; position: relative; }
+.planche::after { content: ""; position: absolute; inset: 6mm; border: 0.35mm solid #1e2322; pointer-events: none; }
+header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 0.5mm solid #1e2322; padding-bottom: 3mm; }
+.sur { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; letter-spacing: 0.08em; text-transform: uppercase; color: #5f6865; }
+h1 { font-size: 21pt; margin: 1mm 0 0; font-weight: 700; letter-spacing: -0.01em; }
+.droite { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; color: #5f6865; text-align: right; line-height: 1.5; }
+.grille { display: grid; grid-template-columns: 118mm 150mm 116mm; gap: 6mm; min-height: 0; }
+.col { display: flex; flex-direction: column; gap: 3mm; min-width: 0; }
+h2 { font-size: 13pt; margin: 0; } h2 small { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; font-weight: 400; color: #5f6865; margin-left: 2mm; }
+h3 { font-size: 10pt; margin: 2mm 0 0; }
+.demarche p { font-family: "DejaVu Serif", Georgia, serif; font-size: 9.2pt; line-height: 1.45; margin: 0; }
+.ops { display: flex; flex-wrap: wrap; gap: 1.5mm; }
+.ops span { font-family: "DejaVu Sans Mono", monospace; font-size: 7.2pt; color: #2f4fb3; border: 0.25mm solid #2f4fb3; border-radius: 3mm; padding: 0.6mm 2mm; }
+.etapes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; align-items: end; }
+figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 1.5mm; }
+figcaption { font-family: "DejaVu Sans Mono", monospace; font-size: 7pt; color: #5f6865; text-align: center; line-height: 1.35; }
+figcaption b { color: #2f4fb3; }
+.axo { justify-content: center; align-items: center; }
+.axo figcaption { font-size: 8pt; }
+.vues { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 4mm; justify-items: center; }
+.cartouche { margin-top: auto; border-collapse: collapse; width: 100%; font-size: 8pt; }
+.cartouche td { border: 0.3mm solid #1e2322; padding: 2.2mm 2.5mm; }
+.cartouche td:first-child { width: 22mm; font-family: "DejaVu Sans Mono", monospace; color: #5f6865; }
