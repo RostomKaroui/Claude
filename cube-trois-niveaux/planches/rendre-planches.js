@@ -36,19 +36,19 @@ function schema(id, M) {
     return { w: 118, h: 64, g };
   }
   const k = 13, o = 4;      // topologique : le patron du cube et l'opération de chaque face
-  const F = [[1, 0, 'toit', 'éliminé'], [0, 1, 'gauche', 'continu'], [1, 1, 'sol', 'continu'], [2, 1, 'droite', 'éliminée'], [3, 1, 'arrière', 'pivotée 30°'], [1, 2, 'avant', 'pivotée 30°']];
+  const F = [[1, 0, 'toit', 'continu'], [0, 1, 'gauche', 'continu'], [1, 1, 'sol', 'séparé en 2'], [2, 1, 'droite', 'continu'], [3, 1, 'arrière', 'pivotée 30°'], [1, 2, 'avant', 'remontée']];
   let g = '';
   for (const [i, j, nom, op] of F) { const x = o + i * k * 1.45, y = o + j * k * 1.05;
     const int = op.startsWith('continu');
     g += `<rect x="${x}" y="${y}" width="${k * 1.4}" height="${k}" fill="${int ? 'none' : B}" fill-opacity="${int ? 0 : 0.12}" stroke="${N}" stroke-width="0.35"/><text x="${x + k * 0.7}" y="${y + k / 2 - 0.5}" font-size="2.8" text-anchor="middle" fill="${N}">${nom}</text><text x="${x + k * 0.7}" y="${y + k / 2 + 3}" font-size="2.3" text-anchor="middle" fill="${B}">${op}</text>`; }
-  g += `<text x="${o}" y="${o + 3 * k * 1.05 + 4}" font-size="2.4" fill="${N}">en blanc : ce qui reste en place · en bleu : la rupture · aucune face découpée</text>`;
+  g += `<text x="${o}" y="${o + 3 * k * 1.05 + 4}" font-size="2.4" fill="${N}">en blanc : le tunnel continu · en bleu : ce qui est déplacé</text>`;
   return { w: 118, h: 64, g };
 }
 
 const CAPTIONS = {
   projectif: ['le socle, son centre, la pique', 'les arêtes, les carrés à 0° et 15°', 'les carrés à 30° et 45°'],
   metrique: ['les 5 plaques B, tous les 2,5 cm', 'A0 et A1 : le cube entier', 'A2 à A4 : la soustraction'],
-  topologique: ['le sol et le côté gauche', 'la face avant pivotée : la fente', "l'arrière pivotée : la limite virtuelle"],
+  topologique: ['le sol séparé, les deux côtés', 'le toit et la bande remontée', "l'arrière pivotée : la fente"],
 };
 const FACES = [['dessus', 'dessus'], ['devant', 'devant'], ['droite', 'côté droit'], ['gauche', 'côté gauche'], ['arriere', 'arrière'], ['dessous', 'dessous']];
 
@@ -68,7 +68,7 @@ function page(id, n, M, D) {
       <h3>Le montage en 3 temps</h3>
       <div class="etapes">${D.etapes.map((e, i) => `<figure>${img(e)}<figcaption><b>${i + 1}</b> ${CAPTIONS[id][i]}</figcaption></figure>`).join('')}</div>
     </div>
-    <div class="col axo"><figure>${img(D.axo)}<figcaption>Axonométrie 30° / 60° · échelle 1:1 · cube de 10 cm d'arête · carton gris 2 mm</figcaption></figure></div>
+    <div class="col axo"><figure>${img(D.axo)}<figcaption>Axonométrie ${id === 'topologique' ? 'éclatée (toit enlevé) ' : ''}30° / 60° · échelle 1:1 · cube de 10 cm d'arête · carton gris 2 mm</figcaption></figure></div>
     <div class="col faces">
       <h2>Les faces <small>échelle 1:2</small></h2>
       <div class="vues">${FACES.map(([k, t]) => `<figure>${img(D.faces[k])}<figcaption>${t}</figcaption></figure>`).join('')}</div>

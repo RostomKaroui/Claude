@@ -268,42 +268,51 @@ const metrique = {
 
 // ---------- 3. topologique : les 6 faces de l'enveloppe, chacune déplacée, éliminée ou pivotée
 const PIV = 30;
-const FX = 10 - 9.8 * Math.cos(rad(PIV)), FY = 9.8 * Math.sin(rad(PIV));     // bout libre de la face avant : (1,51 ; 4,9)
-const BX = 0.2 + 9.8 * Math.cos(rad(PIV)), BY = 10 - 9.8 * Math.sin(rad(PIV)); // bout libre de la face arrière : (8,69 ; 5,1)
+const PX = 9.7 - 9.6 * Math.cos(rad(PIV)), PY = 10 - 9.6 * Math.sin(rad(PIV));   // bout libre de la face arrière pivotée : (1,39 ; 5,2)
 const topologique = {
-  id: "topologique", titre: "Les fentes du pivot", niveau: "Espace topologique",
-  idee: `On part de l'<b>enveloppe</b> du cube et on ne découpe <b>aucune face</b> : chaque face reste entière, on la <b>déplace</b>, on l'<b>élimine</b> ou on la <b>fait pivoter</b>. Il ne reste qu'<b>un seul carré fermé</b>, le côté gauche, posé sur le sol. Le toit et le côté droit sont <b>éliminés</b>. Les faces avant et arrière <b>pivotent de 30°</b>, chacune autour d'une arête opposée : elles deviennent deux parois parallèles qui traversent le cube en diagonale. Chacune s'arrête à 1,3 cm d'une limite : contre le côté gauche, c'est une <b>fente</b> réelle ; contre le côté droit absent, c'est une <b>limite virtuelle</b> que l'œil reconstruit. Tout reste dans le cube de 10 × 10 × 10.`,
-  ops: ["enveloppe", "continuité / rupture", "limite virtuelle", "intérieur / extérieur", "éliminer · pivoter"],
-  camera: [1.05, 0.95, 1.15],
+  id: "topologique", titre: "Le tunnel et la fente", niveau: "Espace topologique",
+  idee: `On part de l'<b>enveloppe</b> du cube. Le toit et les deux côtés restent entiers et forment un <b>tunnel</b> continu, ouvert devant et derrière. Le reste de l'enveloppe est déplacé : la face avant <b>remonte</b> et devient une bande de 4,8 cm accrochée sous le toit ; la face arrière <b>pivote de 30°</b> à l'intérieur du tunnel et s'arrête à 1,3 cm du côté gauche, ce qui crée une <b>fente</b> verticale ; le sol se <b>sépare</b> en deux plaques avec un vide de 2 cm entre elles. On entre par-dessous la bande, on bute sur la face pivotée, on ressort par la fente : l'intérieur et l'extérieur s'enchaînent sans jamais se fermer.`,
+  ops: ["enveloppe", "continuité / rupture", "ouvert / fermé", "intérieur / extérieur", "déplacer · pivoter · séparer"],
+  camera: [1.05, 0.8, 1.15],
   pieces: [
-    { id: "sol", nom: "Sol", nb: 1, taille: "10 × 10", note: "entier : la base",
-      g: { w: 10, h: 10, contour: rect(10, 10), pointilles: [rect(0.2, 10)], cons: [[[10, 0], [FX, FY]], [[0.2, 10], [BX, BY]]],
-        cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 10], "10", 0.7]], textes: [[5.2, 1.5, "face avant à 30°", "petit"], [1.6, 8.6, "face arrière à 30°", "petit"]] } },
-    { id: "gauche", nom: "Côté gauche", nb: 1, taille: "10 × 9,6", note: "entier : le seul carré fermé",
-      g: { w: 10, h: 9.6, contour: rect(10, 9.6), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]] } },
-    { id: "avant", nom: "Face avant (pivotée)", nb: 1, taille: "9,8 × 9,6", note: "entière, tournée de 30° autour de son arête droite",
-      g: { w: 9.8, h: 9.6, contour: rect(9.8, 9.6), cotes: [[[0, 0], [9.8, 0], "9,8", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[7.6, 4.8, "charnière →", "petit"]] } },
-    { id: "arriere", nom: "Face arrière (pivotée)", nb: 1, taille: "9,8 × 9,6", note: "entière, tournée de 30° autour de son arête gauche",
-      g: { w: 9.8, h: 9.6, contour: rect(9.8, 9.6), cotes: [[[0, 0], [9.8, 0], "9,8", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[0.3, 4.8, "← charnière", "petit"]] } },
+    { id: "toit", nom: "Toit", nb: 1, taille: "10 × 10", note: "entier : le haut du tunnel",
+      g: { w: 10, h: 10, contour: rect(10, 10), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 10], "10", 0.7]] } },
+    { id: "gauche", nom: "Côté gauche", nb: 1, taille: "10 × 9,8", note: "entier : le tunnel",
+      g: { w: 10, h: 9.8, contour: rect(10, 9.8), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 9.8], "9,8", 0.7]] } },
+    { id: "droite", nom: "Côté droit", nb: 1, taille: "10 × 9,8", note: "entier : le tunnel",
+      g: { w: 10, h: 9.8, contour: rect(10, 9.8), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 9.8], "9,8", 0.7]] } },
+    { id: "bande", nom: "Bande avant", nb: 1, taille: "9,6 × 4,8", note: "la face avant remontée sous le toit",
+      g: { w: 9.6, h: 4.8, contour: rect(9.6, 4.8), cotes: [[[0, 0], [9.6, 0], "9,6", -0.7], [[0, 0], [0, 4.8], "4,8", 0.7]] } },
+    { id: "arriere", nom: "Face arrière (pivotée)", nb: 1, taille: "9,6 × 9,6", note: "tournée de 30° autour de son arête droite",
+      g: { w: 9.6, h: 9.6, contour: rect(9.6, 9.6), cotes: [[[0, 0], [9.6, 0], "9,6", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[7.4, 4.8, "charnière →", "petit"]] } },
+    { id: "solA", nom: "Sol avant", nb: 1, taille: "9,6 × 4", note: "la moitié avant du sol",
+      g: { w: 9.6, h: 4, contour: rect(9.6, 4), cotes: [[[0, 0], [9.6, 0], "9,6", -0.7], [[0, 0], [0, 4], "4", 0.7]] } },
+    { id: "solB", nom: "Sol arrière", nb: 1, taille: "9,6 × 4", note: "la moitié arrière, séparée de 2 cm",
+      g: { w: 9.6, h: 4, contour: rect(9.6, 4), cons: [[[9.5, 4], [PX - 0.2, PY - 6]]], cotes: [[[0, 0], [9.6, 0], "9,6", -0.7], [[0, 0], [0, 4], "4", 0.7]], textes: [[3.2, 1.2, "face pivotée à 30°", "petit"]] } },
   ],
   etapes: [
-    { titre: "Le sol", montre: ["sol"],
-      texte: `Découpe le sol 10 × 10 et trace dessus la place du côté gauche et les deux lignes à 30° des faces avant et arrière. Les deux lignes sont parallèles. <em>10 × 10</em>` },
-    { titre: "Le côté gauche : le seul carré fermé", montre: ["gauche"],
-      texte: `Colle le côté gauche (10 × 9,6) debout sur le bord gauche du sol. C'est la seule face qui reste à sa place : elle sert de repère aux deux autres. <em>10 × 9,6</em>` },
-    { titre: "La face avant : pivoter", montre: ["avant"],
-      texte: `La face avant, <b>entière</b> (9,8 × 9,6), tourne de <b>30°</b> vers l'intérieur autour de son arête droite. Son bout s'arrête à 1,3 cm du côté gauche : une <b>fente verticale</b> apparaît, sans rien découper. <em>pivot 30° · fente de 1,3</em>` },
+    { titre: "Le sol en deux plaques", montre: ["solA", "solB"],
+      texte: `Pose les deux plaques de sol (9,6 × 4) à 0,2 cm des bords gauche et droit, l'une contre le devant, l'autre contre le fond. Entre elles, il reste <b>2 cm de vide</b> : le sol se sépare. <em>2 × (9,6 × 4) · vide de 2</em>` },
+    { titre: "Les deux côtés : le tunnel", montre: ["gauche", "droite"],
+      texte: `Colle les deux côtés (10 × 9,8) debout sur la table, de part et d'autre des plaques de sol. Ils sont parallèles et entiers. <em>2 × (10 × 9,8)</em>` },
+    { titre: "Le toit : fermer le tunnel", montre: ["toit"],
+      texte: `Colle le toit (10 × 10) sur les deux côtés. Toit et côtés forment un tunnel continu, ouvert devant et derrière. <em>10 × 10</em>` },
+    { titre: "La bande avant : remonter", montre: ["bande"],
+      texte: `La face avant <b>remonte</b> : elle ne garde que 4,8 cm et se colle sous le toit, entre les deux côtés, au ras du devant. On passe en dessous. <em>9,6 × 4,8 · sous le toit</em>` },
     { titre: "La face arrière : pivoter", montre: ["arriere"],
-      texte: `La face arrière, <b>entière</b> elle aussi, tourne de <b>30°</b> autour de son arête gauche, contre le côté gauche. Elle devient parallèle à la face avant. Son bout s'arrête à 1,3 cm du bord droit, là où il n'y a plus de mur : une <b>limite virtuelle</b>. <em>pivot 30° · parallèle à l'avant</em>` },
-    { titre: "Le toit et le côté droit : éliminer", montre: [],
-      texte: `Rien à coller : le toit et le côté droit sont <b>éliminés</b>, entiers. Le cube s'ouvre au ciel et à droite ; entre les deux faces pivotées, un passage traverse le cube en diagonale. <em>un seul carré fermé · aucune découpe</em>` },
+      texte: `La face arrière (9,6 × 9,6) tourne de <b>30°</b> vers l'intérieur autour de son arête droite, posée sur la plaque arrière. Son bout s'arrête à 1,3 cm du côté gauche : la <b>fente</b>. <em>pivot 30° · fente de 1,3</em>` },
+    { titre: "Lire la maquette", montre: [],
+      texte: `Fais tourner la maquette : on entre sous la bande, le sol s'interrompt, la face pivotée barre le tunnel en diagonale et ne laisse que la fente pour ressortir. <em>continu en haut et sur les côtés · rompu devant, derrière et au sol</em>` },
   ],
   construire(A) {
-    A.plaque("sol", rect(10, 10), [], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
-    A.plaque("gauche", rect(10, 9.6), [], [0, 0, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
+    A.plaque("solA", rect(9.6, 4), [], [T, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("solB", rect(9.6, 4), [], [T, 6, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("gauche", rect(10, 9.8), [], [0, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
+    A.plaque("droite", rect(10, 9.8), [], [10 - T, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
+    A.plaque("toit", rect(10, 10), [], [0, 0, 10 - T], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
+    A.plaque("bande", rect(9.6, 4.8), [], [T, 0, 10 - T - 4.8], [1, 0, 0], [0, 0, 1], [0, 1, 0], T);
     const c = Math.cos(rad(PIV)), s = Math.sin(rad(PIV));
-    A.plaque("avant", rect(9.8, 9.6), [], [10, 0, T], [-c, s, 0], [0, 0, 1], [s, c, 0], T);
-    A.plaque("arriere", rect(9.8, 9.6), [], [T, 10, T], [c, -s, 0], [0, 0, 1], [-s, -c, 0], T);
+    A.plaque("arriere", rect(9.6, 9.6), [], [9.7, 10, T], [-c, -s, 0], [0, 0, 1], [s, -c, 0], T);
   },
 };
 // ---------- où poser chaque pièce : repères affichés dans la 3D (txt, ligne, cote, arc) + une phrase
@@ -338,16 +347,18 @@ const OU = {
       notes: [2, 3, 4].map(m => txt([1.2, POS[m], PROFILS[m][0] * MOD + 0.7], "A" + m)).concat([txt([9, 9, 3.2], "2,5 : un module")]) },
   ],
   topologique: [
-    { ou: "à plat. Trace une bande de 0,2 sur le bord gauche (côté gauche), une ligne à 30° qui part du coin avant droit (face avant) et une ligne à 30° qui part du coin arrière gauche (face arrière). Les deux lignes sont parallèles.",
-      notes: [ligne([0.2, 0, 0.22], [0.2, 10, 0.22]), ligne([10, 0, 0.22], [FX, FY, 0.22]), ligne([0.2, 10, 0.22], [BX, BY, 0.22]), txt([5, -0.8, 0.6], "devant"), txt([5, 10.8, 0.6], "fond")] },
-    { ou: "debout sur le bord gauche du sol, sur toute sa longueur, collé sur le sol.",
-      notes: [txt([0.1, 5, 10.4], "bord gauche"), cote([-1, 0, 0.2], [-1, 0, 9.8], "9,6")] },
-    { ou: "debout sur la ligne à 30° de devant, son arête droite au coin avant droit. Son autre bout s'arrête à 1,3 cm du côté gauche : c'est la fente.",
-      notes: [arc([10, 0, 0.4], 4.2, 150, 180, "30°"), cote([0.2, FY - 0.6, 9.9], [FX, FY - 0.6, 9.9], "fente 1,3")] },
-    { ou: "debout sur la ligne à 30° du fond, son arête gauche collée au bout du côté gauche. Son autre bout s'arrête à 1,3 cm du bord droit, dans le vide.",
-      notes: [arc([0.2, 10, 0.4], 4.2, -30, 0, "30°"), cote([BX, BY + 0.6, 9.9], [10, BY + 0.6, 9.9], "1,3 : limite virtuelle")] },
-    { ou: "rien à poser : il n'y a ni toit ni côté droit. Regarde par le dessus et par la droite : le passage traverse le cube entre les deux faces parallèles.",
-      notes: [txt([5, 5, 10.6], "toit éliminé"), txt([11, 5, 5], "côté droit éliminé")] },
+    { ou: "deux plaques à plat, à 0,2 cm des bords gauche et droit : la première au ras du devant (de 0 à 4 cm), la seconde au ras du fond (de 6 à 10 cm). Le vide entre elles fait 2 cm.",
+      notes: [cote([11, 0, 0.2], [11, 4, 0.2], "4"), cote([11, 4, 0.2], [11, 6, 0.2], "vide 2"), cote([11, 6, 0.2], [11, 10, 0.2], "4"), txt([5, -0.8, 0.6], "devant"), txt([5, 10.8, 0.6], "fond")] },
+    { ou: "debout sur la table, de chaque côté des plaques de sol, sur toute la profondeur (10 cm).",
+      notes: [txt([0.1, 5, 10.4], "côté gauche"), txt([9.9, 5, 10.4], "côté droit"), cote([-1, 0, 0], [-1, 0, 9.8], "9,8")] },
+    { ou: "posé à plat sur le haut des deux côtés, au ras de tous les bords.",
+      notes: [txt([5, 5, 10.6], "toit"), cote([0, -1, 10.3], [10, -1, 10.3], "10")] },
+    { ou: "sous le toit, entre les deux côtés, au ras du devant. Elle descend de 4,8 cm : en dessous, le tunnel est ouvert.",
+      notes: [cote([-1, 0, 5], [-1, 0, 9.8], "4,8"), txt([5, -0.4, 4.4], "on passe dessous")] },
+    { ou: "debout sur la plaque arrière, son arête droite dans le coin arrière droit, tournée de 30° vers l'avant gauche. Son autre bout s'arrête à 1,3 cm du côté gauche.",
+      notes: [arc([9.7, 10, 0.4], 4.2, 180, 210, "30°"), cote([0.2, PY - 0.6, 9.9], [PX, PY - 0.6, 9.9], "fente 1,3")] },
+    { ou: "rien à poser : regarde la maquette par l'avant, sous la bande, puis par l'arrière, par la fente.",
+      notes: [txt([5, -0.5, 2.5], "entrée sous la bande"), txt([0.8, 5.2, 5], "fente")] },
   ],
 };
 for (const [k, liste] of Object.entries(OU)) liste.forEach((o, i) => Object.assign({ projectif, metrique, topologique }[k].etapes[i], o));

@@ -113,16 +113,17 @@ window.PLANCHES = (function () {
   const VUE_AXO = {
     projectif: axo([10, 0], [-1, 0], [0, 1]),
     metrique: axo([10, 10], [0, -1], [-1, 0]),
-    topologique: axo([10, 0], [-1, 0], [0, 1]),        // vu de l'avant droit : l'ouverture à droite et le panneau pivoté
+    topologique: axo([10, 0], [-1, 0], [0, 1]),        // vu de l'avant droit, toit enlevé (axonométrie éclatée)
   };
   const ETAPES = {
     projectif: [["socle", "pique"], ["socle", "pique", "poteaux", "c0", "c1"], ["socle", "pique", "poteaux", "c0", "c1", "c2", "c3"]],
     metrique: [["B0", "B1", "B2", "B3", "B4"], ["B0", "B1", "B2", "B3", "B4", "A0", "A1"], null],
-    topologique: [["sol", "gauche"], ["sol", "gauche", "avant"], null],
+    topologique: [["solA", "solB", "gauche", "droite"], ["solA", "solB", "gauche", "droite", "toit", "bande"], null],
   };
   function planche(id) {
     const M = MAQUETTES[id], tout = () => true, geo = collecter(M, tout);
-    const out = { axo: dessiner(geo, VUE_AXO[id], 10, 0.55, 0.25), faces: {}, etapes: [] };
+    const sansToit = id === 'topologique' ? collecter(M, k => k !== 'toit') : geo;   // éclatée : on enlève le toit pour voir dedans
+    const out = { axo: dessiner(sansToit, VUE_AXO[id], 10, 0.55, 0.25), faces: {}, etapes: [] };
     for (const [nom, f] of Object.entries(VUES)) out.faces[nom] = dessiner(geo, f, 5, 0.4, 0.18, null);
     // cadre commun pour les vignettes : celui de la maquette entière
     const P = geo.pos.map(VUE_AXO[id]); let c = [1e9, -1e9, 1e9, -1e9];
