@@ -1,5 +1,9 @@
 import cv2, numpy as np, json
-src="/tmp/claude-0/-home-user-Claude/0095011d-962b-595a-b8c6-2625d1aef2e9/images/"
+import os as _os, sys as _sys
+# dossier des photos d'origine : variable PHOTOS (par défaut, celui de la séance où elles ont été prises)
+src = _os.path.join(_os.environ.get("PHOTOS", "/tmp/claude-0/-home-user-Claude/0095011d-962b-595a-b8c6-2625d1aef2e9/images/"), "")
+if not _os.path.isdir(src):
+    _sys.exit(f"Dossier des photos introuvable : {src}\nIndique-le ainsi : PHOTOS=<dossier des photos> python3 redresse.py")
 R = json.load(open("cale.json"))
 S = 40                       # px par cm
 X0, Y0, W, Hc = -0.5, -1.0, 17.0, 26.0   # fenêtre de l'acétate en cm (repère de la grille 4 cm)

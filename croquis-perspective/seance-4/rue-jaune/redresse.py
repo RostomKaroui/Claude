@@ -1,7 +1,11 @@
 """Redresse la photo de la rue aux portes jaunes : les verticales deviennent verticales, cadre 18 x 24 cm (40 px = 1 cm),
 plus une version 2x pour les relevés."""
 import cv2, numpy as np, sys
-src = "/tmp/claude-0/-home-user-Claude/0095011d-962b-595a-b8c6-2625d1aef2e9/images/"
+import os as _os, sys as _sys
+# dossier des photos d'origine : variable PHOTOS (par défaut, celui de la séance où elles ont été prises)
+src = _os.path.join(_os.environ.get("PHOTOS", "/tmp/claude-0/-home-user-Claude/0095011d-962b-595a-b8c6-2625d1aef2e9/images/"), "")
+if not _os.path.isdir(src):
+    _sys.exit(f"Dossier des photos introuvable : {src}\nIndique-le ainsi : PHOTOS=<dossier des photos> python3 redresse.py")
 S, W, H = 40, 720, 960
 def vp_vertical(g):
     L = cv2.createLineSegmentDetector(cv2.LSD_REFINE_STD).detect(g)[0].reshape(-1, 4)

@@ -1,5 +1,9 @@
 import cv2, numpy as np, json
-src="/tmp/claude-0/-home-user-Claude/0095011d-962b-595a-b8c6-2625d1aef2e9/images/"
+import os as _os, sys as _sys
+# dossier des photos d'origine : variable PHOTOS (par défaut, celui de la séance où elles ont été prises)
+src = _os.path.join(_os.environ.get("PHOTOS", "/tmp/claude-0/-home-user-Claude/0095011d-962b-595a-b8c6-2625d1aef2e9/images/"), "")
+if not _os.path.isdir(src):
+    _sys.exit(f"Dossier des photos introuvable : {src}\nIndique-le ainsi : PHOTOS=<dossier des photos> python3 cale.py")
 CAS = {
  "angle1": dict(ac=26, net=29, fen=[(445,520),(1115,545),(1090,1530),(437,1545)],
                 ext=[(355,465),(1205,480),(1160,1600),(355,1635)],
