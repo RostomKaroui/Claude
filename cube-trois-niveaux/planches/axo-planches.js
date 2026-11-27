@@ -118,7 +118,7 @@ window.PLANCHES = (function () {
   const ETAPES = {
     projectif: [["socle", "pique"], ["socle", "pique", "poteaux", "c0", "c1"], ["socle", "pique", "poteaux", "c0", "c1", "c2", "c3"]],
     metrique: [["B0", "B1", "B2", "B3", "B4"], ["B0", "B1", "B2", "B3", "B4", "A0", "A1"], null],
-    topologique: [["sol", "gauche"], ["sol", "gauche", "arriere", "toit"], null],
+    topologique: [["sol", "gauche"], ["sol", "gauche", "avant"], null],
   };
   function planche(id) {
     const M = MAQUETTES[id], tout = () => true, geo = collecter(M, tout);

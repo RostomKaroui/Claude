@@ -268,46 +268,42 @@ const metrique = {
 
 // ---------- 3. topologique : les 6 faces de l'enveloppe, chacune déplacée, éliminée ou pivotée
 const PIV = 30;
-const FX = 10 - 9.8 * Math.cos(rad(PIV)), FY = 9.8 * Math.sin(rad(PIV));     // bout libre de la face avant pivotée : (1,51 ; 4,9)
+const FX = 10 - 9.8 * Math.cos(rad(PIV)), FY = 9.8 * Math.sin(rad(PIV));     // bout libre de la face avant : (1,51 ; 4,9)
+const BX = 0.2 + 9.8 * Math.cos(rad(PIV)), BY = 10 - 9.8 * Math.sin(rad(PIV)); // bout libre de la face arrière : (8,69 ; 5,1)
 const topologique = {
-  id: "topologique", titre: "La fente du pivot", niveau: "Espace topologique",
-  idee: `On part de l'<b>enveloppe</b> du cube et on ne découpe <b>aucune face</b> : chaque face reste entière, on agit seulement en la <b>déplaçant</b>, en l'<b>éliminant</b> ou en la <b>faisant pivoter</b>. D'un côté, l'enveloppe reste <b>continue</b> : le sol, le côté gauche et le toit forment une bande pliée en C. De l'autre, elle se <b>rompt</b> : le côté droit est <b>éliminé</b>, la face arrière est <b>déplacée</b> de 2,5 cm vers l'intérieur, et la face avant <b>pivote de 30°</b> autour de son arête droite. En tournant, elle s'arrête à 1,3 cm du côté gauche : la <b>fente</b> n'est pas découpée, elle naît du mouvement. Tout reste dans le cube de 10 × 10 × 10.`,
-  ops: ["enveloppe", "continuité / rupture", "ouvert / fermé", "intérieur / extérieur", "déplacer · éliminer · pivoter"],
-  camera: [1.05, 0.8, 1.15],
+  id: "topologique", titre: "Les fentes du pivot", niveau: "Espace topologique",
+  idee: `On part de l'<b>enveloppe</b> du cube et on ne découpe <b>aucune face</b> : chaque face reste entière, on la <b>déplace</b>, on l'<b>élimine</b> ou on la <b>fait pivoter</b>. Il ne reste qu'<b>un seul carré fermé</b>, le côté gauche, posé sur le sol. Le toit et le côté droit sont <b>éliminés</b>. Les faces avant et arrière <b>pivotent de 30°</b>, chacune autour d'une arête opposée : elles deviennent deux parois parallèles qui traversent le cube en diagonale. Chacune s'arrête à 1,3 cm d'une limite : contre le côté gauche, c'est une <b>fente</b> réelle ; contre le côté droit absent, c'est une <b>limite virtuelle</b> que l'œil reconstruit. Tout reste dans le cube de 10 × 10 × 10.`,
+  ops: ["enveloppe", "continuité / rupture", "limite virtuelle", "intérieur / extérieur", "éliminer · pivoter"],
+  camera: [1.05, 0.95, 1.15],
   pieces: [
-    { id: "sol", nom: "Sol", nb: 1, taille: "10 × 10", note: "entier : le début de la bande continue",
-      g: { w: 10, h: 10, contour: rect(10, 10), pointilles: [rect(0.2, 10), rect(9.8, 0.2, 0.2, 7.3)], cons: [[[10, 0], [FX, FY]]],
-        cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 10], "10", 0.7], [[10, 7.5], [10, 10], "2,5", -0.55]], textes: [[5.4, 1.4, "face avant à 30°", "petit"], [0.5, 5.6, "fente", "petit"]] } },
-    { id: "gauche", nom: "Côté gauche", nb: 1, taille: "10 × 9,6", note: "entier : le pli de la bande continue",
+    { id: "sol", nom: "Sol", nb: 1, taille: "10 × 10", note: "entier : la base",
+      g: { w: 10, h: 10, contour: rect(10, 10), pointilles: [rect(0.2, 10)], cons: [[[10, 0], [FX, FY]], [[0.2, 10], [BX, BY]]],
+        cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 10], "10", 0.7]], textes: [[5.2, 1.5, "face avant à 30°", "petit"], [1.6, 8.6, "face arrière à 30°", "petit"]] } },
+    { id: "gauche", nom: "Côté gauche", nb: 1, taille: "10 × 9,6", note: "entier : le seul carré fermé",
       g: { w: 10, h: 9.6, contour: rect(10, 9.6), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]] } },
-    { id: "arriere", nom: "Face arrière (déplacée)", nb: 1, taille: "9,8 × 9,6", note: "entière, avancée de 2,5 vers l'intérieur",
-      g: { w: 9.8, h: 9.6, contour: rect(9.8, 9.6), cotes: [[[0, 0], [9.8, 0], "9,8", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]] } },
-    { id: "toit", nom: "Toit", nb: 1, taille: "10 × 10", note: "entier : la fin de la bande continue",
-      g: { w: 10, h: 10, contour: rect(10, 10), cotes: [[[0, 0], [10, 0], "10", -0.7], [[0, 0], [0, 10], "10", 0.7]] } },
     { id: "avant", nom: "Face avant (pivotée)", nb: 1, taille: "9,8 × 9,6", note: "entière, tournée de 30° autour de son arête droite",
       g: { w: 9.8, h: 9.6, contour: rect(9.8, 9.6), cotes: [[[0, 0], [9.8, 0], "9,8", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[7.6, 4.8, "charnière →", "petit"]] } },
+    { id: "arriere", nom: "Face arrière (pivotée)", nb: 1, taille: "9,8 × 9,6", note: "entière, tournée de 30° autour de son arête gauche",
+      g: { w: 9.8, h: 9.6, contour: rect(9.8, 9.6), cotes: [[[0, 0], [9.8, 0], "9,8", -0.7], [[0, 0], [0, 9.6], "9,6", 0.7]], textes: [[0.3, 4.8, "← charnière", "petit"]] } },
   ],
   etapes: [
     { titre: "Le sol", montre: ["sol"],
-      texte: `Découpe le sol 10 × 10 et trace dessus la place des pièces debout : le côté gauche, la face arrière déplacée et la ligne à 30° de la face avant. <em>10 × 10</em>` },
-    { titre: "Le côté gauche : la continuité", montre: ["gauche"],
-      texte: `Colle le côté gauche (10 × 9,6) debout sur le bord gauche du sol. Avec le sol et le toit, il forme la bande continue de l'enveloppe. <em>10 × 9,6</em>` },
-    { titre: "La face arrière : déplacer", montre: ["arriere"],
-      texte: `La face arrière reste <b>entière</b> (9,8 × 9,6) mais elle <b>avance de 2,5 cm</b> vers l'intérieur. Derrière elle, l'emplacement de l'ancienne face reste vide. <em>9,8 × 9,6 · déplacée de 2,5</em>` },
-    { titre: "Le toit : fermer la bande", montre: ["toit"],
-      texte: `Le toit (10 × 10), entier, se colle sur le côté gauche et sur la face arrière déplacée. Il termine la bande sol → mur → toit. <em>10 × 10</em>` },
+      texte: `Découpe le sol 10 × 10 et trace dessus la place du côté gauche et les deux lignes à 30° des faces avant et arrière. Les deux lignes sont parallèles. <em>10 × 10</em>` },
+    { titre: "Le côté gauche : le seul carré fermé", montre: ["gauche"],
+      texte: `Colle le côté gauche (10 × 9,6) debout sur le bord gauche du sol. C'est la seule face qui reste à sa place : elle sert de repère aux deux autres. <em>10 × 9,6</em>` },
     { titre: "La face avant : pivoter", montre: ["avant"],
-      texte: `La face avant, <b>entière</b> (9,8 × 9,6), tourne de <b>30°</b> vers l'intérieur autour de son arête droite. Son bout libre s'arrête à 1,3 cm du côté gauche : une <b>fente verticale</b> apparaît, sans rien découper. Colle-la sur le sol et sous le toit. <em>pivot 30° · fente de 1,3</em>` },
-    { titre: "Le côté droit : éliminer", montre: [],
-      texte: `Rien à coller : le côté droit est <b>éliminé</b>, tout entier. Le cube s'ouvre à droite ; la fente et le vide derrière la face arrière laissent passer le regard. <em>aucune découpe, aucune fenêtre</em>` },
+      texte: `La face avant, <b>entière</b> (9,8 × 9,6), tourne de <b>30°</b> vers l'intérieur autour de son arête droite. Son bout s'arrête à 1,3 cm du côté gauche : une <b>fente verticale</b> apparaît, sans rien découper. <em>pivot 30° · fente de 1,3</em>` },
+    { titre: "La face arrière : pivoter", montre: ["arriere"],
+      texte: `La face arrière, <b>entière</b> elle aussi, tourne de <b>30°</b> autour de son arête gauche, contre le côté gauche. Elle devient parallèle à la face avant. Son bout s'arrête à 1,3 cm du bord droit, là où il n'y a plus de mur : une <b>limite virtuelle</b>. <em>pivot 30° · parallèle à l'avant</em>` },
+    { titre: "Le toit et le côté droit : éliminer", montre: [],
+      texte: `Rien à coller : le toit et le côté droit sont <b>éliminés</b>, entiers. Le cube s'ouvre au ciel et à droite ; entre les deux faces pivotées, un passage traverse le cube en diagonale. <em>un seul carré fermé · aucune découpe</em>` },
   ],
   construire(A) {
     A.plaque("sol", rect(10, 10), [], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
     A.plaque("gauche", rect(10, 9.6), [], [0, 0, T], [0, 1, 0], [0, 0, 1], [1, 0, 0], T);
-    A.plaque("arriere", rect(9.8, 9.6), [], [T, 7.5 - T, T], [1, 0, 0], [0, 0, 1], [0, 1, 0], T);
-    A.plaque("toit", rect(10, 10), [], [0, 0, 10 - T], [1, 0, 0], [0, 1, 0], [0, 0, 1], T);
     const c = Math.cos(rad(PIV)), s = Math.sin(rad(PIV));
     A.plaque("avant", rect(9.8, 9.6), [], [10, 0, T], [-c, s, 0], [0, 0, 1], [s, c, 0], T);
+    A.plaque("arriere", rect(9.8, 9.6), [], [T, 10, T], [c, -s, 0], [0, 0, 1], [-s, -c, 0], T);
   },
 };
 // ---------- où poser chaque pièce : repères affichés dans la 3D (txt, ligne, cote, arc) + une phrase
@@ -342,18 +338,16 @@ const OU = {
       notes: [2, 3, 4].map(m => txt([1.2, POS[m], PROFILS[m][0] * MOD + 0.7], "A" + m)).concat([txt([9, 9, 3.2], "2,5 : un module")]) },
   ],
   topologique: [
-    { ou: "à plat. Trace 3 repères : une bande de 0,2 sur le bord gauche (côté gauche), une bande de 0,2 à 2,5 cm du fond (face arrière déplacée), et une ligne qui part du coin avant droit à 30° (face avant).",
-      notes: [ligne([0.2, 0, 0.22], [0.2, 10, 0.22]), ligne([0.2, 7.3, 0.22], [10, 7.3, 0.22]), ligne([0.2, 7.5, 0.22], [10, 7.5, 0.22]), ligne([10, 0, 0.22], [FX, FY, 0.22]), cote([11, 7.5, 0.2], [11, 10, 0.2], "2,5"), txt([5, -0.8, 0.6], "devant"), txt([5, 10.8, 0.6], "fond")] },
+    { ou: "à plat. Trace une bande de 0,2 sur le bord gauche (côté gauche), une ligne à 30° qui part du coin avant droit (face avant) et une ligne à 30° qui part du coin arrière gauche (face arrière). Les deux lignes sont parallèles.",
+      notes: [ligne([0.2, 0, 0.22], [0.2, 10, 0.22]), ligne([10, 0, 0.22], [FX, FY, 0.22]), ligne([0.2, 10, 0.22], [BX, BY, 0.22]), txt([5, -0.8, 0.6], "devant"), txt([5, 10.8, 0.6], "fond")] },
     { ou: "debout sur le bord gauche du sol, sur toute sa longueur, collé sur le sol.",
       notes: [txt([0.1, 5, 10.4], "bord gauche"), cote([-1, 0, 0.2], [-1, 0, 9.8], "9,6")] },
-    { ou: "debout sur la bande tracée à 2,5 cm du fond, de la face intérieure du côté gauche jusqu'au bord droit du sol.",
-      notes: [txt([5, 7.4, 10.4], "avancée de 2,5"), cote([11, 7.5, 0.2], [11, 10, 0.2], "2,5")] },
-    { ou: "posé à plat sur le haut du côté gauche et de la face arrière, au ras des bords du sol.",
-      notes: [txt([5, 5, 10.6], "posé sur les deux murs"), cote([0, -1, 10.3], [10, -1, 10.3], "10")] },
-    { ou: "debout sur la ligne à 30°, son arête droite au coin avant droit du sol. Son autre bout s'arrête à 1,3 cm du côté gauche : c'est la fente.",
-      notes: [arc([10, 0, 0.4], 4.2, 150, 180, "30°"), txt([10, -0.4, 10.3], "charnière"), cote([0.2, FY + 0.6, 9.9], [FX, FY + 0.6, 9.9], "fente 1,3")] },
-    { ou: "rien à poser : il n'y a pas de côté droit. Tourne la maquette pour voir le cube ouvert à droite.",
-      notes: [txt([11, 5, 5], "côté droit éliminé")] },
+    { ou: "debout sur la ligne à 30° de devant, son arête droite au coin avant droit. Son autre bout s'arrête à 1,3 cm du côté gauche : c'est la fente.",
+      notes: [arc([10, 0, 0.4], 4.2, 150, 180, "30°"), cote([0.2, FY - 0.6, 9.9], [FX, FY - 0.6, 9.9], "fente 1,3")] },
+    { ou: "debout sur la ligne à 30° du fond, son arête gauche collée au bout du côté gauche. Son autre bout s'arrête à 1,3 cm du bord droit, dans le vide.",
+      notes: [arc([0.2, 10, 0.4], 4.2, -30, 0, "30°"), cote([BX, BY + 0.6, 9.9], [10, BY + 0.6, 9.9], "1,3 : limite virtuelle")] },
+    { ou: "rien à poser : il n'y a ni toit ni côté droit. Regarde par le dessus et par la droite : le passage traverse le cube entre les deux faces parallèles.",
+      notes: [txt([5, 5, 10.6], "toit éliminé"), txt([11, 5, 5], "côté droit éliminé")] },
   ],
 };
 for (const [k, liste] of Object.entries(OU)) liste.forEach((o, i) => Object.assign({ projectif, metrique, topologique }[k].etapes[i], o));
