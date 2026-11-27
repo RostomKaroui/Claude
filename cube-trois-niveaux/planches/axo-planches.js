@@ -113,12 +113,12 @@ window.PLANCHES = (function () {
   const VUE_AXO = {
     projectif: axo([10, 0], [-1, 0], [0, 1]),
     metrique: axo([10, 10], [0, -1], [-1, 0]),
-    topologique: axo([10, 0], [-1, 0], [0, 1], 60),   // façade avant à 60° : on voit la porte pivotée et l'ouverture
+    topologique: axo([10, 0], [-1, 0], [0, 1]),        // vu de l'avant droit : l'ouverture à droite et le panneau pivoté
   };
   const ETAPES = {
     projectif: [["socle", "pique"], ["socle", "pique", "poteaux", "c0", "c1"], ["socle", "pique", "poteaux", "c0", "c1", "c2", "c3"]],
     metrique: [["B0", "B1", "B2", "B3", "B4"], ["B0", "B1", "B2", "B3", "B4", "A0", "A1"], null],
-    topologique: [["sol", "gauche", "droite"], ["sol", "gauche", "droite", "arriere", "toit"], null],
+    topologique: [["sol", "gauche"], ["sol", "gauche", "droite", "toit"], null],
   };
   function planche(id) {
     const M = MAQUETTES[id], tout = () => true, geo = collecter(M, tout);
